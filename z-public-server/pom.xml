@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.example</groupId>
+    <artifactId>money-making-machine-plus</artifactId>
+    <version>${revision}</version>
+  </parent>
+  <artifactId>z-public-server</artifactId>
+  <name>z-public-server</name>
+  <url>http://maven.apache.org</url>
+  <description>
+    后端项目入口, 一个空壳聚合项目, 需要引入z-module-xx才会有血有肉
+  </description>
+
+  <dependencies>
+<!--    基础性的系统功能-->
+    <dependency>
+      <groupId>com.example</groupId>
+      <artifactId>z-module-system</artifactId>
+      <version>${revision}</version>
+    </dependency>
+
+    <!-- 工作流 -->
+    <dependency>
+      <groupId>com.example</groupId>
+      <artifactId>z-starter-flowable</artifactId>
+      <version>${revision}</version>
+    </dependency>
+
+    <!-- spring boot 配置所需依赖 -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-configuration-processor</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.example</groupId>
+      <artifactId>z-starter-banner</artifactId>
+    </dependency>
+
+    <!-- 服务保障相关 -->
+
+  </dependencies>
+
+  <build>
+    <!-- 设置构建的 jar 包名 -->
+    <finalName>${project.artifactId}</finalName>
+    <plugins>
+      <!-- 打包 -->
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>2.7.10</version> <!-- 如果 spring.boot.version 版本修改，则这里也要跟着修改 -->
+        <configuration>
+          <fork>true</fork>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal> <!-- 将引入的 jar 打入其中 -->
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
