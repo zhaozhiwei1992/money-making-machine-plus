@@ -1,6 +1,5 @@
 package com.example.aop;
 
-import com.alibaba.fastjson.JSON;
 import com.example.config.SpringSecurityConfig;
 import com.example.util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -9,17 +8,10 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
@@ -30,10 +22,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -61,56 +50,31 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             }
         }
 
-        Map map = new HashMap();
 //        验证是否有认证信息
         final String s = extractHeaderToken(request);
         final String cookie = getCookie(request);
         if (StringUtils.isBlank(s) && StringUtils.isBlank(cookie)) {
-            map.put("codeCheck", false);
-            map.put("msg", "Token为空");
-            response.setCharacterEncoding("UTF-8");
-            if(url.startsWith(IfmisProperties.RESOURCE_PRE)){
-                response.getWriter().write(JSON.toJSONString(map));
-            }else{
-                // 界面请求未登录重定向到登录界面
-                response.sendRedirect("/login");
-            }
-            return;
+            throw new RuntimeException("Token为空");
         }
         try {
-            UsernamePasswordAuthenticationToken authentication = getAuthentication(request, response);
+            UsernamePasswordAuthenticationToken authentication = buildAuthentication(request, response);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             chain.doFilter(request, response);
         } catch (ExpiredJwtException e) {
-            map.put("codeCheck", false);
-            map.put("msg", "Token已过期");
-            response.setCharacterEncoding("UTF-8");
             logger.error("Token已过期:", e);
+            throw new RuntimeException("Token已过期");
         } catch (UnsupportedJwtException e) {
-            //json.put("status", "-3");
-            map.put("codeCheck", false);
-            map.put("msg", "Token格式错误");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(JSON.toJSONString(map));
             logger.error("Token格式错误: ", e);
+            throw new RuntimeException("Token格式错误");
         } catch (MalformedJwtException e) {
-            map.put("codeCheck", false);
-            map.put("msg", "Token没有被正确构造");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(JSON.toJSONString(map));
             logger.error("Token没有被正确构造:", e);
+            throw new RuntimeException("Token没有被正确构造");
         } catch (IllegalArgumentException e) {
-            map.put("codeCheck", false);
-            map.put("msg", "Token非法参数异常");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(JSON.toJSONString(map));
             logger.error("非法参数异常:", e);
+            throw new RuntimeException("Token非法参数异常");
         } catch (Exception e) {
-            map.put("codeCheck", false);
-            map.put("msg", "Invalid Token");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(JSON.toJSONString(map));
             logger.error("Invalid Token ", e);
+            throw new RuntimeException("Invalid Token");
         }
     }
 
@@ -155,15 +119,22 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         return value;
     }
 
-    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request,
-                                                                  HttpServletResponse response) {
+    /**
+     * @param request  :
+     * @param response :
+     * @data: 2023/4/17-下午7:38
+     * @User: zhaozhiwei
+     * @method: buildAuthentication
+     * @return: org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+     * @Description: 根据请求参数获取token构建authentication, 线程中使用
+     */
+    private UsernamePasswordAuthenticationToken buildAuthentication(HttpServletRequest request,
+                                                                    HttpServletResponse response) {
         String token = extractHeaderToken(request);
 
         if (token == null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Token not found in headers. Trying request parameters."
-                        + request.getRequestURI() + "?" + request.getQueryString());
-            }
+            logger.debug("Token not found in headers. Trying request parameters {} ? {}"
+                    , request.getRequestURI(), request.getQueryString());
             token = getCookie(request);
         }
 
@@ -183,7 +154,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                 // 通过security一个请求线程中带一些特殊信息, 通过request带也可以
                 final Object details = authenticationToken.getDetails();
                 if (Objects.isNull(details)) {
-                    final Map extensionMap = new HashMap();
+                    final Map<String, Object> extensionMap = new HashMap<>();
                     WebAuthenticationDetails webAuthenticationDetails =
                             new WebAuthenticationDetailsSource().buildDetails(request);
                     if (webAuthenticationDetails.getRemoteAddress() != null) {
@@ -194,82 +165,12 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                     }
 
                     extensionMap.put("tokenid", token);
-
-                    // 根据请求参数解析出区划和年度信息
-                    final Map<String, String> map = extractRequest(request, userName);
-                    extensionMap.put("province", map.get("province"));
-                    extensionMap.put("year", map.get("year"));
+                    // 可以这里添加其它必要信息
                     authenticationToken.setDetails(extensionMap);
                 }
-
                 return authenticationToken;
-
             }
-            return null;
         }
         return null;
     }
-
-    /**
-     * @Description: 区划+年度表达式
-     */
-    private static final Pattern PROVINCE_YEAR = Pattern.compile("\\d{9}\\/\\d{4}\\/");
-
-    /**
-     * @param request  :
-     * @param userName
-     * @data: 2022/12/6-下午4:36
-     * @User: zhaozhiwei
-     * @method: extractRequest
-     * @return: java.util.Map<java.lang.String, java.lang.String>
-     * @Description: 根据请求解析出区划, 年度等信息
-     */
-    private Map<String, String> extractRequest(HttpServletRequest request, String userName){
-        final String url = request.getRequestURL().toString();
-        final String method = request.getMethod();
-        final Map<String, String> map = new HashMap<>();
-        final Matcher m = PROVINCE_YEAR.matcher(url);
-        while (m.find()) {
-            final String match = m.group(0);
-            final String[] split = match.split("\\/");
-            //1. 解析区划
-            map.put("province", split[0]);
-            //2. 解析年度
-            map.put("year", split[1]);
-            break;
-        }
-        if(StringUtils.isEmpty(map.get("year"))){
-            map.put("year", String.valueOf(LocalDateTime.now().getYear()));
-        }
-        return map;
-    }
-
-    private final UserDetailsService userDetailsService;
-
-    /**
-     * @Title: JWTAuthenticationFilter
-     * @Package com/longtu/aop/JWTAuthenticationFilter.java
-     * @Description: 可在用户锁定或其它状态是控制token不允许登录
-     * @author zhaozhiwei
-     * @date 2022/12/6 下午4:23
-     * @version V1.0
-     */
-    protected final UserDetails retrieveUser(String username) throws AuthenticationException {
-        UserDetails loadedUser;
-        try {
-            // 调用loadUserByUsername时加入type前缀
-            loadedUser = this.userDetailsService.loadUserByUsername(username);
-        } catch (UsernameNotFoundException var6) {
-            throw var6;
-        } catch (Exception var7) {
-            throw new InternalAuthenticationServiceException(var7.getMessage(), var7);
-        }
-
-        if (loadedUser == null) {
-            throw new InternalAuthenticationServiceException("用户[" + username + "]不存在！");
-        } else {
-            return loadedUser;
-        }
-    }
-
 }

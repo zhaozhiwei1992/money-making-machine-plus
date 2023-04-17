@@ -44,6 +44,85 @@
 
   </dependencies>
 
+  <profiles>
+    <profile>
+      <id>dev</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <profiles.active>dev</profiles.active>
+        <app.version>${revision}</app.version>
+        <skipTest>false</skipTest>
+        <skipITest>true</skipITest>
+      </properties>
+      <build>
+        <!--        spring.profiles.active替换-->
+        <resources>
+          <resource>
+            <directory>src/main/resources</directory>
+            <excludes>
+              <exclude>application-test.yml</exclude>
+              <exclude>application-prod.yml</exclude>
+            </excludes>
+            <filtering>true</filtering>
+          </resource>
+        </resources>
+      </build>
+    </profile>
+
+    <profile>
+      <id>test</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <profiles.active>test</profiles.active>
+        <app.version>${revision}</app.version>
+        <skipTest>false</skipTest>
+        <skipITest>false</skipITest>
+      </properties>
+      <build>
+        <!--        spring.profiles.active替换-->
+        <resources>
+          <resource>
+            <directory>src/main/resources</directory>
+            <excludes>
+              <exclude>application-dev.yml</exclude>
+              <exclude>application-prod.yml</exclude>
+            </excludes>
+            <filtering>true</filtering>
+          </resource>
+        </resources>
+      </build>
+    </profile>
+    <profile>
+      <id>prod</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <profiles.active>prod</profiles.active>
+        <app.version>${revision}</app.version>
+        <skipTest>false</skipTest>
+        <skipITest>false</skipITest>
+      </properties>
+      <build>
+        <!--        spring.profiles.active替换-->
+        <resources>
+          <resource>
+            <directory>src/main/resources</directory>
+            <excludes>
+              <exclude>application-dev.yml</exclude>
+              <exclude>application-test.yml</exclude>
+            </excludes>
+            <filtering>true</filtering>
+          </resource>
+        </resources>
+      </build>
+    </profile>
+  </profiles>
+
   <build>
     <!-- 设置构建的 jar 包名 -->
     <finalName>${project.artifactId}</finalName>

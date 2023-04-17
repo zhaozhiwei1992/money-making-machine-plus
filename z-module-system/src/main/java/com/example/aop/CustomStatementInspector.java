@@ -1,7 +1,7 @@
 package com.example.aop;
 
 import cn.hutool.core.util.StrUtil;
-import com.longtu.security.util.SecurityUtils;
+import com.example.util.SecurityUtils;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.Parenthesis;
 import net.sf.jsqlparser.expression.StringValue;

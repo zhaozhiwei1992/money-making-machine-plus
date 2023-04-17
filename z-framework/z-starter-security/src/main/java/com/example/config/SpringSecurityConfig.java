@@ -69,9 +69,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
 
-    @Autowired
-    private UserRepository userRepository;
-
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService)
@@ -97,7 +94,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 //其他所有请求需要身份认证
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
     }
 }

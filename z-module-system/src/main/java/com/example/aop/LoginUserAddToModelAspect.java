@@ -1,8 +1,8 @@
 package com.example.aop;
 
-import com.longtu.domain.User;
-import com.longtu.repository.UserRepository;
-import com.longtu.security.util.SecurityUtils;
+import com.example.domain.User;
+import com.example.repository.UserRepository;
+import com.example.util.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;

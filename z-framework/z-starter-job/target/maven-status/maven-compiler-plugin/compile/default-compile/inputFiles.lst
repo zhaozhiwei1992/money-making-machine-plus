@@ -1,1 +1,13 @@
 /home/zhaozhiwei/workspace/project/money-making-machine-plus/z-framework/z-starter-job/src/main/java/com/example/App.java
+/home/zhaozhiwei/workspace/project/money-making-machine-plus/z-framework/z-starter-job/src/main/java/com/example/config/JobFactoryAutoWireConfiguration.java
+/home/zhaozhiwei/workspace/project/money-making-machine-plus/z-framework/z-starter-job/src/main/java/com/example/web/rest/TaskParamResource.java
+/home/zhaozhiwei/workspace/project/money-making-machine-plus/z-framework/z-starter-job/src/main/java/com/example/service/QuartzJobManagerService.java
+/home/zhaozhiwei/workspace/project/money-making-machine-plus/z-framework/z-starter-job/src/main/java/com/example/domain/TaskParam.java
+/home/zhaozhiwei/workspace/project/money-making-machine-plus/z-framework/z-starter-job/src/main/java/com/example/config/QuartzSchedulerConfiguration.java
+/home/zhaozhiwei/workspace/project/money-making-machine-plus/z-framework/z-starter-job/src/main/java/com/example/repository/TaskLogRepository.java
+/home/zhaozhiwei/workspace/project/money-making-machine-plus/z-framework/z-starter-job/src/main/java/com/example/domain/TaskLog.java
+/home/zhaozhiwei/workspace/project/money-making-machine-plus/z-framework/z-starter-job/src/main/java/com/example/web/vm/TaskParamVO.java
+/home/zhaozhiwei/workspace/project/money-making-machine-plus/z-framework/z-starter-job/src/main/java/com/example/web/rest/TaskLogResource.java
+/home/zhaozhiwei/workspace/project/money-making-machine-plus/z-framework/z-starter-job/src/main/java/com/example/service/QuartzJobExecuteService.java
+/home/zhaozhiwei/workspace/project/money-making-machine-plus/z-framework/z-starter-job/src/main/java/com/example/repository/TaskParamRepository.java
+/home/zhaozhiwei/workspace/project/money-making-machine-plus/z-framework/z-starter-job/src/main/java/com/example/listener/QuartJobListener.java

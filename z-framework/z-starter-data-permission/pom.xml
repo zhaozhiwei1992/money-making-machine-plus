@@ -22,5 +22,10 @@
             <groupId>com.example</groupId>
             <artifactId>z-common</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.github.jsqlparser</groupId>
+            <artifactId>jsqlparser</artifactId>
+        </dependency>
     </dependencies>
 </project>

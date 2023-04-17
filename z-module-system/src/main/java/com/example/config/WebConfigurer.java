@@ -1,13 +1,11 @@
 package com.example.config;
 
-import com.longtu.aop.IfmisRequestInterceptor;
-import com.longtu.aop.RequestLoggingInterceptor;
-import com.longtu.aop.RestTemplateRequestLogInterceptor;
-import com.longtu.exception.CustomResponseErrorHandler;
+import com.example.aop.RequestLoggingInterceptor;
+import com.example.aop.RestTemplateRequestLogInterceptor;
+import com.example.exception.CustomResponseErrorHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.ProxyFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.server.WebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
@@ -32,7 +30,7 @@ import java.util.Arrays;
 @Configuration
 public class WebConfigurer implements ServletContextInitializer, WebServerFactoryCustomizer<WebServerFactory>, WebMvcConfigurer {
 
-    private final Logger log = LoggerFactory.getLogger(WebConfigurer.class);
+    private final Logger log = LoggerFactory.getLogger(RequestLogAutoConfiguration.class);
 
     private final Environment env;
 
@@ -72,19 +70,10 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
         return new CorsFilter(source);
     }
 
-    @Bean
-    public RequestLoggingInterceptor requestLoggingInterceptor() {
-        return new RequestLoggingInterceptor();
-    }
-
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        // 请求监控
-        registry.addInterceptor(requestLoggingInterceptor());
-    }
 
-    @Autowired
-    private IfmisRequestInterceptor ifmisAuthorizedInterceptor;
+    }
 
     @Bean
     public RestTemplate restTemplate(){
@@ -94,19 +83,7 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
         mappingJackson2HttpMessageConverter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM));
         restTemplate.getMessageConverters().add(mappingJackson2HttpMessageConverter);
         restTemplate.setErrorHandler(new CustomResponseErrorHandler());
-
-        // 添加登录信息
-        restTemplate.getInterceptors().add(ifmisAuthorizedInterceptor);
-//        return restTemplate;
-
-        // 添加请求日志记录
-        ProxyFactory proxyFactory = new ProxyFactory();
-        proxyFactory.setTarget(restTemplate);
-        proxyFactory.setProxyTargetClass(true);
-        proxyFactory.addAdvice(new RestTemplateRequestLogInterceptor());
-        Object proxy = proxyFactory.getProxy();
-
-        return (RestTemplate) proxy;
+        return restTemplate;
     }
 
 }

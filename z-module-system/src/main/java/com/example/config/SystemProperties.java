@@ -4,10 +4,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 
-@ConfigurationProperties(
-    prefix = "app.module.system"
-)
-@Configuration
+//@ConfigurationProperties(
+//    prefix = "z.app.module.system"
+//)
+//@Configuration
 public class SystemProperties {
 
     /**

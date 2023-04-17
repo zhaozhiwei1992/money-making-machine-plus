@@ -16,7 +16,7 @@ import java.util.Set;
 public class RestApiExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ResponseData> handleConstraintViolationException(ConstraintViolationException cve){
+    public ResponseEntity<ResponseData<String>> handleConstraintViolationException(ConstraintViolationException cve){
         Set<ConstraintViolation<?>> cves = cve.getConstraintViolations();
         final StringBuilder buffer = new StringBuilder();
         for (ConstraintViolation<?> constraintViolation : cves) {
@@ -24,13 +24,13 @@ public class RestApiExceptionHandler {
             buffer.append("---");
         }
         log.error(buffer.toString());
-        final ResponseData responseData = ResponseData.fail(buffer.toString());
+        final ResponseData<String> responseData = ResponseData.fail(buffer.toString());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseData);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ResponseData> handleException(Exception e){
-        final ResponseData responseData = ResponseData.fail(e.toString());
+    public ResponseEntity<ResponseData<Object>> handleException(Exception e){
+        final ResponseData<Object> responseData = ResponseData.fail(e.toString());
         responseData.setData(e.getStackTrace());
         log.error(e.toString(), e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseData);

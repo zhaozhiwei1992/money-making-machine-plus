@@ -1,1 +1,2 @@
-com/example/App.class
+com/example/config/CaptchaConfiguration.class
+com/example/web/controller/CaptchaController.class

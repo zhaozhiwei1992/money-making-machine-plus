@@ -1,12 +1,12 @@
 package com.example.web.rest;
 
-import com.longtu.domain.User;
-import com.longtu.repository.UserRepository;
-import com.longtu.security.util.JwtUtil;
-import com.longtu.web.rest.constants.ResponseCodeEnum;
-import com.longtu.web.vm.ResponseData;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import com.example.domain.User;
+import com.example.repository.UserRepository;
+import com.example.util.JwtUtil;
+import com.example.web.rest.constants.ResponseCodeEnum;
+import com.example.web.rest.vm.ResponseData;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Description: 登录认证接口
  * @date 2022/7/14 上午11:10
  */
-@Api(tags = "登录API")
+@Tag(name = "登录API")
 @RestController
 @RequestMapping(value = {"/api"})
 @Slf4j
@@ -51,7 +51,7 @@ public class LoginResource {
      * @return: com.longtu.web.vm.ResponseData<java.lang.String>
      * @Description: 描述
      */
-    @ApiOperation(value = "登录认证", notes = "返回token信息")
+    @Operation(description = "登录认证")
     @PostMapping("/login")
     public ResponseEntity<ResponseData<String>> login(String username, String password) {
 
