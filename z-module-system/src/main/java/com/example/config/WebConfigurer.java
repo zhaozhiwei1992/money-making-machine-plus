@@ -1,0 +1,112 @@
+package com.example.config;
+
+import com.longtu.aop.IfmisRequestInterceptor;
+import com.longtu.aop.RequestLoggingInterceptor;
+import com.longtu.aop.RestTemplateRequestLogInterceptor;
+import com.longtu.exception.CustomResponseErrorHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.aop.framework.ProxyFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.server.WebServerFactory;
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
+import org.springframework.boot.web.servlet.ServletContextInitializer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import javax.servlet.ServletContext;
+import java.util.Arrays;
+
+/**
+ * Configuration of web application with Servlet 3.0 APIs.
+ */
+@Configuration
+public class WebConfigurer implements ServletContextInitializer, WebServerFactoryCustomizer<WebServerFactory>, WebMvcConfigurer {
+
+    private final Logger log = LoggerFactory.getLogger(WebConfigurer.class);
+
+    private final Environment env;
+
+    private final SystemProperties ifmisProperties;
+
+    public WebConfigurer(Environment env, SystemProperties jHipsterProperties) {
+        this.env = env;
+        this.ifmisProperties = jHipsterProperties;
+    }
+
+    @Override
+    public void onStartup(ServletContext servletContext) {
+        if (env.getActiveProfiles().length != 0) {
+            log.info("Web application configuration, using profiles: {}", (Object[]) env.getActiveProfiles());
+        }
+
+        log.info("Web application fully configured");
+    }
+
+    /**
+     * Customize the Servlet engine: Mime types, the document root, the cache.
+     */
+    @Override
+    public void customize(WebServerFactory server) {
+        // When running in an IDE or with ./mvnw spring-boot:run, set location of the static web assets.
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = ifmisProperties.getCors();
+        log.debug("Registering CORS filter");
+        source.registerCorsConfiguration("/api/**", config);
+        source.registerCorsConfiguration("/management/**", config);
+        source.registerCorsConfiguration("/v2/api-docs", config);
+        source.registerCorsConfiguration("/swagger-ui/**", config);
+        return new CorsFilter(source);
+    }
+
+    @Bean
+    public RequestLoggingInterceptor requestLoggingInterceptor() {
+        return new RequestLoggingInterceptor();
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        // 请求监控
+        registry.addInterceptor(requestLoggingInterceptor());
+    }
+
+    @Autowired
+    private IfmisRequestInterceptor ifmisAuthorizedInterceptor;
+
+    @Bean
+    public RestTemplate restTemplate(){
+        RestTemplate restTemplate = new RestTemplate();
+        MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter =
+                new MappingJackson2HttpMessageConverter();
+        mappingJackson2HttpMessageConverter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM));
+        restTemplate.getMessageConverters().add(mappingJackson2HttpMessageConverter);
+        restTemplate.setErrorHandler(new CustomResponseErrorHandler());
+
+        // 添加登录信息
+        restTemplate.getInterceptors().add(ifmisAuthorizedInterceptor);
+//        return restTemplate;
+
+        // 添加请求日志记录
+        ProxyFactory proxyFactory = new ProxyFactory();
+        proxyFactory.setTarget(restTemplate);
+        proxyFactory.setProxyTargetClass(true);
+        proxyFactory.addAdvice(new RestTemplateRequestLogInterceptor());
+        Object proxy = proxyFactory.getProxy();
+
+        return (RestTemplate) proxy;
+    }
+
+}

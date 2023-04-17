@@ -118,6 +118,12 @@
       </dependency>
 
       <dependency>
+        <groupId>org.springframework.data</groupId>
+        <artifactId>spring-data-commons</artifactId>
+        <version>${spring.boot.version}</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.liquibase</groupId>
         <artifactId>liquibase-core</artifactId>
         <!-- Inherited version from Spring Boot can't be used because of regressions -->
@@ -339,6 +345,34 @@
         <version>${jsoup.version}</version>
       </dependency>
 
+      <!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
+      <dependency>
+        <groupId>com.auth0</groupId>
+        <artifactId>java-jwt</artifactId>
+        <version>3.8.0</version>
+      </dependency>
+
+      <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-impl -->
+      <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt-impl</artifactId>
+        <version>0.10.5</version>
+      </dependency>
+      <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt-jackson</artifactId>
+        <scope>runtime</scope>
+        <version>0.10.5</version>
+      </dependency>
+
+      <!--      异常处理-->
+      <dependency>
+        <groupId>org.zalando</groupId>
+        <artifactId>problem-spring-web-starter</artifactId>
+        <version>0.26.1</version>
+      </dependency>
+
+
       <!-- SMS SDK begin -->
       <dependency>
         <groupId>com.aliyun</groupId>
@@ -415,6 +449,18 @@
       <dependency>
         <groupId>com.example</groupId>
         <artifactId>z-starter-banner</artifactId>
+        <version>${revision}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.example</groupId>
+        <artifactId>z-starter-security</artifactId>
+        <version>${revision}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.example</groupId>
+        <artifactId>z-starter-operate-log</artifactId>
         <version>${revision}</version>
       </dependency>
 
