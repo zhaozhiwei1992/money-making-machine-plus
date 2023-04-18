@@ -20,7 +20,6 @@
         <module>z-common</module>
         <module>z-starter-cache</module>
         <module>z-starter-mq</module>
-        <module>z-starter-license</module>
         <module>z-starter-job</module>
         <module>z-starter-monitor</module>
         <module>z-starter-flowable</module>

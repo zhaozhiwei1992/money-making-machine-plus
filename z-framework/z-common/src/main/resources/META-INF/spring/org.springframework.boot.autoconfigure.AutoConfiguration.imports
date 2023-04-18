@@ -1,0 +1,2 @@
+com.z.framework.common.config.CommonPropertiesAutoConfiguration
+com.z.framework.common.config.SwaggerAutoConfiguration

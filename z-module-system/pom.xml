@@ -34,10 +34,6 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.liquibase</groupId>
@@ -48,5 +44,23 @@
       <groupId>com.github.jsqlparser</groupId>
       <artifactId>jsqlparser</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>com.mysql</groupId>
+      <artifactId>mysql-connector-j</artifactId>
+    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>com.oracle.database.jdbc</groupId>-->
+<!--      <artifactId>ojdbc8</artifactId>-->
+<!--    </dependency>-->
+<!--    <dependency>-->
+<!--      <groupId>org.postgresql</groupId>-->
+<!--      <artifactId>postgresql</artifactId>-->
+<!--    </dependency>-->
+<!--    <dependency>-->
+<!--      <groupId>com.microsoft.sqlserver</groupId>-->
+<!--      <artifactId>mssql-jdbc</artifactId>-->
+<!--    </dependency>-->
+
   </dependencies>
 </project>

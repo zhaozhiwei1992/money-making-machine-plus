@@ -150,6 +150,7 @@ z:
   app:
     name: 'MoneyMakingMachine'
     version: '@app.version@'
+    basePackage: 'com.z'
   api-docs:
     default-include-pattern: ${server.servlet.context-path:}/api/**
     management-include-pattern: ${server.servlet.context-path:}/management/**
