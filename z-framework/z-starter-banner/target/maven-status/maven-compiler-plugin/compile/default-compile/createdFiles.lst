@@ -1,2 +1,2 @@
-com/example/config/ZBannerAutoConfiguration.class
-com/example/core/BannerApplicationRunner.class
+com/z/framework/banner/core/BannerApplicationRunner.class
+com/z/framework/banner/config/ZBannerAutoConfiguration.class

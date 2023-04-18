@@ -66,7 +66,7 @@ public class MenuResource {
             menu.setEnabled(true);
             final Example<Menu> of = Example.of(filterObj, matcher);
             final long count = menuRepository.count(of);
-            menu.setOrdernum(Integer.parseInt(String.valueOf(count + 1)));
+            menu.setOrderNum(Integer.parseInt(String.valueOf(count + 1)));
         }
 
         if (Objects.isNull(menu.getParentId())) {
@@ -192,7 +192,7 @@ public class MenuResource {
                     if (menuObj.getParentId() == 0) {
                         tree.putExtra("index", menuObj.getId());
                     }
-                    tree.putExtra("ordernum", menuObj.getOrdernum());
+                    tree.putExtra("ordernum", menuObj.getOrderNum());
                 }
         );
 
@@ -237,7 +237,7 @@ public class MenuResource {
     public ResponseData<List<Menu>> getAllRootMenus() {
         log.debug("REST request to get a page of Menus");
 
-        List<Menu> menuList = menuRepository.findAllByParentIdOrderByOrdernumAsc(0L);
+        List<Menu> menuList = menuRepository.findAllByParentIdOrderByOrderNumAsc(0L);
 
         final ResponseData<List<Menu>> listResponseData = new ResponseData<>();
         listResponseData.setData(menuList);

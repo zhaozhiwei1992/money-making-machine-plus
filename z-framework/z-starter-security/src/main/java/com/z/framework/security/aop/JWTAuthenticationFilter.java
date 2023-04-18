@@ -1,6 +1,6 @@
 package com.z.framework.security.aop;
 
-import com.z.framework.security.config.SpringSecurityConfig;
+import com.z.framework.security.config.SpringSecurityAutoConfiguration;
 import com.z.framework.security.util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -36,13 +36,13 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         String url = request.getRequestURI();
 
         //精确匹配跳过
-        if (Arrays.asList(SpringSecurityConfig.AUTH_WHITELIST).contains(url)) {
+        if (Arrays.asList(SpringSecurityAutoConfiguration.AUTH_WHITELIST).contains(url)) {
             chain.doFilter(request, response);
             return;
         }
 
         // 满足表达式的跳过
-        final String[] writeUrlList = SpringSecurityConfig.AUTH_WHITELIST;
+        final String[] writeUrlList = SpringSecurityAutoConfiguration.AUTH_WHITELIST;
         for (String writeUrl : writeUrlList) {
             if (antPathMatcher.match(writeUrl, url)) {
                 chain.doFilter(request, response);

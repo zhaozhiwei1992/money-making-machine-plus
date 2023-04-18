@@ -37,17 +37,6 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(name = "password_hash", length = 60, nullable = false)
     private String password;
 
-    /**
-     * @data: 2022/9/27-上午10:52
-     * @User: zhaozhiwei
-     * @method:
-      * @param null :
-     * @return:
-     * @Description: 一体化中使用的密码, 请求一体化要使用加密状态密码
-     */
-    @Column(name = "password2", nullable = false)
-    private String password2;
-
     @Size(max = 50)
     @Column(name = "name", length = 50)
     private String name;

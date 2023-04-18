@@ -1,2 +1,2 @@
-com/example/config/CaptchaConfiguration.class
-com/example/web/controller/CaptchaController.class
+com/z/framework/captcha/web/controller/CaptchaController.class
+com/z/framework/captcha/config/CaptchaConfiguration.class

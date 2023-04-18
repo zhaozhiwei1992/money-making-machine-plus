@@ -31,8 +31,8 @@ public class Menu extends AbstractAuditingEntity implements Serializable {
     @Column(name = "icon_cls")
     private String iconCls;
 
-    @Column(name = "ordernum")
-    private Integer ordernum;
+    @Column(name = "order_num")
+    private Integer orderNum;
 
     @Column(name = "keep_alive")
     private Boolean keepAlive;

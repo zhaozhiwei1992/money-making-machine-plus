@@ -5,10 +5,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.mvc.condition.PathPatternsRequestCondition;
 import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
 import org.springframework.web.servlet.mvc.condition.RequestMethodsRequestCondition;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import org.springframework.web.util.pattern.PathPattern;
 
 import javax.annotation.PostConstruct;
 import java.lang.annotation.Annotation;
@@ -76,10 +78,10 @@ public class UrlMappingService {
                 }
             }
 
-            PatternsRequestCondition p = requestMappingInfo.getPatternsCondition();
-            for (String url : p.getPatterns()) {
+            final PathPatternsRequestCondition pathPatternsCondition = requestMappingInfo.getPathPatternsCondition();
+            for (PathPattern pattern : pathPatternsCondition.getPatterns()) {
                 //请求URL
-                resultMap.put("url",url);
+                resultMap.put("url", pattern.getPatternString());
             }
 
             final RequestMethodsRequestCondition methods = requestMappingInfo.getMethodsCondition();

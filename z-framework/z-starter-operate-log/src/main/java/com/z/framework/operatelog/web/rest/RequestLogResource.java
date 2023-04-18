@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 @Transactional(rollbackFor = Exception.class)
 public class RequestLogResource {
 
-    @Value("${ifmis.clientApp.name}")
+    @Value("${z.app.name}")
     private String applicationName;
 
     private final RequestLogRepository requestLoggingRepository;

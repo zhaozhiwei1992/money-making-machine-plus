@@ -13,11 +13,11 @@ import java.util.List;
 @Repository
 public interface MenuRepository extends JpaRepository<Menu, Long> {
 
-    List<Menu> findAllByOrderByOrdernumAsc();
+    List<Menu> findAllByOrderByOrderNumAsc();
 
-    List<Menu> findAllByIdInOrderByOrdernumAsc(List<Long> menuIdList);
+    List<Menu> findAllByIdInOrderByOrderNumAsc(List<Long> menuIdList);
 
     void deleteAllByIdIn(List<Long> idList);
 
-    List<Menu> findAllByParentIdOrderByOrdernumAsc(Long parentId);
+    List<Menu> findAllByParentIdOrderByOrderNumAsc(Long parentId);
 }

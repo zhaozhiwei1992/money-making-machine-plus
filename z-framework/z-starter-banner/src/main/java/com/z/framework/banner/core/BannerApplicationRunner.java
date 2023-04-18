@@ -29,16 +29,12 @@ public class BannerApplicationRunner implements ApplicationRunner {
                             "接口文档: \t{} \n\t" +
                             "开发文档: \t{} \n" +
                             "----------------------------------------------------------",
-                    "https://doc.iocoder.cn/api-doc/",
-                    "https://doc.iocoder.cn");
+                    "https://github.com/zhaozhiwei1992/money-making-machine-plus",
+                    "https://github.com/zhaozhiwei1992/money-making-machine-plus");
 
-            // 数据报表
-            if (isNotPresent("cn.iocoder.yudao.module.report.framework.security.config.SecurityConfiguration")) {
-                System.out.println("[报表模块 yudao-module-report - 已禁用][参考 https://doc.iocoder.cn/report/ 开启]");
-            }
             // 工作流
-            if (isNotPresent("cn.iocoder.yudao.framework.flowable.config.YudaoFlowableConfiguration")) {
-                System.out.println("[工作流模块 yudao-module-bpm - 已禁用][参考 https://doc.iocoder.cn/bpm/ 开启]");
+            if (isNotPresent("com.z.module.framework.flowable.config.FlowableConfiguration")) {
+//                System.out.println("[工作流模块 yudao-module-bpm - 已禁用][参考 https://doc.iocoder.cn/bpm/ 开启]");
             }
         });
     }

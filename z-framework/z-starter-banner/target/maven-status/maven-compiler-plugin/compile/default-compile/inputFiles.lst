@@ -1,2 +1,2 @@
-/home/zhaozhiwei/workspace/project/money-making-machine-plus/z-framework/z-starter-banner/src/main/java/com/example/core/BannerApplicationRunner.java
-/home/zhaozhiwei/workspace/project/money-making-machine-plus/z-framework/z-starter-banner/src/main/java/com/example/config/ZBannerAutoConfiguration.java
+/home/zhaozhiwei/workspace/project/money-making-machine-plus/z-framework/z-starter-banner/src/main/java/com/z/framework/banner/core/BannerApplicationRunner.java
+/home/zhaozhiwei/workspace/project/money-making-machine-plus/z-framework/z-starter-banner/src/main/java/com/z/framework/banner/config/ZBannerAutoConfiguration.java

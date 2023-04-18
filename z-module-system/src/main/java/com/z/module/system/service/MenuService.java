@@ -35,7 +35,7 @@ public class MenuService {
     @Cacheable(cacheNames = LOGIN_MENU_CACHE)
     public List<Menu> findAllMenusByLogin(String currentLoginName) {
         List<Menu> allMenusOrderByOrdernumAsc;
-        allMenusOrderByOrdernumAsc = menuRepository.findAllByOrderByOrdernumAsc();
+        allMenusOrderByOrdernumAsc = menuRepository.findAllByOrderByOrderNumAsc();
         return allMenusOrderByOrdernumAsc;
     }
 }

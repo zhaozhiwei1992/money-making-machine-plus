@@ -1,6 +1,7 @@
 package com.z.framework.operatelog.aop;
 
 import cn.hutool.extra.servlet.ServletUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONUtil;
 import com.z.framework.operatelog.domain.RequestLog;
 import com.z.framework.operatelog.repository.RequestLogRepository;
@@ -10,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
-import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -38,7 +38,7 @@ public class RequestLoggingInterceptor implements HandlerInterceptor {
     @Autowired
     private RequestLogRepository requestLoggingRepository;
 
-    @Autowired
+    // 这里不能注入, 会有循环依赖, 使用时getBean即可
     private UrlMappingService urlMappingService;
 
     @Override
@@ -71,36 +71,15 @@ public class RequestLoggingInterceptor implements HandlerInterceptor {
             final String method = request.getMethod();
             requestLogging.setRequestMethod(method);
             requestLogging.setClientIP(clientIP);
-            if(requestURI.startsWith("/api")
-                    // 系统内部程序不在记录日志
-                    && !requestURI.startsWith("/api/request/")
-                    && !requestURI.startsWith("/api/login/")
-                    && !requestURI.startsWith("/api/menus/")
-                    && !requestURI.startsWith("/api/request/")
-                    && !requestURI.startsWith("/api/roles/")
-                    && !requestURI.startsWith("/api/params/")
-                    && !requestURI.startsWith("/api/task/")
-                    && !requestURI.startsWith("/api/tasks/")
-                    && !requestURI.startsWith("/api/users/")
-            ){
+
+            // 循环依赖, 这里主动获取bean: urlMappingService
+            if(Objects.isNull(urlMappingService)){
+                urlMappingService = SpringUtil.getBean(UrlMappingService.class);
+            }
+
+            if(requestURI.startsWith("/api")){
                 String s = urlMappingService.getUrlMap().get(requestURI + "_" + method);
-                if(StringUtils.isEmpty(s)){
-                    // http://192.168.22.120:80/pay/payvoucher/pull/340000000/2022/001001
-                    // 上述类型形式的请求还原为{mof_div_code}/{fiscal_year}/{agency_code}就可以匹配了
-                    final Map<String, String> map = new HashMap<>();
-                    map.put("0", "{agency_code}");
-                    map.put("1", "{fiscal_year}");
-                    map.put("2", "{mof_div_code}");
-                    final String[] split = requestURI.split("/");
-                    for (int i = split.length-1; i >= split.length-3; i--) {
-                        split[i] = map.get(String.valueOf(split.length-1-i));
-                    }
-                    final String join = String.join("/", split);
-                    s = urlMappingService.getUrlMap().get(join + "_" + method);
-                    requestLogging.setRequestName(s);
-                }else{
-                    requestLogging.setRequestName(s);
-                }
+                requestLogging.setRequestName(s);
                 final Map<String, Object> parameterMap = this.getParameterMap(request);
                 requestLogging.setParams(JSONUtil.toJsonStr(parameterMap));
                 requestLogging.setSuccess("是");
