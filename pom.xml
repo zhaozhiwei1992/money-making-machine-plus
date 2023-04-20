@@ -55,18 +55,15 @@
             
     <module>z-module-code-generator</module>
     
-    <!--        vue3做的后台管理界面-->
-            
-    <module>z-ui-admin-vue3</module>
+    <!--   vue3做的后台管理界面-->
+<!--    <module>z-ui-admin-vue3</module>-->
     
     <!--        uniapp做的后台管理移动端-->
-            
     <module>z-ui-admin-uniapp</module>
-    
     <!--        给用户的前端ui项目-->
-            
     <module>z-ui-uniapp</module>
-          
+
+<!--    业务模块-->
     <module>z-module-system</module>
       
   </modules>
