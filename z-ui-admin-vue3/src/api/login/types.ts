@@ -10,3 +10,8 @@ export type UserType = {
   roleId: string
   permissions: string | string[]
 }
+
+export interface SmsCodeVO {
+  mobile: string
+  scene: number
+}

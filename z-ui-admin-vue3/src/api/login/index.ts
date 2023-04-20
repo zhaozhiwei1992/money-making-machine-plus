@@ -5,12 +5,13 @@ interface RoleParams {
   roleName: string
 }
 
+// 请求时得看下是否自动增加了/api
 export const loginApi = (data: UserType): Promise<IResponse<UserType>> => {
-  return request.post({ url: '/user/login', data })
+  return request.post({ url: '/api/login', data })
 }
 
 export const loginOutApi = (): Promise<IResponse> => {
-  return request.get({ url: '/user/loginOut' })
+  return request.get({ url: '/api/loginOut' })
 }
 
 export const getUserListApi = ({ params }: AxiosConfig) => {
@@ -20,15 +21,15 @@ export const getUserListApi = ({ params }: AxiosConfig) => {
       list: UserType[]
       total: number
     }
-  }>({ url: '/user/list', params })
+  }>({ url: '/api/users', params })
 }
 
 export const getAdminRoleApi = (
   params: RoleParams
 ): Promise<IResponse<AppCustomRouteRecordRaw[]>> => {
-  return request.get({ url: '/role/list', params })
+  return request.get({ url: '/api/roles', params })
 }
 
 export const getTestRoleApi = (params: RoleParams): Promise<IResponse<string[]>> => {
-  return request.get({ url: '/role/list', params })
+  return request.get({ url: '/api/roles', params })
 }

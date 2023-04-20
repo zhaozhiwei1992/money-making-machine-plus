@@ -19,6 +19,7 @@ import {
   ElDivider
 } from 'element-plus'
 import { InputPassword } from '@/components/InputPassword'
+import { ImageCaptcha } from '@/components/ImageCaptcha'
 import { Editor } from '@/components/Editor'
 import { ComponentName } from '@/types/components'
 
@@ -43,6 +44,7 @@ const componentMap: Recordable<Component, ComponentName> = {
   SelectV2: ElSelectV2,
   RadioButton: ElRadioGroup,
   InputPassword: InputPassword,
+  ImageCaptcha: ImageCaptcha,
   Editor: Editor
 }
 

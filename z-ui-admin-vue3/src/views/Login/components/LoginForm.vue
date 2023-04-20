@@ -42,20 +42,21 @@ const schema = reactive<FormSchema[]>([
   },
   {
     field: 'username',
-    label: t('login.username'),
-    value: 'admin',
+    label: '',
+    // 测试填默认用户
+    // value: 'admin',
     component: 'Input',
     colProps: {
       span: 24
     },
     componentProps: {
-      placeholder: t('login.usernamePlaceholder')
+      placeholder: t('login.username')
     }
   },
   {
     field: 'password',
-    label: t('login.password'),
-    value: 'admin',
+    label: '',
+    // value: 'admin',
     component: 'InputPassword',
     colProps: {
       span: 24
@@ -64,7 +65,21 @@ const schema = reactive<FormSchema[]>([
       style: {
         width: '100%'
       },
-      placeholder: t('login.passwordPlaceholder')
+      placeholder: t('login.password')
+    }
+  },
+  {
+    field: 'captcha',
+    label: '',
+    component: 'ImageCaptcha',
+    colProps: {
+      span: 24
+    },
+    componentProps: {
+      style: {
+        width: '100%'
+      },
+      placeholder: '验证码'
     }
   },
   {

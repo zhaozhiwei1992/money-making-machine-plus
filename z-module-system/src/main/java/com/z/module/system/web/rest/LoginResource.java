@@ -1,21 +1,26 @@
 package com.z.module.system.web.rest;
 
+import com.google.code.kaptcha.Constants;
+import com.z.framework.common.web.rest.vm.ResponseData;
+import com.z.framework.security.util.JwtUtil;
 import com.z.module.system.domain.User;
 import com.z.module.system.repository.UserRepository;
-import com.z.framework.security.util.JwtUtil;
-import com.z.framework.common.web.rest.constants.ResponseCodeEnum;
-import com.z.framework.common.web.rest.vm.ResponseData;
+import com.z.module.system.web.vo.LoginVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 /**
  * @author zhaozhiwei
@@ -43,8 +48,6 @@ public class LoginResource {
     }
 
     /**
-     * @param username :
-     * @param password :
      * @data: 2022/7/14-上午11:32
      * @User: zhaozhiwei
      * @method: login
@@ -53,33 +56,38 @@ public class LoginResource {
      */
     @Operation(description = "登录认证")
     @PostMapping("/login")
-    public ResponseEntity<ResponseData<String>> login(String username, String password) {
+    public ResponseEntity<ResponseData<String>> login(@Valid @RequestBody LoginVO loginVM, HttpServletRequest request) {
 
-        final ResponseData<String> responseData = new ResponseData<>();
-        responseData.setCode(ResponseCodeEnum.FAILED.getCode());
-        responseData.setMsg(ResponseCodeEnum.FAILED.getMsg());
-        responseData.setData(null);
+        // 验证码校验
+        // 1. 获取写入的验证码信息
+        final String captcha = loginVM.getCaptcha();
+        // 2. 获取session中验证码信息
+        final HttpSession session = request.getSession();
+        final Object attribute = session.getAttribute(Constants.KAPTCHA_SESSION_KEY);
+        // 3. 不相同则返回登录页面
+        if(!attribute.equals(captcha)){
+            logger.error("登录出错, 请输入正确的验证码");
+            return ResponseData.fail("验证码错误");
+        }
 
         try {
-            logger.info("用户名: {}, 密码: {}", username, password);
+            log.info("登录用户信息 {}", loginVM);
+            String username = loginVM.getUsername();
+            String password = loginVM.getPassword();
             final User dbUser = userRepository.findOneByLogin(username).orElse(new User());
             logger.info("查询用户信息 {}", dbUser);
             String dbPassWord = dbUser.getPassword();
             logger.info("数据库密码: {}", dbPassWord);
             if (bCryptPasswordEncoder.matches(password, dbPassWord)) {
                 String token = JwtUtil.generateToken(username);
-                responseData.setData(token);
-                responseData.setCode(ResponseCodeEnum.SUCCESS.getCode());
-                responseData.setMsg(ResponseCodeEnum.SUCCESS.getMsg());
-                return ResponseEntity.status(HttpStatus.OK).body(responseData);
+                return ResponseData.ok(token);
             }else{
-                responseData.setMsg(String.format("用户密码不匹配, 登录用户: %s, 密码: %s", username, password));
                 log.error(String.format("登录失败, 用户: %s, 密码: %s, 数据库密码: %s", username, password, dbPassWord));
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseData);
+                return ResponseData.fail(String.format("用户密码不匹配, 登录用户: %s, 密码: %s", username, password));
             }
         } catch (Exception e) {
             logger.error("登录出错", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseData);
+            return ResponseData.fail();
         }
     }
 }

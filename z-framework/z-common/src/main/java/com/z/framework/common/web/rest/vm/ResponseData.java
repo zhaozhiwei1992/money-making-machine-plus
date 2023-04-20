@@ -1,6 +1,8 @@
 package com.z.framework.common.web.rest.vm;
 
 import lombok.Data;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -14,37 +16,37 @@ public class ResponseData<T> implements Serializable {
     private T data;
     private Integer count;
 
-    public static <T> ResponseData<T> ok(){
+    public static <T> ResponseEntity<ResponseData<T>> ok(){
         final ResponseData<T> tResponseData = new ResponseData<>();
         tResponseData.setCode("200");
         tResponseData.setMsg("请求成功");
         tResponseData.setTimestamps(new Date());
-        return tResponseData;
+        return ResponseEntity.ok().body(tResponseData);
     }
 
-    public static <T> ResponseData<T> ok(T t){
+    public static <T> ResponseEntity<ResponseData<T>> ok(T t){
         final ResponseData<T> tResponseData = new ResponseData<>();
         tResponseData.setCode("200");
         tResponseData.setMsg("请求成功");
         tResponseData.setData(t);
         tResponseData.setCount(0);
         tResponseData.setTimestamps(new Date());
-        return tResponseData;
+        return ResponseEntity.ok().body(tResponseData);
     }
 
-    public static <T> ResponseData<T> fail(){
+    public static <T> ResponseEntity<ResponseData<T>> fail(){
         final ResponseData<T> tResponseData = new ResponseData<>();
         tResponseData.setCode("500");
         tResponseData.setMsg("请求失败");
         tResponseData.setTimestamps(new Date());
-        return tResponseData;
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(tResponseData);
     }
 
-    public static <T> ResponseData<T> fail(String msg){
+    public static <T> ResponseEntity<ResponseData<T>> fail(String msg){
         final ResponseData<T> tResponseData = new ResponseData<>();
         tResponseData.setCode("500");
         tResponseData.setMsg(msg);
         tResponseData.setTimestamps(new Date());
-        return tResponseData;
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(tResponseData);
     }
 }

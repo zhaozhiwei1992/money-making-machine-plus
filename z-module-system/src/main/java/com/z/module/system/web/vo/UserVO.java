@@ -1,4 +1,4 @@
-package com.z.module.system.web.vm;
+package com.z.module.system.web.vo;
 
 import lombok.Data;
 
@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @version V1.0
  */
 @Data
-public class UserVM implements Serializable {
+public class UserVO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

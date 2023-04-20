@@ -9,7 +9,7 @@ import com.z.framework.common.repository.CommonSqlRepository;
 import com.z.module.system.service.UserService;
 import com.z.framework.common.web.rest.constants.ResponseCodeEnum;
 import com.z.framework.common.web.rest.vm.ResponseData;
-import com.z.module.system.web.vm.UserVM;
+import com.z.module.system.web.vo.UserVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -58,35 +58,35 @@ public class UserResource {
      * mail with an activation link.
      * The user needs to be activated on creation.
      *
-     * @param userDTO the user to create.
+     * @param userVO the user to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new user, or with status {@code 400 (Bad Request)} if the login or email is already in use.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @Operation(description = "新增用户")
     @PostMapping("/users")
-    public ResponseEntity<User> createUser(@RequestBody UserVM userDTO) throws URISyntaxException {
-        log.debug("REST request to save User : {}", userDTO);
+    public ResponseEntity<User> createUser(@RequestBody UserVO userVO) throws URISyntaxException {
+        log.debug("REST request to save User : {}", userVO);
 
-        if(Objects.isNull(userDTO.getPassword())){
-            userDTO.setPassword("1");
+        if(Objects.isNull(userVO.getPassword())){
+            userVO.setPassword("1");
         }
 
-        if(!Objects.isNull(userDTO.getId())){
+        if(!Objects.isNull(userVO.getId())){
             // #bug88302
-            final User user = userRepository.findById(userDTO.getId()).orElse(new User());
-            if(!user.getPassword().equals(userDTO.getPassword())){
+            final User user = userRepository.findById(userVO.getId()).orElse(new User());
+            if(!user.getPassword().equals(userVO.getPassword())){
                 // 修改时判断是否与数据库中密码是否一致，不一致才进行加密
-                String encryptedPassword = passwordEncoder.encode(userDTO.getPassword());
-                userDTO.setPassword(encryptedPassword);
+                String encryptedPassword = passwordEncoder.encode(userVO.getPassword());
+                userVO.setPassword(encryptedPassword);
             }
         }else{
             // 新增密码全部加密
-            String encryptedPassword = passwordEncoder.encode(userDTO.getPassword());
-            userDTO.setPassword(encryptedPassword);
+            String encryptedPassword = passwordEncoder.encode(userVO.getPassword());
+            userVO.setPassword(encryptedPassword);
         }
 
-        if(Objects.isNull(userDTO.getId())){
-            userDTO.setActivated(true);
+        if(Objects.isNull(userVO.getId())){
+            userVO.setActivated(true);
         }
 
         // 全部增加为经办
@@ -96,7 +96,7 @@ public class UserResource {
         authorities.add(authority);
 
         final User user = new User();
-        BeanUtil.copyProperties(userDTO, user);
+        BeanUtil.copyProperties(userVO, user);
         user.setAppid("system");
 
         if(Objects.isNull(user.getId())){
@@ -106,13 +106,13 @@ public class UserResource {
         User newUser = userRepository.save(user);
 
         // 用户角色丢失特殊处理, 修改时setAuthorities失效
-        if(!Objects.isNull(userDTO.getId())){
+        if(!Objects.isNull(userVO.getId())){
             final ArrayList<Map<String, Object>> userAuthorities = new ArrayList<>();
             final Map<String, Object> userAuthority = new HashMap<>();
-            userAuthority.put("user_id", userDTO.getId());
-            userAuthority.put("authority_code", userDTO.getRole());
+            userAuthority.put("user_id", userVO.getId());
+            userAuthority.put("authority_code", userVO.getRole());
             userAuthorities.add(userAuthority);
-            commonSqlRepository.deleteBySql("t_user_authority",  " where user_id = '" + userDTO.getId()+ "'");
+            commonSqlRepository.deleteBySql("t_user_authority",  " where user_id = '" + userVO.getId()+ "'");
             commonSqlRepository.insertDatas("t_user_authority", userAuthorities);
         }
 
