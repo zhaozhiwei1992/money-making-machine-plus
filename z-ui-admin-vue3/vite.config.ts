@@ -118,7 +118,8 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
         '/api': {
           target: 'http://127.0.0.1:8090',
           changeOrigin: true,
-          rewrite: path => path.replace(/^\/api/, '')
+          // 后端接口也有/api开头, 所以不要去掉了
+          // rewrite: path => path.replace(/^\/api/, '')
         }
       },
       hmr: {

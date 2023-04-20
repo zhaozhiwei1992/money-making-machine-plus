@@ -145,11 +145,16 @@ const signIn = async () => {
         const res = await loginApi(formData)
 
         if (res) {
+          // todo 这里暂时返回的是token, 如果需要用户的信息, 登录接口要设计下
           wsCache.set(appStore.getUserInfo, res.data)
-          // 是否使用动态路由
+          // 设置token id
+          wsCache.set('token', res.data)
+          // 使用动态路由
+          // appStore.setDynamicRouter(true)
           if (appStore.getDynamicRouter) {
             getRole()
           } else {
+            // 根据传入不同参数生成不同路由表, none是所有的静态路由
             await permissionStore.generateRoutes('none').catch(() => {})
             permissionStore.getAddRouters.forEach((route) => {
               addRoute(route as RouteRecordRaw) // 动态添加可访问路由表

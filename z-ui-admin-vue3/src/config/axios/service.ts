@@ -12,6 +12,10 @@ import { config } from './config'
 
 import { ElMessage } from 'element-plus'
 
+import { useCache } from '@/hooks/web/useCache'
+
+const { wsCache } = useCache()
+
 const { result_code, base_url } = config
 
 export const PATH_URL = base_url[import.meta.env.VITE_API_BASEPATH]
@@ -32,7 +36,8 @@ service.interceptors.request.use(
     ) {
       config.data = qs.stringify(config.data)
     }
-    // ;(config.headers as AxiosRequestHeaders)['Token'] = 'test test'
+    // header里把token带上, 待测试
+    ;(config.headers as AxiosRequestHeaders)['Authorization'] = wsCache.get('token')
     // get参数编码
     if (config.method === 'get' && config.params) {
       let url = config.url as string

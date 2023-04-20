@@ -478,6 +478,12 @@
         <version>${revision}</version>
       </dependency>
 
+      <dependency>
+        <groupId>com.example</groupId>
+        <artifactId>z-starter-captcha</artifactId>
+        <version>${revision}</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 </project>

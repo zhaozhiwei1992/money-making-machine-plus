@@ -13,6 +13,7 @@ com/z/module/system/domain/Menu.class
 com/z/module/system/config/SystemProperties.class
 com/z/module/system/domain/LoginLog.class
 com/z/module/system/repository/RoleMenuRepository.class
+com/z/module/system/web/vo/LoginVO.class
 com/z/module/system/domain/RoleMenuToolButton.class
 com/z/module/system/domain/EleUnion.class
 com/z/module/system/aop/CustomStatementInspector.class
@@ -23,13 +24,13 @@ com/z/module/system/web/rest/ExampleResource.class
 com/z/module/system/domain/Example.class
 com/z/module/system/web/rest/MenuResource.class
 com/z/module/system/repository/AuthorityRepository.class
+com/z/module/system/web/vo/UserVO.class
 com/z/module/system/domain/Authority.class
 com/z/module/system/service/CommonEleService.class
 com/z/module/system/web/rest/RoleResource.class
 com/z/module/system/repository/UserRepository.class
 com/z/module/system/domain/SystemParam.class
 com/z/module/system/domain/User.class
-com/z/module/system/web/vm/UserVM.class
 com/z/module/system/web/rest/LoginResource.class
 com/z/module/system/service/timetask/Job1.class
 com/z/module/system/service/MenuService.class

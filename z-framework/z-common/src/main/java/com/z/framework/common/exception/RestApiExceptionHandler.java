@@ -24,16 +24,13 @@ public class RestApiExceptionHandler {
             buffer.append("---");
         }
         log.error(buffer.toString());
-        final ResponseData<String> responseData = ResponseData.fail(buffer.toString());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseData);
+        return ResponseData.fail(buffer.toString());
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ResponseData<Object>> handleException(Exception e){
-        final ResponseData<Object> responseData = ResponseData.fail(e.toString());
-        responseData.setData(e.getStackTrace());
         log.error(e.toString(), e);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseData);
+        return ResponseData.fail(e.toString());
     }
 
 }
