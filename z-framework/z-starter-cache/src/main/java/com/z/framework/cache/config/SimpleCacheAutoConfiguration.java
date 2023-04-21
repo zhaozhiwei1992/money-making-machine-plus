@@ -1,6 +1,8 @@
 package com.z.framework.cache.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.EnableCaching;
@@ -19,15 +21,17 @@ import java.util.Date;
  * @Title: CacheConfig
  * @Package com/longtu/config/CacheConfig.java
  * @Description: 缓存配置, 尽量简化, 直接使用本地服务缓存
+ * 条件化配置, 需要在application.yaml中配置z.cache==simple
  * @author zhaozhiwei
  * @date 2022/7/12 下午9:49
  * @version V1.0
  */
-@Configuration
+@AutoConfiguration
 @EnableCaching
 @EnableScheduling
+//@ConditionalOnProperty(prefix = "z", name = "cache", havingValue = "simple")
 @Slf4j
-public class CacheConfig {
+public class SimpleCacheAutoConfiguration {
 
     /**
      * 自定义方式会覆盖原有实现cachemanager接口的管理器，可用缓存容器中必须包含{@see PersonRepository}
@@ -41,8 +45,11 @@ public class CacheConfig {
         // 登录用户菜单缓存
         ConcurrentMapCache loginMenuCache = new ConcurrentMapCache("loginMenuCache");
         ConcurrentMapCache userByLoginCache = new ConcurrentMapCache("usersByLogin");
+        // 系统参数缓存
         ConcurrentMapCache sysParamCache = new ConcurrentMapCache("sysParamCache");
-        simpleCacheManager.setCaches(Arrays.asList(loginMenuCache, userByLoginCache, sysParamCache));
+        // token拉黑
+        ConcurrentMapCache tokenBlackCache = new ConcurrentMapCache("tokenBlackCache");
+        simpleCacheManager.setCaches(Arrays.asList(loginMenuCache, userByLoginCache, sysParamCache, tokenBlackCache));
         return simpleCacheManager;
     }
 

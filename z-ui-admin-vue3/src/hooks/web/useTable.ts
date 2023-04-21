@@ -130,6 +130,7 @@ export const useTable = <T = any>(config?: UseTableConfig<T>) => {
       const res = await config?.getListApi(unref(paramsObj)).finally(() => {
         tableObject.loading = false
       })
+      console.log('列表查询返回', res)
       if (res) {
         tableObject.tableList = get(res.data || {}, config?.response.list as string)
         tableObject.total = get(res.data || {}, config?.response?.total as string) || 0

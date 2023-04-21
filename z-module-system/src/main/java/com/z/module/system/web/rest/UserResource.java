@@ -7,7 +7,6 @@ import com.z.module.system.domain.User;
 import com.z.module.system.repository.UserRepository;
 import com.z.framework.common.repository.CommonSqlRepository;
 import com.z.module.system.service.UserService;
-import com.z.framework.common.web.rest.constants.ResponseCodeEnum;
 import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.module.system.web.vo.UserVO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,7 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -64,7 +62,7 @@ public class UserResource {
      */
     @Operation(description = "新增用户")
     @PostMapping("/users")
-    public ResponseEntity<User> createUser(@RequestBody UserVO userVO) throws URISyntaxException {
+    public ResponseEntity<ResponseData<User>> createUser(@RequestBody UserVO userVO) throws URISyntaxException {
         log.debug("REST request to save User : {}", userVO);
 
         if(Objects.isNull(userVO.getPassword())){
@@ -116,9 +114,7 @@ public class UserResource {
             commonSqlRepository.insertDatas("t_user_authority", userAuthorities);
         }
 
-        return ResponseEntity
-                .created(new URI("/api/users/" + newUser.getLogin()))
-                .body(newUser);
+        return ResponseData.ok(newUser);
     }
 
     /**
@@ -130,7 +126,7 @@ public class UserResource {
 
     @Operation(description = "获取用户")
     @GetMapping("/users")
-    public ResponseData<List<User>> getAllUsers(Pageable pageable, String key) {
+    public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllUsers(Pageable pageable, String key) {
         log.debug("REST request to get all User for an admin");
 
 //        final List<User> all = userRepository.findAll();
@@ -170,21 +166,17 @@ public class UserResource {
             userPage = userRepository.findAll(pageable);
         }
 
-        final ResponseData<List<User>> listResponseData = new ResponseData<>();
-        listResponseData.setData(userPage.getContent());
-        listResponseData.setCode("0");
-        listResponseData.setCount(Long.valueOf(userPage.getTotalElements()).intValue());
-        return listResponseData;
+        return ResponseData.ok(new HashMap<String, Object>(){{
+            put("list", userPage.getContent());
+            put("total", Long.valueOf(userPage.getTotalElements()).intValue());
+        }});
     }
 
     @Operation(description = "删除用户")
     @DeleteMapping("/users")
-    public ResponseData<String> deleteUser(@RequestBody List<Long> idList) {
+    public ResponseEntity<ResponseData<String>> deleteUser(@RequestBody List<Long> idList) {
         log.debug("REST request to delete Examples, ids: {}", idList);
         this.userRepository.deleteAllByIdIn(idList);
-        final ResponseData<String> responseData = new ResponseData<>();
-        responseData.setCode(ResponseCodeEnum.SUCCESS.getCode());
-        responseData.setMsg(ResponseCodeEnum.SUCCESS.getMsg());
-        return responseData;
+        return ResponseData.ok("success");
     }
 }

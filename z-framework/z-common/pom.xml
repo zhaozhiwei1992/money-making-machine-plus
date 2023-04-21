@@ -148,5 +148,10 @@
             <artifactId>druid-spring-boot-starter</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.example</groupId>
+            <artifactId>z-starter-cache</artifactId>
+        </dependency>
+
     </dependencies>
 </project>

@@ -477,6 +477,30 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
       }
     ]
   },
+  // 页面测试开始
+  // 临时测试没有加到动态路由里的内容
+  {
+    path: '/test',
+    component: Layout,
+    redirect: '/test/test-1',
+    name: 'Test',
+    meta: {
+      title: '测试',
+      icon: 'ep:management',
+      alwaysShow: true
+    },
+    children: [
+      {
+        path: 'test-1',
+        component: () => import('@/views/system/User/Index.vue'),
+        name: 'TestDialog',
+        meta: {
+          title: '测试页面'
+        }
+      }
+    ]
+  },
+  // 页面测试结束
   {
     path: '/error',
     component: Layout,

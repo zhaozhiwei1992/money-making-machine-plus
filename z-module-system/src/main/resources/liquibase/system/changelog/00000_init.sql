@@ -4,7 +4,7 @@
 -- 判断表不存在先创建
 -- 用户表
 CREATE TABLE if not exists t_user (
-	id bigint NOT NULL,
+	id bigint primary key auto_increment,
 	created_by varchar(50) NULL,
 	created_date timestamp NULL,
 	last_modified_by varchar(50) NULL,
@@ -19,7 +19,7 @@ CREATE TABLE if not exists t_user (
 );
 
 CREATE TABLE if not exists t_authority (
-	id bigint NOT NULL,
+	id bigint primary key auto_increment,
 	created_by varchar(50) NULL,
 	created_date timestamp NULL,
 	last_modified_by varchar(50) NULL,
@@ -34,7 +34,7 @@ CREATE TABLE if not exists t_user_authority (
 );
 
 CREATE TABLE if not exists sys_menu (
-	id bigint NOT NULL,
+	id bigint primary key auto_increment,
 	created_by varchar(50) NULL,
 	created_date timestamp NULL,
 	last_modified_by varchar(50) NULL,
@@ -52,7 +52,7 @@ CREATE TABLE if not exists sys_menu (
 
 
 CREATE TABLE if not exists sys_param (
-	id bigint NOT NULL,
+	id bigint primary key auto_increment,
 	created_by varchar(50) NULL,
 	created_date timestamp NULL,
 	last_modified_by varchar(50) NULL,

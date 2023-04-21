@@ -1,5 +1,6 @@
 package com.z.framework.security.aop;
 
+import cn.hutool.extra.spring.SpringUtil;
 import com.z.framework.security.config.SpringSecurityAutoConfiguration;
 import com.z.framework.security.util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -8,6 +9,8 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
@@ -57,6 +60,19 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             throw new RuntimeException("Token为空");
         }
         try {
+
+            // 校验token是否已经退出, 或者被下线
+            final CacheManager simpleCacheManager = SpringUtil.getBean(CacheManager.class);
+            final Cache tokenBlackCache = simpleCacheManager.getCache("tokenBlackCache");
+            final Object tokenBlock = tokenBlackCache.get("tokenBlock");
+            if(!Objects.isNull(tokenBlock)){
+                List<String> cacheBlockList = (List<String>) tokenBlackCache.get("tokenBlock").get();
+                if(cacheBlockList.contains(s) || cacheBlockList.contains(cookie)){
+                    throw new RuntimeException("token已失效");
+                }
+            }
+
+            // token认证核心
             UsernamePasswordAuthenticationToken authentication = buildAuthentication(request, response);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             chain.doFilter(request, response);

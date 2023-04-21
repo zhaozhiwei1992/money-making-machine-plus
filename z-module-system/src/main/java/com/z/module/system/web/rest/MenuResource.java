@@ -5,6 +5,8 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.hutool.core.lang.tree.TreeUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.z.module.system.domain.Menu;
 import com.z.module.system.repository.MenuRepository;
 import com.z.module.system.service.MenuService;
@@ -141,7 +143,7 @@ public class MenuResource {
      * @User: zhaozhiwei
      * @method: getMenusTree
      * @return: java.util.List<cn.hutool.core.lang.tree.Tree < java.lang.Long>>
-     * @Description: 描述
+     * @Description: 树形菜单, 给layui展现, 或者配置页面挂接菜单使用
      * "title": "营业厅",
      * "icon": "fa fa-desktop ",
      * // 是否默认展开
@@ -205,6 +207,59 @@ public class MenuResource {
 
         log.info("左侧树构建: {}", treeNodes);
         return treeNodes;
+    }
+
+    /**
+     * @data: 2022/5/8-下午7:44
+     * @User: zhaozhiwei
+     * @method: getMenusRoute
+     * @return: java.util.List<cn.hutool.core.lang.tree.Tree < java.lang.Long>>
+     * @Description: 根据菜单动态产生路由, 菜单表自己加的菜单就不用手动加路由了
+     * <p>
+     * 路由数据结构
+     * export default [
+     * {
+     * path: '/example/uiexample',
+     * name: 'DynamicUiExample',
+     * component: UiExample,
+     * meta: { authorities: [Authority.USER] },
+     * },
+     * {
+     * path: '/example/helloworld',
+     * name: 'HelloWorld',
+     * component: HelloWorld,
+     * meta: { authorities: [Authority.USER] },
+     * },
+     * ]
+     */
+    @GetMapping("/menus/route")
+    public List<Map<String, Object>> getMenusRoute() {
+        log.debug("REST request to get Menus Tree");
+
+        final List<Menu> allMenusOrderByOrdernumAsc = menuRepository.findAllByOrderByOrderNumAsc();
+        final List<Map<String, Object>> collect = allMenusOrderByOrdernumAsc
+                .stream()
+                //            保留url不是#的, 并且config里配置了组件的
+//                .filter(menu -> !"#".equals(menu.getUrl()) && menu.getConfig().contains("component"))
+                //            构建成router需要的形式
+                .map(menu -> {
+                    final Map<String, Object> map = new HashMap<>();
+                    map.put("path", menu.getUrl());
+                    final JSONObject jsonObject = JSONUtil.parseObj(menu.getConfig());
+                    final String component = jsonObject.getStr("component");
+                    map.put("name", component);
+                    // component字段是字符串，前端需要把这个字符串转化为前端定义的组件
+                    map.put("component", component);
+
+                    final Map<String, Object> metaMap = new HashMap<>();
+                    metaMap.put("menuid", menu.getId());
+                    map.put("meta", metaMap);
+
+                    return map;
+                })
+                .collect(Collectors.toList());
+
+        return collect;
     }
 
     /**

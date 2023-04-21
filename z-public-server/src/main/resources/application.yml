@@ -184,6 +184,8 @@ z:
     serverPassword: 1
 #   替换为实际使用的可用计划额度id
     planCtrlId: D8FB0545181AFD71C12B69E09346E5DE
+  # 默认使用simpleCache
+  cache: 'simple'
 
 # 验证码
 kaptcha:

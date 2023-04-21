@@ -145,10 +145,10 @@ const signIn = async () => {
         const res = await loginApi(formData)
 
         if (res) {
-          // todo 这里暂时返回的是token, 如果需要用户的信息, 登录接口要设计下
+          // 这里暂时返回的是token, 如果需要用户的信息, 登录接口要设计下
           wsCache.set(appStore.getUserInfo, res.data)
           // 设置token id
-          wsCache.set('token', res.data)
+          wsCache.set('token', res.data.token)
           // 使用动态路由
           // appStore.setDynamicRouter(true)
           if (appStore.getDynamicRouter) {
