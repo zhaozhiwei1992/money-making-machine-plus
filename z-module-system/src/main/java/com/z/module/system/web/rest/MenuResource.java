@@ -11,7 +11,6 @@ import com.z.module.system.domain.Menu;
 import com.z.module.system.repository.MenuRepository;
 import com.z.module.system.service.MenuService;
 import com.z.framework.security.util.SecurityUtils;
-import com.z.framework.common.web.rest.constants.ResponseCodeEnum;
 import com.z.framework.common.web.rest.vm.ResponseData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,7 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -60,7 +58,7 @@ public class MenuResource {
      */
     @Operation(description = "新增菜单")
     @PostMapping("/menus")
-    public ResponseEntity<Menu> createMenu(@RequestBody Menu menu) throws URISyntaxException {
+    public ResponseEntity<ResponseData<Menu>> createMenu(@RequestBody Menu menu) throws URISyntaxException {
 
         ExampleMatcher matcher = ExampleMatcher.matching();
         final Menu filterObj = new Menu();
@@ -76,9 +74,7 @@ public class MenuResource {
         }
 
         Menu result = menuRepository.save(menu);
-        return ResponseEntity
-                .created(new URI("/api/menus/" + result.getId()))
-                .body(result);
+        return ResponseData.ok(result);
     }
 
     /**
@@ -88,7 +84,7 @@ public class MenuResource {
      */
     @Operation(description = "获取所有菜单")
     @GetMapping("/menus")
-    public ResponseData<List<Menu>> getAllMenus(
+    public ResponseEntity<ResponseData<Map<String, Object>>> getAllMenus(
             Pageable pageable, String key) {
         log.debug("REST request to get a page of UiComponents");
 
@@ -97,7 +93,7 @@ public class MenuResource {
         // 分页
         pageable = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize(), sort);
 
-        Page<Menu> taskPage;
+        Page<Menu> menuPage;
         // 搜索
         if (StrUtil.isNotEmpty(key)) {
             final Menu task = new Menu();
@@ -123,16 +119,15 @@ public class MenuResource {
 
             //创建实例
             Example<Menu> ex = Example.of(task, matcher);
-            taskPage = menuRepository.findAll(ex, pageable);
+            menuPage = menuRepository.findAll(ex, pageable);
         } else {
-            taskPage = menuRepository.findAll(pageable);
+            menuPage = menuRepository.findAll(pageable);
         }
 
-        final ResponseData<List<Menu>> listResponseData = new ResponseData<>();
-        listResponseData.setData(taskPage.getContent());
-        listResponseData.setCode("0");
-        listResponseData.setCount(Long.valueOf(taskPage.getTotalElements()).intValue());
-        return listResponseData;
+        return ResponseData.ok(new HashMap<String, Object>(){{
+            put("list", menuPage.getContent());
+            put("total", Long.valueOf(menuPage.getTotalElements()).intValue());
+        }});
 
     }
 
@@ -270,33 +265,27 @@ public class MenuResource {
      * 404 (Not Found)}.
      */
     @GetMapping("/menus/{id}")
-    public ResponseEntity<Menu> getMenu(@PathVariable Long id) {
+    public ResponseEntity<ResponseData<Menu>> getMenu(@PathVariable Long id) {
         log.debug("REST request to get Menu : {}", id);
         Optional<Menu> menu = menuRepository.findById(id);
-        return null;
+        return ResponseData.ok(menu.get());
     }
 
     @Operation(description = "删除菜单")
     @DeleteMapping("/menus")
-    public ResponseData<String> deleteMenu(@RequestBody List<Long> idList) {
+    public ResponseEntity<ResponseData<String>> deleteMenu(@RequestBody List<Long> idList) {
         log.debug("REST request to delete Examples, ids: {}", idList);
         this.menuRepository.deleteAllByIdIn(idList);
-        final ResponseData<String> responseData = new ResponseData<>();
-        responseData.setCode(ResponseCodeEnum.SUCCESS.getCode());
-        responseData.setMsg(ResponseCodeEnum.SUCCESS.getMsg());
-        return responseData;
+        return ResponseData.ok("success");
     }
 
     @Operation(description = "获取所有一级菜单")
     @GetMapping("/menus/root")
-    public ResponseData<List<Menu>> getAllRootMenus() {
+    public ResponseEntity<ResponseData<List<Menu>>> getAllRootMenus() {
         log.debug("REST request to get a page of Menus");
 
         List<Menu> menuList = menuRepository.findAllByParentIdOrderByOrderNumAsc(0L);
 
-        final ResponseData<List<Menu>> listResponseData = new ResponseData<>();
-        listResponseData.setData(menuList);
-        listResponseData.setCode("0");
-        return listResponseData;
+        return ResponseData.ok(menuList);
     }
 }

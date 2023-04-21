@@ -1,6 +1,5 @@
 package com.z.module.system.web.rest;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.code.kaptcha.Constants;
 import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.framework.security.util.JwtUtil;
@@ -111,6 +110,9 @@ public class LoginResource {
         List<String> cacheBlockList = (List<String>) tokenBlackCache.get("tokenBlock").get();
         cacheBlockList.add(SecurityUtils.getTokenId());
         tokenBlackCache.put("tokenBlack", cacheBlockList);
-        return ResponseData.ok();
+        return ResponseData.ok(new HashMap<String, Object>() {{
+            put("list", taskPage.getContent());
+            put("total", Long.valueOf(taskPage.getTotalElements()).intValue());
+        }});
     }
 }

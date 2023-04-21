@@ -4,7 +4,6 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.z.module.system.domain.SystemParam;
 import com.z.module.system.repository.SysParamRepository;
-import com.z.framework.common.web.rest.constants.ResponseCodeEnum;
 import com.z.framework.common.web.rest.vm.ResponseData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,9 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -47,14 +46,12 @@ public class SysParamResource {
      */
     @Operation(description = "新增系统参数")
     @PostMapping("/params")
-    public ResponseEntity<SystemParam> createSystemParam(@RequestBody SystemParam systemParam) throws URISyntaxException {
+    public ResponseEntity<ResponseData<SystemParam>> createSystemParam(@RequestBody SystemParam systemParam) throws URISyntaxException {
         log.debug("REST request to save SystemParam : {}", systemParam);
 
         SystemParam newSystemParam = sysParamRepository.save(systemParam);
 
-        return ResponseEntity
-                .created(new URI("/api/params/"))
-                .body(newSystemParam);
+        return ResponseData.ok(newSystemParam);
     }
 
     /**
@@ -66,7 +63,7 @@ public class SysParamResource {
 
     @Operation(description = "获取系统参数")
     @GetMapping("/params")
-    public ResponseData<List<SystemParam>> getAllSystemParams(Pageable pageable, String key) {
+    public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllSystemParams(Pageable pageable, String key) {
         log.debug("REST request to get all SystemParam for an admin");
 
         // 根据id, 升序
@@ -105,22 +102,18 @@ public class SysParamResource {
             taskPage = sysParamRepository.findAll(pageable);
         }
 
-        final ResponseData<List<SystemParam>> listResponseData = new ResponseData<>();
-        listResponseData.setData(taskPage.getContent());
-        listResponseData.setCode("0");
-        listResponseData.setCount(Long.valueOf(taskPage.getTotalElements()).intValue());
-        return listResponseData;
+        return ResponseData.ok(new HashMap<String, Object>(){{
+            put("list", taskPage.getContent());
+            put("total", Long.valueOf(taskPage.getTotalElements()).intValue());
+        }});
     }
 
 
     @Operation(description = "删除系统参数")
     @DeleteMapping("/params")
-    public ResponseData<String> deleteSystemParam(@RequestBody List<Long> idList) {
+    public ResponseEntity<ResponseData<String>> deleteSystemParam(@RequestBody List<Long> idList) {
         log.debug("REST request to delete Examples, ids: {}", idList);
         this.sysParamRepository.deleteAllByIdIn(idList);
-        final ResponseData<String> responseData = new ResponseData<>();
-        responseData.setCode(ResponseCodeEnum.SUCCESS.getCode());
-        responseData.setMsg(ResponseCodeEnum.SUCCESS.getMsg());
-        return responseData;
+        return ResponseData.ok("success");
     }
 }

@@ -5,7 +5,6 @@ import cn.hutool.core.util.StrUtil;
 import com.z.module.system.domain.Authority;
 import com.z.module.system.service.RoleMenuService;
 import com.z.module.system.repository.AuthorityRepository;
-import com.z.framework.common.web.rest.constants.ResponseCodeEnum;
 import com.z.framework.common.web.rest.vm.ResponseData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,9 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -52,7 +51,7 @@ public class RoleResource {
      */
     @Operation(description = "新增角色")
     @PostMapping("/roles")
-    public ResponseEntity<Authority> createAuthority(@RequestBody Authority roleDTO) throws URISyntaxException {
+    public ResponseEntity<ResponseData<Authority>> createAuthority(@RequestBody Authority roleDTO) throws URISyntaxException {
         log.debug("REST request to save Authority : {}", roleDTO);
 
         if(!roleDTO.getCode().startsWith(ROLE_START)){
@@ -61,9 +60,7 @@ public class RoleResource {
 
         Authority newAuthority = roleRepository.save(roleDTO);
 
-        return ResponseEntity
-                .created(new URI("/api/roles/"))
-                .body(newAuthority);
+        return ResponseData.ok(newAuthority);
     }
 
     /**
@@ -75,7 +72,7 @@ public class RoleResource {
 
     @Operation(description = "获取角色")
     @GetMapping("/roles")
-    public ResponseData<List<Authority>> getAllAuthoritys(Pageable pageable, String key) {
+    public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllAuthoritys(Pageable pageable, String key) {
         log.debug("REST request to get all Authority for an admin");
 
 //        final List<Authority> all = roleRepository.findAll();
@@ -115,40 +112,31 @@ public class RoleResource {
             rolePage = roleRepository.findAll(pageable);
         }
 
-        final ResponseData<List<Authority>> listResponseData = new ResponseData<>();
-        listResponseData.setData(rolePage.getContent());
-        listResponseData.setCode("0");
-        listResponseData.setCount(Long.valueOf(rolePage.getTotalElements()).intValue());
-        return listResponseData;
+        return ResponseData.ok(new HashMap<String, Object>(){{
+            put("list", rolePage.getContent());
+            put("total", Long.valueOf(rolePage.getTotalElements()).intValue());
+        }});
     }
 
     @Operation(description = "删除角色")
     @DeleteMapping("/roles")
-    public ResponseData<String> deleteAuthority(@RequestBody List<Long> idList) {
+    public ResponseEntity<ResponseData<String>> deleteAuthority(@RequestBody List<Long> idList) {
         log.debug("REST request to delete Examples, ids: {}", idList);
         this.roleRepository.deleteAllByIdIn(idList);
-        final ResponseData<String> responseData = new ResponseData<>();
-        responseData.setCode(ResponseCodeEnum.SUCCESS.getCode());
-        responseData.setMsg(ResponseCodeEnum.SUCCESS.getMsg());
-        return responseData;
+        return ResponseData.ok("success");
     }
 
     private final RoleMenuService roleMenuService;
 
     @Operation(description = "保存角色菜单信息")
     @PostMapping(value = "/roles/menu")
-    public ResponseData<String> save(
+    public ResponseEntity<ResponseData<String>> save(
             @RequestParam(value = "roleList") List<Long> roleList,
             @RequestParam(value = "menuList") List<Long> menuList
     ) {
 
         roleMenuService.saveRoleMenu(roleList, menuList);
-
-        final ResponseData<String> responseData = new ResponseData<>();
-        responseData.setCode(ResponseCodeEnum.SUCCESS.getCode());
-        responseData.setMsg(ResponseCodeEnum.SUCCESS.getMsg());
-        return responseData;
+        return ResponseData.ok("success");
     }
-
 
 }

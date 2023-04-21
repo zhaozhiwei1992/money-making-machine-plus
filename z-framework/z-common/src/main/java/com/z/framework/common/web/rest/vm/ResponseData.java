@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 
 @Data
 public class ResponseData<T> implements Serializable {
@@ -16,7 +17,7 @@ public class ResponseData<T> implements Serializable {
     private T data;
     private Integer count;
 
-    public static <T> ResponseEntity<ResponseData<T>> ok(){
+    public static <T> ResponseEntity<ResponseData<T>> ok(HashMap<String, Object> t){
         final ResponseData<T> tResponseData = new ResponseData<>();
         tResponseData.setCode("200");
         tResponseData.setMsg("请求成功");
