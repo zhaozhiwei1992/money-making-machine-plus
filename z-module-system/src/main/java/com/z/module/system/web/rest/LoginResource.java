@@ -6,6 +6,7 @@ import com.z.framework.security.util.JwtUtil;
 import com.z.framework.security.util.SecurityUtils;
 import com.z.module.system.domain.User;
 import com.z.module.system.repository.UserRepository;
+import com.z.module.system.service.LoginLogService;
 import com.z.module.system.web.vo.AuthedRespVO;
 import com.z.module.system.web.vo.LoginVO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -50,10 +51,13 @@ public class LoginResource {
 
     private CacheManager cacheManager;
 
-    public LoginResource(UserRepository userRepository, PasswordEncoder passwordEncoder, CacheManager cacheManager) {
+    private final LoginLogService loginLogService;
+
+    public LoginResource(UserRepository userRepository, PasswordEncoder passwordEncoder, CacheManager cacheManager, LoginLogService loginLogService) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = passwordEncoder;
         this.cacheManager = cacheManager;
+        this.loginLogService = loginLogService;
     }
 
     /**
@@ -93,6 +97,9 @@ public class LoginResource {
                 String token = JwtUtil.generateToken(username);
                 authedRespVO.setPermissions(Arrays.asList("*.*.*"));
                 authedRespVO.setToken(token);
+
+                // 登录成功记录日志
+                loginLogService.save(request);
                 return ResponseData.ok(authedRespVO);
             }else{
                 log.error(String.format("登录失败, 用户: %s, 密码: %s, 数据库密码: %s", username, password, dbPassWord));

@@ -8,12 +8,14 @@ import com.z.framework.common.web.rest.vm.ResponseData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -34,7 +36,7 @@ public class TaskLogResource {
     }
 
     @GetMapping("/task/logs")
-    public ResponseData<List<TaskLog>> getAllTaskLogings(Pageable pageable, String key) {
+    public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllTaskLogings(Pageable pageable, String key) {
         log.debug("REST request to get all TaskLogging for an admin");
 
         // 根据id, 升序
@@ -42,7 +44,7 @@ public class TaskLogResource {
         // 分页
         pageable = PageRequest.of(pageable.getPageNumber()-1, pageable.getPageSize(), sort);
 
-        Page<TaskLog> requestLoggingPage;
+        Page<TaskLog> taskLogPage;
         // 搜索
         if(StrUtil.isNotEmpty(key)){
             final TaskLog taskLog = new TaskLog();
@@ -66,16 +68,14 @@ public class TaskLogResource {
 
             //创建实例
             Example<TaskLog> ex = Example.of(taskLog, matcher);
-            requestLoggingPage = taskLogRepository.findAll(ex, pageable);
+            taskLogPage = taskLogRepository.findAll(ex, pageable);
         }else{
-            requestLoggingPage = taskLogRepository.findAll(pageable);
+            taskLogPage = taskLogRepository.findAll(pageable);
         }
-
-        final ResponseData<List<TaskLog>> listResponseData = new ResponseData<>();
-        listResponseData.setData(requestLoggingPage.getContent());
-        listResponseData.setCode("0");
-        listResponseData.setCount(Long.valueOf(requestLoggingPage.getTotalElements()).intValue());
-        return listResponseData;
+        return ResponseData.ok(new HashMap<String, Object>(){{
+            put("list", taskLogPage.getContent());
+            put("total", Long.valueOf(taskLogPage.getTotalElements()).intValue());
+        }});
     }
 
 }

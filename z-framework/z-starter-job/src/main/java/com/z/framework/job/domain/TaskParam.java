@@ -1,5 +1,7 @@
 package com.z.framework.job.domain;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.z.framework.common.domain.AbstractAuditingEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,6 +23,7 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class TaskParam extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

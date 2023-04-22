@@ -1,7 +1,11 @@
 package com.z.framework.job.domain;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.z.framework.common.domain.AbstractAuditingEntity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,6 +24,9 @@ import java.time.Instant;
 @Entity
 @Table(name = "sys_task_log")
 @Data
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class TaskLog extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -1,16 +1,13 @@
 <script name="MenuIndex" setup lang="ts">
 import { ContentWrap } from '@/components/ContentWrap'
 import { Search } from '@/components/Search'
-import { Dialog } from '@/components/Dialog'
 import { useI18n } from '@/hooks/web/useI18n'
 import { ElButton } from 'element-plus'
 import { Table } from '@/components/Table'
-import { getTableListApi, saveTableApi, delTableListApi } from '@/api/system/menu'
+import { getTableListApi, delTableListApi } from '@/api/system/request-log'
 import { useTable } from '@/hooks/web/useTable'
 import { TableData } from '@/api/table/types'
-import { ref, unref, reactive } from 'vue'
-import AddOrUpdate from './components/AddOrUpdate.vue'
-import Detail from './components/Detail.vue'
+import { ref, reactive } from 'vue'
 import { CrudSchema, useCrudSchemas } from '@/hooks/web/useCrudSchemas'
 
 const { register, tableObject, methods } = useTable<TableData>({
@@ -35,114 +32,51 @@ const crudSchemas = reactive<CrudSchema[]>([
   {
     field: 'id',
     label: '编号',
-    type: 'index',
-    form: {
-      show: false
-    },
-    detail: {
-      show: false
-    }
+    type: 'index'
   },
   {
-    field: 'name',
-    label: '菜单名称',
-    form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
-    }
-  },
-  {
-    field: 'url',
-    label: 'Url',
+    field: 'login_name',
+    label: '用户名',
     search: {
       show: true
-    },
-    form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
     }
   },
   {
-    field: 'component',
-    label: '组件路径',
+    field: 'request_name',
+    label: '请求描述',
     search: {
       show: true
-    },
-    form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
     }
   },
   {
-    field: 'icon_cls',
-    label: '图标',
-    form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
+    field: 'request_uri',
+    label: '请求地址',
+    search: {
+      show: true
     }
   },
   {
-    field: 'order_num',
-    label: '排序',
-    form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
+    field: 'request_method',
+    label: '请求方式',
+    search: {
+      show: true
     }
   },
   {
-    field: 'parent_id',
-    label: '父菜单',
-    form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
-    }
+    field: 'client_ip',
+    label: '客户端ip'
   },
   {
-    field: 'config',
-    label: '扩展配置',
-    form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
-    }
+    field: 'params',
+    label: '请求参数信息'
   },
   {
-    field: 'action',
-    width: '260px',
-    label: t('tableDemo.action'),
-    form: {
-      show: false
-    },
-    detail: {
-      show: false
-    }
+    field: 'success',
+    label: '请求成功'
+  },
+  {
+    field: 'trace_id',
+    label: '请求id'
   }
 ])
 
@@ -151,13 +85,6 @@ const { allSchemas } = useCrudSchemas(crudSchemas)
 const dialogVisible = ref(false)
 
 const dialogTitle = ref('')
-
-const AddAction = () => {
-  dialogTitle.value = t('exampleDemo.add')
-  tableObject.currentRow = null
-  dialogVisible.value = true
-  actionType.value = ''
-}
 
 const delLoading = ref(false)
 
@@ -182,30 +109,6 @@ const action = (row: TableData, type: string) => {
   tableObject.currentRow = row
   dialogVisible.value = true
 }
-
-const writeRef = ref<ComponentRef<typeof AddOrUpdate>>()
-
-const loading = ref(false)
-
-const save = async () => {
-  const write = unref(writeRef)
-  await write?.elFormRef?.validate(async (isValid) => {
-    if (isValid) {
-      loading.value = true
-      const data = (await write?.getFormData()) as TableData
-      const res = await saveTableApi(data)
-        .catch(() => {})
-        .finally(() => {
-          loading.value = false
-        })
-      if (res) {
-        dialogVisible.value = false
-        tableObject.currentPage = 1
-        getList()
-      }
-    }
-  })
-}
 </script>
 
 <template>
@@ -218,7 +121,6 @@ const save = async () => {
     />
 
     <div class="mb-10px">
-      <ElButton type="primary" @click="AddAction">{{ t('exampleDemo.add') }}</ElButton>
       <ElButton :loading="delLoading" type="danger" @click="delData(null, true)">
         {{ t('exampleDemo.del') }}
       </ElButton>
@@ -234,44 +136,6 @@ const save = async () => {
         total: tableObject.total
       }"
       @register="register"
-    >
-      <template #action="{ row }">
-        <ElButton type="primary" v-hasPermi="['example:dialog:edit']" @click="action(row, 'edit')">
-          {{ t('exampleDemo.edit') }}
-        </ElButton>
-        <ElButton
-          type="success"
-          v-hasPermi="['example:dialog:view']"
-          @click="action(row, 'detail')"
-        >
-          {{ t('exampleDemo.detail') }}
-        </ElButton>
-        <ElButton type="danger" v-hasPermi="['example:dialog:delete']" @click="delData(row, false)">
-          {{ t('exampleDemo.del') }}
-        </ElButton>
-      </template>
-    </Table>
+    />
   </ContentWrap>
-
-  <Dialog v-model="dialogVisible" :title="dialogTitle">
-    <AddOrUpdate
-      v-if="actionType !== 'detail'"
-      ref="writeRef"
-      :form-schema="allSchemas.formSchema"
-      :current-row="tableObject.currentRow"
-    />
-
-    <Detail
-      v-if="actionType === 'detail'"
-      :detail-schema="allSchemas.detailSchema"
-      :current-row="tableObject.currentRow"
-    />
-
-    <template #footer>
-      <ElButton v-if="actionType !== 'detail'" type="primary" :loading="loading" @click="save">
-        {{ t('exampleDemo.save') }}
-      </ElButton>
-      <ElButton @click="dialogVisible = false">{{ t('dialogDemo.close') }}</ElButton>
-    </template>
-  </Dialog>
 </template>

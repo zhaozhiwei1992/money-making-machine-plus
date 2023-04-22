@@ -1,5 +1,7 @@
 package com.z.framework.operatelog.domain;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.z.framework.common.domain.AbstractAuditingEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,6 +20,7 @@ import java.io.Serializable;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class RequestLog extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

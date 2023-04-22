@@ -73,5 +73,10 @@
       <artifactId>z-starter-captcha</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>com.example</groupId>
+      <artifactId>z-starter-job</artifactId>
+    </dependency>
+
   </dependencies>
 </project>

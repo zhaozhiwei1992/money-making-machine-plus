@@ -5,7 +5,7 @@ import { Dialog } from '@/components/Dialog'
 import { useI18n } from '@/hooks/web/useI18n'
 import { ElButton } from 'element-plus'
 import { Table } from '@/components/Table'
-import { getTableListApi, saveTableApi, delTableListApi } from '@/api/system/menu'
+import { getTableListApi, saveTableApi, delTableListApi } from '@/api/system/task'
 import { useTable } from '@/hooks/web/useTable'
 import { TableData } from '@/api/table/types'
 import { ref, unref, reactive } from 'vue'
@@ -45,7 +45,46 @@ const crudSchemas = reactive<CrudSchema[]>([
   },
   {
     field: 'name',
-    label: '菜单名称',
+    label: '任务名称',
+    search: {
+      show: true
+    },
+    form: {
+      colProps: {
+        span: 24
+      }
+    },
+    detail: {
+      span: 24
+    }
+  },
+  {
+    field: 'cron_expression',
+    label: '表达式',
+    form: {
+      colProps: {
+        span: 24
+      }
+    },
+    detail: {
+      span: 24
+    }
+  },
+  {
+    field: 'start_class',
+    label: '任务入口',
+    form: {
+      colProps: {
+        span: 24
+      }
+    },
+    detail: {
+      span: 24
+    }
+  },
+  {
+    field: 'enable',
+    label: '是否启用',
     form: {
       colProps: {
         span: 24
@@ -61,69 +100,6 @@ const crudSchemas = reactive<CrudSchema[]>([
     search: {
       show: true
     },
-    form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
-    }
-  },
-  {
-    field: 'component',
-    label: '组件路径',
-    search: {
-      show: true
-    },
-    form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
-    }
-  },
-  {
-    field: 'icon_cls',
-    label: '图标',
-    form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
-    }
-  },
-  {
-    field: 'order_num',
-    label: '排序',
-    form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
-    }
-  },
-  {
-    field: 'parent_id',
-    label: '父菜单',
-    form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
-    }
-  },
-  {
-    field: 'config',
-    label: '扩展配置',
     form: {
       colProps: {
         span: 24

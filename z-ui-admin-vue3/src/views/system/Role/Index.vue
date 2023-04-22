@@ -5,7 +5,7 @@ import { Dialog } from '@/components/Dialog'
 import { useI18n } from '@/hooks/web/useI18n'
 import { ElButton } from 'element-plus'
 import { Table } from '@/components/Table'
-import { getTableListApi, saveTableApi, delTableListApi } from '@/api/system/menu'
+import { getTableListApi, saveTableApi, delTableListApi } from '@/api/system/role'
 import { useTable } from '@/hooks/web/useTable'
 import { TableData } from '@/api/table/types'
 import { ref, unref, reactive } from 'vue'
@@ -44,86 +44,23 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
+    field: 'code',
+    label: '角色编码',
+    form: {
+      colProps: {
+        span: 24
+      }
+    },
+    detail: {
+      span: 24
+    }
+  },
+  {
     field: 'name',
-    label: '菜单名称',
-    form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
-    }
-  },
-  {
-    field: 'url',
-    label: 'Url',
+    label: '角色名称',
     search: {
       show: true
     },
-    form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
-    }
-  },
-  {
-    field: 'component',
-    label: '组件路径',
-    search: {
-      show: true
-    },
-    form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
-    }
-  },
-  {
-    field: 'icon_cls',
-    label: '图标',
-    form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
-    }
-  },
-  {
-    field: 'order_num',
-    label: '排序',
-    form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
-    }
-  },
-  {
-    field: 'parent_id',
-    label: '父菜单',
-    form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
-    }
-  },
-  {
-    field: 'config',
-    label: '扩展配置',
     form: {
       colProps: {
         span: 24

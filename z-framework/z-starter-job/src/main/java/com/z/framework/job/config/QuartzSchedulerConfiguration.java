@@ -7,9 +7,12 @@ import org.quartz.spi.JobFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.quartz.CronTriggerFactoryBean;
 import org.springframework.scheduling.quartz.JobDetailFactoryBean;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
@@ -22,6 +25,9 @@ import java.util.Properties;
  * 如果作为
  */
 @AutoConfiguration
+@EnableJpaRepositories({ "com.z.framework.job.repository" })
+@EntityScan({"com.z.framework.job.domain"})
+@ComponentScan(value = {"com.z.framework.job"})
 public class QuartzSchedulerConfiguration {
 
     @Bean

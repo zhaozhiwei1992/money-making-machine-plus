@@ -122,8 +122,7 @@ public class MenuResource {
             menuPage = menuRepository.findAll(pageable);
         }
 
-        //todo 菜单属性转换成 下划线 再给前端, mapstruct
-
+        //菜单属性转换成 下划线 再给前端, mapstruct? 直接采用Jackson的JsonNaming注解搞了先
         return ResponseData.ok(new HashMap<String, Object>(){{
             put("list", menuPage.getContent());
             put("total", Long.valueOf(menuPage.getTotalElements()).intValue());
