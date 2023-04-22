@@ -4,7 +4,7 @@ import { Form } from '@/components/Form'
 import { useI18n } from '@/hooks/web/useI18n'
 import { ElButton, ElCheckbox, ElLink } from 'element-plus'
 import { useForm } from '@/hooks/web/useForm'
-import { loginApi, getTestRoleApi, getAdminRoleApi } from '@/api/login'
+import { loginApi, getMenuRouteListApi } from '@/api/login'
 import { useCache } from '@/hooks/web/useCache'
 import { useAppStore } from '@/store/modules/app'
 import { usePermissionStore } from '@/store/modules/permission'
@@ -145,12 +145,12 @@ const signIn = async () => {
         const res = await loginApi(formData)
 
         if (res) {
-          // 这里暂时返回的是token, 如果需要用户的信息, 登录接口要设计下
+          // 返回用户信息, 带token
           wsCache.set(appStore.getUserInfo, res.data)
           // 设置token id
           wsCache.set('token', res.data.token)
-          // 使用动态路由
-          // appStore.setDynamicRouter(true)
+          // 使用后端动态路由只需要把这里放开
+          appStore.setDynamicRouter(true)
           if (appStore.getDynamicRouter) {
             getRole()
           } else {
@@ -160,6 +160,8 @@ const signIn = async () => {
               addRoute(route as RouteRecordRaw) // 动态添加可访问路由表
             })
             permissionStore.setIsAddRouters(true)
+
+            // 登录后跳转指定地址, 或者路由第一个地址, 后端权限控制, 管理员是分析页, 普通用户是工作页
             push({ path: redirect.value || permissionStore.addRouters[0].path })
           }
         }
@@ -179,21 +181,27 @@ const getRole = async () => {
   }
   // admin - 模拟后端过滤菜单
   // test - 模拟前端过滤菜单
-  const res =
-    formData.username === 'admin' ? await getAdminRoleApi(params) : await getTestRoleApi(params)
+  // const res =
+  //   formData.username === 'admin' ? await getAdminRoleApi(params) : await getTestRoleApi(params)
+  console.log('params', params)
+  const res = await getMenuRouteListApi(params)
   if (res) {
     const { wsCache } = useCache()
     const routers = res.data || []
+    // console.log('返回的res信息', res)
     wsCache.set('roleRouters', routers)
 
-    formData.username === 'admin'
-      ? await permissionStore.generateRoutes('admin', routers).catch(() => {})
-      : await permissionStore.generateRoutes('test', routers).catch(() => {})
+    // 全部都走后端路由
+    await permissionStore.generateRoutes('admin', routers).catch(() => {})
+    // formData.username === 'admin'
+    //   ? await permissionStore.generateRoutes('admin', routers).catch(() => {})
+    //   : await permissionStore.generateRoutes('test', routers).catch(() => {})
 
     permissionStore.getAddRouters.forEach((route) => {
       addRoute(route as RouteRecordRaw) // 动态添加可访问路由表
     })
     permissionStore.setIsAddRouters(true)
+    // 登录后跳转指定地址, 或者路由第一个地址, 后端权限控制, 管理员是分析页, 普通用户是工作页
     push({ path: redirect.value || permissionStore.addRouters[0].path })
   }
 }

@@ -17,7 +17,7 @@ public class ResponseData<T> implements Serializable {
     private T data;
     private Integer count;
 
-    public static <T> ResponseEntity<ResponseData<T>> ok(HashMap<String, Object> t){
+    public static <T> ResponseEntity<ResponseData<T>> ok(){
         final ResponseData<T> tResponseData = new ResponseData<>();
         tResponseData.setCode("200");
         tResponseData.setMsg("请求成功");

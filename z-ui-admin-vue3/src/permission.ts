@@ -45,13 +45,15 @@ router.beforeEach(async (to, from, next) => {
 
       // 开发者可根据实际情况进行修改
       const roleRouters = wsCache.get('roleRouters') || []
-      const userInfo = wsCache.get(appStore.getUserInfo)
+      // const userInfo = wsCache.get(appStore.getUserInfo)
 
       // 是否使用动态路由
       if (appStore.getDynamicRouter) {
-        userInfo.role === 'admin'
-          ? await permissionStore.generateRoutes('admin', roleRouters as AppCustomRouteRecordRaw[])
-          : await permissionStore.generateRoutes('test', roleRouters as string[])
+        // 全部走后端路由
+        await permissionStore.generateRoutes('admin', roleRouters as AppCustomRouteRecordRaw[])
+        // userInfo.role === 'admin'
+        //   ? await permissionStore.generateRoutes('admin', roleRouters as AppCustomRouteRecordRaw[])
+        //   : await permissionStore.generateRoutes('test', roleRouters as string[])
       } else {
         await permissionStore.generateRoutes('none')
       }

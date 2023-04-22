@@ -110,9 +110,6 @@ public class LoginResource {
         List<String> cacheBlockList = (List<String>) tokenBlackCache.get("tokenBlock").get();
         cacheBlockList.add(SecurityUtils.getTokenId());
         tokenBlackCache.put("tokenBlack", cacheBlockList);
-        return ResponseData.ok(new HashMap<String, Object>() {{
-            put("list", taskPage.getContent());
-            put("total", Long.valueOf(taskPage.getTotalElements()).intValue());
-        }});
+        return ResponseData.ok("success");
     }
 }

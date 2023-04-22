@@ -27,9 +27,15 @@ export const getUserListApi = ({ params }: AxiosConfig) => {
 export const getAdminRoleApi = (
   params: RoleParams
 ): Promise<IResponse<AppCustomRouteRecordRaw[]>> => {
-  return request.get({ url: '/api/roles', params })
+  return request.get({ url: '/role/list', params })
 }
 
 export const getTestRoleApi = (params: RoleParams): Promise<IResponse<string[]>> => {
-  return request.get({ url: '/api/roles', params })
+  return request.get({ url: '/role/list', params })
+}
+
+export const getMenuRouteListApi = (
+  params: RoleParams
+): Promise<IResponse<AppCustomRouteRecordRaw[]>> => {
+  return request.get({ url: '/api/menus/route', params })
 }

@@ -492,7 +492,7 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
     children: [
       {
         path: 'test-1',
-        component: () => import('@/views/system/User/Index.vue'),
+        component: () => import('@/views/system/Menu/Index.vue'),
         name: 'TestDialog',
         meta: {
           title: '测试页面'

@@ -22,6 +22,7 @@
 /home/zhaozhiwei/workspace/project/money-making-machine-plus/z-module-system/src/main/java/com/z/module/system/aop/CustomStatementInspector.java
 /home/zhaozhiwei/workspace/project/money-making-machine-plus/z-module-system/src/main/java/com/z/module/system/service/UserService.java
 /home/zhaozhiwei/workspace/project/money-making-machine-plus/z-module-system/src/main/java/com/z/module/system/domain/EleUnion.java
+/home/zhaozhiwei/workspace/project/money-making-machine-plus/z-module-system/src/main/java/com/z/module/system/web/vo/AuthedRespVO.java
 /home/zhaozhiwei/workspace/project/money-making-machine-plus/z-module-system/src/main/java/com/z/module/system/domain/Menu.java
 /home/zhaozhiwei/workspace/project/money-making-machine-plus/z-module-system/src/main/java/com/z/module/system/web/rest/MenuResource.java
 /home/zhaozhiwei/workspace/project/money-making-machine-plus/z-module-system/src/main/java/com/z/module/system/domain/LoginLog.java

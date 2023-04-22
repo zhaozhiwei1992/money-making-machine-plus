@@ -43,11 +43,12 @@ CREATE TABLE if not exists sys_menu (
 	enabled bool NULL,
 	icon_cls varchar(255) NULL,
 	keep_alive bool NULL,
-	name varchar(255) NULL,
+	name varchar(255) NOT NULL,
 	order_num int4 NULL,
-	parent_id int8 NULL,
+	parent_id int8 NOT NULL,
 	require_auth bool NULL,
-	url varchar(255) NULL
+	url varchar(255) NOT NULL,
+	component varchar(255) NOT NULL
 );
 
 
@@ -97,43 +98,50 @@ INSERT INTO t_user_authority
 (user_id, authority_code)
 VALUES(3, 'ROLE_USER');
 
-
 -- ----------------------------
 -- 菜单初始化
 -- ----------------------------
 delete from sys_menu;
-INSERT INTO sys_menu
-(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url)
-VALUES(16, NULL, '2022-07-28 01:54:02.767', NULL, '2022-07-28 01:54:02.767', NULL, true, NULL, NULL, '登录日志', 16, 15, NULL, '/log/login');
-INSERT INTO sys_menu
-(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url)
-VALUES(17, NULL, '2022-07-28 01:54:24.449', NULL, '2022-07-28 01:54:24.449', NULL, true, NULL, NULL, '接口请求日志', 17, 15, NULL, '/log/request');
-INSERT INTO sys_menu
-(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url)
-VALUES(18, NULL, '2022-07-28 01:54:50.347', NULL, '2022-07-28 01:54:50.347', NULL, true, NULL, NULL, '定时任务日志', 18, 15, NULL, '/log/task');
-INSERT INTO sys_menu
-(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url)
-VALUES(3, NULL, '2022-07-28 01:45:19.705', NULL, '2022-07-28 01:45:19.705', NULL, true, NULL, NULL, '菜单管理', 3, 2, NULL, '/menu/list');
-INSERT INTO sys_menu
-(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url)
-VALUES(4, NULL, '2022-07-28 01:45:40.293', NULL, '2022-07-28 01:45:40.293', NULL, true, NULL, NULL, '角色管理', 4, 2, NULL, '/role/list');
-INSERT INTO sys_menu
-(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url)
-VALUES(5, NULL, '2022-07-28 01:45:56.510', NULL, '2022-07-28 01:45:56.510', NULL, true, NULL, NULL, '用户管理', 5, 2, NULL, '/user/list');
-INSERT INTO sys_menu
-(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url)
-VALUES(7, NULL, '2022-07-28 01:46:28.005', NULL, '2022-07-28 01:46:28.005', NULL, true, NULL, NULL, '定时任务管理', 7, 2, NULL, '/task/list');
-INSERT INTO sys_menu
-(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url)
-VALUES(15, NULL, '2022-07-28 01:53:00.920', NULL, '2022-07-28 01:53:00.920', NULL, true, 'fa-layui-icon-transfer', NULL, '日志查看', 8, 0, NULL, '#');
-INSERT INTO sys_menu
-(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url)
-VALUES(8, NULL, '2022-07-28 01:46:52.525', NULL, '2022-07-28 01:46:52.525', NULL, true, 'fa-layui-icon-rss', NULL, '报表查询', 2, 0, NULL, '#');
-INSERT INTO sys_menu
-(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url)
-VALUES(2, NULL, '2022-07-28 01:40:21.057', NULL, '2022-07-28 01:40:21.057', NULL, true, 'fa-layui-icon-at', NULL, '系统管理', 15, 0, NULL, '#');
-INSERT INTO sys_menu
-(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url)
-VALUES(1, NULL, '2022-10-09 20:20:21.593', NULL, '2022-10-09 20:20:21.593', NULL, true, NULL, NULL, '系统参数配置', 1, 2, NULL, '/params/list');
 
-alter table sys_menu auto_increment=20;
+INSERT INTO sys_menu
+(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component)
+VALUES(1, NULL, '2022-10-09 20:20:22', NULL, '2022-10-09 20:20:22', NULL, 1, NULL, NULL, '系统参数配置', 1, 2, NULL, 'params/list', 'views/system/Param/Index');
+INSERT INTO sys_menu
+(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component)
+VALUES(2, NULL, '2022-07-28 01:40:21', NULL, '2022-07-28 01:40:21', NULL, 1, 'ep:management', NULL, '系统管理', 15, 0, NULL, '/system', '#');
+INSERT INTO sys_menu
+(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component)
+VALUES(3, NULL, '2022-07-28 01:45:20', NULL, '2022-07-28 01:45:20', NULL, 1, NULL, NULL, '菜单管理', 3, 2, NULL, 'menu/list', 'views/system/Menu/Index');
+INSERT INTO sys_menu
+(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component)
+VALUES(4, NULL, '2022-07-28 01:45:40', NULL, '2022-07-28 01:45:40', NULL, 1, NULL, NULL, '角色管理', 4, 2, NULL, 'role/list', 'views/system/Role/Index');
+INSERT INTO sys_menu
+(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component)
+VALUES(5, NULL, '2022-07-28 01:45:57', NULL, '2022-07-28 01:45:57', NULL, 1, NULL, NULL, '用户管理', 5, 2, NULL, 'user/list', 'views/system/User/Index');
+INSERT INTO sys_menu
+(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component)
+VALUES(7, NULL, '2022-07-28 01:46:28', NULL, '2022-07-28 01:46:28', NULL, 1, NULL, NULL, '定时任务管理', 7, 2, NULL, 'task/list', 'views/system/Task/Index');
+INSERT INTO sys_menu
+(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component)
+VALUES(15, NULL, '2022-07-28 01:53:01', NULL, '2022-07-28 01:53:01', NULL, 1, 'ep:management', NULL, '日志查看', 8, 0, NULL, '/log', '#');
+INSERT INTO sys_menu
+(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component)
+VALUES(16, NULL, '2022-07-28 01:54:03', NULL, '2022-07-28 01:54:03', NULL, 1, NULL, NULL, '登录日志', 16, 15, NULL, 'login', 'views/system/LoginLog/Index');
+INSERT INTO sys_menu
+(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component)
+VALUES(17, NULL, '2022-07-28 01:54:24', NULL, '2022-07-28 01:54:24', NULL, 1, NULL, NULL, '接口请求日志', 17, 15, NULL, 'request', 'views/system/RequestLog/Index');
+INSERT INTO sys_menu
+(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component)
+VALUES(18, NULL, '2022-07-28 01:54:50', NULL, '2022-07-28 01:54:50', NULL, 1, NULL, NULL, '定时任务日志', 18, 15, NULL, 'task', 'views/system/TaskLog/Index');
+INSERT INTO sys_menu
+(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component)
+VALUES(21, NULL, '2023-04-22 14:12:24', NULL, '2023-04-22 14:12:24', '', 1, 'ant-design:dashboard-filled', NULL, '首页', 0, 0, NULL, '/dashboard', '#');
+INSERT INTO sys_menu
+(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component)
+VALUES(22, NULL, '2023-04-22 14:14:49', NULL, '2023-04-22 14:14:49', '', 1, '', NULL, '分析页', 20, 21, NULL, 'analysis', 'views/Dashboard/Analysis');
+INSERT INTO sys_menu
+(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component)
+VALUES(23, NULL, '2023-04-22 14:15:28', NULL, '2023-04-22 14:15:28', '', 1, '', NULL, '工作台', 21, 21, NULL, 'workplace', 'views/Dashboard/Workplace');
+
+
+alter table sys_menu auto_increment=30;

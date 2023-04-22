@@ -94,12 +94,14 @@ export const generateRoutesFn2 = (routes: AppCustomRouteRecordRaw[]): AppRouteRe
 
   for (const route of routes) {
     const data: AppRouteRecordRaw = {
+      // 动态添加path必须/开头
       path: route.path,
       name: route.name,
       redirect: route.redirect,
       meta: route.meta
     }
     if (route.component) {
+      // 这里组件要符合框架要求格式, 必须在modules里找到, 不要带.vue, 如../views/system/User/Index.vue ==> views/system/User/Index(按这个注册组件)
       const comModule = modules[`../${route.component}.vue`] || modules[`../${route.component}.tsx`]
       const component = route.component as string
       if (!comModule && !component.includes('#')) {

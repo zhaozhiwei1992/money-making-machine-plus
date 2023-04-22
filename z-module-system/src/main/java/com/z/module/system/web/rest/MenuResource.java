@@ -5,8 +5,6 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.hutool.core.lang.tree.TreeUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
 import com.z.module.system.domain.Menu;
 import com.z.module.system.repository.MenuRepository;
 import com.z.module.system.service.MenuService;
@@ -124,6 +122,8 @@ public class MenuResource {
             menuPage = menuRepository.findAll(pageable);
         }
 
+        //todo 菜单属性转换成 下划线 再给前端, mapstruct
+
         return ResponseData.ok(new HashMap<String, Object>(){{
             put("list", menuPage.getContent());
             put("total", Long.valueOf(menuPage.getTotalElements()).intValue());
@@ -164,7 +164,7 @@ public class MenuResource {
         //树形结构一些特殊配置
         TreeNodeConfig treeNodeConfig = new TreeNodeConfig();
         // 自定义属性名 都要默认值的
-        treeNodeConfig.setWeightKey("ordernum");
+        treeNodeConfig.setWeightKey("orderNum");
         treeNodeConfig.setDeep(3);
 
         //转换器
@@ -211,50 +211,77 @@ public class MenuResource {
      * @return: java.util.List<cn.hutool.core.lang.tree.Tree < java.lang.Long>>
      * @Description: 根据菜单动态产生路由, 菜单表自己加的菜单就不用手动加路由了
      * <p>
-     * 路由数据结构
-     * export default [
+     *   declare interface AppCustomRouteRecordRaw extends Omit<RouteRecordRaw, 'meta'> {
+     *     name: string
+     *     meta: RouteMeta
+     *     component: string
+     *     path: string
+     *     redirect: string
+     *     children?: AppCustomRouteRecordRaw[]
+     *   }
+     * 路由数据结构, 参考前端架子里的mock/role/index.ts  adminList
      * {
-     * path: '/example/uiexample',
-     * name: 'DynamicUiExample',
-     * component: UiExample,
-     * meta: { authorities: [Authority.USER] },
+     * path: '/example',
+     * component: '#',
+     * redirect: '/example/example-dialog',
+     * name: 'Example',
+     * meta: {
+     * title: 'router.example',
+     * icon: 'ep:management',
+     * alwaysShow: true
      * },
+     * children: [
      * {
-     * path: '/example/helloworld',
-     * name: 'HelloWorld',
-     * component: HelloWorld,
-     * meta: { authorities: [Authority.USER] },
+     * path: 'example-dialog',
+     * component: 'views/Example/Dialog/ExampleDialog',
+     * name: 'ExampleDialog',
+     * meta: {
+     * title: 'router.exampleDialog'
+     * }
      * },
-     * ]
+     * ...
      */
     @GetMapping("/menus/route")
-    public List<Map<String, Object>> getMenusRoute() {
+    public ResponseEntity<ResponseData<List<Tree<Long>>>> getMenusRoute() {
         log.debug("REST request to get Menus Tree");
 
         final List<Menu> allMenusOrderByOrdernumAsc = menuRepository.findAllByOrderByOrderNumAsc();
-        final List<Map<String, Object>> collect = allMenusOrderByOrdernumAsc
-                .stream()
-                //            保留url不是#的, 并且config里配置了组件的
-//                .filter(menu -> !"#".equals(menu.getUrl()) && menu.getConfig().contains("component"))
-                //            构建成router需要的形式
-                .map(menu -> {
-                    final Map<String, Object> map = new HashMap<>();
-                    map.put("path", menu.getUrl());
-                    final JSONObject jsonObject = JSONUtil.parseObj(menu.getConfig());
-                    final String component = jsonObject.getStr("component");
-                    map.put("name", component);
-                    // component字段是字符串，前端需要把这个字符串转化为前端定义的组件
-                    map.put("component", component);
 
+        //树形结构一些特殊配置
+        TreeNodeConfig treeNodeConfig = new TreeNodeConfig();
+        // 自定义属性名 都要默认值的
+        treeNodeConfig.setWeightKey("orderNum");
+        treeNodeConfig.setDeep(3);
+
+        //转换器
+        List<Tree<Long>> treeNodes = TreeUtil.build(
+                allMenusOrderByOrdernumAsc,
+                0L,
+                treeNodeConfig,
+                (menuObj, tree) -> {
+                    tree.setId(menuObj.getId());
+                    tree.setParentId(menuObj.getParentId());
+                    // 路由的name千万别重复,不然坑爹
+                    tree.setName(menuObj.getComponent().equals("#")? menuObj.getUrl() : menuObj.getComponent());
+                    // 属性扩展, 只显示界面展示需要的属性即可
+                    tree.putExtra("path", menuObj.getUrl());
+                    tree.putExtra("component", menuObj.getComponent());
                     final Map<String, Object> metaMap = new HashMap<>();
-                    metaMap.put("menuid", menu.getId());
-                    map.put("meta", metaMap);
+                    metaMap.put("menu_id", menuObj.getId());
+                    metaMap.put("title", menuObj.getName());
+                    metaMap.put("icon", menuObj.getIconCls());
+                    tree.putExtra("meta", metaMap);
+                }
+        );
 
-                    return map;
-                })
-                .collect(Collectors.toList());
+        //      children默认给空, 防止前端解析报错
+        for (Tree<Long> treeNode : treeNodes) {
+            if (Objects.isNull(treeNode.getChildren())) {
+                treeNode.setChildren(Collections.emptyList());
+            }
+        }
 
-        return collect;
+        return ResponseData.ok(treeNodes);
     }
 
     /**
