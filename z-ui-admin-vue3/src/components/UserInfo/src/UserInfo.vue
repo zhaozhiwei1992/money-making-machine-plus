@@ -7,6 +7,7 @@ import { useRouter } from 'vue-router'
 import { loginOutApi } from '@/api/login'
 import { useDesign } from '@/hooks/web/useDesign'
 import { useTagsViewStore } from '@/store/modules/tagsView'
+import { useAppStore } from '@/store/modules/app'
 
 const tagsViewStore = useTagsViewStore()
 
@@ -17,6 +18,9 @@ const prefixCls = getPrefixCls('user-info')
 const { t } = useI18n()
 
 const { wsCache } = useCache()
+
+const appStore = useAppStore()
+const userName = wsCache.get(appStore.getUserInfo).username
 
 const { replace } = useRouter()
 
@@ -38,8 +42,9 @@ const loginOut = () => {
     .catch(() => {})
 }
 
-const toDocument = () => {
-  window.open('https://element-plus-admin-doc.cn/')
+// 重置密码
+const toResetPassword = () => {
+  // 跳转密码重置页面
 }
 </script>
 
@@ -51,12 +56,14 @@ const toDocument = () => {
         alt=""
         class="w-[calc(var(--logo-height)-25px)] rounded-[50%]"
       />
-      <span class="<lg:hidden text-14px pl-[5px] text-[var(--top-header-text-color)]">Archer</span>
+      <span class="<lg:hidden text-14px pl-[5px] text-[var(--top-header-text-color)]">
+        {{ userName }}
+      </span>
     </div>
     <template #dropdown>
       <ElDropdownMenu>
         <ElDropdownItem>
-          <div @click="toDocument">{{ t('common.document') }}</div>
+          <div @click="toResetPassword">{{ t('common.resetPassword') }}</div>
         </ElDropdownItem>
         <ElDropdownItem divided>
           <div @click="loginOut">{{ t('common.loginOut') }}</div>

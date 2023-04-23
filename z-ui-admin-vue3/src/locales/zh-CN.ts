@@ -8,6 +8,7 @@ export default {
     required: '该项为必填项',
     loginOut: '退出系统',
     document: '项目文档',
+    resetPassword: '密码重置',
     reminder: '温馨提示',
     loginOutMessage: '是否退出本系统？',
     back: '返回',

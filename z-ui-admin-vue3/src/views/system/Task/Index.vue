@@ -95,21 +95,6 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'url',
-    label: 'Url',
-    search: {
-      show: true
-    },
-    form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
-    }
-  },
-  {
     field: 'action',
     width: '260px',
     label: t('tableDemo.action'),

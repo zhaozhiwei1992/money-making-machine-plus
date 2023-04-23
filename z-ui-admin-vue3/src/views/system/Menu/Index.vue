@@ -46,6 +46,9 @@ const crudSchemas = reactive<CrudSchema[]>([
   {
     field: 'name',
     label: '菜单名称',
+    search: {
+      show: true
+    },
     form: {
       colProps: {
         span: 24
@@ -58,9 +61,6 @@ const crudSchemas = reactive<CrudSchema[]>([
   {
     field: 'url',
     label: 'Url',
-    search: {
-      show: true
-    },
     form: {
       colProps: {
         span: 24
@@ -73,9 +73,6 @@ const crudSchemas = reactive<CrudSchema[]>([
   {
     field: 'component',
     label: '组件路径',
-    search: {
-      show: true
-    },
     form: {
       colProps: {
         span: 24

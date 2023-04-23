@@ -18,16 +18,15 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author zhaozhiwei
@@ -111,12 +110,20 @@ public class LoginResource {
         }
     }
 
+    @Operation(description = "退出")
+    @GetMapping("loginOut")
     public ResponseEntity<ResponseData<Object>> loginOut(){
         // 销毁token, 防止下次使用
         final Cache tokenBlackCache = cacheManager.getCache("tokenBlackCache");
-        List<String> cacheBlockList = (List<String>) tokenBlackCache.get("tokenBlock").get();
+        List<String> cacheBlockList;
+        if(Objects.isNull(tokenBlackCache.get("tokenBlock"))){
+            cacheBlockList = new ArrayList<>();
+        }else{
+            cacheBlockList = (List<String>) tokenBlackCache.get("tokenBlock").get();
+        }
         cacheBlockList.add(SecurityUtils.getTokenId());
         tokenBlackCache.put("tokenBlack", cacheBlockList);
-        return ResponseData.ok("success");
+
+        return ResponseData.ok();
     }
 }

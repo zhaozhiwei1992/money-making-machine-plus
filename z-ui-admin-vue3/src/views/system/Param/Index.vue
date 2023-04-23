@@ -46,6 +46,9 @@ const crudSchemas = reactive<CrudSchema[]>([
   {
     field: 'name',
     label: '参数名称',
+    search: {
+      show: true
+    },
     form: {
       colProps: {
         span: 24
@@ -73,9 +76,6 @@ const crudSchemas = reactive<CrudSchema[]>([
   {
     field: 'value',
     label: '参数值',
-    search: {
-      show: true
-    },
     form: {
       colProps: {
         span: 24
