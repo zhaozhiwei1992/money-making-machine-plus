@@ -4,7 +4,7 @@
 
 前端使用vue-element-plus-admin, 后端springboot2.7.6, 使用jpa进行持久化。
 
-项目参考了ruoyi项目的目录接口, 分模块开发。
+项目参考了jhipster的优秀代码设计, ruoyi项目的目录接口, 分模块开发。
 
 没有服务器，没有演示界面 :)
 
@@ -105,8 +105,6 @@
 6. 访问http://localhost:4000, 登录查看我们的成果, 用户/密码:admin/admin
 
 # 部署
-
-## 要将应用程序打包为生成 JAR，请输入：
 
 # 版本控制
 
