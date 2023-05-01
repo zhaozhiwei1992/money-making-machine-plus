@@ -58,11 +58,11 @@ export default {
   methods: {
     signIn: function(){
       // 通过表单用户密码登录
-      const res = login.loginApi(this.userInfo);
+      const resData = login.loginApi(this.userInfo);
       // 返回token 写入缓存
-      uni.setStorageSync("token", res.data.token);
-      // 跳转首页
-      uni.navigateTo({ url: '/pages/index/index' })
+      uni.setStorageSync("token", resData.token);
+      // 跳转首页, 首页是tabBar需要用switchTab
+      uni.switchTab({ url: '/pages/index/index' });
     }
   },
   onReady() {

@@ -40,6 +40,7 @@ public class SpringSecurityAutoConfiguration extends WebSecurityConfigurerAdapte
 //            url 白名单
             "/login",
             "/api/login",
+            "/api/mobile/login/**",
             "/actuator/**",
 //           验证码
             "/captcha/numCode",

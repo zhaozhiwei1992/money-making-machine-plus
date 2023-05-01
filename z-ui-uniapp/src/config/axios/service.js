@@ -2,14 +2,14 @@ import axios from 'axios';
 import axios_config from './config'
 import qs from 'qs';
 
-const result_code = axios_config.config.result_code, base_url = axios_config.config.base_url;
+const result_code = axios_config.result_code, base_url = axios_config.base_url.base;
 
 // 创建axios实例
 const service = axios.create({
     // 后端地址, http://ip:port/api/xx, 就不用每个都写/api了
-    baseURL: axios_config.config.server_url + base_url,
+    baseURL: axios_config.server_url + base_url,
     // 请求超时时间
-    timeout: axios_config.config.request_timeout 
+    timeout: axios_config.request_timeout 
 });
 
 // request拦截器

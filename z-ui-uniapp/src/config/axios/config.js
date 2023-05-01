@@ -1,5 +1,5 @@
 const config = {
-    server_url: 'http://localhost:8080',
+    server_url: 'http://localhost:8090',
     /**
      * api请求基础路径
      */

@@ -22,7 +22,7 @@ var assign =
 
 import axios_service from './service';
 import axios_config from './config';
-var default_headers = axios_config.config.default_headers;
+var default_headers = axios_config.default_headers;
 var request = function (option) {
   var url = option.url,
     method = option.method,
@@ -30,7 +30,7 @@ var request = function (option) {
     data = option.data,
     headersType = option.headersType,
     responseType = option.responseType;
-  return (0, axios_service.service)({
+  return (0, axios_service)({
     url: url,
     method: method,
     params: params,

@@ -1,31 +1,33 @@
 <template>
   <view>
-    <span>系统管理</span>
-    <u-grid :border="false" col="4" @click="sysManageClick">
-      <u-grid-item v-for="(listItem, listIndex) in list" :key="listIndex">
-        <u-icon
-          :customStyle="{ paddingTop: 20 + 'rpx' }"
-          :name="listItem.name"
-          :size="22"
-        ></u-icon>
-        <text class="grid-text">{{ listItem.title }}</text>
-      </u-grid-item>
-    </u-grid>
-    <u-toast ref="uToast" />
-  </view>
-  <view>
-    <span>数据报告</span>
-    <u-grid :border="false" col="4" @click="reportClick">
-      <u-grid-item v-for="(listItem, listIndex) in list" :key="listIndex">
-        <u-icon
-          :customStyle="{ paddingTop: 20 + 'rpx' }"
-          :name="listItem.name"
-          :size="22"
-        ></u-icon>
-        <text class="grid-text">{{ listItem.title }}</text>
-      </u-grid-item>
-    </u-grid>
-    <u-toast ref="uToast" />
+    <view>
+      <span>系统管理</span>
+      <u-grid :border="false" col="4" @click="sysManageClick">
+        <u-grid-item v-for="(listItem, listIndex) in list" :key="listIndex">
+          <u-icon
+            :customStyle="{ paddingTop: 20 + 'rpx' }"
+            :name="listItem.name"
+            :size="22"
+          ></u-icon>
+          <text class="grid-text">{{ listItem.title }}</text>
+        </u-grid-item>
+      </u-grid>
+      <u-toast ref="uToast" />
+    </view>
+    <view>
+      <span>数据报告</span>
+      <u-grid :border="false" col="4" @click="reportClick">
+        <u-grid-item v-for="(listItem, listIndex) in list" :key="listIndex">
+          <u-icon
+            :customStyle="{ paddingTop: 20 + 'rpx' }"
+            :name="listItem.name"
+            :size="22"
+          ></u-icon>
+          <text class="grid-text">{{ listItem.title }}</text>
+        </u-grid-item>
+      </u-grid>
+      <u-toast ref="uToast" />
+    </view>
   </view>
 </template>
 
@@ -36,27 +38,19 @@ export default {
       list: [
         {
           name: 'photo',
-          title: '图片',
+          title: '系统参数',
         },
         {
           name: 'lock',
-          title: '锁头',
+          title: '定时任务',
         },
         {
           name: 'star',
-          title: '星星',
+          title: '角色管理',
         },
         {
           name: 'hourglass',
-          title: '沙漏',
-        },
-        {
-          name: 'home',
-          title: '首页',
-        },
-        {
-          name: 'star',
-          title: '音量',
+          title: '用户管理',
         },
       ],
     };
