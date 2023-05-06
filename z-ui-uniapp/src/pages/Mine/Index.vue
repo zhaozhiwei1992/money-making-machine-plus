@@ -10,8 +10,9 @@
     </u-row>
   </view>
 	<view>
-		<u-picker :show="show" :columns="columns"></u-picker>
-		<u-button @click="show = true">打开</u-button>
+    <u-section title="个人信息" sub-title="查看更多"></u-section>
+    <u-section title="账号设置" sub-title="查看更多"></u-section>
+    <u-section title="消息通知" sub-title="查看更多"></u-section>
 	</view>
 </template>
 
@@ -21,9 +22,6 @@
 		data() {
 			return {
 				show: false,
-                columns: [
-                    ['中国', '美国', '日本']
-                ],
 			}
 		}
 	}

@@ -1,49 +1,78 @@
 <template>
-	<view class="content">
-		<image class="logo" src="/static/logo.png"></image>
-		<view>
-			<text class="title">{{title}}</text>
-		</view>
-	</view>
+  <view>
+    <view>
+      <span>快速导航</span>
+      <u-grid :border="false" col="4" @click="sysManageClick">
+        <u-grid-item v-for="(listItem, listIndex) in list" :key="listIndex">
+          <u-icon
+            :customStyle="{ paddingTop: 20 + 'rpx' }"
+            :name="listItem.name"
+            :size="22"
+          ></u-icon>
+          <text class="grid-text">{{ listItem.title }}</text>
+        </u-grid-item>
+      </u-grid>
+      <u-toast ref="uToast" />
+    </view>
+    <view>
+      <span>通知公告</span>
+      <u-grid :border="false" col="4" @click="reportClick">
+        <u-grid-item v-for="(listItem, listIndex) in list" :key="listIndex">
+          <u-icon
+            :customStyle="{ paddingTop: 20 + 'rpx' }"
+            :name="listItem.name"
+            :size="22"
+          ></u-icon>
+          <text class="grid-text">{{ listItem.title }}</text>
+        </u-grid-item>
+      </u-grid>
+      <u-toast ref="uToast" />
+    </view>
+  </view>
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				title: 'Hello'
-			}
-		},
-		onLoad() {
-
-		},
-		methods: {
-
-		}
-	}
+export default {
+  data() {
+    return {
+      list: [
+        {
+          name: 'photo',
+          title: '系统参数',
+        },
+        {
+          name: 'lock',
+          title: '定时任务',
+        },
+        {
+          name: 'star',
+          title: '角色管理',
+        },
+        {
+          name: 'hourglass',
+          title: '用户管理',
+        },
+      ],
+    };
+  },
+  methods: {
+    sysManageClick(name) {
+      this.$refs.uToast.success(`点击了第${name}个`);
+    },
+    reportClick(name) {
+      this.$refs.uToast.success(`点击了第${name}个`);
+    },
+  },
+};
 </script>
 
-<style>
-	.content {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-	}
-
-	.logo {
-		height: 200rpx;
-		width: 200rpx;
-		margin: 200rpx auto 50rpx auto;
-	}
-
-	.text-area {
-		display: flex;
-		justify-content: center;
-	}
-
-	.title {
-		font-size: 36rpx;
-		color: #8f8f94;
-	}
+<style lang="scss">
+.grid-text {
+  font-size: 14px;
+  color: #909399;
+  padding: 10rpx 0 20rpx 0rpx;
+  /* #ifndef APP-PLUS */
+  box-sizing: border-box;
+  /* #endif */
+}
 </style>

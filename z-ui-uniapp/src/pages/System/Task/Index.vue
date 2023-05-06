@@ -2,27 +2,21 @@
 	<view class="content">
 		<view>
 			<!-- 按钮 -->
-			<u-button type="primary">新增</u-button>
-			<u-button type="primary">删除</u-button>
+			<u-button type="primary">启用</u-button>
+			<u-button type="primary">停用</u-button>
 		</view>
 		<view>
 			<text class="title">{{ title }}</text>
 			<u-table>
 				<u-tr>
-					<u-th>用户名</u-th>
-					<u-th>登录名</u-th>
-					<u-th>区划</u-th>
-					<u-th>启用状态</u-th>
+					<u-th>定时任务名称</u-th>
+					<u-th>状态</u-th>
 				</u-tr>
 				<u-tr>
 					<u-td>11</u-td>
 					<u-td>11</u-td>
-					<u-td>11</u-td>
-					<u-td>11</u-td>
 				</u-tr>
 				<u-tr>
-					<u-td>11</u-td>
-					<u-td>11</u-td>
 					<u-td>11</u-td>
 					<u-td>11</u-td>
 				</u-tr>

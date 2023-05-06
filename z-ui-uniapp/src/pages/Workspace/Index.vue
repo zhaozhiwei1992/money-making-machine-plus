@@ -1,7 +1,7 @@
 <template>
   <view>
     <view>
-      <span>系统管理</span>
+      <span>待办任务列表</span>
       <u-grid :border="false" col="4" @click="sysManageClick">
         <u-grid-item v-for="(listItem, listIndex) in list" :key="listIndex">
           <u-icon
@@ -15,7 +15,22 @@
       <u-toast ref="uToast" />
     </view>
     <view>
-      <span>数据报告</span>
+      <span>已完成任务列表</span>
+      <u-grid :border="false" col="4" @click="reportClick">
+        <u-grid-item v-for="(listItem, listIndex) in list" :key="listIndex">
+          <u-icon
+            :customStyle="{ paddingTop: 20 + 'rpx' }"
+            :name="listItem.name"
+            :size="22"
+          ></u-icon>
+          <text class="grid-text">{{ listItem.title }}</text>
+        </u-grid-item>
+      </u-grid>
+      <u-toast ref="uToast" />
+    </view>
+
+    <view>
+      <span>统计报表</span>
       <u-grid :border="false" col="4" @click="reportClick">
         <u-grid-item v-for="(listItem, listIndex) in list" :key="listIndex">
           <u-icon
