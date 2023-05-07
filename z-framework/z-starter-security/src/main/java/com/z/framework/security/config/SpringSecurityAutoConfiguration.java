@@ -44,6 +44,7 @@ public class SpringSecurityAutoConfiguration extends WebSecurityConfigurerAdapte
             "/actuator/**",
 //           验证码
             "/captcha/numCode",
+            "/api/captcha/numCode",
             // 临时测试
 //            "/",
 //            "/index",

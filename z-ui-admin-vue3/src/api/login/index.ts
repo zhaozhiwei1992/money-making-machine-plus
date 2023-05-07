@@ -39,3 +39,10 @@ export const getMenuRouteListApi = (
 ): Promise<IResponse<AppCustomRouteRecordRaw[]>> => {
   return request.get({ url: '/api/menus/route', params })
 }
+
+// 获取验证码
+export const getImgCodeApi = (): Promise<any> => {
+  // const options = { responseType: 'arraybuffer' }
+  const options = { responseType: 'text' }
+  return request.get({ url: '/api/captcha/numCode', options })
+}

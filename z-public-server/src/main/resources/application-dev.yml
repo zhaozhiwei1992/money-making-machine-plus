@@ -116,9 +116,6 @@ spring:
   thymeleaf:
     cache: false
 
-server:
-  port: 8090
-
 # ===================================================================
 # Ifmis specific properties
 #
@@ -131,6 +128,7 @@ z:
     # Allow Ionic for JHipster by default (* no longer allowed in Spring Boot 2.4+)
     # 注意: 前端必须是localhost访问, 如果用127.0.0.1还是会拦截
     # 4000是admin-vue3, 8080: z-ui-app
+    # 配置origin地址, 即前端地址即可
     allowed-origins: 'http://localhost:8090,https://localhost:8090,http://localhost:4000,https://localhost:4000,http://localhost:8080,https://localhost:8080'
     allowed-methods: '*'
     allowed-headers: '*'

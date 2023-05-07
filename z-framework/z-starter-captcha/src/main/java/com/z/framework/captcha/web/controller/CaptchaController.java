@@ -23,7 +23,6 @@ import java.io.IOException;
  * @version V1.0
  */
 @Controller
-@RequestMapping("captcha")
 @Slf4j
 public class CaptchaController {
 
@@ -42,7 +41,7 @@ public class CaptchaController {
      * @return: org.springframework.web.servlet.ModelAndView
      * @Description: 数字验证码
      */
-    @RequestMapping("numCode")
+    @RequestMapping("/captcha/numCode")
     public void getCaptchaCode(HttpServletRequest request, HttpServletResponse response) throws IOException{
         HttpSession session = request.getSession();
 

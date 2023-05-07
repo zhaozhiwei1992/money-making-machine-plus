@@ -20,6 +20,9 @@ const { result_code, base_url } = config
 
 export const PATH_URL = base_url[import.meta.env.VITE_API_BASEPATH]
 
+//带着cookie, 验证码放在了session里, 不加这个每次session都是新的
+axios.defaults.withCredentials = true
+
 // 创建axios实例
 const service: AxiosInstance = axios.create({
   baseURL: PATH_URL, // api 的 base_url
@@ -65,8 +68,12 @@ service.interceptors.request.use(
 // response 拦截器
 service.interceptors.response.use(
   (response: AxiosResponse<any>) => {
-    if (response.config.responseType === 'blob') {
-      // 如果是文件流，直接过
+    if (
+      response.config.responseType === 'blob' ||
+      response.config.responseType === 'arraybuffer' ||
+      response.headers.responsetype === 'text'
+    ) {
+      // 如果是文件流，直接返回response
       return response
     } else if (response.data.code === result_code) {
       return response.data

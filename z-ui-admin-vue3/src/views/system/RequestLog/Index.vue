@@ -82,10 +82,6 @@ const crudSchemas = reactive<CrudSchema[]>([
 
 const { allSchemas } = useCrudSchemas(crudSchemas)
 
-const dialogVisible = ref(false)
-
-const dialogTitle = ref('')
-
 const delLoading = ref(false)
 
 const delData = async (row: TableData | null, multiple: boolean) => {
@@ -99,15 +95,6 @@ const delData = async (row: TableData | null, multiple: boolean) => {
   ).finally(() => {
     delLoading.value = false
   })
-}
-
-const actionType = ref('')
-
-const action = (row: TableData, type: string) => {
-  dialogTitle.value = t(type === 'edit' ? 'exampleDemo.edit' : 'exampleDemo.detail')
-  actionType.value = type
-  tableObject.currentRow = row
-  dialogVisible.value = true
 }
 </script>
 

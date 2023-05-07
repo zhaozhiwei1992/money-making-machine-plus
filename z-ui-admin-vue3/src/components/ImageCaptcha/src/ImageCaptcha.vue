@@ -1,9 +1,10 @@
 <script name="ImageCaptcha" setup lang="ts">
-import { ref, unref, watch } from 'vue'
+import { ref, unref, watch, onMounted } from 'vue'
 import { ElInput } from 'element-plus'
 import { propTypes } from '@/utils/propTypes'
 import { useConfigGlobal } from '@/hooks/web/useConfigGlobal'
 import { useDesign } from '@/hooks/web/useDesign'
+import { getImgCodeApi } from '@/api/login'
 
 const { getPrefixCls } = useDesign()
 
@@ -41,13 +42,34 @@ watch(
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL
 
-// 图形验证码地址
-const codeUrl = SERVER_URL + '/captcha/numCode'
+// 图形验证码地址, 异步加载时需要将onMounted打开
+let captchaImageUrl = SERVER_URL + '/captcha/numCode'
 
 // 获取图形验证码, 二进制
 const genCode = () => {
-  return 'xx'
+  getImgCodeApi()
+    .then((response) => {
+      console.log('验证码', response.data)
+      // 将获取到的验证码图片数据转换成Base64字符串
+      // const base64 = btoa(
+      //   new Uint8Array(response.data).reduce((data, byte) => data + String.fromCharCode(byte), '')
+      // )
+      // 在前端显示验证码图片
+      // const blob = new Blob([response.data], { type: 'image/jpeg' })
+      // captchaImageUrl = URL.createObjectURL(blob)
+      // base64方式, 后端返回base64格式图片字符串
+      captchaImageUrl = 'data:image/png;base64,' + response.data
+    })
+    .catch((error) => {
+      console.error('获取验证码失败', error)
+    })
 }
+
+// 通过axios异步加载时候使用
+onMounted(() => {
+  // 获取验证码
+  // genCode()
+})
 </script>
 
 <template>
@@ -55,7 +77,9 @@ const genCode = () => {
     <ElInput v-bind="$attrs" v-model="valueRef" :type="textType" :class="`${prefixCls}__input`" />
     <!-- 图形验证码图片 -->
     <div :class="`${prefixCls}__image`">
-      <img :src="codeUrl" @click="genCode" />
+      <img :src="captchaImageUrl" @click="genCode" />
+      <!-- 下述方式, 每次刷新页面就不显示, 随便把button标签放开又可以显示, 刷新又没了 -->
+      <!-- <img :src="captchaImageUrl" @click="genCode" /> -->
     </div>
   </div>
 </template>
