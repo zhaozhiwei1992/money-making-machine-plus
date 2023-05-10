@@ -1,6 +1,9 @@
 {
+  // 符合components/组件名称/组件名称.vue目录结构, 就可以不用引用、注册，直接在页面中使用
 	"easycom": {
-		"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
+    // uview-ui
+		"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue",
+		"^c-(.*)": "@/components/c-$1/c-$1.vue"
 	},
   "pages": [
     {

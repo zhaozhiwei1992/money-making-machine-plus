@@ -9,10 +9,10 @@
 			<text class="title">{{ title }}</text>
 			<u-table>
 				<u-tr>
-					<u-th>用户名</u-th>
-					<u-th>登录名</u-th>
-					<u-th>区划</u-th>
-					<u-th>启用状态</u-th>
+					<u-td>用户名</u-td>
+					<u-td>登录名</u-td>
+					<u-td>区划</u-td>
+					<u-td>启用状态</u-td>
 				</u-tr>
 				<u-tr>
 					<u-td>11</u-td>

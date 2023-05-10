@@ -49,14 +49,14 @@ export default {
       // this.$refs.uToast.success(`点击了第${name}个`);
       // 根据选点击的按钮跳转页面
       // 页面必须是在page.json中注册的
-      if(0 === name){
-        uni.navigateTo({url:'/pages/System/Param/Index'});
-      }else if(1 === name){
-        uni.navigateTo({url:'/pages/System/Task/Index'});
-      }else if(2 === name){
-        uni.navigateTo({url:'/pages/System/Role/Index'});
-      }else if(3 === name){
-        uni.navigateTo({url:'/pages/System/User/Index'});
+      if (0 === name) {
+        uni.navigateTo({ url: '/pages/System/Param/Index' });
+      } else if (1 === name) {
+        uni.navigateTo({ url: '/pages/System/Task/Index' });
+      } else if (2 === name) {
+        uni.navigateTo({ url: '/pages/System/Role/Index' });
+      } else if (3 === name) {
+        uni.navigateTo({ url: '/pages/System/User/Index' });
       }
     },
     reportClick(name) {
