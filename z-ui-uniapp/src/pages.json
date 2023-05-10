@@ -4,6 +4,24 @@
 	},
   "pages": [
     {
+      "path": "pages/System/User/Index",
+      "style": {
+        "navigationBarTitleText": "用户管理"
+      }
+    },
+    {
+      "path": "pages/System/Param/Index",
+      "style": {
+        "navigationBarTitleText": "系统参数"
+      }
+    },
+    {
+      "path": "pages/System/Task/Index",
+      "style": {
+        "navigationBarTitleText": "定时任务"
+      }
+    },
+    {
       "path": "pages/Login/Index",
       "style": {
         "navigationBarTitleText": "登录"
