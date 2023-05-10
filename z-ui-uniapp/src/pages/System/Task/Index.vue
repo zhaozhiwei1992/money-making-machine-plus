@@ -7,33 +7,40 @@
 		</view>
 		<view>
 			<text class="title">{{ title }}</text>
-			<u-table>
-				<u-tr>
-					<u-th>定时任务名称</u-th>
-					<u-th>状态</u-th>
-				</u-tr>
-				<u-tr>
-					<u-td>11</u-td>
-					<u-td>11</u-td>
-				</u-tr>
-				<u-tr>
-					<u-td>11</u-td>
-					<u-td>11</u-td>
-				</u-tr>
+			<u-table :data="tableData" :column-names="['ID', '任务名称', '任务状态']">
+				<template v-slot:default="{ item }">
+					<u-table-col>{{ item.id }}</u-table-col>
+					<u-table-col>{{ item.name }}</u-table-col>
+					<u-table-col>{{ item.status }}</u-table-col>
+				</template>
 			</u-table>
 		</view>
 	</view>
 </template>
 
 <script>
+import task from '@/api/system/task' 
 export default {
 	data() {
 		return {
-			title: '用户管理'
+			title: '定时任务管理',
+			tableData: []
 		}
 	},
 	onLoad() {
 		// 页面跳转进来后可以获取url参数
+		// const responseData = [
+		// 	{ id: 1, name: 'Item 1', status: 10 },
+		// 	{ id: 2, name: 'Item 2', status: 20 },
+		// 	{ id: 3, name: 'Item 3', status: 30 }
+		// ];
+
+		// 获取定时任务数据
+		const res = task.getTableListApi({pageIndex: 1, pageSize: 10});
+		const responseData = res.data;
+
+		// 将获取到的数据赋值给表格数据
+		this.tableData = responseData;
 
 	},
 	methods: {
