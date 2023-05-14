@@ -55,6 +55,7 @@
     <guice.version>5.1.0</guice.version>
     <transmittable-thread-local.version>2.14.2</transmittable-thread-local.version>
     <commons-net.version>3.8.0</commons-net.version>
+    <commons.io.version>2.5</commons.io.version>
     <jsch.version>0.1.55</jsch.version>
     <tika-core.version>2.7.0</tika-core.version>
     <netty-all.version>4.1.90.Final</netty-all.version>
@@ -313,6 +314,12 @@
         <groupId>commons-net</groupId>
         <artifactId>commons-net</artifactId> <!-- 解决 ftp 连接 -->
         <version>${commons-net.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>${commons.io.version}</version>
       </dependency>
 
       <dependency>

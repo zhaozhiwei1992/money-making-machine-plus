@@ -181,6 +181,67 @@ z:
   module:
     system:
       test: true
+    generator:
+      # 数据库类型
+      jdbcType: jpa
+      # ui类型: vue+elementui
+      uiType: vue
+      module: system
+      basePackage: com.z.module.${z.module.generator.module}
+      author: zhaozhiwei
+      email: zhaozhiweishanxi@gmail.com
+      tablePrefix: t_
+      #    数据库字段到java映射
+      mapping:
+        BINARY_DOUBLE: Double
+        BINARY_FLOAT: Float
+        BINARY_INTEGER: Integer
+        BLOB: String
+        CHAR: String
+        CLOB: String
+        DATE: Date
+        DATETIME: Date
+        DECIMAL: BigDecimal
+        DOUBLE: Double
+        FLOAT: Float
+        INT: Integer
+        INT16: Short
+        INT32: Integer
+        INT64: Long
+        INTEGER: Integer
+        LONG: String
+        NUMBER: Integer
+        NVARCHAR: String
+        NVARCHAR2: String
+        TIMESTAMP: Date
+        TIMESTAMP(6): Date
+        VARCHAR: String
+        VARCHAR2: String
+        bigint: Long
+        bit: Boolean
+        bool: Boolean
+        char: String
+        date: Date
+        datetime: Date
+        decimal: BigDecimal
+        double: Double
+        float: Float
+        int: Integer
+        int2: Integer
+        int4: Integer
+        int8: Long
+        integer: Integer
+        longtext: String
+        mediumint: Integer
+        mediumtext: String
+        numeric: BigDecimal
+        smallint: Integer
+        text: String
+        timestamp: Date
+        tinyint: Integer
+        tinytext: String
+        varchar: String
+
 #  集成测试参数配置
   itest:
     serverIpPort: http://127.0.0.1:8090

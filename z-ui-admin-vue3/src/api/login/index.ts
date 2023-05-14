@@ -8,6 +8,9 @@ interface RoleParams {
 // 请求时得看下是否自动增加了/api
 export const loginApi = (data: UserType): Promise<IResponse<UserType>> => {
   return request.post({ url: '/api/login', data })
+  // 等价
+  // const options = { data: data }
+  // return request.post({ url: '/api/login', ...options })
 }
 
 export const loginOutApi = (): Promise<IResponse> => {
@@ -44,5 +47,5 @@ export const getMenuRouteListApi = (
 export const getImgCodeApi = (): Promise<any> => {
   // const options = { responseType: 'arraybuffer' }
   const options = { responseType: 'text' }
-  return request.get({ url: '/api/captcha/numCode', options })
+  return request.get({ url: '/api/captcha/numCode', ...options })
 }

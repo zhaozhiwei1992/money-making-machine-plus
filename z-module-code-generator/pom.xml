@@ -5,19 +5,46 @@
   <parent>
     <groupId>com.example</groupId>
     <artifactId>money-making-machine-plus</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>${revision}</version>
   </parent>
-  <groupId>com.example</groupId>
   <artifactId>z-module-code-generator</artifactId>
-  <version>1.0-SNAPSHOT</version>
   <name>z-module-code-generator</name>
   <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>commons-lang</groupId>-->
+<!--      <artifactId>commons-lang</artifactId>-->
+<!--    </dependency>-->
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>commons-configuration</groupId>-->
+<!--      <artifactId>commons-configuration</artifactId>-->
+<!--    </dependency>-->
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>fastjson</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.velocity</groupId>
+      <artifactId>velocity-engine-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>cn.hutool</groupId>
+      <artifactId>hutool-all</artifactId>
     </dependency>
   </dependencies>
 </project>

@@ -1,0 +1,18 @@
+package ${basePackage}.repository;
+
+import ${basePackage}.domain.${className};
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+/**
+ * ${comments}
+ * 
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+@Repository
+public interface ${className}Repository extends JpaRepository<${className}, Long> {
+    void deleteAllByIdIn(List<Long> idList);
+}
+

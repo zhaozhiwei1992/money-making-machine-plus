@@ -58,6 +58,10 @@ const crudSchemas = reactive<CrudSchema[]>([
   {
     field: 'client_ip',
     label: '客户端ip'
+  },
+  {
+    field: 'created_date',
+    label: '登录日期'
   }
 ])
 

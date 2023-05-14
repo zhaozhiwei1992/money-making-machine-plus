@@ -22,6 +22,12 @@
       <version>${revision}</version>
     </dependency>
 
+    <dependency>
+      <groupId>com.example</groupId>
+      <artifactId>z-module-code-generator</artifactId>
+      <version>${revision}</version>
+    </dependency>
+
     <!-- 工作流 -->
     <dependency>
       <groupId>com.example</groupId>

@@ -85,7 +85,7 @@ public class MobileLoginResource {
                 authedRespVO.setToken(token);
 
                 // 登录成功记录日志
-                loginLogService.save(request);
+                loginLogService.save(loginVM, request);
                 return ResponseData.ok(authedRespVO);
             }else{
                 log.error(String.format("登录失败, 用户: %s, 密码: %s, 数据库密码: %s", username, password, dbPassWord));
@@ -135,7 +135,7 @@ public class MobileLoginResource {
                 authedRespVO.setToken(token);
 
                 // 登录成功记录日志
-                loginLogService.save(request);
+                loginLogService.save(loginVM, request);
                 return ResponseData.ok(authedRespVO);
             }else{
                 log.error(String.format("登录失败, 用户: %s, 密码: %s, 数据库密码: %s", username, password, dbPassWord));
