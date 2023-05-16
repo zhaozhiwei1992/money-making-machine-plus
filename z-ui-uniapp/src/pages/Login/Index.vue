@@ -1,68 +1,85 @@
 <template>
-  <view>
-    <!-- 注意，如果需要兼容微信小程序，最好通过setRules方法设置rules规则 -->
-    <u-form labelPosition="left" :rules="rules" ref="loginForm">
-      <u-form-item label="用户名" prop="userInfo.username" borderBottom>
-        <u-input v-model="userInfo.username" border="none" placeholder="用户名"></u-input>
-      </u-form-item>
-      <u-form-item label="密码" prop="userInfo.password" borderBottom>
-        <u-input v-model="userInfo.password" border="none" placeholder="密码"></u-input>
-      </u-form-item>
-      <view>
-        <u-row>
-          <u-button type="primary" text="登录" @click="signIn"></u-button>
-        </u-row>
-        <u-row>
-          <u-text mode="link" text="找回密码" href="https://www.uviewui.com" ></u-text> | <u-text mode="link" text="注册账号" href="https://www.uviewui.com" ></u-text>
-        </u-row>
+  <view class="uni-container">
+    <uni-section title="" type="line">
+      <view class="uni-padding-wrap uni-common-mt">
+        <uni-segmented-control :current="current" :values="items" @clickItem="onClickItem" />
       </view>
-      <view>
-        <!-- 其它方式 -->
-        <u-row>
-          <span>其它方式登录</span>
-        </u-row>
-        <u-row>
-          <!-- 这里搞两图片, img -->
-          qq | 微信
-        </u-row>
+      <view class="content">
+        <view v-if="current === 0">
+          <uni-card>
+            <uni-forms :modelValue="userInfo" label-position="top" :rules="rules" ref="loginForm">
+              <uni-forms-item label="用户名" name="username">
+                <uni-easyinput type="text" v-model="userInfo.username" placeholder="请输入姓名" />
+              </uni-forms-item>
+              <uni-forms-item label="密码" name="password">
+                <uni-easyinput type="text" v-model="userInfo.password" placeholder="请输入姓名" />
+              </uni-forms-item>
+            </uni-forms>
+            <button @click="signIn">登录</button>
+          </uni-card>
+        </view>
+        <view v-if="current === 1">
+          <button @click="mobileSignIn">手机号一键登录</button>
+        </view>
       </view>
-    </u-form>
+    </uni-section>
   </view>
+  <!-- 注意，如果需要兼容微信小程序，最好通过setRules方法设置rules规则 -->
 </template>
 
 <script>
-import login from '@/api/login';
+import { loginApi } from '@/api/login';
 export default {
   data() {
     return {
+      items: ['用户密码登录', '手机号登录'],
+      current: 0,
       userInfo: {
         username: '',
         password: '',
       },
       rules: {
-        'userInfo.username': {
-          type: 'string',
-          required: true,
-          message: '请填写用户名',
-          trigger: ['blur', 'change'],
+        // 对username字段进行必填验证
+        username: {
+          // username 字段的校验规则
+          rules: [
+            {
+              required: true,
+              errorMessage: '请填写用户名',
+            }
+          ],
+          validateTrigger: 'submit'
         },
-        'userInfo.password': {
-          type: 'string',
-          required: true,
-          message: '请输入密码',
-          trigger: ['blur', 'change'],
-        },
+        password: {
+          rules: [
+            {
+              required: true,
+              errorMessage: '请填写密码',
+            }
+          ],
+          validateTrigger: 'submit'
+        }
       }
     };
   },
   methods: {
-    signIn: function(){
+    mobileSignIn: function () {
+      // 通过微信接口获取手机号
+      // 登录
+    },
+    signIn: function () {
       // 通过表单用户密码登录
-      const resData = login.loginApi(this.userInfo);
-      // 返回token 写入缓存
-      uni.setStorageSync("token", resData.token);
-      // 跳转首页, 首页是tabBar需要用switchTab
-      uni.switchTab({ url: '/pages/index/index' });
+      loginApi(this.userInfo).then(res => {
+        // 返回token 写入缓存
+        uni.setStorageSync("token", res.data.token);
+        // 跳转首页, 首页是tabBar需要用switchTab
+        uni.switchTab({ url: '/pages/index/index' });
+      });
+    },
+    onClickItem(e) {
+      if (this.current != e.currentIndex) {
+        this.current = e.currentIndex;
+      }
     }
   },
   onReady() {

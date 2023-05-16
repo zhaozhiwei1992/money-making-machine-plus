@@ -1,96 +1,90 @@
 <template>
-  <view class="content">
-    <view>
-      <!-- 按钮 -->
-      <u-row gutter="16">
-        <u-col span="4">
-      		<u-button type="primary" size="mini">启用</u-button>
-        </u-col>
-        <u-col span="4">
-      		<u-button type="primary" size="mini">停用</u-button>
-        </u-col>
-      </u-row>
-    </view>
-    <view>
-      <text class="title">{{ title }}</text>
-      <!-- <u-table :data="tableData" :column-names="['ID', '任务名称', '任务状态']">
-				<template v-slot:default="{ item }">
-					<u-table-col>{{ item.id }}</u-table-col>
-					<u-table-col>{{ item.name }}</u-table-col>
-					<u-table-col>{{ item.status }}</u-table-col>
-				</template>
-			</u-table> -->
-			<!-- 这sd uview-ui table有问题,不显示 -->
-      <u-table>
-        <u-tr>
-          <u-td>学校</u-td>
-          <u-td>班级</u-td>
-          <u-td>年龄</u-td>
-        </u-tr>
-        <u-tr>
-          <u-td>浙江大学</u-td>
-          <u-td>二年级</u-td>
-          <u-td>22</u-td>
-        </u-tr>
-        <u-tr>
-          <u-td>清华大学</u-td>
-          <u-td>05班</u-td>
-          <u-td>20</u-td>
-        </u-tr>
-      </u-table>
-    </view>
-  </view>
+	<view class="uni-container">
+		<!-- uview-ui 这table都不能用坑 -->
+		<!-- <u-table :columns="columns" :data="tableData"></u-table> -->
+		<uni-card>
+			<uni-table border stripe>
+				<uni-tr>
+					<uni-th v-for="(item, index) in columns" :key="index" :width="item.width" :align="item.align">{{ item.title
+					}}</uni-th>
+				</uni-tr>
+				<uni-tr v-for="(item, index) in tableData" :key="index">
+					<uni-td v-for="(col, inx) in columns" :key="inx">{{ item[col.field] }}</uni-td>
+				</uni-tr>
+			</uni-table>
+			<uni-pagination title="标题文字" :total="pageCount" :pageSize="pageSize" :current="currentPage"></uni-pagination>
+		</uni-card>
+	</view>
 </template>
 
 <script>
-import task from '@/api/system/task';
+import { getTableListApi } from '@/api/system/task';
 export default {
-  data() {
-    return {
-      title: '定时任务管理',
-      tableData: [],
-    };
-  },
-  onLoad() {
-    // 页面跳转进来后可以获取url参数
-    const responseData = [
-      { id: 1, name: 'Item 1', status: 10 },
-      { id: 2, name: 'Item 2', status: 20 },
-      { id: 3, name: 'Item 3', status: 30 },
-    ];
+	data() {
+		return {
+			columns: [
+				{ title: 'ID', field: 'id', align: 'center', width: '100' },
+				{ title: '用户名', field: 'name', align: 'center', width: '100' },
+				{ title: '登录名', field: 'login', align: 'center', width: '100' },
+				{ title: '状态', field: 'activited', align: 'center', width: '100' }
+			],
+			tableData: [],
+			title: '用户管理',
+			loading: false,      // Indicates if data is being loaded
+			currentPage: 1,     // Current page number
+			pageSize: 10,       // Number of items per page
+			pageCount: 0,       // Total number of pages
+			finished: false     // Indicates if all data has been loaded
+		};
+	},
+	onLoad() {
+		// 页面跳转进来后可以获取url参数
+		this.loadData();
+	},
+	methods: {
+		loadData() {
+			// Simulate an asynchronous API call to load data
+			// Replace this with your actual data loading logic
+			this.loading = true;
 
-    // 获取定时任务数据
-    // const res = task.getTableListApi({pageIndex: 1, pageSize: 10});
-    // const responseData = res.data;
+			setTimeout(() => {
 
-    // 将获取到的数据赋值给表格数据
-    this.tableData = responseData;
-  },
-  methods: {},
+				getTableListApi({ pageIndex: this.currentPage, pageSize: this.pageSize }).then(res => {
+					const responseData = res.data;
+					// Update the list data
+					this.tableData = responseData.list;
+					this.pageCount = responseData.total;
+					// Reset loading and finished state
+					this.loading = false;
+					this.finished = false;
+				});
+			}, 1000);
+		}
+	},
 };
 </script>
 
 <style>
 .content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
 }
 
 .logo {
-  height: 200rpx;
-  width: 200rpx;
-  margin: 200rpx auto 50rpx auto;
+	height: 200rpx;
+	width: 200rpx;
+	margin: 200rpx auto 50rpx auto;
 }
 
 .text-area {
-  display: flex;
-  justify-content: center;
+	display: flex;
+	justify-content: center;
 }
 
 .title {
-  font-size: 36rpx;
-  color: #8f8f94;
+	font-size: 36rpx;
+	color: #8f8f94;
 }
 </style>

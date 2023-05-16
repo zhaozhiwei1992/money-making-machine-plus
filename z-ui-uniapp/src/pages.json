@@ -1,11 +1,19 @@
 {
   // 符合components/组件名称/组件名称.vue目录结构, 就可以不用引用、注册，直接在页面中使用
-	"easycom": {
+  "easycom": {
     // uview-ui
-		"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue",
-		"^c-(.*)": "@/components/c-$1/c-$1.vue"
-	},
+    "^u-(.*)": "uview-ui/components/u-$1/u-$1.vue",
+    "^c-(.*)": "@/components/c-$1/c-$1.vue",
+    // uni-ui 规则如下配置
+    "^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue"
+  },
   "pages": [
+    {
+      "path": "pages/Login/Index",
+      "style": {
+        "navigationBarTitleText": "登录"
+      }
+    },
     {
       "path": "pages/System/User/Index",
       "style": {
@@ -22,12 +30,6 @@
       "path": "pages/System/Task/Index",
       "style": {
         "navigationBarTitleText": "定时任务"
-      }
-    },
-    {
-      "path": "pages/Login/Index",
-      "style": {
-        "navigationBarTitleText": "登录"
       }
     },
     {
@@ -92,7 +94,7 @@
         "text": "工作台"
       },
       {
-        "pagePath": "pages/System/User/Index",
+        "pagePath": "pages/Mine/Index",
         "iconPath": "https://cdn.uviewui.com/uview/example/grid.png",
         "selectedIconPath": "https://cdn.uviewui.com/uview/example/grid.png",
         "text": "我的"

@@ -25,7 +25,7 @@ var getMenuRouteListApi = function (params) {
     return axios.get({ url: '/menus/route', params: params });
 };
 
-export default {
+export {
     loginApi,
     loginOutApi,
     getUserListApi,
