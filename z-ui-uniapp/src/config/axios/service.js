@@ -22,7 +22,6 @@ service.interceptors.request.use(function (config) {
     // 请求后端接口时header里把token带上
     ;
     config.headers['Authorization'] = uni.getStorageSync('token');
-    console.log('脑袋', uni.getStorageSync('token'));
     // get参数编码
     if (config.method === 'get' && config.params) {
         var url = config.url;

@@ -45,7 +45,7 @@
       }
     },
     {
-      "path": "pages/System/User/Index",
+      "path": "pages/Mine/Index",
       "style": {
         "navigationBarTitleText": "我的"
       }

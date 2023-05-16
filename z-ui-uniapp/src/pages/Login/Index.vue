@@ -72,6 +72,7 @@ export default {
       loginApi(this.userInfo).then(res => {
         // 返回token 写入缓存
         uni.setStorageSync("token", res.data.token);
+        uni.setStorageSync("username", res.data.username);
         // 跳转首页, 首页是tabBar需要用switchTab
         uni.switchTab({ url: '/pages/index/index' });
       });

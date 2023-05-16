@@ -1,48 +1,12 @@
 <template>
-  <view>
-    <view>
-      <span>待办任务列表</span>
-      <u-grid :border="false" col="4" @click="sysManageClick">
-        <u-grid-item v-for="(listItem, listIndex) in list" :key="listIndex">
-          <u-icon
-            :customStyle="{ paddingTop: 20 + 'rpx' }"
-            :name="listItem.name"
-            :size="22"
-          ></u-icon>
-          <text class="grid-text">{{ listItem.title }}</text>
-        </u-grid-item>
-      </u-grid>
-      <u-toast ref="uToast" />
-    </view>
-    <view>
-      <span>已完成任务列表</span>
-      <u-grid :border="false" col="4" @click="reportClick">
-        <u-grid-item v-for="(listItem, listIndex) in list" :key="listIndex">
-          <u-icon
-            :customStyle="{ paddingTop: 20 + 'rpx' }"
-            :name="listItem.name"
-            :size="22"
-          ></u-icon>
-          <text class="grid-text">{{ listItem.title }}</text>
-        </u-grid-item>
-      </u-grid>
-      <u-toast ref="uToast" />
-    </view>
-
-    <view>
-      <span>统计报表</span>
-      <u-grid :border="false" col="4" @click="reportClick">
-        <u-grid-item v-for="(listItem, listIndex) in list" :key="listIndex">
-          <u-icon
-            :customStyle="{ paddingTop: 20 + 'rpx' }"
-            :name="listItem.name"
-            :size="22"
-          ></u-icon>
-          <text class="grid-text">{{ listItem.title }}</text>
-        </u-grid-item>
-      </u-grid>
-      <u-toast ref="uToast" />
-    </view>
+  <view class="container">
+    <u-toast ref="uToast" />
+    <uni-section title="待办事项" type="line" padding>
+      <text class="grid-text">这里放待办任务, list形式可点击跳转</text>
+    </uni-section>
+    <uni-section title="统计报表" type="line" padding>
+      <text class="grid-text">这里放一些简单的报表, list形式可点击跳转</text>
+    </uni-section>
   </view>
 </template>
 

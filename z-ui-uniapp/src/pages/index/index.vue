@@ -1,22 +1,25 @@
 <template>
   <view>
-    <view>
-      <span>快速导航</span>
-      <u-grid :border="false" col="4" @click="sysManageClick">
-        <u-grid-item v-for="(listItem, listIndex) in list" :key="listIndex">
-          <u-icon
-            :customStyle="{ paddingTop: 20 + 'rpx' }"
-            :name="listItem.name"
-            :size="22"
-          ></u-icon>
-          <text class="grid-text">{{ listItem.title }}</text>
-        </u-grid-item>
-      </u-grid>
-      <u-toast ref="uToast" />
-    </view>
-    <view>
-      <span>通知公告</span>
-    </view>
+    <uni-section title="快速导航" type="line" padding>
+			<uni-grid :column="4" :show-border="false" :square="false" :highlight="true" @change="sysManageClick">
+				<uni-grid-item v-for="(listItem, index) in list" :index="index" :key="index">
+					<view class="grid-item-box" style="background-color: #fff;">
+						<uni-icons :type="listItem.name" :size="30" color="#777" />
+            <text class="grid-text">{{ listItem.title }}</text>
+					</view>
+				</uni-grid-item>
+			</uni-grid>
+		</uni-section>
+    <uni-section title="通知公告" type="line" padding>
+			<uni-grid :column="4" :show-border="false" :square="false" :highlight="true" @change="sysManageClick">
+				<uni-grid-item v-for="(listItem, index) in list" :index="index" :key="index">
+					<view class="grid-item-box" style="background-color: #fff;">
+						<uni-icons :type="listItem.name" :size="30" color="#777" />
+            <text class="grid-text">{{ listItem.title }}</text>
+					</view>
+				</uni-grid-item>
+			</uni-grid>
+		</uni-section>
   </view>
 </template>
 
@@ -26,36 +29,31 @@ export default {
     return {
       list: [
         {
-          name: 'photo',
+          name: 'gear',
           title: '系统参数',
         },
         {
-          name: 'lock',
+          name: 'calendar',
           title: '定时任务',
         },
         {
-          name: 'star',
-          title: '角色管理',
-        },
-        {
-          name: 'hourglass',
+          name: 'contact',
           title: '用户管理',
         },
       ],
     };
   },
   methods: {
-    sysManageClick(name) {
+    sysManageClick(ele) {
       // this.$refs.uToast.success(`点击了第${name}个`);
+      const index = ele.detail.index;
       // 根据选点击的按钮跳转页面
       // 页面必须是在page.json中注册的
-      if (0 === name) {
+      if (0 === index) {
         uni.navigateTo({ url: '/pages/System/Param/Index' });
-      } else if (1 === name) {
+      } else if (1 === index) {
         uni.navigateTo({ url: '/pages/System/Task/Index' });
-      } else if (2 === name) {
-        uni.navigateTo({ url: '/pages/System/Role/Index' });
-      } else if (3 === name) {
+      } else if (2 === index) {
         uni.navigateTo({ url: '/pages/System/User/Index' });
       }
     },
