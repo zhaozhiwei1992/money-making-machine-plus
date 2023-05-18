@@ -4,7 +4,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.example</groupId>
+        <groupId>com.z</groupId>
         <artifactId>z-framework</artifactId>
         <version>${revision}</version>
     </parent>
@@ -149,7 +149,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.example</groupId>
+            <groupId>com.z</groupId>
             <artifactId>z-starter-cache</artifactId>
         </dependency>
 

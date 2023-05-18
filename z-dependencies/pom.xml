@@ -2,7 +2,7 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.example</groupId>
+  <groupId>com.z</groupId>
   <artifactId>z-dependencies</artifactId>
   <version>${revision}</version>
   <name>z-dependencies</name>
@@ -462,44 +462,44 @@
       <!-- 业务组件 -->
 <!--      这里按照需要, 现在版本都是跟着整体版本走, 没啥必要注册-->
       <dependency>
-        <groupId>com.example</groupId>
+        <groupId>com.z</groupId>
         <artifactId>z-common</artifactId>
         <version>${revision}</version>
       </dependency>
 
       <dependency>
-        <groupId>com.example</groupId>
+        <groupId>com.z</groupId>
         <artifactId>z-starter-banner</artifactId>
         <version>${revision}</version>
       </dependency>
 
       <dependency>
-        <groupId>com.example</groupId>
+        <groupId>com.z</groupId>
         <artifactId>z-starter-security</artifactId>
         <version>${revision}</version>
       </dependency>
 
       <dependency>
-        <groupId>com.example</groupId>
+        <groupId>com.z</groupId>
         <artifactId>z-starter-operate-log</artifactId>
         <version>${revision}</version>
       </dependency>
 
       <dependency>
-        <groupId>com.example</groupId>
+        <groupId>com.z</groupId>
         <artifactId>z-starter-captcha</artifactId>
         <version>${revision}</version>
       </dependency>
 
       <dependency>
-        <groupId>com.example</groupId>
+        <groupId>com.z</groupId>
         <artifactId>z-starter-cache</artifactId>
         <version>${revision}</version>
       </dependency>
 
 <!--      定时任务-->
       <dependency>
-        <groupId>com.example</groupId>
+        <groupId>com.z</groupId>
         <artifactId>z-starter-job</artifactId>
         <version>${revision}</version>
       </dependency>

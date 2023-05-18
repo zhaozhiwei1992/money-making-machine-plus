@@ -3,7 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>com.example</groupId>
+    <groupId>com.z</groupId>
     <artifactId>money-making-machine-plus</artifactId>
     <version>${revision}</version>
   </parent>
@@ -17,20 +17,20 @@
   <dependencies>
 <!--    基础性的系统功能-->
     <dependency>
-      <groupId>com.example</groupId>
+      <groupId>com.z</groupId>
       <artifactId>z-module-system</artifactId>
       <version>${revision}</version>
     </dependency>
 
     <dependency>
-      <groupId>com.example</groupId>
+      <groupId>com.z</groupId>
       <artifactId>z-module-code-generator</artifactId>
       <version>${revision}</version>
     </dependency>
 
     <!-- 工作流 -->
     <dependency>
-      <groupId>com.example</groupId>
+      <groupId>com.z</groupId>
       <artifactId>z-starter-flowable</artifactId>
       <version>${revision}</version>
     </dependency>
@@ -42,7 +42,7 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>com.example</groupId>
+      <groupId>com.z</groupId>
       <artifactId>z-starter-banner</artifactId>
     </dependency>
 

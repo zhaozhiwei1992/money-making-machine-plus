@@ -3,7 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>com.example</groupId>
+    <groupId>com.z</groupId>
     <artifactId>money-making-machine-plus</artifactId>
     <version>${revision}</version>
   </parent>
@@ -16,17 +16,17 @@
   <dependencies>
 
     <dependency>
-      <groupId>com.example</groupId>
+      <groupId>com.z</groupId>
       <artifactId>z-common</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>com.example</groupId>
+      <groupId>com.z</groupId>
       <artifactId>z-starter-security</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>com.example</groupId>
+      <groupId>com.z</groupId>
       <artifactId>z-starter-operate-log</artifactId>
     </dependency>
 
@@ -69,12 +69,12 @@
     </dependency>
 
     <dependency>
-      <groupId>com.example</groupId>
+      <groupId>com.z</groupId>
       <artifactId>z-starter-captcha</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>com.example</groupId>
+      <groupId>com.z</groupId>
       <artifactId>z-starter-job</artifactId>
     </dependency>
 
