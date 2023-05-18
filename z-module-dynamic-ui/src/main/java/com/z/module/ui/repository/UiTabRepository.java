@@ -13,4 +13,6 @@ import java.util.List;
 @Repository
 public interface UiTabRepository extends JpaRepository<UiTab, Long> {
     List<UiTab> findByMenuId(Long menuid);
+
+    void deleteAllByIdIn(List<Long> idList);
 }

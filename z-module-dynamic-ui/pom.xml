@@ -25,5 +25,11 @@
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.z</groupId>
+            <artifactId>z-module-system</artifactId>
+            <version>${revision}</version>
+        </dependency>
     </dependencies>
 </project>

@@ -16,4 +16,6 @@ public interface UiComponentRepository extends JpaRepository<UiComponent, Long> 
     List<UiComponent> findByMenuIdOrderByOrderNumAsc(Long menuid);
 
     Optional<UiComponent> findByMenuIdAndComponent(Long menuid, String uitable);
+
+    void deleteAllByIdIn(List<Long> idList);
 }

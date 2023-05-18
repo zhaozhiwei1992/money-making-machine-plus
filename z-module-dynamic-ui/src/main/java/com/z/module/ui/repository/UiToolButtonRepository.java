@@ -13,4 +13,6 @@ import java.util.List;
 @Repository
 public interface UiToolButtonRepository extends JpaRepository<UiToolButton, Long> {
     List<UiToolButton> findByMenuIdOrderByOrderNumAsc(Long menuid);
+
+    void deleteAllByIdIn(List<Long> idList);
 }

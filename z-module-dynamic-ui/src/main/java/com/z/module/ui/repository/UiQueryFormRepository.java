@@ -13,4 +13,6 @@ import java.util.List;
 @Repository
 public interface UiQueryFormRepository extends JpaRepository<UiQueryForm, Long> {
     List<UiQueryForm> findByMenuIdOrderByOrderNumAsc(Long menuid);
+
+    void deleteAllByIdIn(List<Long> idList);
 }
