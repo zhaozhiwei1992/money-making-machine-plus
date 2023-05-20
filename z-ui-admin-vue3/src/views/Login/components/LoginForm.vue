@@ -10,9 +10,10 @@ import { useAppStore } from '@/store/modules/app'
 import { usePermissionStore } from '@/store/modules/permission'
 import { useRouter } from 'vue-router'
 import type { RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router'
-import { UserType } from '@/api/login/types'
+import { UserType, TokenType } from '@/api/login/types'
 import { useValidator } from '@/hooks/web/useValidator'
 import { FormSchema } from '@/types/form'
+import * as authUtil from '@/utils/auth'
 
 const { required } = useValidator()
 
@@ -148,7 +149,8 @@ const signIn = async () => {
           // 返回用户信息, 带token
           wsCache.set(appStore.getUserInfo, res.data)
           // 设置token id
-          wsCache.set('token', res.data.token)
+          // wsCache.set('token', res.data.token)
+          authUtil.setToken(res.data)
           // 使用后端动态路由只需要把这里放开
           appStore.setDynamicRouter(true)
           if (appStore.getDynamicRouter) {
@@ -188,7 +190,7 @@ const getRole = async () => {
   if (res) {
     const { wsCache } = useCache()
     const routers = res.data || []
-    console.log('返回的res信息', res)
+    console.log('返回routers信息', res)
     wsCache.set('roleRouters', routers)
 
     // 全部都走后端路由

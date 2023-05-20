@@ -118,6 +118,7 @@ export const generateRoutesFn2 = (routes: AppCustomRouteRecordRaw[]): AppRouteRe
     }
     res.push(data as AppRouteRecordRaw)
   }
+  // console.log('动态路由: ', res)
   return res
 }
 

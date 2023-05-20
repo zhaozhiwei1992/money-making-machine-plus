@@ -33,7 +33,6 @@ import java.util.List;
 @ToString
 public class AuthedRespVO {
     private String username;
-    private String password;
     private String role;
     private String roleId;
     private List<String> permissions;

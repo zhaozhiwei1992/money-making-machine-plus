@@ -15,7 +15,8 @@ import java.util.Map;
 /**
  * @Title: JwtUtil
  * @Package com/example/springbootsecurityjwt/util/JwtUtil.java
- * @Description: TODO 大佬写点东西
+ * @Description: token生成
+ * 工具类方式写的太死, 建议使用 {@see TokenProviderService}
  * @author zhaozhiwei
  * @date 2021/1/4 下午5:29
  * @version V1.0
@@ -34,7 +35,7 @@ public class JwtUtil {
     static {
         byte[] keyBytes;
         String secret = "XX#$%()(#*!()!KL<><MQLMNQNQJQK sdfkjsdrow32234545fdf>?N<:{LWPW";
-        if (!StringUtils.isEmpty(secret)) {
+        if (!StringUtils.hasText(secret)) {
             keyBytes = secret.getBytes(StandardCharsets.UTF_8);
         } else {
             keyBytes = Decoders.BASE64.decode("f3973b64918e4324ad85acea1b6cbec5");

@@ -1,7 +1,7 @@
 package com.z.module.system.web.rest;
 
 import com.z.framework.common.web.rest.vm.ResponseData;
-import com.z.framework.security.util.JwtUtil;
+import com.z.framework.security.service.TokenProviderService;
 import com.z.framework.security.util.SecurityUtils;
 import com.z.module.system.domain.User;
 import com.z.module.system.repository.UserRepository;
@@ -21,10 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author zhaozhiwei
@@ -50,11 +47,14 @@ public class MobileLoginResource {
 
     private final LoginLogService loginLogService;
 
-    public MobileLoginResource(UserRepository userRepository, PasswordEncoder passwordEncoder, CacheManager cacheManager, LoginLogService loginLogService) {
+    private final TokenProviderService tokenProviderService;
+
+    public MobileLoginResource(UserRepository userRepository, PasswordEncoder passwordEncoder, CacheManager cacheManager, LoginLogService loginLogService, TokenProviderService tokenProviderService) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = passwordEncoder;
         this.cacheManager = cacheManager;
         this.loginLogService = loginLogService;
+        this.tokenProviderService = tokenProviderService;
     }
 
     /**
@@ -80,8 +80,8 @@ public class MobileLoginResource {
             String dbPassWord = dbUser.getPassword();
             logger.info("数据库密码: {}", dbPassWord);
             if (bCryptPasswordEncoder.matches(password, dbPassWord)) {
-                String token = JwtUtil.generateToken(username);
-                authedRespVO.setPermissions(Arrays.asList("*.*.*"));
+                String token = tokenProviderService.generateToken(username, loginVM.isRememberMe());
+                authedRespVO.setPermissions(Collections.singletonList("*.*.*"));
                 authedRespVO.setToken(token);
 
                 // 登录成功记录日志
@@ -130,7 +130,7 @@ public class MobileLoginResource {
             String dbPassWord = dbUser.getPassword();
             logger.info("数据库密码: {}", dbPassWord);
             if (bCryptPasswordEncoder.matches(password, dbPassWord)) {
-                String token = JwtUtil.generateToken(username);
+                String token = tokenProviderService.generateToken(username, loginVM.isRememberMe());
                 authedRespVO.setPermissions(Arrays.asList("*.*.*"));
                 authedRespVO.setToken(token);
 

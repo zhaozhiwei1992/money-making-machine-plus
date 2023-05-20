@@ -15,6 +15,8 @@
   </description>
 
   <dependencies>
+
+    <!--    模块部分 开始    注:除system外其他module可以按需使用, 可以干掉 -->
 <!--    基础性的系统功能-->
     <dependency>
       <groupId>com.z</groupId>
@@ -22,11 +24,21 @@
       <version>${revision}</version>
     </dependency>
 
+<!--    代码生成模块 -->
     <dependency>
       <groupId>com.z</groupId>
       <artifactId>z-module-code-generator</artifactId>
       <version>${revision}</version>
     </dependency>
+
+<!--    报表模块-->
+    <dependency>
+      <groupId>com.z</groupId>
+      <artifactId>z-module-report</artifactId>
+      <version>${revision}</version>
+    </dependency>
+
+<!--    模块部分 结束 -->
 
     <!-- 工作流 -->
     <dependency>

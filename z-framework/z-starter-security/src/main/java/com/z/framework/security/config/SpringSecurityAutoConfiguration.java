@@ -1,8 +1,10 @@
 package com.z.framework.security.config;
 
 import com.z.framework.security.aop.JWTAuthenticationFilter;
+import com.z.framework.security.service.TokenProviderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,16 +19,25 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @AutoConfiguration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
 @ComponentScan(value = {"com.z.framework.security"})
+@EnableConfigurationProperties(CustomSecurityProperties.class)
 public class SpringSecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
+
+    private final CustomSecurityProperties customSecurityProperties;
+
     /**
      * 需要放行的URL
      */
-    public static final String[] AUTH_WHITELIST = {
+    public static String[] AUTH_WHITELIST = {
 //            静态资源白名单
+            "/favicon.ico",
             "/static/**",
             "/images/**",
             "/css/**",
@@ -52,6 +63,15 @@ public class SpringSecurityAutoConfiguration extends WebSecurityConfigurerAdapte
 //            "/user/**"
             // other public endpoints of your API may be appended to this array
     };
+
+    public SpringSecurityAutoConfiguration(CustomSecurityProperties customSecurityProperties) {
+        this.customSecurityProperties = customSecurityProperties;
+
+        // 白名单赋值, 业务扩展
+        final List<String> authWhiteList = this.customSecurityProperties.getAuthWhiteList();
+        authWhiteList.addAll(Arrays.asList(AUTH_WHITELIST));
+        AUTH_WHITELIST = authWhiteList.stream().distinct().collect(Collectors.toList()).toArray(new String[0]);
+    }
 
     /**
      * 配置这个bean会在做AuthorizationServerConfigurer配置的时候使用
@@ -79,6 +99,9 @@ public class SpringSecurityAutoConfiguration extends WebSecurityConfigurerAdapte
                 .passwordEncoder(passwordEncoder());
     }
 
+    @Autowired
+    private TokenProviderService tokenProviderService;
+
     /**
      * 配置请求拦截
      */
@@ -98,7 +121,7 @@ public class SpringSecurityAutoConfiguration extends WebSecurityConfigurerAdapte
                 //其他所有请求需要身份认证
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(new JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JWTAuthenticationFilter(tokenProviderService), UsernamePasswordAuthenticationFilter.class);
 
     }
 }

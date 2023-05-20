@@ -2,7 +2,7 @@ package com.z.framework.security.aop;
 
 import cn.hutool.extra.spring.SpringUtil;
 import com.z.framework.security.config.SpringSecurityAutoConfiguration;
-import com.z.framework.security.util.JwtUtil;
+import com.z.framework.security.service.TokenProviderService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -31,6 +31,12 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
+    
+    private TokenProviderService tokenProviderService;
+
+    public JWTAuthenticationFilter(TokenProviderService tokenProviderService) {
+        this.tokenProviderService = tokenProviderService;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -101,12 +107,12 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
      * @return The token, or null if no OAuth authorization header was supplied.
      */
     protected String extractHeaderToken(HttpServletRequest request) {
-        Enumeration<String> headers = request.getHeaders(JwtUtil.AUTHORIZATION);
+        Enumeration<String> headers = request.getHeaders(TokenProviderService.AUTHORIZATION);
         // typically there is only one (most servers enforce that)
         while (headers.hasMoreElements()) {
             String value = headers.nextElement();
-            if ((value.toLowerCase().startsWith(JwtUtil.TOKEN_PREFIX.toLowerCase()))) {
-                String authHeaderValue = value.substring(JwtUtil.TOKEN_PREFIX.length()).trim();
+            if ((value.toLowerCase().startsWith(TokenProviderService.TOKEN_PREFIX.toLowerCase()))) {
+                String authHeaderValue = value.substring(TokenProviderService.TOKEN_PREFIX.length()).trim();
                 if ("null".equals(authHeaderValue)) {
                     return null;
                 }
@@ -124,7 +130,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     public final static String TOKEN = "token";
 
     protected String getCookie(HttpServletRequest request) {
-        Cookie cookie = WebUtils.getCookie(request, JwtUtil.AUTHORIZATION);
+        Cookie cookie = WebUtils.getCookie(request, TokenProviderService.AUTHORIZATION);
         if (cookie == null) {
             return null;
         }
@@ -158,7 +164,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             String userName;
 
             // 解密Token
-            userName = JwtUtil.validateToken(token);
+            userName = tokenProviderService.validateToken(token);
             if (StringUtils.isNotBlank(userName)) {
 
                 // 获取数据库用户, 进行数据库用户二次校验, 根据用户状态控制是否允许登录

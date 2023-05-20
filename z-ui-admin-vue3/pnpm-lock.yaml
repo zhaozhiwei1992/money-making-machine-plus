@@ -34,6 +34,9 @@ dependencies:
   intro.js:
     specifier: ^7.0.1
     version: registry.npmmirror.com/intro.js@7.0.1
+  jsencrypt:
+    specifier: 3.3.2
+    version: registry.npmmirror.com/jsencrypt@3.3.2
   lodash-es:
     specifier: ^4.17.21
     version: registry.npmmirror.com/lodash-es@4.17.21
@@ -7113,6 +7116,12 @@ packages:
     dependencies:
       argparse: registry.npmmirror.com/argparse@2.0.1
     dev: true
+
+  registry.npmmirror.com/jsencrypt@3.3.2:
+    resolution: {integrity: sha512-arQR1R1ESGdAxY7ZheWr12wCaF2yF47v5qpB76TtV64H1pyGudk9Hvw8Y9tb/FiTIaaTRUyaSnm5T/Y53Ghm/A==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/jsencrypt/-/jsencrypt-3.3.2.tgz}
+    name: jsencrypt
+    version: 3.3.2
+    dev: false
 
   registry.npmmirror.com/jsesc@0.5.0:
     resolution: {integrity: sha512-uZz5UnB7u4T9LvwmFqXii7pZSouaRPorGs5who1Ip7VO0wxanFvBL7GkM6dTHlgX+jhBApRetaWpnDabOeTcnA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/jsesc/-/jsesc-0.5.0.tgz}

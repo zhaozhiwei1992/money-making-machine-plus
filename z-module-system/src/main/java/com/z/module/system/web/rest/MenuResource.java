@@ -261,7 +261,9 @@ public class MenuResource {
                     tree.setId(menuObj.getId());
                     tree.setParentId(menuObj.getParentId());
                     // 路由的name千万别重复,不然坑爹
-                    tree.setName(menuObj.getComponent().equals("#")? menuObj.getUrl() : menuObj.getComponent());
+                    // fixed: report/views.vue使用iframe跳转不同的报表页面, 组建是相同的直接路由跳转异常, 用id更保险
+//                    tree.setName(menuObj.getComponent().equals("#")? menuObj.getUrl() : menuObj.getComponent());
+                    tree.setName(menuObj.getId().toString());
                     // 属性扩展, 只显示界面展示需要的属性即可
                     tree.putExtra("path", menuObj.getUrl());
                     tree.putExtra("component", menuObj.getComponent());

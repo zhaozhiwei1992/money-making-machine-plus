@@ -14,6 +14,8 @@ import { ElMessage } from 'element-plus'
 
 import { useCache } from '@/hooks/web/useCache'
 
+import { getAccessToken } from '@/utils/auth'
+
 const { wsCache } = useCache()
 
 const { result_code, base_url } = config
@@ -40,7 +42,7 @@ service.interceptors.request.use(
       config.data = qs.stringify(config.data)
     }
     // 请求后端接口时header里把token带上
-    ;(config.headers as AxiosRequestHeaders)['Authorization'] = wsCache.get('token')
+    ;(config.headers as AxiosRequestHeaders)['Authorization'] = getAccessToken()
     // get参数编码
     if (config.method === 'get' && config.params) {
       let url = config.url as string

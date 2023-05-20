@@ -177,7 +177,30 @@ z:
     license-url: https://gitee.com/zhijiantianya/ruoyi-vue-pro/blob/master/LICENSE
   security:
     content-security-policy: "default-src 'self'; frame-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://storage.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:"
-#  分模块配置
+    auth-white-list:
+      # 静态资源白名单
+      - /static/**
+      - /images/**
+      - /css/**
+      - /js/**
+      - /layui/**
+      - /bootstrap-5.0.2-dist/**
+      - /font-awesome-4.7.0/**
+      - /druid/**
+      - /lay-config.js
+      - /echarts/**
+      # url 白名单
+      - /login
+      - /api/login
+      - /api/mobile/login/**
+      - /actuator/**
+      # 验证码
+      - /captcha/numCode
+      - /api/captcha/numCode
+      # 积木报表
+      - /jmreport/**
+
+  #  分模块配置
   module:
     system:
       test: true

@@ -2,7 +2,7 @@ package com.z.module.system.web.rest;
 
 import com.google.code.kaptcha.Constants;
 import com.z.framework.common.web.rest.vm.ResponseData;
-import com.z.framework.security.util.JwtUtil;
+import com.z.framework.security.service.TokenProviderService;
 import com.z.framework.security.util.SecurityUtils;
 import com.z.module.system.domain.User;
 import com.z.module.system.repository.UserRepository;
@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -52,11 +52,14 @@ public class LoginResource {
 
     private final LoginLogService loginLogService;
 
-    public LoginResource(UserRepository userRepository, PasswordEncoder passwordEncoder, CacheManager cacheManager, LoginLogService loginLogService) {
+    private final TokenProviderService tokenProviderService;
+
+    public LoginResource(UserRepository userRepository, PasswordEncoder passwordEncoder, CacheManager cacheManager, LoginLogService loginLogService, TokenProviderService tokenProviderService) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = passwordEncoder;
         this.cacheManager = cacheManager;
         this.loginLogService = loginLogService;
+        this.tokenProviderService = tokenProviderService;
     }
 
     /**
@@ -93,8 +96,8 @@ public class LoginResource {
             String dbPassWord = dbUser.getPassword();
             logger.info("数据库密码: {}", dbPassWord);
             if (bCryptPasswordEncoder.matches(password, dbPassWord)) {
-                String token = JwtUtil.generateToken(username);
-                authedRespVO.setPermissions(Arrays.asList("*.*.*"));
+                String token = tokenProviderService.generateToken(username, loginVM.isRememberMe());
+                authedRespVO.setPermissions(Collections.singletonList("*.*.*"));
                 authedRespVO.setToken(token);
 
                 // 登录成功记录日志
