@@ -94,13 +94,13 @@ public class MenuResource {
         Page<Menu> menuPage;
         // 搜索
         if (StrUtil.isNotEmpty(key)) {
-            final Menu task = new Menu();
+            final Menu menu = new Menu();
             final List<String> cols = Collections.singletonList("name");
             //      2. 将传入属性, 填充给界面显示字段
             final Map<String, String> map = cols.stream().collect(Collectors.toMap(s -> s, key2 -> key));
             //      3. 动态构建查询条件
-            BeanUtil.fillBeanWithMap(map, task, true);
-            log.info("填充后对象信息 {}", task);
+            BeanUtil.fillBeanWithMap(map, menu, true);
+            log.info("填充后对象信息 {}", menu);
 
             //创建匹配器，即如何使用查询条件
             //构建对象
@@ -116,7 +116,7 @@ public class MenuResource {
                     .withIgnorePaths("id");
 
             //创建实例
-            Example<Menu> ex = Example.of(task, matcher);
+            Example<Menu> ex = Example.of(menu, matcher);
             menuPage = menuRepository.findAll(ex, pageable);
         } else {
             menuPage = menuRepository.findAll(pageable);

@@ -18,6 +18,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.servlet.ServletContext;
@@ -71,6 +72,19 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+
+    }
+
+    /**
+     * @data: 2023/5/21-下午3:21
+     * @User: zhaozhiwei
+     * @method: addResourceHandlers
+      * @param registry :
+     * @return: void
+     * @Description: 如果有静态资源打到jar包里找不到的需要这里搞搞
+     */
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
     }
 

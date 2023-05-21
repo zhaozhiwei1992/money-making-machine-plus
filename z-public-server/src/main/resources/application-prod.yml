@@ -4,6 +4,11 @@ logging:
     tech.jhipster: INFO
     com.example: INFO
 
+knife4j:
+  enable: true
+  # 开启生产环境屏蔽
+  production: true
+
 management:
   metrics:
     export:

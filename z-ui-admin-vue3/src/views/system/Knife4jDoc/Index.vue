@@ -8,5 +8,5 @@ import { ref } from 'vue'
 import { getAccessToken } from '@/utils/auth'
 
 const BASE_URL = import.meta.env.VITE_SERVER_URL
-const src = ref(BASE_URL + '/swagger-ui/index.html?token=' + getAccessToken())
+const src = ref(BASE_URL + '/doc.html?token=' + getAccessToken())
 </script>

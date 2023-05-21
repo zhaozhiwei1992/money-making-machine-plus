@@ -169,7 +169,7 @@ z:
     license-url:
   swagger:
     title: 赚钱机器
-    description: 提供管理后台、用户 App 的所有功能
+    description: 提供本系统引入所有模块的接口调试
     version: ${z.app.version}
     url: x
     email: zhaozhiweishanxi@gmail.com
@@ -199,6 +199,13 @@ z:
       - /api/captcha/numCode
       # 积木报表
       - /jmreport/**
+      # swagger3
+      - /swagger-ui/**
+      - /doc.html
+      - /webjars/**
+      - /img.icons/**
+      - /swagger-resources/**
+      - /v3/api-docs/**
 
   #  分模块配置
   module:

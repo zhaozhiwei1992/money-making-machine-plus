@@ -49,18 +49,19 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'request_uri',
-    label: '请求地址',
+    field: 'created_date',
+    label: '请求时间',
     search: {
       show: true
     }
   },
   {
+    field: 'request_uri',
+    label: '请求地址'
+  },
+  {
     field: 'request_method',
-    label: '请求方式',
-    search: {
-      show: true
-    }
+    label: '请求方式'
   },
   {
     field: 'client_ip',

@@ -28,7 +28,7 @@ import java.util.Optional;
 
 
 /**
- * Swagger 自动配置类，基于 OpenAPI + Springdoc 实现。
+ * Swagger 自动配置类，基于 OpenAPI + SpringDoc 实现。
  *
  * 友情提示：
  * 1. Springdoc 文档地址：<a href="https://github.com/springdoc/springdoc-openapi">仓库</a>
@@ -113,13 +113,24 @@ public class SwaggerAutoConfiguration {
         return buildGroupedOpenApi(group, group);
     }
 
+    /**
+     * @data: 2023/5/21-下午2:31
+     * @User: zhaozhiwei
+     * @method: buildGroupedOpenApi
+      * @param group :
+ * @param path :
+     * @return: org.springdoc.core.GroupedOpenApi
+     * @Description: 将所有接口聚合, 无论是/api开头还是/admin-api开头等
+     */
     public static GroupedOpenApi buildGroupedOpenApi(String group, String path) {
         return GroupedOpenApi.builder()
                 .group(group)
-                .pathsToMatch("/admin-api/" + path + "/**", "/app-api/" + path + "/**")
-                .addOperationCustomizer((operation, handlerMethod) -> operation
-                        .addParametersItem(buildTenantHeaderParameter())
-                        .addParametersItem(buildSecurityHeaderParameter()))
+                // 这里的path一定要写对，否则ui页面出现后边错误: No operations defined in spec! 看不到接口
+                .pathsToMatch("/api/" + path + "/**", "/admin-api/" + path + "/**", "/app-api/" + path + "/**")
+                // 下述addOperationCustomizer可在每个请求参数下扩展自定义参数
+//                .addOperationCustomizer((operation, handlerMethod) -> operation
+//                        .addParametersItem(buildTenantHeaderParameter())
+//                        .addParametersItem(buildSecurityHeaderParameter()))
                 .build();
     }
 
@@ -138,7 +149,7 @@ public class SwaggerAutoConfiguration {
 
     /**
      * 构建 Authorization 认证请求头参数
-     *
+     * 目前版本实现knife有bug, 具体出可参考下述地址
      * 解决 Knife4j <a href="https://gitee.com/xiaoym/knife4j/issues/I69QBU">Authorize 未生效，请求header里未包含参数</a>
      *
      * @return 认证参数
@@ -148,8 +159,9 @@ public class SwaggerAutoConfiguration {
                 .name(HttpHeaders.AUTHORIZATION) // header 名
                 .description("认证 Token") // 描述
                 .in(String.valueOf(SecurityScheme.In.HEADER)) // 请求 header
-                // 默认：使用用户编号为 1
-                .schema(new StringSchema()._default("Bearer test1").name(HEADER_TENANT_ID).description("认证 Token"));
+                // 默认：使用用户admin, 配合程序处理可以不进行认证跳过
+                // 没有在swagger页面全局授权就会走这个, 临时测试可以搞搞, 最好还是完整认证, 可能会去获取一些用户信息
+                .schema(new StringSchema()._default("Bearer admin").name(HttpHeaders.AUTHORIZATION).description("认证 Token"));
     }
 
 }
