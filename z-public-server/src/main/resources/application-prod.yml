@@ -108,7 +108,7 @@ spring:
         reset-enable: false # 不允许清空统计数据,重新计算
         login-username: admin # 配置监控页面访问密码
         login-password: admin
-#        allow: 127.0.0.1 # 允许访问的地址，如果allow没有配置或者为空，则允许所有访问
+        #        allow: 127.0.0.1 # 允许访问的地址，如果allow没有配置或者为空，则允许所有访问
         deny: # 拒绝访问的地址，deny优先于allow，如果在deny列表中，就算在allow列表中，也会被拒绝
   jpa:
     hibernate:
@@ -137,7 +137,7 @@ z:
     # Allow Ionic for JHipster by default (* no longer allowed in Spring Boot 2.4+)
     # 注意: 前端必须是localhost访问, 如果用127.0.0.1还是会拦截
     # 4000是admin-vue3, 8080: z-ui-app
-    allowed-origins: 'http://43.143.194.245:8091,https://43.143.194.245:8091,http://43.143.194.245:8090,https://43.143.194.245:8090'
+    allowed-origins: 'http://43.143.194.245,https://43.143.194.245,http://43.143.194.245:8090,https://43.143.194.245:8090,http://pro1.zhao90807.top,https://pro1.zhao90807.top'
     allowed-methods: '*'
     allowed-headers: '*'
     exposed-headers: 'Authorization,Link,X-Total-Count,X-${z.app.name}-alert,X-${z.app.name}-error,X-${z.app.name}-params'
