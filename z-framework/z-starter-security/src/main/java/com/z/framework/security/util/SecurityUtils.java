@@ -94,8 +94,8 @@ public final class SecurityUtils {
      * 取得当前用户的ID
      * @return
      */
-    public static String getUserId(){
-        return (String)getAuthenticationDetails().get("userid");
+    public static Long getUserId(){
+        return Long.parseLong(String.valueOf(getAuthenticationDetails().get("userid")));
     }
 
     /**

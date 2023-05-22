@@ -38,6 +38,13 @@
       <version>${revision}</version>
     </dependency>
 
+<!--    工作流模块-->
+    <dependency>
+      <groupId>com.z</groupId>
+      <artifactId>z-module-bpm</artifactId>
+      <version>${revision}</version>
+    </dependency>
+
 <!--    模块部分 结束 -->
 
     <!-- 工作流 -->
