@@ -1,4 +1,4 @@
-package com.z.module.bpm.web.resource.definition;
+package com.z.module.bpm.web.rest.definition;
 
 import com.z.framework.common.web.rest.vm.PageResult;
 import com.z.framework.common.web.rest.vm.ResponseData;
@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -24,7 +23,7 @@ import java.util.List;
 @Validated
 public class BpmFormResource {
 
-    @Resource
+    @Autowired
     private BpmFormService formService;
 
     @Autowired

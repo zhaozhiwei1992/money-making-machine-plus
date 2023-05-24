@@ -1,4 +1,4 @@
-package com.z.module.bpm.web.resource.task;
+package com.z.module.bpm.web.rest.task;
 
 import com.z.framework.common.web.rest.vm.PageResult;
 import com.z.framework.common.web.rest.vm.ResponseData;
@@ -20,21 +20,19 @@ import java.util.List;
 @RestController
 @RequestMapping("/bpm/task")
 @Validated
-public class BpmTaskController {
+public class BpmTaskResource {
 
     @Resource
     private BpmTaskService taskService;
 
     @GetMapping("todo-page")
     @Operation(summary = "获取 Todo 待办任务分页")
-    
     public ResponseEntity<ResponseData<PageResult<BpmTaskTodoPageItemRespVO>>> getTodoTaskPage(@Valid BpmTaskTodoPageReqVO pageVO) {
         return ResponseData.ok(taskService.getTodoTaskPage(SecurityUtils.getUserId(), pageVO));
     }
 
     @GetMapping("done-page")
     @Operation(summary = "获取 Done 已办任务分页")
-    
     public ResponseEntity<ResponseData<PageResult<BpmTaskDonePageItemRespVO>>> getDoneTaskPage(@Valid BpmTaskDonePageReqVO pageVO) {
         return ResponseData.ok(taskService.getDoneTaskPage(SecurityUtils.getUserId(), pageVO));
     }
@@ -42,7 +40,6 @@ public class BpmTaskController {
     @GetMapping("/list-by-process-instance-id")
     @Operation(summary = "获得指定流程实例的任务列表", description = "包括完成的、未完成的")
     @Parameter(name = "processInstanceId", description = "流程实例的编号", required = true)
-    
     public ResponseEntity<ResponseData<List<BpmTaskRespVO>>> getTaskListByProcessInstanceId(
         @RequestParam("processInstanceId") String processInstanceId) {
         return ResponseData.ok(taskService.getTaskListByProcessInstanceId(processInstanceId));
@@ -50,7 +47,6 @@ public class BpmTaskController {
 
     @PutMapping("/approve")
     @Operation(summary = "通过任务")
-    
     public ResponseEntity<ResponseData<Boolean>> approveTask(@Valid @RequestBody BpmTaskApproveReqVO reqVO) {
         taskService.approveTask(SecurityUtils.getUserId(), reqVO);
         return ResponseData.ok(true);
@@ -58,7 +54,6 @@ public class BpmTaskController {
 
     @PutMapping("/reject")
     @Operation(summary = "不通过任务")
-    
     public ResponseEntity<ResponseData<Boolean>> rejectTask(@Valid @RequestBody BpmTaskRejectReqVO reqVO) {
         taskService.rejectTask(SecurityUtils.getUserId(), reqVO);
         return ResponseData.ok(true);
@@ -66,7 +61,6 @@ public class BpmTaskController {
 
     @PutMapping("/update-assignee")
     @Operation(summary = "更新任务的负责人", description = "用于【流程详情】的【转派】按钮")
-    
     public ResponseEntity<ResponseData<Boolean>> updateTaskAssignee(@Valid @RequestBody BpmTaskUpdateAssigneeReqVO reqVO) {
         taskService.updateTaskAssignee(SecurityUtils.getUserId(), reqVO);
         return ResponseData.ok(true);

@@ -1,4 +1,4 @@
-package com.z.module.bpm.web.resource.definition;
+package com.z.module.bpm.web.rest.definition;
 
 import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.module.bpm.service.definition.BpmTaskAssignRuleService;

@@ -1,4 +1,4 @@
-package com.z.module.bpm.web.resource.task;
+package com.z.module.bpm.web.rest.task;
 
 import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.module.bpm.service.task.BpmActivityService;
@@ -20,7 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/bpm/activity")
 @Validated
-public class BpmActivityController {
+public class BpmActivityResource {
 
     @Resource
     private BpmActivityService activityService;
@@ -29,7 +29,6 @@ public class BpmActivityController {
     @Operation(summary = "生成指定流程实例的高亮流程图",
             description = "只高亮进行中的任务。不过要注意，该接口暂时没用，通过前端的 ProcessViewer.vue 界面的 highlightDiagram 方法生成")
     @Parameter(name = "processInstanceId", description = "流程实例的编号", required = true)
-    
     public ResponseEntity<ResponseData<List<BpmActivityRespVO>>> getActivityList(
             @RequestParam("processInstanceId") String processInstanceId) {
         return ResponseData.ok(activityService.getActivityListByProcessInstanceId(processInstanceId));
