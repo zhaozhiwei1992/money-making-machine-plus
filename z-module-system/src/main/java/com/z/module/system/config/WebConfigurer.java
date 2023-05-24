@@ -2,7 +2,7 @@ package com.z.module.system.config;
 
 import com.z.framework.common.config.CommonProperties;
 import com.z.framework.operatelog.config.RequestLogAutoConfiguration;
-import com.z.framework.common.exception.CustomResponseErrorHandler;
+import com.z.framework.common.exception.handler.CustomResponseErrorHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.server.WebServerFactory;

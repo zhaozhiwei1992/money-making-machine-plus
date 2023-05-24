@@ -47,13 +47,6 @@
 
 <!--    模块部分 结束 -->
 
-    <!-- 工作流 -->
-    <dependency>
-      <groupId>com.z</groupId>
-      <artifactId>z-starter-flowable</artifactId>
-      <version>${revision}</version>
-    </dependency>
-
     <!-- spring boot 配置所需依赖 -->
     <dependency>
       <groupId>org.springframework.boot</groupId>

@@ -1,0 +1,40 @@
+package com.z.module.bpm.web.mapper.definition;
+
+import com.z.framework.common.util.collection.CollectionUtils;
+import com.z.module.bpm.domain.definition.BpmTaskAssignRuleDO;
+import com.z.module.bpm.web.vo.definition.rule.BpmTaskAssignRuleCreateReqVO;
+import com.z.module.bpm.web.vo.definition.rule.BpmTaskAssignRuleRespVO;
+import com.z.module.bpm.web.vo.definition.rule.BpmTaskAssignRuleUpdateReqVO;
+import org.flowable.bpmn.model.UserTask;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
+
+import java.util.List;
+import java.util.Map;
+
+@Mapper(componentModel = "spring")
+public interface BpmTaskAssignRuleConvert {
+    BpmTaskAssignRuleConvert INSTANCE = Mappers.getMapper(BpmTaskAssignRuleConvert.class);
+
+    default List<BpmTaskAssignRuleRespVO> convertList(List<UserTask> tasks, List<BpmTaskAssignRuleDO> rules) {
+        Map<String, BpmTaskAssignRuleDO> ruleMap = CollectionUtils.convertMap(rules, BpmTaskAssignRuleDO::getTaskDefinitionKey);
+        // 以 UserTask 为主维度，原因是：流程图编辑后，一些规则实际就没用了。
+        return CollectionUtils.convertList(tasks, task -> {
+            BpmTaskAssignRuleRespVO respVO = convert(ruleMap.get(task.getId()));
+            if (respVO == null) {
+                respVO = new BpmTaskAssignRuleRespVO();
+                respVO.setTaskDefinitionKey(task.getId());
+            }
+            respVO.setTaskDefinitionName(task.getName());
+            return respVO;
+        });
+    }
+
+    BpmTaskAssignRuleRespVO convert(BpmTaskAssignRuleDO bean);
+
+    BpmTaskAssignRuleDO convert(BpmTaskAssignRuleCreateReqVO bean);
+
+    BpmTaskAssignRuleDO convert(BpmTaskAssignRuleUpdateReqVO bean);
+
+    List<BpmTaskAssignRuleDO> convertList2(List<BpmTaskAssignRuleRespVO> list);
+}

@@ -22,11 +22,9 @@
         <module>z-starter-mq</module>
         <module>z-starter-job</module>
         <module>z-starter-monitor</module>
-        <module>z-starter-flowable</module>
         <module>z-starter-banner</module>
         <module>z-starter-captcha</module>
         <module>z-starter-operate-log</module>
-        <module>z-starter-activity5</module>
         <module>z-starter-security</module>
         <module>z-starter-data-permission</module>
     </modules>
