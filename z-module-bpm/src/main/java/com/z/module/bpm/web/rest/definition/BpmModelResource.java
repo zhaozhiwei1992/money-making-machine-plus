@@ -20,7 +20,7 @@ import java.io.IOException;
 
 @Tag(name = "管理后台 - 流程模型")
 @RestController
-@RequestMapping("/bpm/model")
+@RequestMapping("/api/bpm/model")
 @Validated
 public class BpmModelResource {
 

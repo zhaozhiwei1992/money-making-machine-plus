@@ -17,7 +17,7 @@ import javax.validation.Valid;
 
 @Tag(name = "管理后台 - 流程实例") // 流程实例，通过流程定义创建的一次“申请”
 @RestController
-@RequestMapping("/bpm/process-instance")
+@RequestMapping("/api/bpm/process-instance")
 @Validated
 public class BpmProcessInstanceResource {
 

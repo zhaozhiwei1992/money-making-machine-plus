@@ -3,7 +3,9 @@ package com.z.module.bpm.web.mapper.task;
 import com.z.framework.common.web.rest.vm.PageResult;
 import com.z.module.bpm.domain.definition.BpmProcessDefinitionExtDO;
 import com.z.module.bpm.domain.task.BpmProcessInstanceExtDO;
-import com.z.module.bpm.event.BpmProcessInstanceResultEvent;
+import com.z.module.bpm.framework.bpm.core.event.BpmProcessInstanceResultEvent;
+import com.z.module.bpm.service.dto.AdminUserRespDTO;
+import com.z.module.bpm.service.dto.DeptRespDTO;
 import com.z.module.bpm.service.message.dto.BpmMessageSendWhenProcessInstanceApproveReqDTO;
 import com.z.module.bpm.service.message.dto.BpmMessageSendWhenProcessInstanceRejectReqDTO;
 import com.z.module.bpm.web.vo.instance.BpmProcessInstancePageItemRespVO;
@@ -49,7 +51,7 @@ public interface BpmProcessInstanceConvert {
                                               ProcessDefinition processDefinition,
                                               BpmProcessDefinitionExtDO processDefinitionExt,
                                               String bpmnXml
-//            , AdminUserRespDTO startUser, DeptRespDTO dept
+            , AdminUserRespDTO startUser, DeptRespDTO dept
     ) {
         BpmProcessInstanceRespVO respVO = convert2(processInstance);
         copyTo(processInstanceExt, respVO);

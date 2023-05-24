@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author 芋道源码
  */
-@Mapper
+@Mapper(componentModel = "spring")
 public interface BpmActivityConvert {
 
     BpmActivityConvert INSTANCE = Mappers.getMapper(BpmActivityConvert.class);

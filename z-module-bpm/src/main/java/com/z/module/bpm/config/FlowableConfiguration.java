@@ -1,5 +1,11 @@
 package com.z.module.bpm.config;
 
+import cn.hutool.core.collection.ListUtil;
+import com.z.module.bpm.service.definition.BpmTaskAssignRuleService;
+import org.flowable.common.engine.api.delegate.event.FlowableEventListener;
+import org.flowable.spring.SpringProcessEngineConfiguration;
+import org.flowable.spring.boot.EngineConfigurationConfigurer;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.AsyncListenableTaskExecutor;

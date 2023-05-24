@@ -84,12 +84,12 @@ public class BpmFormServiceImpl implements BpmFormService {
 
     @Override
     public PageResult<BpmFormDO> getFormPage(BpmFormPageReqVO pageReqVO) {
-        final PageRequest pageAble = PageRequest.of(pageReqVO.getPageNo(), pageReqVO.getPageSize());
+        final PageRequest page = PageRequest.of(pageReqVO.getPageNo(), pageReqVO.getPageSize());
         Page<BpmFormDO> all;
         if (StringUtils.hasText(pageReqVO.getName())){
-            all = bpmFormRepository.findAllByName(pageAble);
+            all = bpmFormRepository.findAllByName(page, pageReqVO.getName());
         }else{
-            all = bpmFormRepository.findAll(pageAble);
+            all = bpmFormRepository.findAll(page);
         }
         return new PageResult<>(all.getContent(), all.getTotalElements());
     }

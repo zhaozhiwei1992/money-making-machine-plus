@@ -1,6 +1,5 @@
-package com.z.module.bpm.event;
+package com.z.module.bpm.framework.bpm.core.event;
 
-import com.z.module.bpm.domain.task.BpmProcessInstanceExtDO;
 import lombok.Data;
 import org.springframework.context.ApplicationEvent;
 

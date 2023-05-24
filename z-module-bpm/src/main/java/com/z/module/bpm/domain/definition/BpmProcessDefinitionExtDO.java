@@ -2,7 +2,9 @@ package com.z.module.bpm.domain.definition;
 
 import com.z.framework.common.domain.AbstractAuditingEntity;
 import com.z.module.bpm.domain.convert.JpaListStringJsonConverter;
+import com.z.module.bpm.enums.definition.BpmModelFormTypeEnum;
 import lombok.*;
+import lombok.experimental.Accessors;
 
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -23,6 +25,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Accessors(chain = true)
 public class BpmProcessDefinitionExtDO extends AbstractAuditingEntity {
 
     /**

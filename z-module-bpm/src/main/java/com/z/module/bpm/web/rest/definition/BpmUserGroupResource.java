@@ -23,7 +23,7 @@ import java.util.List;
 
 @Tag(name = "管理后台 - 用户组")
 @RestController
-@RequestMapping("/bpm/user-group")
+@RequestMapping("/api/bpm/user-group")
 @Validated
 public class BpmUserGroupResource {
 

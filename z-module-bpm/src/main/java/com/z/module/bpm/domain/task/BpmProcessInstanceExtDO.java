@@ -2,9 +2,12 @@ package com.z.module.bpm.domain.task;
 
 import com.z.framework.common.domain.AbstractAuditingEntity;
 import com.z.module.bpm.domain.convert.JpaMapJsonConverter;
+import com.z.module.bpm.enums.task.BpmProcessInstanceResultEnum;
+import com.z.module.bpm.enums.task.BpmProcessInstanceStatusEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -23,6 +26,7 @@ import java.util.Map;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
+@Accessors(chain = true)
 public class BpmProcessInstanceExtDO extends AbstractAuditingEntity {
 
     /**

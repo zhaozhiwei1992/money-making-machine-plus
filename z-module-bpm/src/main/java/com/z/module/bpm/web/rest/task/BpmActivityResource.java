@@ -18,7 +18,7 @@ import java.util.List;
 
 @Tag(name = "管理后台 - 流程活动实例")
 @RestController
-@RequestMapping("/bpm/activity")
+@RequestMapping("/api/bpm/activity")
 @Validated
 public class BpmActivityResource {
 

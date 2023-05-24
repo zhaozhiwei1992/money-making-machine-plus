@@ -1,4 +1,4 @@
-package com.z.module.bpm.event;
+package com.z.module.bpm.framework.bpm.core.event;
 
 import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;

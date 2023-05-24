@@ -2,7 +2,10 @@ package com.z.module.bpm.domain.definition;
 
 import com.z.framework.common.domain.AbstractAuditingEntity;
 import com.z.module.bpm.domain.convert.JpaSetLongJsonConverter;
+import com.z.module.bpm.enums.definition.BpmTaskAssignRuleTypeEnum;
+import com.z.module.bpm.enums.definition.BpmTaskRuleScriptEnum;
 import lombok.*;
+import lombok.experimental.Accessors;
 
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -26,6 +29,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Accessors(chain = true)
 public class BpmTaskAssignRuleDO extends AbstractAuditingEntity {
 
     /**

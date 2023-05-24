@@ -2,6 +2,8 @@ package com.z.server;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * 项目的启动类
@@ -11,6 +13,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 // 忽略 IDEA 无法识别 ${z.app.base-package}
 @SuppressWarnings("SpringComponentScan")
 @SpringBootApplication(scanBasePackages = {"${z.app.base-package}.server", "${z.app.base-package}.module"})
+//@EnableJpaAuditing(auditorAwareRef = "springSecurityAuditorAware")
+//@EnableTransactionManagement
 public class BootStrapServerApplication {
 
     public static void main(String[] args) {

@@ -19,7 +19,7 @@ import java.util.List;
 
 @Tag(name = "管理后台 - 动态表单")
 @RestController
-@RequestMapping("/bpm/form")
+@RequestMapping("/api/bpm/form")
 @Validated
 public class BpmFormResource {
 

@@ -4,7 +4,10 @@ import com.z.framework.common.domain.AbstractAuditingEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 /**
@@ -13,9 +16,12 @@ import java.time.LocalDateTime;
  * @author kemengkai
  * @create 2022-05-09 10:33
  */
+@Entity
+@Table(name = "bpm_activity")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Accessors(chain = true)
 public class BpmActivityDO extends AbstractAuditingEntity {
 
     /**
