@@ -12,11 +12,7 @@ import { config } from './config'
 
 import { ElMessage } from 'element-plus'
 
-import { useCache } from '@/hooks/web/useCache'
-
 import { getAccessToken } from '@/utils/auth'
-
-const { wsCache } = useCache()
 
 const { result_code, base_url } = config
 

@@ -1,3 +1,4 @@
+// 获取.env.{profile}中的配置
 const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL
 
 const config: {

@@ -237,7 +237,7 @@ import { MyProcessViewer } from '@/components/bpmnProcessDesigner/package'
 import * as ModelApi from '@/api/bpm/model'
 import * as FormApi from '@/api/bpm/form'
 import ModelForm from './ModelForm.vue'
-import ModelImportForm from '@/views/bpm/model/ModelImportForm.vue'
+import ModelImportForm from './ModelImportForm.vue'
 import { setConfAndFields2 } from '@/utils/formCreate'
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化

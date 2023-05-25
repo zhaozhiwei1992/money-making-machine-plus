@@ -40,9 +40,9 @@
       <el-table-column align="center" label="编号" prop="id" />
       <el-table-column align="center" label="表单名" prop="name" />
       <el-table-column align="center" label="状态" prop="status">
-        <template #default="scope">
+        <!-- <template #default="scope">
           <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.status" />
-        </template>
+        </template> -->
       </el-table-column>
       <el-table-column align="center" label="备注" prop="remark" />
       <el-table-column
@@ -91,11 +91,13 @@
 </template>
 
 <script lang="ts" name="BpmForm" setup>
+import { ContentWrap } from '@/components/ContentWrap'
+import { Dialog } from '@/components/Dialog'
+import { ElButton, ElTable, ElTableColumn } from 'element-plus'
 import { ref, reactive, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
-import { DICT_TYPE } from '@/utils/dict'
 import { dateFormatter } from '@/utils/formatTime'
 import * as FormApi from '@/api/bpm/form'
 import { setConfAndFields2 } from '@/utils/formCreate'

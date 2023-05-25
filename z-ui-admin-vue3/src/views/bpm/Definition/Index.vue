@@ -95,6 +95,9 @@
 </template>
 
 <script setup lang="ts" name="BpmProcessDefinition">
+import { ContentWrap } from '@/components/ContentWrap'
+import { Dialog } from '@/components/Dialog'
+import { ElButton, ElTable, ElTableColumn } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { DICT_TYPE } from '@/utils/dict'

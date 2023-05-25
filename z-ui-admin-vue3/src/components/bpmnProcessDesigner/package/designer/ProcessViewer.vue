@@ -7,6 +7,7 @@
 </template>
 
 <script setup lang="ts" name="MyProcessViewer">
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import BpmnViewer from 'bpmn-js/lib/Viewer'
 import DefaultEmptyXML from './plugins/defaultEmpty'
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
@@ -38,7 +39,7 @@ const props = defineProps({
   }
 })
 
-provide('configGlobal', props)
+// provide('configGlobal', props)
 
 const emit = defineEmits(['destroy'])
 
