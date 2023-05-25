@@ -18,6 +18,10 @@
 server:
   port: 8090
 
+# 默认前缀, 这个方式感觉有点x
+#servlet:
+#  context-path: /api
+
 ---
 springdoc:
   show-actuator: true

@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 
 @Tag(name = "请求日志信息API")
 @RestController
-@RequestMapping("/api")
 @Slf4j
 @Transactional(rollbackFor = Exception.class)
 public class RequestLogResource {

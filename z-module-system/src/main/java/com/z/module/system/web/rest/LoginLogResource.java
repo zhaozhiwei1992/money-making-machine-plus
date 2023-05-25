@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 
 @Tag(name = "登录日志API")
 @RestController
-@RequestMapping("/api")
 @Slf4j
 @Transactional(rollbackFor = Exception.class)
 public class LoginLogResource {

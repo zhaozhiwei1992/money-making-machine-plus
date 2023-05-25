@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 
 @Tag(name = "用户API")
 @RestController
-@RequestMapping("/api")
 @Slf4j
 @Transactional(rollbackFor = Exception.class)
 public class UserResource {

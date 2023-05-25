@@ -28,7 +28,6 @@ import java.util.Base64;
  * @version V1.0
  */
 @Controller
-@RequestMapping("/api")
 @Slf4j
 public class CaptchaResource {
 

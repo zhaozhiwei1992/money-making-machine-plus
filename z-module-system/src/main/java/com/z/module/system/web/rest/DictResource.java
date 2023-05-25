@@ -18,7 +18,6 @@ import java.util.Map;
 
 @Tag(name = "数据字典API")
 @RestController
-@RequestMapping("/api")
 @Slf4j
 @Transactional(rollbackFor = Exception.class)
 public class DictResource {

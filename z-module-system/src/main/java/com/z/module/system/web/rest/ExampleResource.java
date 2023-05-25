@@ -19,7 +19,7 @@ import java.util.List;
 
 @Tag(name = "测试API")
 @RestController
-@RequestMapping(value = {"/api", "/api/ext"})
+@RequestMapping(value = {"", "/ext"})
 @Slf4j
 @Transactional(rollbackFor = Exception.class)
 public class ExampleResource {

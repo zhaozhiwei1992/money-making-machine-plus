@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 
 @Tag(name = "系统参数API")
 @RestController
-@RequestMapping("/api")
 @Slf4j
 @Transactional(rollbackFor = Exception.class)
 public class SysParamResource {

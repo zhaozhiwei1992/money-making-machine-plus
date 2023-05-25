@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
  */
 @Tag(name = "菜单维护API")
 @RestController
-@RequestMapping("/api")
 @Transactional(rollbackFor = Exception.class)
 public class MenuResource {
 

@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * @version V1.0
  */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("")
 public class GeneratorResource {
 	@Autowired
 	private GeneratorService generatorService;

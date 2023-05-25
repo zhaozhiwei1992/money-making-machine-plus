@@ -24,7 +24,6 @@ import java.util.Optional;
  * REST controller for managing {@link TaskParam}.
  */
 @RestController
-@RequestMapping("/api")
 @Transactional
 public class TaskParamResource {
 

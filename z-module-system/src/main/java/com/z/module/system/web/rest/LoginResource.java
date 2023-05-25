@@ -38,7 +38,6 @@ import java.util.Objects;
  */
 @Tag(name = "登录API")
 @RestController
-@RequestMapping(value = {"/api"})
 @Slf4j
 public class LoginResource {
 

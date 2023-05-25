@@ -13,11 +13,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -99,4 +101,9 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
         return restTemplate;
     }
 
+    @Override
+    public void configurePathMatch(PathMatchConfigurer configurer) {
+        // 增加固定前缀, 所有RestController增加/api, 可以分别自定义注解, 或者分模块
+        configurer.addPathPrefix("/api", c -> c.isAnnotationPresent(RestController.class));
+    }
 }

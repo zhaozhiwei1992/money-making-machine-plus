@@ -22,7 +22,7 @@ import java.util.List;
 
 @Tag(name = "管理后台 - 流程定义")
 @RestController
-@RequestMapping("/api/bpm/process-definition")
+@RequestMapping("/bpm/process-definition")
 @Validated
 public class BpmProcessDefinitionResource {
 

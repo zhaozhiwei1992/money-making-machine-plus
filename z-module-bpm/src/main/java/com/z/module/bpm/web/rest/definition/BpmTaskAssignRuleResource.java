@@ -19,7 +19,7 @@ import java.util.List;
 
 @Tag(name = "管理后台 - 任务分配规则")
 @RestController
-@RequestMapping("/api/bpm/task-assign-rule")
+@RequestMapping("/bpm/task-assign-rule")
 @Validated
 public class BpmTaskAssignRuleResource {
 

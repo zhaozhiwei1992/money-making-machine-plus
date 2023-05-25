@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
 @Transactional
 @Slf4j
 public class UiToolButtonResource {

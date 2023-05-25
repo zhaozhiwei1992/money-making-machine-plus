@@ -30,7 +30,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api")
 @Transactional
 @Slf4j
 public class UiEditFormResource {

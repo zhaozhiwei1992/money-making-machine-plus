@@ -28,7 +28,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api")
 @Transactional
 public class UiTableResource {
 
