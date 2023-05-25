@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +28,7 @@ import java.util.Base64;
  * @date 2022/8/31 上午9:35
  * @version V1.0
  */
-@Controller
+@RestController
 @Slf4j
 public class CaptchaResource {
 

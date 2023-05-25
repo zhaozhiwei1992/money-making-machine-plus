@@ -5,16 +5,16 @@ interface RoleParams {
   roleName: string
 }
 
-// 请求时得看下是否自动增加了/api
+// 请求时得看下是否自动增加了
 export const loginApi = (data: UserType): Promise<IResponse<UserType>> => {
-  return request.post({ url: '/api/login', data })
+  return request.post({ url: '/login', data })
   // 等价
   // const options = { data: data }
-  // return request.post({ url: '/api/login', ...options })
+  // return request.post({ url: '/login', ...options })
 }
 
 export const loginOutApi = (): Promise<IResponse> => {
-  return request.get({ url: '/api/loginOut' })
+  return request.get({ url: '/loginOut' })
 }
 
 export const getUserListApi = ({ params }: AxiosConfig) => {
@@ -24,7 +24,7 @@ export const getUserListApi = ({ params }: AxiosConfig) => {
       list: UserType[]
       total: number
     }
-  }>({ url: '/api/users', params })
+  }>({ url: '/users', params })
 }
 
 export const getAdminRoleApi = (
@@ -40,12 +40,12 @@ export const getTestRoleApi = (params: RoleParams): Promise<IResponse<string[]>>
 export const getMenuRouteListApi = (
   params: RoleParams
 ): Promise<IResponse<AppCustomRouteRecordRaw[]>> => {
-  return request.get({ url: '/api/menus/route', params })
+  return request.get({ url: '/menus/route', params })
 }
 
 // 获取验证码
 export const getImgCodeApi = (): Promise<any> => {
   // const options = { responseType: 'arraybuffer' }
   const options = { responseType: 'text' }
-  return request.get({ url: '/api/captcha/numCode', ...options })
+  return request.get({ url: '/captcha/numCode', ...options })
 }

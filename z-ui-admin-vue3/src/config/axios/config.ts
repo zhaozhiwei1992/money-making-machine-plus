@@ -1,3 +1,5 @@
+const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL
+
 const config: {
   base_url: {
     base: string
@@ -17,13 +19,13 @@ const config: {
     base: '/api',
 
     // 打包开发环境接口前缀
-    dev: '',
+    dev: VITE_SERVER_URL + '/api',
 
     // 打包生产环境接口前缀
-    pro: 'http://43.143.194.245:8090',
+    pro: VITE_SERVER_URL + '/api',
 
     // 打包测试环境接口前缀
-    test: ''
+    test: VITE_SERVER_URL + '/api'
   },
 
   /**

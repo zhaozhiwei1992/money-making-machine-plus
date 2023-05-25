@@ -19,7 +19,7 @@ public class BpmLiquibaseConfiguration {
     private static final String MODULE_NAME = "bpm";
 
     @Bean
-    public SpringLiquibase liquibaseModuleReport(
+    public SpringLiquibase liquibaseModuleBpm(
             LiquibaseProperties liquibaseProperties,
             DataSource dataSource) {
 

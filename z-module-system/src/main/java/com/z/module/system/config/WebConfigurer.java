@@ -30,7 +30,8 @@ import java.util.Arrays;
  * Configuration of web application with Servlet 3.0 APIs.
  */
 @Configuration
-public class WebConfigurer implements ServletContextInitializer, WebServerFactoryCustomizer<WebServerFactory>, WebMvcConfigurer {
+public class WebConfigurer implements ServletContextInitializer, WebServerFactoryCustomizer<WebServerFactory>,
+        WebMvcConfigurer {
 
     private final Logger log = LoggerFactory.getLogger(RequestLogAutoConfiguration.class);
 
@@ -78,10 +79,10 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
     }
 
     /**
+     * @param registry :
      * @data: 2023/5/21-下午3:21
      * @User: zhaozhiwei
      * @method: addResourceHandlers
-      * @param registry :
      * @return: void
      * @Description: 如果有静态资源打到jar包里找不到的需要这里搞搞
      */
@@ -91,11 +92,12 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
     }
 
     @Bean
-    public RestTemplate restTemplate(){
+    public RestTemplate restTemplate() {
         RestTemplate restTemplate = new RestTemplate();
         MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter =
                 new MappingJackson2HttpMessageConverter();
-        mappingJackson2HttpMessageConverter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM));
+        mappingJackson2HttpMessageConverter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON,
+                MediaType.APPLICATION_OCTET_STREAM));
         restTemplate.getMessageConverters().add(mappingJackson2HttpMessageConverter);
         restTemplate.setErrorHandler(new CustomResponseErrorHandler());
         return restTemplate;
@@ -104,6 +106,10 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
     @Override
     public void configurePathMatch(PathMatchConfigurer configurer) {
         // 增加固定前缀, 所有RestController增加/api, 可以分别自定义注解, 或者分模块
-        configurer.addPathPrefix("/api", c -> c.isAnnotationPresent(RestController.class));
+        // 有可能会有依赖内部使用了RestController注解导致错误, 自定义注解靠谱点
+//        configurer.addPathPrefix("/api", c -> c.isAnnotationPresent(RestController.class));
+        // 通过包名统一增加前缀, 更科学点, 或者每个模块自行处理
+        configurer.addPathPrefix("/api",
+                c -> c.isAnnotationPresent(RestController.class) && c.getPackage().getName().contains("web.rest"));
     }
 }
