@@ -1,6 +1,23 @@
 import request from '@/config/axios'
 import type { TableData } from './types'
 
+export interface UserVO {
+  id: number
+  username: string
+  nickname: string
+  deptId: number
+  postIds: string[]
+  email: string
+  mobile: string
+  sex: number
+  avatar: string
+  loginIp: string
+  status: number
+  remark: string
+  loginDate: Date
+  createTime: Date
+}
+
 export const getTableListApi = (params: any): Promise<IResponse> => {
   // 转换, 适配jpa PageRequest
   params = { page: params.pageIndex, size: params.pageSize }
@@ -23,4 +40,9 @@ export const getTableDetApi = (id: string): Promise<IResponse<TableData>> => {
 export const delTableListApi = (ids: string[] | number[]): Promise<IResponse> => {
   // 适配后端, 直接使用RequestBody接收数据, 不能使用{ids}, 这种表示data里的是个map对象,key为ids
   return request.delete({ url: '/api/users', data: ids })
+}
+
+// 获取用户精简信息列表
+export const getTableListAllApi = (): Promise<UserVO[]> => {
+  return request.get({ url: '/api/users/all' })
 }
