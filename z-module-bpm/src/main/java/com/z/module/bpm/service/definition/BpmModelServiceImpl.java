@@ -95,7 +95,7 @@ public class BpmModelServiceImpl implements BpmModelService {
 
         // 拼接结果
         long modelCount = modelQuery.count();
-        return new PageResult<>(BpmModelConvert.INSTANCE.convertList(models, formMap, deploymentMap, processDefinitionMap), modelCount);
+        return new PageResult<>(bpmModelConvert.convertList(models, formMap, deploymentMap, processDefinitionMap), modelCount);
     }
 
     @Override
@@ -110,7 +110,7 @@ public class BpmModelServiceImpl implements BpmModelService {
 
         // 创建流程定义
         Model model = repositoryService.newModel();
-        BpmModelConvert.INSTANCE.copy(model, createReqVO);
+        bpmModelConvert.copy(model, createReqVO);
         // 保存流程定义
         repositoryService.saveModel(model);
         // 保存 BPMN XML
@@ -128,7 +128,7 @@ public class BpmModelServiceImpl implements BpmModelService {
         if (model == null) {
             return null;
         }
-        BpmModelRespVO modelRespVO = BpmModelConvert.INSTANCE.convert(model);
+        BpmModelRespVO modelRespVO = bpmModelConvert.convert(model);
         // 拼接 bpmn XML
         byte[] bpmnBytes = repositoryService.getModelEditorSource(id);
         modelRespVO.setBpmnXml(StrUtil.utf8Str(bpmnBytes));
@@ -145,7 +145,7 @@ public class BpmModelServiceImpl implements BpmModelService {
         }
 
         // 修改流程定义
-        BpmModelConvert.INSTANCE.copy(model, updateReqVO);
+        bpmModelConvert.copy(model, updateReqVO);
         // 更新模型
         repositoryService.saveModel(model);
         // 更新 BPMN XML
@@ -161,7 +161,7 @@ public class BpmModelServiceImpl implements BpmModelService {
             throw exception(MODEL_NOT_EXISTS);
         }
         // 1.2 校验流程图
-        // TODO 芋艿：校验流程图的有效性；例如说，是否有开始的元素，是否有结束的元素；
+        // TODO 校验流程图的有效性；例如说，是否有开始的元素，是否有结束的元素；
         byte[] bpmnBytes = repositoryService.getModelEditorSource(model.getId());
         if (bpmnBytes == null) {
             throw exception(MODEL_NOT_EXISTS);

@@ -48,13 +48,7 @@
       <el-table-column align="center" label="任务名称" prop="name" />
       <el-table-column align="center" label="所属流程" prop="processInstance.name" />
       <el-table-column align="center" label="流程发起人" prop="processInstance.startUserNickname" />
-      <el-table-column
-        :formatter="dateFormatter"
-        align="center"
-        label="创建时间"
-        prop="createTime"
-        width="180"
-      />
+      <el-table-column align="center" label="创建时间" prop="createTime" width="180" />
       <el-table-column label="任务状态" prop="suspensionState">
         <template #default="scope">
           <el-tag v-if="scope.row.suspensionState === 1" type="success">激活</el-tag>
@@ -78,9 +72,20 @@
 </template>
 
 <script lang="ts" name="BpmDoneTask" setup>
+import { ContentWrap } from '@/components/ContentWrap'
+import {
+  ElButton,
+  ElTable,
+  ElTableColumn,
+  ElForm,
+  ElFormItem,
+  ElInput,
+  ElTag,
+  ElDatePicker
+} from 'element-plus'
+import { Pagination } from '@/components/Pagination'
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { dateFormatter } from '@/utils/formatTime'
 import * as TaskApi from '@/api/bpm/task'
 
 const { push } = useRouter() // 路由

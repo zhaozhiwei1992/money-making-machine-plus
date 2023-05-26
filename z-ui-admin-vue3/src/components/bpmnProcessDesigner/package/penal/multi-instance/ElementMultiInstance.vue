@@ -67,6 +67,8 @@
 </template>
 
 <script setup lang="ts" name="ElementMultiInstance">
+import { ref, inject, toRaw, watch, onBeforeUnmount } from 'vue'
+import { ElForm, ElFormItem, ElInput, ElCheckbox, ElSelect, ElOption } from 'element-plus'
 const props = defineProps({
   businessObject: Object,
   type: String

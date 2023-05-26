@@ -96,13 +96,7 @@
           <label v-else>暂无表单</label>
         </template>
       </el-table-column>
-      <el-table-column
-        label="创建时间"
-        align="center"
-        prop="createTime"
-        width="180"
-        :formatter="dateFormatter"
-      />
+      <el-table-column label="创建时间" align="center" prop="createTime" width="180" />
       <el-table-column label="最新部署的流程定义" align="center">
         <el-table-column
           label="流程版本"
@@ -227,12 +221,29 @@
 </template>
 
 <script setup lang="ts" name="BpmModel">
-import { ref, reactive, onMounted } from 'vue'
+import formCreate from '@form-create/element-ui'
+import { ContentWrap } from '@/components/ContentWrap'
+import { Dialog } from '@/components/Dialog'
+import { DictTag } from '@/components/DictTag'
+import { Pagination } from '@/components/Pagination'
+import {
+  ElButton,
+  ElTable,
+  ElTableColumn,
+  ElForm,
+  ElFormItem,
+  ElInput,
+  ElSelect,
+  ElOption,
+  ElSwitch,
+  ElTag
+} from 'element-plus'
+import { ref, reactive, onMounted, Ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
-import { dateFormatter, formatDate } from '@/utils/formatTime'
+import { formatDate } from '@/utils/formatTime'
 import { MyProcessViewer } from '@/components/bpmnProcessDesigner/package'
 import * as ModelApi from '@/api/bpm/model'
 import * as FormApi from '@/api/bpm/form'
@@ -368,7 +379,11 @@ const handleDefinitionList = (row) => {
 
 /** 流程表单的详情按钮操作 */
 const formDetailVisible = ref(false)
-const formDetailPreview = ref({
+interface FormDetailPreviewType {
+  rule: any[]
+  option: {}
+}
+const formDetailPreview: Ref<FormDetailPreviewType> = ref({
   rule: [],
   option: {}
 })

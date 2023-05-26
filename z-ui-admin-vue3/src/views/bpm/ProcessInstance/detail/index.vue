@@ -94,6 +94,9 @@
   </ContentWrap>
 </template>
 <script lang="ts" name="BpmProcessInstanceDetail" setup>
+import { ContentWrap } from '@/components/ContentWrap'
+import { ElButton, ElForm, ElFormItem, ElInput, ElCard, ElCol } from 'element-plus'
+import formCreate from '@form-create/element-ui'
 import { ref, unref, reactive, onMounted, getCurrentInstance, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import { useMessage } from '@/hooks/web/useMessage'

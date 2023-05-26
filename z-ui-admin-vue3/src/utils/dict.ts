@@ -111,17 +111,6 @@ export enum DICT_TYPE {
   SYSTEM_MAIL_SEND_STATUS = 'system_mail_send_status',
   SYSTEM_NOTIFY_TEMPLATE_TYPE = 'system_notify_template_type',
 
-  // ========== INFRA 模块 ==========
-  INFRA_BOOLEAN_STRING = 'infra_boolean_string',
-  INFRA_JOB_STATUS = 'infra_job_status',
-  INFRA_JOB_LOG_STATUS = 'infra_job_log_status',
-  INFRA_API_ERROR_LOG_PROCESS_STATUS = 'infra_api_error_log_process_status',
-  INFRA_CONFIG_TYPE = 'infra_config_type',
-  INFRA_CODEGEN_TEMPLATE_TYPE = 'infra_codegen_template_type',
-  INFRA_CODEGEN_FRONT_TYPE = 'infra_codegen_front_type',
-  INFRA_CODEGEN_SCENE = 'infra_codegen_scene',
-  INFRA_FILE_STORAGE = 'infra_file_storage',
-
   // ========== BPM 模块 ==========
   BPM_MODEL_CATEGORY = 'bpm_model_category',
   BPM_MODEL_FORM_TYPE = 'bpm_model_form_type',
@@ -131,23 +120,7 @@ export enum DICT_TYPE {
   BPM_TASK_ASSIGN_SCRIPT = 'bpm_task_assign_script',
   BPM_OA_LEAVE_TYPE = 'bpm_oa_leave_type',
 
-  // ========== PAY 模块 ==========
-  PAY_CHANNEL_WECHAT_VERSION = 'pay_channel_wechat_version', // 微信渠道版本
-  PAY_CHANNEL_ALIPAY_SIGN_TYPE = 'pay_channel_alipay_sign_type', // 支付渠道支付宝算法类型
-  PAY_CHANNEL_ALIPAY_MODE = 'pay_channel_alipay_mode', // 支付宝公钥类型
-  PAY_CHANNEL_ALIPAY_SERVER_TYPE = 'pay_channel_alipay_server_type', // 支付宝网关地址
-  PAY_CHANNEL_CODE_TYPE = 'pay_channel_code_type', // 支付渠道编码类型
-  PAY_ORDER_NOTIFY_STATUS = 'pay_order_notify_status', // 商户支付订单回调状态
-  PAY_ORDER_STATUS = 'pay_order_status', // 商户支付订单状态
-  PAY_ORDER_REFUND_STATUS = 'pay_order_refund_status', // 商户支付订单退款状态
-  PAY_REFUND_ORDER_STATUS = 'pay_refund_order_status', // 退款订单状态
-  PAY_REFUND_ORDER_TYPE = 'pay_refund_order_type', // 退款订单类别
-
   // ========== MP 模块 ==========
   MP_AUTO_REPLY_REQUEST_MATCH = 'mp_auto_reply_request_match', // 自动回复请求匹配类型
-  MP_MESSAGE_TYPE = 'mp_message_type', // 消息类型
-
-  // ========== MALL 模块 ==========
-  PRODUCT_UNIT = 'product_unit', // 商品单位
-  PRODUCT_SPU_STATUS = 'product_spu_status' //商品状态
+  MP_MESSAGE_TYPE = 'mp_message_type' // 消息类型
 }

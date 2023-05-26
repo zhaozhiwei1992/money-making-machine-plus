@@ -14,6 +14,7 @@
   </el-card>
 </template>
 <script lang="ts" name="BpmProcessInstanceBpmnViewer" setup>
+import { ElCard } from 'element-plus'
 import { ref, onMounted } from 'vue'
 import { propTypes } from '@/utils/propTypes'
 import { MyProcessViewer } from '@/components/bpmnProcessDesigner/package'

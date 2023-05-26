@@ -49,6 +49,10 @@
 </template>
 
 <script setup lang="ts" name="ReceiveTask">
+import { ref, onMounted, toRaw, onBeforeUnmount, watch, nextTick } from 'vue'
+import { useMessage } from '@/hooks/web/useMessage'
+import { XButton } from '@/components/XButton'
+import { ElForm, ElFormItem, ElInput, ElDialog, ElButton, ElSelect, ElOption } from 'element-plus'
 const props = defineProps({
   id: String,
   type: String

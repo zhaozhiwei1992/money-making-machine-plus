@@ -45,6 +45,8 @@
 </template>
 
 <script setup lang="ts" name="ScriptTask">
+import { ref, onBeforeUnmount, toRaw, watch, nextTick } from 'vue'
+import { ElFormItem, ElInput, ElSelect, ElOption } from 'element-plus'
 const props = defineProps({
   id: String,
   type: String

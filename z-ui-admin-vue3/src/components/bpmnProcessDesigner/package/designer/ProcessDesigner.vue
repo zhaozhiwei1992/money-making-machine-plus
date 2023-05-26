@@ -212,7 +212,11 @@
 // import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css'
 // import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css'
 // import 'bpmn-js-properties-panel/dist/assets/bpmn-js-properties-panel.css' // 右侧框样式
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ref, computed } from 'vue'
+import { XButton } from '@/components/XButton'
+import { XTextButton } from '@/components/XButton'
+import { Dialog } from '@/components/Dialog'
+import { ElMessage, ElMessageBox, ElTooltip, ElButtonGroup, ElButton } from 'element-plus'
 import BpmnModeler from 'bpmn-js/lib/Modeler'
 import DefaultEmptyXML from './plugins/defaultEmpty'
 // 翻译方法

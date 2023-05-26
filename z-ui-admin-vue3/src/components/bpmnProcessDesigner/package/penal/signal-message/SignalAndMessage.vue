@@ -46,6 +46,18 @@
   </div>
 </template>
 <script setup lang="ts" name="SignalAndMassage">
+import { ref, computed, onMounted } from 'vue'
+import { useMessage } from '@/hooks/web/useMessage'
+import { XButton } from '@/components/XButton'
+import {
+  ElForm,
+  ElFormItem,
+  ElInput,
+  ElDialog,
+  ElButton,
+  ElTable,
+  ElTableColumn
+} from 'element-plus'
 const message = useMessage()
 const signalList = ref<any[]>([])
 const messageList = ref<any[]>([])

@@ -41,13 +41,8 @@
           <el-tag type="warning" v-if="scope.row.suspensionState === 2">挂起</el-tag>
         </template>
       </el-table-column>
-      <el-table-column
-        label="部署时间"
-        align="center"
-        prop="deploymentTime"
-        width="180"
-        :formatter="dateFormatter"
-      />
+      <el-table-column label="部署时间" align="center" prop="deploymentTime" width="180" />
+      <!-- :formatter="dateFormatter" -->
       <el-table-column
         label="定义描述"
         align="center"
@@ -98,10 +93,10 @@
 import { ContentWrap } from '@/components/ContentWrap'
 import { Dialog } from '@/components/Dialog'
 import { ElButton, ElTable, ElTableColumn } from 'element-plus'
+import { Pagination } from '@/components/Pagination'
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { DICT_TYPE } from '@/utils/dict'
-import { dateFormatter } from '@/utils/formatTime'
 import { MyProcessViewer } from '@/components/bpmnProcessDesigner/package'
 import * as DefinitionApi from '@/api/bpm/definition'
 import { setConfAndFields2 } from '@/utils/formCreate'

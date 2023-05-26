@@ -26,6 +26,9 @@
   </Dialog>
 </template>
 <script lang="ts" name="BpmTaskDetail" setup>
+import { Dialog } from '@/components/Dialog'
+import { ElDescriptions, ElDescriptionsItem } from 'element-plus'
+import { DictTag } from '@/components/DictTag'
 import { ref } from 'vue'
 import { DICT_TYPE } from '@/utils/dict'
 import { formatDate } from '@/utils/formatTime'

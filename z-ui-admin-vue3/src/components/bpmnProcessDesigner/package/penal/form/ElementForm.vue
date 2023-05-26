@@ -223,6 +223,20 @@
 </template>
 
 <script setup lang="ts" name="ElementForm">
+import { ref, inject, toRaw, watch, nextTick } from 'vue'
+import { XButton } from '@/components/XButton'
+import {
+  ElButton,
+  ElForm,
+  ElFormItem,
+  ElInput,
+  ElDialog,
+  ElDrawer,
+  ElTable,
+  ElTableColumn,
+  ElSelect,
+  ElOption
+} from 'element-plus'
 const props = defineProps({
   id: String,
   type: String

@@ -114,20 +114,8 @@
           <dict-tag :type="DICT_TYPE.BPM_PROCESS_INSTANCE_RESULT" :value="scope.row.result" />
         </template>
       </el-table-column>
-      <el-table-column
-        label="提交时间"
-        align="center"
-        prop="createTime"
-        width="180"
-        :formatter="dateFormatter"
-      />
-      <el-table-column
-        label="结束时间"
-        align="center"
-        prop="endTime"
-        width="180"
-        :formatter="dateFormatter"
-      />
+      <el-table-column label="提交时间" align="center" prop="createTime" width="180" />
+      <el-table-column label="结束时间" align="center" prop="endTime" width="180" />
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
@@ -160,8 +148,24 @@
   </ContentWrap>
 </template>
 <script setup lang="ts" name="BpmProcessInstance">
+import { ContentWrap } from '@/components/ContentWrap'
+import {
+  ElButton,
+  ElTable,
+  ElTableColumn,
+  ElForm,
+  ElFormItem,
+  ElInput,
+  ElDatePicker,
+  ElSelect,
+  ElOption
+} from 'element-plus'
+import { DictTag } from '@/components/DictTag'
+import { ref, reactive, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useI18n } from '@/hooks/web/useI18n'
+import { useMessage } from '@/hooks/web/useMessage'
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
-import { dateFormatter } from '@/utils/formatTime'
 import { ElMessageBox } from 'element-plus'
 import * as ProcessInstanceApi from '@/api/bpm/processInstance'
 const router = useRouter() // 路由

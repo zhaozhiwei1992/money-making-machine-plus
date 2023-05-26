@@ -122,6 +122,18 @@
   </Dialog>
 </template>
 <script lang="ts" name="ModelForm" setup>
+import { Dialog } from '@/components/Dialog'
+import {
+  ElButton,
+  ElForm,
+  ElFormItem,
+  ElInput,
+  ElTooltip,
+  ElSelect,
+  ElOption,
+  ElRadioGroup,
+  ElRadio
+} from 'element-plus'
 import { ref, reactive } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'

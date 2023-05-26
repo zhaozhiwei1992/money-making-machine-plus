@@ -39,6 +39,9 @@
   </Dialog>
 </template>
 <script lang="ts" name="BpmFormEditor" setup>
+import { ContentWrap } from '@/components/ContentWrap'
+import { Dialog } from '@/components/Dialog'
+import { ElButton, ElForm, ElFormItem, ElInput, ElRadioGroup, ElRadio } from 'element-plus'
 import { ref, unref, reactive, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from '@/hooks/web/useI18n'

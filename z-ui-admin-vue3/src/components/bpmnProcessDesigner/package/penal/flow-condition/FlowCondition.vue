@@ -63,6 +63,8 @@
 </template>
 
 <script setup lang="ts" name="FlowCondition">
+import { ref, watch, onBeforeUnmount, toRaw, nextTick } from 'vue'
+import { ElForm, ElFormItem, ElInput, ElSelect, ElOption } from 'element-plus'
 const props = defineProps({
   businessObject: Object,
   type: String

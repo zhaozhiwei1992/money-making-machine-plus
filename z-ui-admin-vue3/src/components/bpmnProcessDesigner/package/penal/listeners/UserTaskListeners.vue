@@ -288,7 +288,22 @@
   </div>
 </template>
 <script setup lang="ts" name="UserTaskListeners">
-import { ElMessageBox } from 'element-plus'
+import { ref, inject, nextTick, watch } from 'vue'
+import { XButton } from '@/components/XButton'
+import {
+  ElMessageBox,
+  ElDialog,
+  ElForm,
+  ElFormItem,
+  ElInput,
+  ElSelect,
+  ElOption,
+  ElTable,
+  ElTableColumn,
+  ElDivider,
+  ElDrawer,
+  ElButton
+} from 'element-plus'
 import { createListenerObject, updateElementExtensions } from '../../utils'
 import { initListenerForm, initListenerType, eventType, listenerType, fieldType } from './utilSelf'
 const props = defineProps({

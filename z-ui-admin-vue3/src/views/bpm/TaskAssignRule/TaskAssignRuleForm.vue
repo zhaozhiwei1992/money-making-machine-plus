@@ -98,6 +98,16 @@
   </Dialog>
 </template>
 <script lang="ts" name="BpmTaskAssignRuleForm" setup>
+import { Dialog } from '@/components/Dialog'
+import {
+  ElButton,
+  ElForm,
+  ElFormItem,
+  ElInput,
+  ElSelect,
+  ElOption,
+  ElTreeSelect
+} from 'element-plus'
 import { ref, reactive, Ref } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'

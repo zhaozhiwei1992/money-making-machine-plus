@@ -54,13 +54,7 @@
         </template>
       </el-table-column>
       <el-table-column align="center" label="原因" prop="reason" />
-      <el-table-column
-        :formatter="dateFormatter"
-        align="center"
-        label="创建时间"
-        prop="createTime"
-        width="180"
-      />
+      <el-table-column align="center" label="创建时间" prop="createTime" width="180" />
       <el-table-column align="center" label="操作">
         <template #default="scope">
           <el-button link type="primary" @click="openDetail(scope.row)">详情</el-button>
@@ -81,10 +75,21 @@
   <TaskDetail ref="detailRef" @success="getList" />
 </template>
 <script lang="ts" name="BpmTodoTask" setup>
+import { ContentWrap } from '@/components/ContentWrap'
+import {
+  ElButton,
+  ElTable,
+  ElTableColumn,
+  ElForm,
+  ElFormItem,
+  ElInput,
+  ElDatePicker
+} from 'element-plus'
+import { Pagination } from '@/components/Pagination'
+import { DictTag } from '@/components/DictTag'
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { DICT_TYPE } from '@/utils/dict'
-import { dateFormatter } from '@/utils/formatTime'
 import * as TaskApi from '@/api/bpm/task'
 import TaskDetail from './TaskDetail.vue'
 

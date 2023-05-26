@@ -53,7 +53,18 @@
 </template>
 
 <script setup lang="ts" name="ElementProperties">
-import { ElMessageBox } from 'element-plus'
+import { ref, inject, nextTick, toRaw, watch } from 'vue'
+import { XButton } from '@/components/XButton'
+import {
+  ElMessageBox,
+  ElDialog,
+  ElForm,
+  ElFormItem,
+  ElButton,
+  ElTable,
+  ElTableColumn,
+  ElDivider
+} from 'element-plus'
 const props = defineProps({
   id: String,
   type: String

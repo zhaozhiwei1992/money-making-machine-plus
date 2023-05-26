@@ -47,6 +47,10 @@
   </ContentWrap>
 </template>
 <script setup lang="ts" name="BpmProcessInstanceCreate">
+import { ContentWrap } from '@/components/ContentWrap'
+import { ElButton, ElTable, ElTableColumn, ElCard, ElCol } from 'element-plus'
+import { DictTag } from '@/components/DictTag'
+import formCreate from '@form-create/element-ui'
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useMessage } from '@/hooks/web/useMessage'

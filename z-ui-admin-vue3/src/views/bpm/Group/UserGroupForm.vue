@@ -42,6 +42,17 @@
   </Dialog>
 </template>
 <script lang="ts" name="UserGroupForm" setup>
+import { Dialog } from '@/components/Dialog'
+import {
+  ElButton,
+  ElForm,
+  ElFormItem,
+  ElInput,
+  ElSelect,
+  ElOption,
+  ElRadioGroup,
+  ElRadio
+} from 'element-plus'
 import * as UserGroupApi from '@/api/bpm/userGroup'
 import * as UserApi from '@/api/system/user'
 import { useI18n } from '@/hooks/web/useI18n'

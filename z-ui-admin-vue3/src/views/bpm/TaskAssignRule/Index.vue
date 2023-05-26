@@ -33,6 +33,9 @@
   <TaskAssignRuleForm ref="formRef" @success="getList" />
 </template>
 <script setup lang="ts" name="BpmTaskAssignRule">
+import { ContentWrap } from '@/components/ContentWrap'
+import { ElButton, ElTable, ElTableColumn } from 'element-plus'
+import { DictTag } from '@/components/DictTag'
 import { ref, reactive, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'

@@ -45,12 +45,8 @@
         </template> -->
       </el-table-column>
       <el-table-column align="center" label="备注" prop="remark" />
-      <el-table-column
-        :formatter="dateFormatter"
-        align="center"
-        label="创建时间"
-        prop="createTime"
-      />
+      <el-table-column align="center" label="创建时间" prop="createTime" />
+      <!-- :formatter="dateFormatter" -->
       <el-table-column align="center" label="操作">
         <template #default="scope">
           <el-button
@@ -93,12 +89,11 @@
 <script lang="ts" name="BpmForm" setup>
 import { ContentWrap } from '@/components/ContentWrap'
 import { Dialog } from '@/components/Dialog'
-import { ElButton, ElTable, ElTableColumn } from 'element-plus'
+import { ElButton, ElTable, ElTableColumn, ElForm, ElFormItem, ElInput } from 'element-plus'
 import { ref, reactive, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
-import { dateFormatter } from '@/utils/formatTime'
 import * as FormApi from '@/api/bpm/form'
 import { setConfAndFields2 } from '@/utils/formCreate'
 
@@ -141,7 +136,7 @@ const resetQuery = () => {
 }
 
 /** 添加/修改操作 */
-const openForm = (id?: number) => {
+const openForm = (id?: number | any) => {
   const toRouter: { name: string; query?: { id: number } } = {
     name: 'BpmFormEditor'
   }

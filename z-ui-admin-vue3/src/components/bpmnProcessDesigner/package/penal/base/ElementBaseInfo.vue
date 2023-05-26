@@ -38,6 +38,8 @@
   </div>
 </template>
 <script setup lang="ts" name="ElementBaseInfo">
+import { ref, reactive, onMounted, watch, onBeforeUnmount, toRaw } from 'vue'
+import { ElForm, ElFormItem, ElInput } from 'element-plus'
 const props = defineProps({
   businessObject: {
     type: Object,

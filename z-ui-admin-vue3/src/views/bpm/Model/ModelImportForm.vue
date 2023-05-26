@@ -50,6 +50,8 @@
   </Dialog>
 </template>
 <script lang="ts" name="ModelImportForm" setup>
+import { Dialog } from '@/components/Dialog'
+import { ElButton, ElForm, ElFormItem, ElInput, ElUpload } from 'element-plus'
 import { ref, reactive } from 'vue'
 import { useMessage } from '@/hooks/web/useMessage'
 import { getAccessToken } from '@/utils/auth'

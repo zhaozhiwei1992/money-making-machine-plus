@@ -62,7 +62,7 @@
       <el-table-column label="成员" align="center">
         <template #default="scope">
           <span v-for="userId in scope.row.memberUserIds" :key="userId" class="pr-5px">
-            {{ userList.find((user) => user.id === userId)?.name }}
+            {{ userList.find((user) => user.id === userId)?.username }}
           </span>
         </template>
       </el-table-column>
@@ -71,12 +71,7 @@
           <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.status" />
         </template>
       </el-table-column>
-      <el-table-column
-        label="创建时间"
-        align="center"
-        prop="createTime"
-        :formatter="dateFormatter"
-      />
+      <el-table-column label="创建时间" align="center" prop="createTime" />
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
@@ -112,30 +107,49 @@
 </template>
 
 <script setup lang="ts" name="BpmUserGroup">
+import { ContentWrap } from '@/components/ContentWrap'
+import {
+  ElButton,
+  ElTable,
+  ElTableColumn,
+  ElForm,
+  ElFormItem,
+  ElDatePicker,
+  ElInput,
+  DateModelType
+} from 'element-plus'
+import { Pagination } from '@/components/Pagination'
 import { ref, reactive, onMounted } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
-import { dateFormatter } from '@/utils/formatTime'
 import * as UserGroupApi from '@/api/bpm/userGroup'
 import * as UserApi from '@/api/system/user'
 import UserGroupForm from './UserGroupForm.vue'
-import { TableData } from '@/api/system/user/types'
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
 const total = ref(0) // 列表的总页数
 const list = ref([]) // 列表的数据
-const queryParams = reactive({
+
+// 集合类型不指定都是never, 各种报红
+interface QueryParamType {
+  pageNo: number
+  pageSize: number
+  name: string
+  status: string
+  createTime: any | DateModelType[]
+}
+const queryParams: QueryParamType = reactive({
   pageNo: 1,
   pageSize: 10,
-  name: null,
-  status: null,
+  name: '',
+  status: '',
   createTime: []
 })
 const queryFormRef = ref() // 搜索的表单
-const userList = ref<TableData[]>([]) // 用户列表
+const userList = ref<UserApi.UserVO[]>([]) // 用户列表
 
 /** 查询列表 */
 const getList = async () => {

@@ -25,6 +25,8 @@
   </Dialog>
 </template>
 <script lang="ts" name="BpmTaskUpdateAssigneeForm" setup>
+import { Dialog } from '@/components/Dialog'
+import { ElButton, ElForm, ElFormItem, ElSelect, ElOption } from 'element-plus'
 import { ref } from 'vue'
 import * as TaskApi from '@/api/bpm/task'
 import * as UserApi from '@/api/system/user'

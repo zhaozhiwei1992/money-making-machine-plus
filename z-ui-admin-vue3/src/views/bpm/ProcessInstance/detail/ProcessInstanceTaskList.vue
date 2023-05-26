@@ -45,6 +45,7 @@
   </el-card>
 </template>
 <script lang="ts" name="BpmProcessInstanceTaskList" setup>
+import { ElCard, ElCol, ElTimeline, ElTimelineItem } from 'element-plus'
 import { formatDate, formatPast2 } from '@/utils/formatTime'
 import { propTypes } from '@/utils/propTypes'
 import { PropType } from 'vue'
