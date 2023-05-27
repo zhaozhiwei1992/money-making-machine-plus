@@ -57,7 +57,7 @@ public class BpmProcessDefinitionServiceImpl implements BpmProcessDefinitionServ
     private RepositoryService repositoryService;
 
     @Resource
-    private BpmProcessDefinitionExtRepository processDefinitionMapper;
+    private BpmProcessDefinitionExtRepository bpmProcessDefinitionExtRepository;
 
     @Autowired
     private BpmFormService bpmFormService;
@@ -146,7 +146,7 @@ public class BpmProcessDefinitionServiceImpl implements BpmProcessDefinitionServ
         // 插入拓展表
         BpmProcessDefinitionExtDO definitionDO = bpmProcessDefinitionConvert.convert2(createReqDTO)
                 .setProcessDefinitionId(definition.getId());
-        processDefinitionMapper.save(definitionDO);
+        bpmProcessDefinitionExtRepository.save(definitionDO);
         return definition.getId();
     }
 
@@ -224,7 +224,7 @@ public class BpmProcessDefinitionServiceImpl implements BpmProcessDefinitionServ
 
     @Override
     public BpmProcessDefinitionExtDO getProcessDefinitionExt(String id) {
-        final Optional<BpmProcessDefinitionExtDO> oneByProcessDefinitionId = processDefinitionMapper.findOneByProcessDefinitionId(id);
+        final Optional<BpmProcessDefinitionExtDO> oneByProcessDefinitionId = bpmProcessDefinitionExtRepository.findOneByProcessDefinitionId(id);
         return oneByProcessDefinitionId.orElse(null);
     }
 
@@ -244,7 +244,7 @@ public class BpmProcessDefinitionServiceImpl implements BpmProcessDefinitionServ
         }
 
         // 获得 BpmProcessDefinitionDO Map
-        List<BpmProcessDefinitionExtDO> processDefinitionDOs = processDefinitionMapper.findAllByProcessDefinitionIdIn(
+        List<BpmProcessDefinitionExtDO> processDefinitionDOs = bpmProcessDefinitionExtRepository.findAllByProcessDefinitionIdIn(
                 convertList(processDefinitions, ProcessDefinition::getId));
         Map<String, BpmProcessDefinitionExtDO> processDefinitionDOMap = convertMap(processDefinitionDOs,
                 BpmProcessDefinitionExtDO::getProcessDefinitionId);
@@ -272,7 +272,7 @@ public class BpmProcessDefinitionServiceImpl implements BpmProcessDefinitionServ
         Map<String, Deployment> deploymentMap = getDeploymentMap(deploymentIds);
 
         // 获得 BpmProcessDefinitionDO Map
-        List<BpmProcessDefinitionExtDO> processDefinitionDOs = processDefinitionMapper.findAllByProcessDefinitionIdIn(
+        List<BpmProcessDefinitionExtDO> processDefinitionDOs = bpmProcessDefinitionExtRepository.findAllByProcessDefinitionIdIn(
                 convertList(processDefinitions, ProcessDefinition::getId));
         Map<String, BpmProcessDefinitionExtDO> processDefinitionDOMap = convertMap(processDefinitionDOs,
                 BpmProcessDefinitionExtDO::getProcessDefinitionId);

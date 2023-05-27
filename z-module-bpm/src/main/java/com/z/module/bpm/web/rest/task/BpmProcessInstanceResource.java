@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
-@Tag(name = "管理后台 - 流程实例") // 流程实例，通过流程定义创建的一次“申请”
+/**
+ * 流程实例，通过流程定义创建的一次“申请”, 相当与definition是java类, 流程实例是java对象
+ */
+@Tag(name = "流程实例")
 @RestController
 @RequestMapping("/bpm/process-instance")
 @Validated

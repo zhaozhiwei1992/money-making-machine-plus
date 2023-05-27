@@ -17,7 +17,7 @@ import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.List;
 
-@Tag(name = "管理后台 - 任务分配规则")
+@Tag(name = "任务分配规则")
 @RestController
 @RequestMapping("/bpm/task-assign-rule")
 @Validated

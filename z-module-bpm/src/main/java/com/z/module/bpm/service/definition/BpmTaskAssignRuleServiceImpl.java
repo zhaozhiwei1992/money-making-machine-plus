@@ -98,7 +98,7 @@ public class BpmTaskAssignRuleServiceImpl implements BpmTaskAssignRuleService {
             return Collections.emptyList();
         }
         // 转换数据
-        return BpmTaskAssignRuleConvert.INSTANCE.convertList(userTasks, rules);
+        return bpmTaskAssignRuleConvert.convertList(userTasks, rules);
     }
 
     @Override

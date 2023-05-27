@@ -17,7 +17,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-@Tag(name = "管理后台 - 动态表单")
+/**
+ * 动态表单制作
+ * 1. 绘制一些动态页面, 用户来填报, 然后表单跟工作流绑定, 来进行审核
+ * 2. 实际业务可能存在大批量数据统一走流程, 简单业务可以走这个
+ */
+@Tag(name = "动态表单")
 @RestController
 @RequestMapping("/bpm/form")
 @Validated

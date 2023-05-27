@@ -92,7 +92,7 @@
 <script setup lang="ts" name="BpmProcessDefinition">
 import { ContentWrap } from '@/components/ContentWrap'
 import { Dialog } from '@/components/Dialog'
-import { ElButton, ElTable, ElTableColumn } from 'element-plus'
+import { ElButton, ElTable, ElTableColumn, ElTag } from 'element-plus'
 import { Pagination } from '@/components/Pagination'
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'

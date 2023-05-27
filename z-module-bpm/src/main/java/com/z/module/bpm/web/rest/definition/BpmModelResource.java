@@ -9,6 +9,7 @@ import com.z.module.bpm.web.vo.definition.model.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,10 @@ import javax.validation.Valid;
 
 import java.io.IOException;
 
-@Tag(name = "管理后台 - 流程模型")
+/**
+ * 流程定义, 绘制流程入口
+ */
+@Tag(name = "流程模型定义")
 @RestController
 @RequestMapping("/bpm/model")
 @Validated
@@ -56,10 +60,13 @@ public class BpmModelResource {
         return ResponseData.ok(true);
     }
 
+    @Autowired
+    private BpmModelConvert bpmModelConvert;
+
     @PostMapping("/import")
     @Operation(summary = "导入模型")
     public ResponseEntity<ResponseData<String>> importModel(@Valid BpmModeImportReqVO importReqVO) throws IOException {
-        BpmModelCreateReqVO createReqVO = BpmModelConvert.INSTANCE.convert(importReqVO);
+        BpmModelCreateReqVO createReqVO = bpmModelConvert.convert(importReqVO);
         // 读取文件
         String bpmnXml = IoUtils.readUtf8(importReqVO.getBpmnFile().getInputStream(), false);
         return ResponseData.ok(modelService.createModel(createReqVO, bpmnXml));

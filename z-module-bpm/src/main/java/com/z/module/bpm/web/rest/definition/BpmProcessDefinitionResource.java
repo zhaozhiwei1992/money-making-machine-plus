@@ -20,7 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.List;
 
-@Tag(name = "管理后台 - 流程定义")
+/**
+ * 获取流程定义表的信息
+ */
+@Tag(name = "流程定义信息")
 @RestController
 @RequestMapping("/bpm/process-definition")
 @Validated

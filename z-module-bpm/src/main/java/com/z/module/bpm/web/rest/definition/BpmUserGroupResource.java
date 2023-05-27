@@ -21,7 +21,7 @@ import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.List;
 
-@Tag(name = "管理后台 - 用户组")
+@Tag(name = "用户组")
 @RestController
 @RequestMapping("/bpm/user-group")
 @Validated

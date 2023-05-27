@@ -41,6 +41,10 @@ public class CommonEleService {
         this.databaseMetaService = databaseMetaService;
     }
 
+    public List<EleUnion> findAll(){
+        return eleUnionRepository.findAll();
+    }
+
     /**
      * @data: 2022/6/17-下午3:06
      * @User: zhaozhiwei
