@@ -39,7 +39,7 @@
 </template>
 <script setup lang="ts" name="ElementBaseInfo">
 import { ref, reactive, onMounted, watch, onBeforeUnmount, toRaw } from 'vue'
-import { ElForm, ElFormItem, ElInput } from 'element-plus'
+import { ElForm, ElFormItem, ElInput, ElLink } from 'element-plus'
 const props = defineProps({
   businessObject: {
     type: Object,
@@ -158,25 +158,6 @@ watch(
     }
   }
 )
-// watch(
-//   () => ({ ...props }),
-//   (oldVal, newVal) => {
-//     console.log(oldVal, 'oldVal')
-//     console.log(newVal, 'newVal')
-//     if (newVal) {
-//       needProps.value = newVal
-//     }
-//   },
-//   {
-//     immediate: true
-//   }
-// )
-// 'model.key': {
-//   immediate: false,
-//   handler: function (val) {
-//     this.handleKeyUpdate(val)
-//   }
-// }
 onBeforeUnmount(() => {
   bpmnElement.value = null
 })

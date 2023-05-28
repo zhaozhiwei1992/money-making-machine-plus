@@ -55,6 +55,7 @@
 <script setup lang="ts" name="ElementProperties">
 import { ref, inject, nextTick, toRaw, watch } from 'vue'
 import { XButton } from '@/components/XButton'
+import ElInput from 'element-plus'
 import {
   ElMessageBox,
   ElDialog,

@@ -2,9 +2,12 @@ package com.z.module.system.web.rest;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.hutool.core.lang.tree.TreeUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.spring.SpringUtil;
+import com.z.framework.common.service.MenuRouterExtService;
 import com.z.module.system.domain.Menu;
 import com.z.module.system.repository.MenuRepository;
 import com.z.module.system.service.MenuService;
@@ -14,6 +17,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.serviceloader.ServiceFactoryBean;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -279,6 +283,13 @@ public class MenuResource {
             if (Objects.isNull(treeNode.getChildren())) {
                 treeNode.setChildren(Collections.emptyList());
             }
+        }
+
+        // 各个模块自行扩展静态路由, 通过接口
+        final Map<String, MenuRouterExtService> extMenuRouter = SpringUtil.getBeansOfType(MenuRouterExtService.class);
+        for (Map.Entry<String, MenuRouterExtService> extServiceEntry : extMenuRouter.entrySet()) {
+            final MenuRouterExtService menuRouterBean = extServiceEntry.getValue();
+            treeNodes.addAll(menuRouterBean.customTreeNodeList());
         }
 
         return ResponseData.ok(treeNodes);

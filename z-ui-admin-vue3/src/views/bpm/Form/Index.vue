@@ -90,6 +90,7 @@
 import { ContentWrap } from '@/components/ContentWrap'
 import { Dialog } from '@/components/Dialog'
 import { ElButton, ElTable, ElTableColumn, ElForm, ElFormItem, ElInput } from 'element-plus'
+import { Pagination } from '@/components/Pagination'
 import { ref, reactive, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from '@/hooks/web/useI18n'

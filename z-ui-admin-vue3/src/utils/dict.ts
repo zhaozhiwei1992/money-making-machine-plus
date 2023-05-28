@@ -26,16 +26,17 @@ export const getDictOptions = (dictType: string) => {
 }
 
 export const getIntDictOptions = (dictType: string) => {
-  const dictOption: DictDataType[] = []
+  // const dictOption: DictDataType[] = []
   const dictOptions: DictDataType[] = getDictOptions(dictType)
-  dictOptions.forEach((dict: DictDataType) => {
-    dictOption.push({
-      ...dict,
-      value: parseInt(dict.value + '')
-    })
-  })
-
-  return dictOption
+  // dictOptions.forEach((dict: DictDataType) => {
+  //   dictOption.push({
+  //     ...dict,
+  //     value: parseInt(dict.value + '')
+  //   })
+  // })
+  console.log(dictOptions)
+  console.log('xx')
+  return dictOptions
 }
 
 export const getStrDictOptions = (dictType: string) => {

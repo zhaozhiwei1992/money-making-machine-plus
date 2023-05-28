@@ -212,7 +212,7 @@
 // import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css'
 // import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css'
 // import 'bpmn-js-properties-panel/dist/assets/bpmn-js-properties-panel.css' // 右侧框样式
-import { ref, computed } from 'vue'
+import { ref, computed, provide, onBeforeMount, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { XButton } from '@/components/XButton'
 import { XTextButton } from '@/components/XButton'
 import { Dialog } from '@/components/Dialog'
@@ -400,15 +400,15 @@ const moddleExtensions = computed(() => {
   }
   return Extensions
 })
-console.log(additionalModules, 'additionalModules()')
-console.log(moddleExtensions, 'moddleExtensions()')
+// console.log(additionalModules, 'additionalModules()')
+// console.log(moddleExtensions, 'moddleExtensions()')
 const initBpmnModeler = () => {
   if (bpmnModeler) return
   let data = document.getElementById('bpmnCanvas')
-  console.log(data, 'data')
-  console.log(props.keyboard, 'props.keyboard')
-  console.log(additionalModules, 'additionalModules()')
-  console.log(moddleExtensions, 'moddleExtensions()')
+  // console.log(data, 'data')
+  // console.log(props.keyboard, 'props.keyboard')
+  // console.log(additionalModules, 'additionalModules()')
+  // console.log(moddleExtensions, 'moddleExtensions()')
 
   bpmnModeler = new BpmnModeler({
     // container: this.$refs['bpmn-canvas'],
@@ -633,7 +633,6 @@ const elementsAlign = (align) => {
 const previewProcessXML = () => {
   console.log(bpmnModeler.saveXML, 'bpmnModeler')
   bpmnModeler.saveXML({ format: true }).then(({ xml }) => {
-    // console.log(xml, 'xml111111')
     previewResult.value = xml
     previewType.value = 'xml'
     previewModelVisible.value = true
@@ -641,26 +640,8 @@ const previewProcessXML = () => {
 }
 const previewProcessJson = () => {
   bpmnModeler.saveXML({ format: true }).then(({ xml }) => {
-    // console.log(xml, 'xml')
-
-    // const rootNode = parseXmlString(xml)
-    // console.log(rootNode, 'rootNoderootNode')
     const rootNodes = new XmlNode(XmlNodeType.Root, parseXmlString(xml))
-    // console.log(rootNodes, 'rootNodesrootNodesrootNodes')
-    // console.log(rootNodes.parent.toJsObject(), 'rootNodes.toJSON()')
-    // console.log(JSON.stringify(rootNodes.parent.toJsObject()), 'rootNodes.toJSON()')
-    // console.log(JSON.stringify(rootNodes.parent.toJSON()), 'rootNodes.toJSON()')
-
-    // const parser = new xml2js.XMLParser()
-    // let jObj = parser.parse(xml)
-    // console.log(jObj, 'jObjjObjjObjjObjjObj')
-    // const builder = new xml2js.XMLBuilder(xml)
-    // const xmlContent = builder
-    // console.log(xmlContent, 'xmlContent')
-    // console.log(xml2js, 'convertconvertconvert')
     previewResult.value = rootNodes.parent?.toJSON() as unknown as string
-    // previewResult.value = jObj
-    // previewResult.value = convert.xml2json(xml,  {explicitArray : false},{ spaces: 2 })
     previewType.value = 'json'
     previewModelVisible.value = true
   })
@@ -689,12 +670,20 @@ const processSave = async () => {
 //   return result.value || '&nbsp;'
 // }
 onBeforeMount(() => {
+  // 这里还是空的, 渲染太快, 需要得延时
   console.log(props, 'propspropspropsprops')
 })
+
 onMounted(() => {
   initBpmnModeler()
-  createNewDiagram(props.value)
+  // 这里好像属性搞不到,随便改改代码又可以,神奇
+  // 改成了setTimeout可以, 说明这个加载有bug, 得延时
+  // https://blog.csdn.net/m0_59393112/article/details/124941937
+  setTimeout(() => {
+    createNewDiagram(props.value)
+  }, 100)
 })
+
 onBeforeUnmount(() => {
   // this.$once('hook:beforeDestroy', () => {
   // })

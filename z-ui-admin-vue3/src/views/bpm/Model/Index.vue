@@ -270,9 +270,10 @@ const queryFormRef = ref() // 搜索的表单
 const getList = async () => {
   loading.value = true
   try {
-    const data = await ModelApi.getModelPage(queryParams)
-    list.value = data.list
-    total.value = data.total
+    ModelApi.getModelPage(queryParams).then((res) => {
+      list.value = res.data.list
+      total.value = res.data.total
+    })
   } finally {
     loading.value = false
   }

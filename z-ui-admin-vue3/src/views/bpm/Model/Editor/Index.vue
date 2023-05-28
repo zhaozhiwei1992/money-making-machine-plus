@@ -3,7 +3,6 @@
     <!-- 流程设计器，负责绘制流程等 -->
     <MyProcessDesigner
       key="designer"
-      v-if="xmlString !== undefined"
       v-model="xmlString"
       :value="xmlString"
       v-bind="controlForm"
@@ -25,6 +24,7 @@
 </template>
 
 <script setup lang="ts" name="BpmModelEditor">
+import { ContentWrap } from '@/components/ContentWrap'
 import { ref, onMounted } from 'vue'
 import { useMessage } from '@/hooks/web/useMessage'
 import { useRouter, useRoute } from 'vue-router'
@@ -89,12 +89,15 @@ onMounted(async () => {
     return
   }
   // 查询模型
-  const data = await ModelApi.getModel(modelId)
-  xmlString.value = data.bpmnXml
-  model.value = {
-    ...data,
-    bpmnXml: undefined // 清空 bpmnXml 属性
-  }
+  await ModelApi.getModel(modelId).then((res) => {
+    const data = res.data
+    // todo 这里不触发vue刷新, 醉了
+    xmlString.value = data.bpmnXml
+    model.value = {
+      ...data,
+      bpmnXml: undefined // 清空 bpmnXml 属性
+    }
+  })
 })
 </script>
 <style lang="scss">

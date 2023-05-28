@@ -63,6 +63,8 @@
   </div>
 </template>
 <script setup lang="ts" name="MyPropertiesPanel">
+import { ref, provide, onMounted, onBeforeUnmount, watch } from 'vue'
+import { ElCollapse, ElCollapseItem, ElLink } from 'element-plus'
 import ElementBaseInfo from './base/ElementBaseInfo.vue'
 import ElementOtherConfig from './other/ElementOtherConfig.vue'
 import ElementTask from './task/ElementTask.vue'

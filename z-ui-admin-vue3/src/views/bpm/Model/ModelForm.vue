@@ -9,7 +9,7 @@
     >
       <el-form-item label="流程标识" prop="key">
         <el-input
-          v-model="formData.formId"
+          v-model="formData.key"
           :disabled="!!formData.formId"
           placeholder="请输入流标标识"
           style="width: 330px"
@@ -35,7 +35,7 @@
           placeholder="请输入流程名称"
         />
       </el-form-item>
-      <el-form-item v-if="formData.formId" label="流程分类" prop="category">
+      <el-form-item v-if="formType === 'update'" label="流程分类" prop="category">
         <el-select
           v-model="formData.category"
           clearable
@@ -150,6 +150,7 @@ const dialogTitle = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref({
+  key: '',
   formType: 10,
   name: '',
   category: undefined,
@@ -178,7 +179,9 @@ const open = async (type: string, id?: number) => {
   if (id) {
     formLoading.value = true
     try {
-      formData.value = await ModelApi.getModel(id)
+      ModelApi.getModel(id).then((res) => {
+        formData.value = res.data
+      })
     } finally {
       formLoading.value = false
     }
