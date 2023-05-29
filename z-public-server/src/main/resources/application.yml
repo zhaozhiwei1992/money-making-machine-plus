@@ -203,6 +203,7 @@ z:
       - /api/captcha/numCode
       # 积木报表
       - /jmreport/**
+      - /jimureport/**
       # swagger3
       - /swagger-ui/**
       - /doc.html
@@ -306,5 +307,19 @@ kaptcha:
       size: 40
   width: 150
 
+---
 #积木报表配置
-## 需要拦截事务的url
+jeecg :
+  # local|minio|alioss
+  uploadType: local
+  # local
+  path :
+    #文件路径
+    upload: /tmp/upload/
+  # alioss
+  oss:
+    endpoint: oss-cn-beijing.aliyuncs.com
+    accessKey: ??
+    secretKey: ??
+    bucketName: jeecgos
+    staticDomain: ??
