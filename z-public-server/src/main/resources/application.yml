@@ -305,3 +305,6 @@ kaptcha:
       names: 仿宋,微软雅黑
       size: 40
   width: 150
+
+#积木报表配置
+## 需要拦截事务的url

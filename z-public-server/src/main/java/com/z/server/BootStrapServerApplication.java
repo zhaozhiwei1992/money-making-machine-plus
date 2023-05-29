@@ -13,8 +13,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 // 忽略 IDEA 无法识别 ${z.app.base-package}
 @SuppressWarnings("SpringComponentScan")
 @SpringBootApplication(scanBasePackages = {"${z.app.base-package}.server", "${z.app.base-package}.module"})
-//@EnableJpaAuditing(auditorAwareRef = "springSecurityAuditorAware")
-//@EnableTransactionManagement
+// 统一增加事务管理及 jpa的审计拦截
+@EnableJpaAuditing(auditorAwareRef = "springSecurityAuditorAware")
+@EnableTransactionManagement
 public class BootStrapServerApplication {
 
     public static void main(String[] args) {

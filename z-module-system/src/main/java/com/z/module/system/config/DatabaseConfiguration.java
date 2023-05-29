@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @EnableJpaRepositories({ "com.z.module.system.repository" })
-@EnableJpaAuditing(auditorAwareRef = "springSecurityAuditorAware")
 @EntityScan({"com.z.module.system.domain"})
-@EnableTransactionManagement
+//@EnableJpaAuditing(auditorAwareRef = "springSecurityAuditorAware")
+//@EnableTransactionManagement
 public class DatabaseConfiguration {}
