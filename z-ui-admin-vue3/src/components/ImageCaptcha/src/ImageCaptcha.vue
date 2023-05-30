@@ -41,10 +41,10 @@ watch(
 )
 
 // 图形验证码地址, 异步加载时需要将onMounted打开
-// const SERVER_URL = import.meta.env.VITE_SERVER_URL
+const SERVER_URL = import.meta.env.VITE_SERVER_URL
 // let captchaImageUrl = SERVER_URL + '/captcha/numCode'
 // 使用异步方式加载验证码, vue3中为了触发渲染, 都得加ref
-const captchaImageUrl = ref('')
+const captchaImageUrl = ref(SERVER_URL + '/captcha/numCode')
 
 // 获取图形验证码, 二进制
 const genCode = () => {
@@ -68,10 +68,10 @@ const genCode = () => {
 
 // 通过axios异步加载时候使用
 onMounted(() => {
-  // 获取验证码
-  setTimeout(() => {
-    genCode()
-  }, 100)
+  // 获取验证码, 服务器上不得行。。
+  // setTimeout(() => {
+  //   genCode()
+  // }, 100)
 })
 </script>
 

@@ -1,7 +1,6 @@
 package com.z.module.report.aop;
 
 import com.z.module.report.util.TransactionContextHolder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
