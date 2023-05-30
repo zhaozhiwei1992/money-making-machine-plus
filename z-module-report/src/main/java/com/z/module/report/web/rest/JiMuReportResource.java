@@ -1,4 +1,4 @@
-package com.z.module.report.web.resource;
+package com.z.module.report.web.rest;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

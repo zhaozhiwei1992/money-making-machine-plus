@@ -129,7 +129,7 @@ z:
     # 注意: 前端必须是localhost访问, 如果用127.0.0.1还是会拦截
     # 4000是admin-vue3, 8080: z-ui-app
     # 配置origin地址, 即前端地址即可
-    allowed-origins: 'http://localhost:8090,https://localhost:8090,http://localhost:4000,https://localhost:4000,http://localhost:8080,https://localhost:8080'
+    allowed-origins: 'http://localhost:8090,https://localhost:8090,http://localhost:4000,https://localhost:4000,http://localhost:8080,https://localhost:8080,http://localhost:3000,https://localhost:3000'
     allowed-methods: '*'
     allowed-headers: '*'
     exposed-headers: 'Authorization,Link,X-Total-Count,X-${z.app.name}-alert,X-${z.app.name}-error,X-${z.app.name}-params'

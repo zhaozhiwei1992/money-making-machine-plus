@@ -45,6 +45,13 @@
 <!--      <version>${revision}</version>-->
 <!--    </dependency>-->
 
+<!--    大屏模块-->
+    <dependency>
+      <groupId>com.z</groupId>
+      <artifactId>z-module-screen</artifactId>
+      <version>${revision}</version>
+    </dependency>
+
 <!--    模块部分 结束 -->
 
     <!-- spring boot 配置所需依赖 -->

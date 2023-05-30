@@ -110,6 +110,11 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
 //        configurer.addPathPrefix("/api", c -> c.isAnnotationPresent(RestController.class));
         // 通过包名统一增加前缀, 更科学点, 或者每个模块自行处理
         configurer.addPathPrefix("/api",
-                c -> c.isAnnotationPresent(RestController.class) && c.getPackage().getName().contains("web.rest"));
+                // 所有在web.rest包下, 并且使用RestController注解的都要增加 /api
+                c -> c.isAnnotationPresent(RestController.class)
+                        && c.getPackage().getName().contains("web.rest")
+                        // 报表的请求依赖包内部封装, 跳过不进行地址转换(不增加api)
+                        && !c.getPackage().getName().contains("module.report")
+        );
     }
 }

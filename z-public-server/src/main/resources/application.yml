@@ -211,6 +211,8 @@ z:
       - /img.icons/**
       - /swagger-resources/**
       - /v3/api-docs/**
+      # goView
+      - /api/goview/sys/**
 
   #  分模块配置
   module:
@@ -323,3 +325,21 @@ jeecg :
     secretKey: ??
     bucketName: jeecgos
     staticDomain: ??
+---
+# 大屏模块属性配置
+z:
+  module:
+    screen:
+      go-view:
+        defaultFormat: .png
+        uploadType: local
+        # 本地存储
+        path:
+          upload: /tmp/upload/go-view
+        # oss存储
+        oss:
+          endpoint: oss-cn-beijing.aliyuncs.com
+          accessKey: ??
+          secretKey: ??
+          bucketName: goview
+          staticDomain: ??
