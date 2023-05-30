@@ -5,7 +5,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 
-@Schema(description = "管理后台 - GoView 项目更新 Request VO")
+@Schema(description = "GoView 项目更新 Request VO")
 @Data
 public class GoViewProjectUpdateReqVO {
 
@@ -18,6 +18,9 @@ public class GoViewProjectUpdateReqVO {
 
     @Schema(description = "发布状态", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
     private Integer status;
+
+    @Schema(description = "报表id")
+    private Long projectId;
 
     @Schema(description = "报表内容") // JSON 格式
     private String content;

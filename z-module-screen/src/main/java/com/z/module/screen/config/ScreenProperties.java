@@ -1,5 +1,6 @@
 package com.z.module.screen.config;
 
+import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,67 +11,43 @@ import java.util.Map;
  * 
  * @author fuce
  */
-//@Configuration
-//@ConfigurationProperties(prefix = "z.module.screen")
+@Configuration
+@ConfigurationProperties(prefix = "z.module.screen")
+@Data
 public class ScreenProperties {
 
+	private GoView goView = new GoView();
+
+	@Data
 	public static class GoView{
 
+		private Path path = new Path();
+
+		private Oss oss = new Oss();
+
+		private String uploadType;
+
+		private String httpUrl;
+
+		@Data
+		public static class Path {
+
+			private String upload;
+
+		}
+
+		@Data
+		public static class Oss {
+//			endpoint: oss-cn-beijing.aliyuncs.com
+			private String endpoint;
+//			accessKey: ??
+			private String accessKey;
+//			secretKey: ??
+			private String secretKey;
+//			bucketName: goview
+			private String bucketName;
+//			staticDomain: ??
+			private String staticDomain;
+		}
 	}
-	/**
-	 * 存储路径
-	 */
-	private String fileurl;
-	/**
-	 * 请求url
-	 */
-	private String httpurl;
-	/**
-	 * 虚拟路径map
-	 */
-	private Map<String, String> xnljmap;
-	
-	/**
-	 * 默认文件格式
-	 */
-	private String defaultFormat;
-	
-
-	public String getFileurl() {
-		return fileurl;
-	}
-
-	public void setFileurl(String fileurl) {
-		this.fileurl = fileurl;
-	}
-
-	
-
-	
-
-	public String getHttpurl() {
-		return httpurl;
-	}
-
-	public void setHttpurl(String httpurl) {
-		this.httpurl = httpurl;
-	}
-
-	public Map<String, String> getXnljmap() {
-		return xnljmap;
-	}
-
-	public void setXnljmap(Map<String, String> xnljmap) {
-		this.xnljmap = xnljmap;
-	}
-
-	public String getDefaultFormat() {
-		return defaultFormat;
-	}
-
-	public void setDefaultFormat(String defaultFormat) {
-		this.defaultFormat = defaultFormat;
-	}
-	
-	
 }

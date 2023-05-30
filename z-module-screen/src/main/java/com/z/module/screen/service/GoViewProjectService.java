@@ -1,6 +1,5 @@
 package com.z.module.screen.service;
 
-import com.z.framework.common.web.rest.vm.PageResult;
 import com.z.framework.security.util.SecurityUtils;
 import com.z.module.screen.domain.GoViewProjectDO;
 import com.z.module.screen.repository.GoViewProjectRepository;
@@ -74,17 +73,17 @@ public class GoViewProjectService {
     }
 
     /**
+     * @param pageReqVO :
      * @data: 2023/5/30-下午3:12
      * @User: zhaozhiwei
      * @method: getMyProjectPage
-      * @param pageReqVO :
      * @return: com.z.framework.common.web.rest.vm.PageResult<com.z.module.screen.domain.GoViewProjectDO>
      * @Description: 获取自己创建的项目
      */
-    public PageResult<GoViewProjectDO> getMyProjectPage(PageParam pageReqVO) {
-        String loginName = SecurityUtils.getCurrentLoginName();
-        final PageRequest page = PageRequest.of(pageReqVO.getPage(), pageReqVO.getLimit());
-        Page<GoViewProjectDO> pageObj = goViewProjectRepository.findAllByCreatedBy(page, loginName);
-        return new PageResult<>(pageObj.getContent(), pageObj.getTotalElements());
+    public Page<GoViewProjectDO> getMyProjectPage(PageParam pageReqVO) {
+//        String loginName = SecurityUtils.getCurrentLoginName();
+        String loginName = "admin";
+        final PageRequest page = PageRequest.of(pageReqVO.getPage() - 1, pageReqVO.getLimit());
+        return goViewProjectRepository.findAllByCreatedBy(page, loginName);
     }
 }

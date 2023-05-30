@@ -213,6 +213,7 @@ z:
       - /v3/api-docs/**
       # goView
       - /api/goview/sys/**
+      - /api/goview/**
 
   #  分模块配置
   module:
@@ -331,7 +332,7 @@ z:
   module:
     screen:
       go-view:
-        defaultFormat: .png
+        httpUrl: http://localhost:8090/
         uploadType: local
         # 本地存储
         path:

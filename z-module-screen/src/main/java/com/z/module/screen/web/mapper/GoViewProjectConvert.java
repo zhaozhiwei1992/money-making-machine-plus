@@ -6,7 +6,10 @@ import com.z.module.screen.web.vo.GoViewProjectCreateReqVO;
 import com.z.module.screen.web.vo.GoViewProjectRespVO;
 import com.z.module.screen.web.vo.GoViewProjectUpdateReqVO;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
+
+import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface GoViewProjectConvert {
@@ -17,7 +20,14 @@ public interface GoViewProjectConvert {
 
     GoViewProjectDO convert(GoViewProjectUpdateReqVO bean);
 
+    @Mapping(source = "name", target = "projectName")
+    @Mapping(source = "picUrl", target = "indexImage")
+    @Mapping(source = "remark", target = "remarks")
+    @Mapping(source = "status", target = "state")
+    @Mapping(source = "createdBy", target = "createUserId")
     GoViewProjectRespVO convert(GoViewProjectDO bean);
+
+    List<GoViewProjectRespVO> convert(List<GoViewProjectDO> bean);
 
     PageResult<GoViewProjectRespVO> convertPage(PageResult<GoViewProjectDO> page);
 
