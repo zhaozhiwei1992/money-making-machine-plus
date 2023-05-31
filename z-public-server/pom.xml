@@ -168,6 +168,21 @@
           </execution>
         </executions>
       </plugin>
+
+<!--      异常：Invalid keystore format，spring boot配置ssl证书格式不合法解决
+https://blog.csdn.net/chen15369337607/article/details/119883054
+-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.2.0</version>
+        <configuration>
+          <nonFilteredFileExtensions>
+            <nonFilteredFileExtension>jks</nonFilteredFileExtension>
+          </nonFilteredFileExtensions>
+        </configuration>
+      </plugin>
+
     </plugins>
   </build>
 </project>

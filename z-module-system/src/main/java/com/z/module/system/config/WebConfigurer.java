@@ -65,7 +65,7 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = commonProperties.getCors();
-        log.debug("Registering CORS filter");
+        log.debug("Registering CORS filter: {}", config);
         source.registerCorsConfiguration("/api/**", config);
         source.registerCorsConfiguration("/management/**", config);
         source.registerCorsConfiguration("/v2/api-docs", config);

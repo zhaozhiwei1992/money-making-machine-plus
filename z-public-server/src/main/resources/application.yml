@@ -213,6 +213,7 @@ z:
       - /v3/api-docs/**
       # goView
       - /api/goview/sys/**
+      # 临时放开, 目前这个goview不稳定
       - /api/goview/**
 
   #  分模块配置

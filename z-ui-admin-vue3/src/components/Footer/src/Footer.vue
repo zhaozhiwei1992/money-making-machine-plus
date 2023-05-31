@@ -17,6 +17,6 @@ const title = computed(() => appStore.getTitle)
     :class="prefixCls"
     class="text-center text-[var(--el-text-color-placeholder)] bg-[var(--app-content-bg-color)] h-[var(--app-footer-height)] leading-[var(--app-footer-height)] dark:bg-[var(--el-bg-color)]"
   >
-    Copyright ©2021-present {{ title }}
+    Copyright ©2021-present {{ title }} <a href="https://beian.miit.gov.cn">京ICP备2023013672号</a>
   </div>
 </template>
