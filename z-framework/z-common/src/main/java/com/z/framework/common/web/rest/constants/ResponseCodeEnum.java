@@ -13,21 +13,21 @@ public enum ResponseCodeEnum {
     /**
      * rest请求反馈状态标识, 具体见msg
      */
-    SUCCESS("200000","成功"),
-    FAILED("400001","失败"),
-    SYS_PARAM_NOT_RIGHT("500002","请求参数错误"),
-    TOKEN_EXPIRE("500003","token过期"),
-    SYSTEM_BUSY("500004","系统繁忙，请稍候重试");
+    SUCCESS(200,"成功"),
+    FAILED(500001,"失败"),
+    SYS_PARAM_NOT_RIGHT(500002,"请求参数错误"),
+    TOKEN_EXPIRE(500003,"token过期"),
+    SYSTEM_BUSY(500004,"系统繁忙，请稍候重试");
 
-    private final String code;
+    private final Integer code;
     private final  String msg;
 
-    ResponseCodeEnum(String code, String msg) {
+    ResponseCodeEnum(Integer code, String msg) {
         this.code = code;
         this.msg = msg;
     }
 
-    public String getCode() {
+    public Integer getCode() {
         return code;
     }
 

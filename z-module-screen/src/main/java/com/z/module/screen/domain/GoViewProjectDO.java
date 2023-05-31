@@ -4,8 +4,7 @@ import com.z.framework.common.domain.AbstractAuditingEntity;
 import lombok.*;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * GoView 项目表
@@ -36,6 +35,8 @@ public class GoViewProjectDO extends AbstractAuditingEntity {
      *
      * JSON 配置，使用字符串存储
      */
+    @Lob
+//    @Basic(fetch = FetchType.LAZY)
     private String content;
     /**
      * 发布状态

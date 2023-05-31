@@ -16,8 +16,13 @@ public interface GoViewProjectConvert {
 
     GoViewProjectConvert INSTANCE = Mappers.getMapper(GoViewProjectConvert.class);
 
+    @Mapping(source = "projectName", target = "name")
     GoViewProjectDO convert(GoViewProjectCreateReqVO bean);
 
+    @Mapping(source = "projectName", target = "name")
+    @Mapping(source = "indexImage", target = "picUrl")
+    @Mapping(source = "remarks", target = "remark")
+    @Mapping(source = "state", target = "status")
     GoViewProjectDO convert(GoViewProjectUpdateReqVO bean);
 
     @Mapping(source = "name", target = "projectName")

@@ -81,9 +81,12 @@ public class RequestLoggingInterceptor implements HandlerInterceptor {
                 String s = urlMappingService.getUrlMap().get(requestURI + "_" + method);
                 requestLogging.setRequestName(s);
                 final Map<String, Object> parameterMap = this.getParameterMap(request);
-                requestLogging.setParams(JSONUtil.toJsonStr(parameterMap));
-                requestLogging.setSuccess("是");
-                requestLoggingRepository.save(requestLogging);
+                final String jsonStr = JSONUtil.toJsonStr(parameterMap);
+                if(jsonStr.length() < 1000){
+                    requestLogging.setParams(jsonStr);
+                    requestLogging.setSuccess("是");
+                    requestLoggingRepository.save(requestLogging);
+                }
             }
         }
 

@@ -25,7 +25,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/go-view/data")
 @Validated
-public class GoViewDataController {
+public class GoViewDataResource {
 
     @Resource
     private GoViewDataService goViewDataService;

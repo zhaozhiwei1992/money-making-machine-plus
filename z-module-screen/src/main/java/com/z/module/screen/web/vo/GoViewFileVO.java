@@ -9,6 +9,7 @@ public class GoViewFileVO {
     private String id;
     private String fileName;
     private Integer fileSize;
+    private String fileSuffix;
     private String createTime;
     
     /**
