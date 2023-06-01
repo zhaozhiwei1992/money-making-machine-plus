@@ -16,10 +16,10 @@ const prefixCls = getPrefixCls('panel')
 const loading = ref(true)
 
 let totalState = reactive<AnalysisTotalTypes>({
-  users: 0,
-  messages: 0,
-  moneys: 0,
-  shoppings: 0
+  loginCount: 0,
+  userCount: 0,
+  requestLogCount: 0,
+  todayRequestLogCount: 0
 })
 
 const getCount = async () => {
@@ -55,7 +55,7 @@ getCount()
                 <CountTo
                   class="text-20px font-700 text-right"
                   :start-val="0"
-                  :end-val="102400"
+                  :end-val="totalState.loginCount"
                   :duration="2600"
                 />
               </div>
@@ -84,7 +84,7 @@ getCount()
                 <CountTo
                   class="text-20px font-700 text-right"
                   :start-val="0"
-                  :end-val="81212"
+                  :end-val="totalState.requestLogCount"
                   :duration="2600"
                 />
               </div>
@@ -113,7 +113,7 @@ getCount()
                 <CountTo
                   class="text-20px font-700 text-right"
                   :start-val="0"
-                  :end-val="9280"
+                  :end-val="totalState.todayRequestLogCount"
                   :duration="2600"
                 />
               </div>
@@ -142,7 +142,7 @@ getCount()
                 <CountTo
                   class="text-20px font-700 text-right"
                   :start-val="0"
-                  :end-val="13600"
+                  :end-val="totalState.userCount"
                   :duration="2600"
                 />
               </div>

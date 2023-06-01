@@ -47,9 +47,9 @@ public class SimpleCacheAutoConfiguration {
         ConcurrentMapCache userByLoginCache = new ConcurrentMapCache("usersByLogin");
         // 系统参数缓存
         ConcurrentMapCache sysParamCache = new ConcurrentMapCache("sysParamCache");
-        // token拉黑
-        ConcurrentMapCache tokenBlackCache = new ConcurrentMapCache("tokenBlackCache");
-        simpleCacheManager.setCaches(Arrays.asList(loginMenuCache, userByLoginCache, sysParamCache, tokenBlackCache));
+        // token白名单
+        ConcurrentMapCache tokenWriteListCache = new ConcurrentMapCache("tokenWriteListCache");
+        simpleCacheManager.setCaches(Arrays.asList(loginMenuCache, userByLoginCache, sysParamCache, tokenWriteListCache));
         return simpleCacheManager;
     }
 

@@ -3,6 +3,7 @@ package com.z.framework.security.aop;
 import cn.hutool.extra.spring.SpringUtil;
 import com.z.framework.security.config.SpringSecurityAutoConfiguration;
 import com.z.framework.security.service.TokenProviderService;
+import com.z.framework.security.util.SecurityUtils;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -25,6 +26,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
@@ -67,16 +69,16 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         }
         try {
 
-            // 校验token是否已经退出, 或者被下线
-            final CacheManager simpleCacheManager = SpringUtil.getBean(CacheManager.class);
-            final Cache tokenBlackCache = simpleCacheManager.getCache("tokenBlackCache");
-            final Object tokenBlock = tokenBlackCache.get("tokenBlock");
-            if(!Objects.isNull(tokenBlock)){
-                List<String> cacheBlockList = (List<String>) tokenBlackCache.get("tokenBlock").get();
-                if(cacheBlockList.contains(s) || cacheBlockList.contains(cookie)){
-                    throw new RuntimeException("token已失效");
-                }
-            }
+            // 校验token是否已经退出, 或者被下线, 注: 这种方式下其实相当与token就变得有状态了, 坑
+//            final CacheManager simpleCacheManager = SpringUtil.getBean(CacheManager.class);
+//            final Cache tokenWriteListCache = simpleCacheManager.getCache("tokenWriteListCache");
+//            if(Objects.isNull(tokenWriteListCache.get("tokenWriteList"))){
+//                throw new RuntimeException("Token已过期");
+//            }
+//            List<String> tokenWriteList = (List<String>) tokenWriteListCache.get("tokenWriteList").get();
+//            if(!tokenWriteList.contains(TokenProviderService.TOKEN_PREFIX + s) && !tokenWriteList.contains(TokenProviderService.TOKEN_PREFIX + cookie)){
+//                throw new RuntimeException("Token已过期");
+//            }
 
             // token认证核心
             UsernamePasswordAuthenticationToken authentication = buildAuthentication(request, response);
@@ -84,6 +86,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
         } catch (ExpiredJwtException e) {
             logger.error("Token已过期:", e);
+            removeTokenWriteList();
             throw new RuntimeException("Token已过期");
         } catch (UnsupportedJwtException e) {
             logger.error("Token格式错误: ", e);
@@ -97,6 +100,26 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             logger.error("Invalid Token ", e);
             throw new RuntimeException("Invalid Token");
+        }
+    }
+
+    /**
+     * @data: 2023/6/1-上午11:22
+     * @User: zhaozhiwei
+     * @method: removeTokenWriteList
+
+     * @return: void
+     * @Description: 删除白名单中token
+     */
+    public void removeTokenWriteList() {
+        // 退出时同时从白名单下线登录用户
+        final CacheManager simpleCacheManager = SpringUtil.getBean(CacheManager.class);
+        final Cache tokenBlackCache = simpleCacheManager.getCache("tokenWriteListCache");
+        List<String> tokenWriteList;
+        if(!Objects.isNull(tokenBlackCache.get("tokenWriteList"))){
+            tokenWriteList = (List<String>) tokenBlackCache.get("tokenWriteList").get();
+            tokenWriteList.remove(SecurityUtils.getTokenId());
+            tokenBlackCache.put("tokenWriteList", tokenWriteList);
         }
     }
 
@@ -187,6 +210,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                     }
 
                     extensionMap.put("tokenid", token);
+                    extensionMap.put("year", LocalDateTime.now().getYear());
+
                     // 可以这里添加其它必要信息
                     authenticationToken.setDetails(extensionMap);
                 }

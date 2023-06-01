@@ -11,6 +11,7 @@ import java.util.HashMap;
 @Data
 public class ResponseData<T> implements Serializable {
     private static final long serialVersionUID = 5704430076796818950L;
+    // 注意这个code是数据, 前端一般做判断是===, str === num为false
     private Integer code;
     private String msg;
     private Date timestamps;

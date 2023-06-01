@@ -102,8 +102,8 @@ public final class SecurityUtils {
      * 取得当前用户的年度
      * @return
      */
-    public static String getYear(){
-        return (String)getAuthenticationDetails().get("year");
+    public static Integer getYear(){
+        return Integer.parseInt(String.valueOf(getAuthenticationDetails().get("year")));
     }
 
     /**

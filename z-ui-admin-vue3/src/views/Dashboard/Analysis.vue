@@ -7,7 +7,7 @@ import { ref, reactive } from 'vue'
 import {
   getUserAccessSourceApi,
   getWeeklyUserActivityApi,
-  getMonthlySalesApi
+  getMonthlyUserActivityApi
 } from '@/api/dashboard/analysis'
 import { set } from 'lodash-es'
 import { EChartsOption } from 'echarts'
@@ -62,7 +62,7 @@ const lineOptionsData = reactive<EChartsOption>(lineOptions) as EChartsOption
 
 // 每月销售总额
 const getMonthlySales = async () => {
-  const res = await getMonthlySalesApi().catch(() => {})
+  const res = await getMonthlyUserActivityApi().catch(() => {})
   if (res) {
     set(
       lineOptionsData,

@@ -3,6 +3,9 @@ package com.z.framework.common.util.date;
 import cn.hutool.core.date.LocalDateTimeUtil;
 
 import java.time.*;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalField;
+import java.time.temporal.WeekFields;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -168,6 +171,30 @@ public class DateUtils {
      */
     public static boolean isToday(LocalDateTime date) {
         return LocalDateTimeUtil.isSameDay(date, LocalDateTime.now());
+    }
+
+    /**
+     * @data: 2023/6/1-下午3:38
+     * @User: zhaozhiwei
+     * @method: getStartDayOfWeek
+      * @param date :
+     * @return: java.util.Date
+     * @Description:　本周第一天 (指定日期)
+     */
+    public static Instant getStartDayOfWeek(TemporalAccessor date) {
+        TemporalField fieldIso = WeekFields.of(DayOfWeek.MONDAY, 1).dayOfWeek();
+        LocalDate localDate = LocalDate.from(date);
+        localDate = localDate.with(fieldIso, 1);
+        // return Date.from(instant);
+        return localDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
+    }
+
+    public static Instant getEndDayOfWeek(TemporalAccessor date) {
+        TemporalField fieldIso = WeekFields.of(DayOfWeek.MONDAY, 1).dayOfWeek();
+        LocalDate localDate = LocalDate.from(date);
+        localDate = localDate.with(fieldIso, 7);
+//        return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        return localDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
     }
 
 }

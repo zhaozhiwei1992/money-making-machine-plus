@@ -179,11 +179,11 @@ public class GoViewProjectResource {
         viewFileDO.setAbsolutePath(uploadPath);
         goViewFileRepository.save(viewFileDO);
 
-        File desc = getAbsoluteFile(uploadPath + File.separator + filepath, fileSuffixName);
-        // 写入磁盘
-        object.transferTo(desc);
         GoViewFileVO goViewFileVO = BeanUtil.copyProperties(viewFileDO, GoViewFileVO.class);
         if (uploadType.equals("local")) {
+            File desc = getAbsoluteFile(uploadPath + File.separator + filepath, fileSuffixName);
+            // 写入磁盘
+            object.transferTo(desc);
             goViewFileVO.setFileurl(screenProperties.getGoView().getHttpUrl() + "/api/goview/project/" + viewFileDO.getVirtualKey() + "/" + viewFileDO.getRelativePath() + "/" + viewFileDO.getFileName());
         }
         return ResponseData.ok(goViewFileVO);
@@ -195,14 +195,13 @@ public class GoViewProjectResource {
      * @User: zhaozhiwei
      * @method: getCaptchaCode
      * @return: org.springframework.web.servlet.ModelAndView
-     * @Description: 获取本地图片, 跟上述
+     * @Description: 获取本地图片, 跟上述upload构建路径格式要匹配
+     * local: http://ip:port/api/goview/project/local/时间/fileName
      */
     @GetMapping("/local/{relativePath}/{fileName}")
     public ResponseEntity<byte[]> downImg(HttpServletRequest request,
                                           @PathVariable("relativePath") String relativePath,
                                           @PathVariable("fileName") String fileName) throws IOException {
-        HttpSession session = request.getSession();
-
         // 获取本地图片
         final String uploadPath = screenProperties.getGoView().getPath().getUpload();
         File file = getAbsoluteFile(uploadPath + File.separator + relativePath, fileName);

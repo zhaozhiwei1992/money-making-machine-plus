@@ -3,10 +3,10 @@ package com.z.module.system.web.rest;
 import com.google.code.kaptcha.Constants;
 import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.framework.security.service.TokenProviderService;
-import com.z.framework.security.util.SecurityUtils;
 import com.z.module.system.domain.User;
 import com.z.module.system.repository.UserRepository;
 import com.z.module.system.service.LoginLogService;
+import com.z.module.system.service.LoginService;
 import com.z.module.system.web.vo.AuthedRespVO;
 import com.z.module.system.web.vo.LoginVO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,8 +14,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,10 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * @author zhaozhiwei
@@ -50,18 +45,18 @@ public class LoginResource {
 
     private final PasswordEncoder bCryptPasswordEncoder;
 
-    private CacheManager cacheManager;
-
     private final LoginLogService loginLogService;
 
     private final TokenProviderService tokenProviderService;
 
-    public LoginResource(UserRepository userRepository, PasswordEncoder passwordEncoder, CacheManager cacheManager, LoginLogService loginLogService, TokenProviderService tokenProviderService) {
+    private final LoginService loginService;
+
+    public LoginResource(UserRepository userRepository, PasswordEncoder passwordEncoder, LoginLogService loginLogService, TokenProviderService tokenProviderService, LoginService loginService) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = passwordEncoder;
-        this.cacheManager = cacheManager;
         this.loginLogService = loginLogService;
         this.tokenProviderService = tokenProviderService;
+        this.loginService = loginService;
     }
 
     /**
@@ -102,6 +97,9 @@ public class LoginResource {
                 authedRespVO.setPermissions(Collections.singletonList("*.*.*"));
                 authedRespVO.setToken(token);
 
+                // 记录token白名单, 注: 如果cache使用 redis之类的, 可以跟token同步增加失效时间
+                loginService.addTokenWriteList(token);
+
                 // 登录成功记录日志
                 loginLogService.save(loginVM, request);
                 return ResponseData.ok(authedRespVO);
@@ -118,16 +116,9 @@ public class LoginResource {
     @Operation(description = "退出")
     @GetMapping("loginOut")
     public ResponseEntity<ResponseData<Object>> loginOut(){
-        // 销毁token, 防止下次使用
-        final Cache tokenBlackCache = cacheManager.getCache("tokenBlackCache");
-        List<String> cacheBlockList;
-        if(Objects.isNull(tokenBlackCache.get("tokenBlock"))){
-            cacheBlockList = new ArrayList<>();
-        }else{
-            cacheBlockList = (List<String>) tokenBlackCache.get("tokenBlock").get();
-        }
-        cacheBlockList.add(SecurityUtils.getTokenId());
-        tokenBlackCache.put("tokenBlack", cacheBlockList);
+
+        // 删除当前token
+        loginService.removeTokenWriteList();
 
         return ResponseData.ok();
     }

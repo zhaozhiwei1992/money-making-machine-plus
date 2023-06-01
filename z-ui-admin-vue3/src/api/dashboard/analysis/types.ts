@@ -1,8 +1,8 @@
 export type AnalysisTotalTypes = {
-  users: number
-  messages: number
-  moneys: number
-  shoppings: number
+  loginCount: number
+  userCount: number
+  requestLogCount: number
+  todayRequestLogCount: number
 }
 
 export type UserAccessSource = {
@@ -15,7 +15,7 @@ export type WeeklyUserActivity = {
   name: string
 }
 
-export type MonthlySales = {
+export type MonthlyUserActivity = {
   name: string
   estimate: number
   actual: number

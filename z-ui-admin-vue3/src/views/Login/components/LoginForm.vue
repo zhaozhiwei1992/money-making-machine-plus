@@ -10,7 +10,7 @@ import { useAppStore } from '@/store/modules/app'
 import { usePermissionStore } from '@/store/modules/permission'
 import { useRouter } from 'vue-router'
 import type { RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router'
-import { UserType, TokenType } from '@/api/login/types'
+import { UserType } from '@/api/login/types'
 import { useValidator } from '@/hooks/web/useValidator'
 import { FormSchema } from '@/types/form'
 import * as authUtil from '@/utils/auth'
@@ -185,7 +185,7 @@ const getRole = async () => {
   // test - 模拟前端过滤菜单
   // const res =
   //   formData.username === 'admin' ? await getAdminRoleApi(params) : await getTestRoleApi(params)
-  console.log('params', params)
+  // console.log('params', params)
   const res = await getMenuRouteListApi(params)
   if (res) {
     const { wsCache } = useCache()
@@ -204,6 +204,8 @@ const getRole = async () => {
     })
     permissionStore.setIsAddRouters(true)
     // 登录后跳转指定地址, 或者路由第一个地址, 后端权限控制, 管理员是分析页, 普通用户是工作页
+    console.log(redirect.value)
+    console.log(permissionStore.addRouters[0].path)
     push({ path: redirect.value || permissionStore.addRouters[0].path })
   }
 }
