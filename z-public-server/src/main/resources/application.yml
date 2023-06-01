@@ -333,7 +333,7 @@ z:
   module:
     screen:
       go-view:
-        httpUrl: http://localhost:8090/
+        httpUrl: http://localhost:8090
         uploadType: local
         # 本地存储
         path:

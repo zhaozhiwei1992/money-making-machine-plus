@@ -1,5 +1,7 @@
 package com.z.module.screen.service;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
 import com.z.framework.security.util.SecurityUtils;
 import com.z.module.screen.domain.GoViewProjectDO;
 import com.z.module.screen.repository.GoViewProjectRepository;
@@ -46,10 +48,17 @@ public class GoViewProjectService {
     
     public void updateProject(GoViewProjectUpdateReqVO updateReqVO) {
         // 校验存在
-        validateProjectExists(updateReqVO.getId());
+        final Optional<GoViewProjectDO> byId = goViewProjectRepository.findById(updateReqVO.getId());
+        if (!byId.isPresent()) {
+            throw new RuntimeException("找不到改项目");
+        }
+        final GoViewProjectDO goViewProjectDO = byId.get();
         // 更新
         GoViewProjectDO updateObj = goViewProjectConvert.convert(updateReqVO);
-        goViewProjectRepository.save(updateObj);
+        final CopyOptions copyOptions = CopyOptions.create();
+        copyOptions.setIgnoreNullValue(true);
+        BeanUtil.copyProperties(updateObj, goViewProjectDO, copyOptions);
+        goViewProjectRepository.save(goViewProjectDO);
     }
 
     

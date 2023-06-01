@@ -47,7 +47,7 @@ public class ExampleResource {
         this.exampleRepository.save(example);
 
         final ResponseData<Example> exampleResponseData = new ResponseData<>();
-        exampleResponseData.setCode(String.valueOf(HttpStatus.OK.value()));
+        exampleResponseData.setCode(HttpStatus.OK.value());
         exampleResponseData.setData(example);
         return exampleResponseData;
     }
@@ -68,7 +68,7 @@ public class ExampleResource {
 
         final ResponseData<List<Example>> listResponseData = new ResponseData<>();
         listResponseData.setData(all);
-        listResponseData.setCode("0");
+        listResponseData.setCode(200);
         listResponseData.setCount(all.size());
         return listResponseData;
     }

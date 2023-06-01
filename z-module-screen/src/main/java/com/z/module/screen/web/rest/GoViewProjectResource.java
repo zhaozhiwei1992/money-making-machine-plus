@@ -15,26 +15,31 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Tag(name = "GoView 项目")
 @RestController
 @RequestMapping("/goview/project")
 @Validated
 @Transactional(rollbackFor = Exception.class)
-public class GoViewProjectController {
+public class GoViewProjectResource {
 
     private final GoViewProjectService goViewProjectService;
 
@@ -46,10 +51,10 @@ public class GoViewProjectController {
 
     private final GoViewProjectRepository goViewProjectRepository;
 
-    public GoViewProjectController(GoViewProjectService goViewProjectService,
-                                   GoViewProjectConvert goViewProjectConvert, ScreenProperties screenProperties,
-                                   GoViewFileRepository goViewFileRepository,
-                                   GoViewProjectRepository goViewProjectRepository) {
+    public GoViewProjectResource(GoViewProjectService goViewProjectService,
+                                 GoViewProjectConvert goViewProjectConvert, ScreenProperties screenProperties,
+                                 GoViewFileRepository goViewFileRepository,
+                                 GoViewProjectRepository goViewProjectRepository) {
         this.goViewProjectService = goViewProjectService;
         this.goViewProjectConvert = goViewProjectConvert;
         this.screenProperties = screenProperties;
@@ -63,7 +68,7 @@ public class GoViewProjectController {
         return ResponseData.ok(goViewProjectService.createProject(createReqVO));
     }
 
-    @PutMapping("/edit")
+    @PostMapping("/edit")
     @Operation(summary = "更新项目")
     public ResponseEntity<ResponseData<Boolean>> updateProject(@Valid @RequestBody GoViewProjectUpdateReqVO updateReqVO) {
         goViewProjectService.updateProject(updateReqVO);
@@ -78,9 +83,46 @@ public class GoViewProjectController {
         return ResponseData.ok(true);
     }
 
+    @Operation(summary = "项目重命名")
+    @PostMapping("/rename")
+    public ResponseEntity<ResponseData<Object>> rename(@RequestBody GoViewProjectUpdateReqVO goViewProjectUpdateReqVO) {
+        final Optional<GoViewProjectDO> byId = goViewProjectRepository.findById(goViewProjectUpdateReqVO.getId());
+        if (byId.isPresent()) {
+            final GoViewProjectDO goViewProjectDO = byId.get();
+            goViewProjectDO.setName(goViewProjectUpdateReqVO.getProjectName());
+            return ResponseData.ok(true);
+        }
+        return ResponseData.fail("没有找到该项目");
+    }
+
+    //发布/取消项目状态
+    @PutMapping("/publish")
+    public ResponseEntity<ResponseData<Object>> updateVisible(@RequestBody GoViewProjectUpdateReqVO goViewProjectUpdateReqVO) {
+
+        if (goViewProjectUpdateReqVO.getState() == -1 || goViewProjectUpdateReqVO.getState() == 1) {
+
+            final Optional<GoViewProjectDO> byId = goViewProjectRepository.findById(goViewProjectUpdateReqVO.getId());
+            if (byId.isPresent()) {
+                final GoViewProjectDO goViewProjectDO = byId.get();
+                goViewProjectDO.setStatus(goViewProjectUpdateReqVO.getState());
+                return ResponseData.ok(true);
+            }
+            return ResponseData.fail("没有找到该项目");
+        }
+        return ResponseData.fail("警告非法字段");
+    }
+
+    /**
+     * @data: 2023/5/31-下午11:25
+     * @User: zhaozhiwei
+     * @method: saveData
+      * @param data :
+     * @return: org.springframework.http.ResponseEntity<com.z.framework.common.web.rest.vm.ResponseData<java.lang.Object>>
+     * @Description: 项目明细数据
+     */
     @Operation(summary = "保存项目数据")
     @PostMapping("/save/data")
-    public ResponseEntity<ResponseData<Object>> saveData(@RequestBody GoViewProjectUpdateReqVO data) {
+    public ResponseEntity<ResponseData<Object>> saveData(GoViewProjectUpdateReqVO data) {
 
         final Optional<GoViewProjectDO> byId = goViewProjectRepository.findById(data.getProjectId());
         if (!byId.isPresent()) {
@@ -104,13 +146,8 @@ public class GoViewProjectController {
     @Operation(summary = "获得我的项目分页")
     public ResponseEntity<ResponseData<List<GoViewProjectRespVO>>> getMyProjectPage(@Valid PageParam pageVO) {
         final Page<GoViewProjectDO> myProjectPage = goViewProjectService.getMyProjectPage(pageVO);
-        final ResponseData<List<GoViewProjectRespVO>> tResponseData = new ResponseData<>();
-        tResponseData.setCode("200");
-        tResponseData.setMsg("请求成功");
-        tResponseData.setData(goViewProjectConvert.convert(myProjectPage.getContent()));
-        tResponseData.setCount(myProjectPage.getNumberOfElements());
-        tResponseData.setTimestamps(new Date());
-        return ResponseEntity.ok().body(tResponseData);
+        return ResponseData.ok(goViewProjectConvert.convert(myProjectPage.getContent()),
+                myProjectPage.getNumberOfElements());
     }
 
     /**
@@ -143,11 +180,57 @@ public class GoViewProjectController {
         goViewFileRepository.save(viewFileDO);
 
         File desc = getAbsoluteFile(uploadPath + File.separator + filepath, fileSuffixName);
+        // 写入磁盘
         object.transferTo(desc);
         GoViewFileVO goViewFileVO = BeanUtil.copyProperties(viewFileDO, GoViewFileVO.class);
-        goViewFileVO.setFileurl(screenProperties.getGoView().getHttpUrl() + viewFileDO.getVirtualKey() + "/" + viewFileDO.getRelativePath() + "/" + viewFileDO.getFileName());
+        if (uploadType.equals("local")) {
+            goViewFileVO.setFileurl(screenProperties.getGoView().getHttpUrl() + "/api/goview/project/" + viewFileDO.getVirtualKey() + "/" + viewFileDO.getRelativePath() + "/" + viewFileDO.getFileName());
+        }
         return ResponseData.ok(goViewFileVO);
     }
+
+    /**
+     * @param request :
+     * @data: 2022/8/31-上午10:09
+     * @User: zhaozhiwei
+     * @method: getCaptchaCode
+     * @return: org.springframework.web.servlet.ModelAndView
+     * @Description: 获取本地图片, 跟上述
+     */
+    @GetMapping("/local/{relativePath}/{fileName}")
+    public ResponseEntity<byte[]> downImg(HttpServletRequest request,
+                                          @PathVariable("relativePath") String relativePath,
+                                          @PathVariable("fileName") String fileName) throws IOException {
+        HttpSession session = request.getSession();
+
+        // 获取本地图片
+        final String uploadPath = screenProperties.getGoView().getPath().getUpload();
+        File file = getAbsoluteFile(uploadPath + File.separator + relativePath, fileName);
+        if (!file.exists()) {
+            return null;
+        }
+
+        // 创建验证码图片
+        final FileInputStream fileInputStream = new FileInputStream(file);
+        BufferedImage bi = ImageIO.read(fileInputStream);
+
+        // 将验证码图片转换为字节数组
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ImageIO.write(bi, "png", outputStream);
+        byte[] captchaBytes = outputStream.toByteArray();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        // 这个可以在前端通过response.headers.responsetype获取
+        headers.set("responseType", "text"); // 设置自定义的responseType头部
+
+//        arraybuffer形式
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(captchaBytes);
+    }
+
 
     public static File getAbsoluteFile(String uploadDir, String filename) throws IOException {
         File desc = new File(uploadDir + File.separator + filename);
