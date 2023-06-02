@@ -23,7 +23,7 @@ import java.util.Map;
 
 @Tag(name = "GoView 数据", description = "提供 SQL、HTTP 等数据查询的能力")
 @RestController
-@RequestMapping("/go-view/data")
+@RequestMapping("/goview/data")
 @Validated
 public class GoViewDataResource {
 

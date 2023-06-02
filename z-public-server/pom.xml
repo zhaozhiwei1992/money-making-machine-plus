@@ -41,7 +41,7 @@
 <!--    工作流模块-->
     <dependency>
       <groupId>com.z</groupId>
-      <artifactId>z-module-bpm</artifactId>
+      <artifactId>z-module-bpm-biz</artifactId>
       <version>${revision}</version>
     </dependency>
 

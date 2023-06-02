@@ -143,7 +143,7 @@
             @click="openForm('update', scope.row.id)"
             v-hasPermi="['bpm:model:update']"
           >
-            修改流程
+            修改
           </el-button>
           <el-button
             link
@@ -151,7 +151,7 @@
             @click="handleDesign(scope.row)"
             v-hasPermi="['bpm:model:update']"
           >
-            设计流程
+            设计
           </el-button>
           <el-button
             link
@@ -159,7 +159,7 @@
             @click="handleAssignRule(scope.row)"
             v-hasPermi="['bpm:task-assign-rule:query']"
           >
-            分配规则
+            分配
           </el-button>
           <el-button
             link
@@ -167,16 +167,16 @@
             @click="handleDeploy(scope.row)"
             v-hasPermi="['bpm:model:deploy']"
           >
-            发布流程
+            发布
           </el-button>
-          <el-button
+          <!-- <el-button
             link
             type="primary"
             v-hasPermi="['bpm:process-definition:query']"
             @click="handleDefinitionList(scope.row)"
           >
             流程定义
-          </el-button>
+          </el-button> -->
           <el-button
             link
             type="danger"
