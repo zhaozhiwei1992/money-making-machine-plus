@@ -179,4 +179,18 @@ public class UserResource {
         this.userRepository.deleteAllByIdIn(idList);
         return ResponseData.ok("success");
     }
+
+    @Operation(description = "获取所有用户信息")
+    @GetMapping("/users/all")
+    public ResponseEntity<ResponseData<List<Map<String, Object>>>> getAllDictList() {
+        final List<User> all = userRepository.findAll();
+        final List<Map<String, Object>> resultMap = all.stream().map(m -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", m.getId());
+            map.put("username", m.getLogin());
+            map.put("nickname", m.getName());
+            return map;
+        }).collect(Collectors.toList());
+        return ResponseData.ok(resultMap);
+    }
 }

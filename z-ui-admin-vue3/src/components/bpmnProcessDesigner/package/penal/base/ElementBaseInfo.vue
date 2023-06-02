@@ -3,12 +3,12 @@
     <el-form label-width="90px" :model="needProps" :rules="rules">
       <div v-if="needProps.type == 'bpmn:Process'">
         <!-- 如果是 Process 信息的时候，使用自定义表单 -->
-        <el-link
+        <!-- <el-link
           href="https://doc.iocoder.cn/bpm/#_3-%E6%B5%81%E7%A8%8B%E5%9B%BE%E7%A4%BA%E4%BE%8B"
           type="danger"
           target="_blank"
           >如何实现实现会签、或签？</el-link
-        >
+        > -->
         <el-form-item label="流程标识" prop="id">
           <el-input
             v-model="needProps.id"
@@ -39,7 +39,7 @@
 </template>
 <script setup lang="ts" name="ElementBaseInfo">
 import { ref, reactive, onMounted, watch, onBeforeUnmount, toRaw } from 'vue'
-import { ElForm, ElFormItem, ElInput, ElLink } from 'element-plus'
+import { ElForm, ElFormItem, ElInput } from 'element-plus'
 const props = defineProps({
   businessObject: {
     type: Object,

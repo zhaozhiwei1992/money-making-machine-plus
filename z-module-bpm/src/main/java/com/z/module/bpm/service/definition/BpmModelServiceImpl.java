@@ -167,14 +167,15 @@ public class BpmModelServiceImpl implements BpmModelService {
             throw exception(MODEL_NOT_EXISTS);
         }
         // 1.3 校验表单已配
-        BpmFormDO form = checkFormConfig(model.getMetaInfo());
+//        BpmFormDO form = checkFormConfig(model.getMetaInfo());
         // 1.4 校验任务分配规则已配置
         taskAssignRuleService.checkTaskAssignRuleAllConfig(id);
 
         // 1.5 校验模型是否发生修改。如果未修改，则不允许创建
-        final BpmProcessDefinitionCreateReqDTO definitionCreateReqDTO = bpmModelConvert.convert2(model, form);
+        final BpmProcessDefinitionCreateReqDTO definitionCreateReqDTO = bpmModelConvert.convert2(model, null);
         definitionCreateReqDTO.setBpmnBytes(bpmnBytes);
-        if (processDefinitionService.isProcessDefinitionEquals(definitionCreateReqDTO)) { // 流程定义的信息相等
+        if (processDefinitionService.isProcessDefinitionEquals(definitionCreateReqDTO)) {
+            // 流程定义的信息相等
             ProcessDefinition oldProcessDefinition = processDefinitionService.getProcessDefinitionByDeploymentId(model.getDeploymentId());
             if (oldProcessDefinition != null && taskAssignRuleService.isTaskAssignRulesEquals(model.getId(), oldProcessDefinition.getId())) {
                 throw exception(MODEL_DEPLOY_FAIL_TASK_INFO_EQUALS);

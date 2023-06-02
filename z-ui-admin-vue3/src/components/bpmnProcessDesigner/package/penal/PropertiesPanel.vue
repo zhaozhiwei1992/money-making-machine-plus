@@ -108,34 +108,35 @@ const elementBusinessObject = ref<any>({}) // 元素 businessObject 镜像，提
 const conditionFormVisible = ref(false) // 流转条件设置
 const formVisible = ref(false) // 表单配置
 const bpmnElement = ref()
-const timer = ref()
+// const timer = ref()
 provide('prefix', props.prefix)
 provide('width', props.width)
 const bpmnInstances = () => (window as any)?.bpmnInstances
 const initModels = () => {
-  // console.log(props, 'props')
-  // console.log(props.bpmnModeler, 'sakdjjaskdsajdkasdjkadsjk')
+  console.log(props, 'props')
+  console.log(props.bpmnModeler, 'props.bpmnModeler')
   // 初始化 modeler 以及其他 moddle
   // nextTick(() => {
-  if (!props.bpmnModeler) {
-    // 避免加载时 流程图 并未加载完成
-    timer.value = setTimeout(() => initModels(), 10)
-    return
-  }
-  if (timer.value) {
-    clearTimeout(timer.value)
-    const w = window as any
-    w.bpmnInstances = {
-      modeler: props.bpmnModeler,
-      modeling: props.bpmnModeler.get('modeling'),
-      moddle: props.bpmnModeler.get('moddle'),
-      eventBus: props.bpmnModeler.get('eventBus'),
-      bpmnFactory: props.bpmnModeler.get('bpmnFactory'),
-      elementFactory: props.bpmnModeler.get('elementFactory'),
-      elementRegistry: props.bpmnModeler.get('elementRegistry'),
-      replace: props.bpmnModeler.get('replace'),
-      selection: props.bpmnModeler.get('selection')
-    }
+  // if (!props.bpmnModeler) {
+  //   // 避免加载时 流程图 并未加载完成
+  //   timer.value = setTimeout(() => initModels(), 10)
+  //   return
+  // }
+  // if (timer.value) {
+  //   clearTimeout(timer.value)
+  // }
+
+  const w = window as any
+  w.bpmnInstances = {
+    modeler: props.bpmnModeler,
+    modeling: props.bpmnModeler.get('modeling'),
+    moddle: props.bpmnModeler.get('moddle'),
+    eventBus: props.bpmnModeler.get('eventBus'),
+    bpmnFactory: props.bpmnModeler.get('bpmnFactory'),
+    elementFactory: props.bpmnModeler.get('elementFactory'),
+    elementRegistry: props.bpmnModeler.get('elementRegistry'),
+    replace: props.bpmnModeler.get('replace'),
+    selection: props.bpmnModeler.get('selection')
   }
 
   console.log(bpmnInstances(), 'window.bpmnInstances')

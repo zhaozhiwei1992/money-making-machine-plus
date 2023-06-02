@@ -213,7 +213,9 @@ const open = async (modelId: string, row: TaskAssignRuleApi.TaskAssignVO) => {
   // 获得岗位列表
   postOptions.value = await PostApi.getSimplePostList()
   // 获得用户列表
-  userOptions.value = await UserApi.getTableListAllApi()
+  await UserApi.getTableListAllApi().then((res) => {
+    userOptions.value = res.data
+  })
   // 获得用户组列表
   userGroupOptions.value = await UserGroupApi.getSimpleUserGroupList()
 }

@@ -44,5 +44,5 @@ export const delTableListApi = (ids: string[] | number[]): Promise<IResponse> =>
 
 // 查询角色（精简)列表
 export const getSimpleRoleList = async (): Promise<RoleVO[]> => {
-  return await request.get({ url: '/system/role/list-all-simple' })
+  return await request.get({ url: '/roles/list' })
 }

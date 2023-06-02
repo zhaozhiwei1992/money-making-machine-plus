@@ -43,6 +43,6 @@ export const delTableListApi = (ids: string[] | number[]): Promise<IResponse> =>
 }
 
 // 获取用户精简信息列表
-export const getTableListAllApi = (): Promise<UserVO[]> => {
+export const getTableListAllApi = (): Promise<IResponse<UserVO[]>> => {
   return request.get({ url: '/users/all' })
 }

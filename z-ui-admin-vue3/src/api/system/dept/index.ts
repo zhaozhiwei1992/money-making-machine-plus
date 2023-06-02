@@ -14,7 +14,7 @@ export interface DeptVO {
 
 // 查询部门（精简)列表
 export const getSimpleDeptList = async (): Promise<DeptVO[]> => {
-  return await request.get({ url: '/system/dept/list-all-simple' })
+  return await request.get({ url: '/roles/list' })
 }
 
 // 查询部门列表

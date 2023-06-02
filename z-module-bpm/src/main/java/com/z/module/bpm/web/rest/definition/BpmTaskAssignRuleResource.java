@@ -36,7 +36,8 @@ public class BpmTaskAssignRuleResource {
     public ResponseEntity<ResponseData<List<BpmTaskAssignRuleRespVO>>> getTaskAssignRuleList(
             @RequestParam(value = "modelId", required = false) String modelId,
             @RequestParam(value = "processDefinitionId", required = false) String processDefinitionId) {
-        return ResponseData.ok(taskAssignRuleService.getTaskAssignRuleList(modelId, processDefinitionId));
+        final List<BpmTaskAssignRuleRespVO> taskAssignRuleList = taskAssignRuleService.getTaskAssignRuleList(modelId, processDefinitionId);
+        return ResponseData.ok(taskAssignRuleList);
     }
 
     @PostMapping("/create")

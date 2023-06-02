@@ -677,11 +677,11 @@ onBeforeMount(() => {
 onMounted(() => {
   initBpmnModeler()
   // 这里好像属性搞不到,随便改改代码又可以,神奇
-  // 改成了setTimeout可以, 说明这个加载有bug, 得延时
+  // 改成了setTimeout可以, 说明这个加载有bug, 得延时, 时间不够继续延
   // https://blog.csdn.net/m0_59393112/article/details/124941937
   setTimeout(() => {
     createNewDiagram(props.value)
-  }, 100)
+  }, 1000)
 })
 
 onBeforeUnmount(() => {

@@ -53,19 +53,19 @@
 </template>
 
 <script setup lang="ts" name="ElementProperties">
-import { ref, inject, nextTick, toRaw, watch } from 'vue'
 import { XButton } from '@/components/XButton'
-import ElInput from 'element-plus'
 import {
-  ElMessageBox,
+  ElButton,
   ElDialog,
+  ElDivider,
   ElForm,
   ElFormItem,
-  ElButton,
+  ElInput,
+  ElMessageBox,
   ElTable,
-  ElTableColumn,
-  ElDivider
+  ElTableColumn
 } from 'element-plus'
+import { inject, nextTick, ref, toRaw, watch } from 'vue'
 const props = defineProps({
   id: String,
   type: String
@@ -133,6 +133,8 @@ const removeAttributes = (attr, index) => {
 }
 const saveAttribute = () => {
   console.log(propertyForm.value, 'propertyForm.value')
+  console.log(window, 'window')
+  console.log(bpmnInstances(), 'bpmnInstance')
   const { name, value } = propertyForm.value
   if (editingPropertyIndex.value !== -1) {
     bpmnInstances().modeling.updateModdleProperties(

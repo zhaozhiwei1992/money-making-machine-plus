@@ -91,7 +91,7 @@ onMounted(async () => {
   // 查询模型
   await ModelApi.getModel(modelId).then((res) => {
     const data = res.data
-    // todo 这里不触发vue刷新, 醉了
+    // 传递子组件属性, 记得子组件onMounted中延时
     xmlString.value = data.bpmnXml
     model.value = {
       ...data,

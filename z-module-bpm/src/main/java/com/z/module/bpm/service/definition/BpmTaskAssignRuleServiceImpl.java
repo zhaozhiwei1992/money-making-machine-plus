@@ -1,5 +1,7 @@
 package com.z.module.bpm.service.definition;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -42,15 +44,18 @@ import static com.z.module.bpm.enums.ErrorCodeConstants.*;
 @Accessors(chain = true)
 public class BpmTaskAssignRuleServiceImpl implements BpmTaskAssignRuleService {
 
-    @Resource
-    private BpmTaskAssignRuleRepository taskRuleMapper;
-    @Resource
+    @Autowired
+    private BpmTaskAssignRuleRepository bpmTaskAssignRuleRepository;
+
+    @Autowired
     @Lazy // 解决循环依赖
     private BpmModelService modelService;
-    @Resource
+
+    @Autowired
     @Lazy // 解决循环依赖
     private BpmProcessDefinitionService processDefinitionService;
-    @Resource
+
+    @Autowired
     private BpmUserGroupService userGroupService;
 
     @Autowired
@@ -69,12 +74,12 @@ public class BpmTaskAssignRuleServiceImpl implements BpmTaskAssignRuleService {
     @Override
     public List<BpmTaskAssignRuleDO> getTaskAssignRuleListByProcessDefinitionId(String processDefinitionId,
                                                                                 String taskDefinitionKey) {
-        return taskRuleMapper.findAllByProcessDefinitionIdAndTaskDefinitionKey(processDefinitionId, taskDefinitionKey);
+        return bpmTaskAssignRuleRepository.findAllByProcessDefinitionIdAndTaskDefinitionKey(processDefinitionId, taskDefinitionKey);
     }
 
     @Override
     public List<BpmTaskAssignRuleDO> getTaskAssignRuleListByModelId(String modelId) {
-        return taskRuleMapper.findAllByModelId(modelId);
+        return bpmTaskAssignRuleRepository.findAllByModelId(modelId);
     }
 
     @Override
@@ -106,16 +111,15 @@ public class BpmTaskAssignRuleServiceImpl implements BpmTaskAssignRuleService {
         // 校验参数
 //        validTaskAssignRuleOptions(reqVO.getType(), reqVO.getOptions());
         // 校验是否已经配置
-        BpmTaskAssignRuleDO existRule =
-            taskRuleMapper.findAllByModelIdAndTaskDefinitionKey(reqVO.getModelId(), reqVO.getTaskDefinitionKey()).get(0);
-        if (existRule != null) {
+        final List<BpmTaskAssignRuleDO> allByModelIdAndTaskDefinitionKey = bpmTaskAssignRuleRepository.findAllByModelIdAndTaskDefinitionKey(reqVO.getModelId(), reqVO.getTaskDefinitionKey());
+        if (allByModelIdAndTaskDefinitionKey.size() > 0) {
             throw exception(TASK_ASSIGN_RULE_EXISTS, reqVO.getModelId(), reqVO.getTaskDefinitionKey());
         }
 
         // 存储
         BpmTaskAssignRuleDO rule = bpmTaskAssignRuleConvert.convert(reqVO)
             .setProcessDefinitionId(BpmTaskAssignRuleDO.PROCESS_DEFINITION_ID_NULL); // 只有流程模型，才允许新建
-        taskRuleMapper.save(rule);
+        bpmTaskAssignRuleRepository.save(rule);
         return rule.getId();
     }
 
@@ -124,7 +128,7 @@ public class BpmTaskAssignRuleServiceImpl implements BpmTaskAssignRuleService {
         // 校验参数
 //        validTaskAssignRuleOptions(reqVO.getType(), reqVO.getOptions());
         // 校验是否存在
-        Optional<BpmTaskAssignRuleDO> existRuleOptional = taskRuleMapper.findById(reqVO.getId());
+        Optional<BpmTaskAssignRuleDO> existRuleOptional = bpmTaskAssignRuleRepository.findById(reqVO.getId());
         if (!existRuleOptional.isPresent()) {
             throw exception(TASK_ASSIGN_RULE_NOT_EXISTS);
         }
@@ -134,7 +138,12 @@ public class BpmTaskAssignRuleServiceImpl implements BpmTaskAssignRuleService {
         }
 
         // 执行更新
-        taskRuleMapper.save(bpmTaskAssignRuleConvert.convert(reqVO));
+        final BpmTaskAssignRuleDO bpmTaskAssignRuleDO = existRuleOptional.get();
+        final BpmTaskAssignRuleDO convert = bpmTaskAssignRuleConvert.convert(reqVO);
+        final CopyOptions copyOptions = CopyOptions.create();
+        copyOptions.setIgnoreNullValue(true);
+        BeanUtil.copyProperties(convert, bpmTaskAssignRuleDO, copyOptions);
+        bpmTaskAssignRuleRepository.save(bpmTaskAssignRuleDO);
     }
 
     @Override
@@ -171,7 +180,7 @@ public class BpmTaskAssignRuleServiceImpl implements BpmTaskAssignRuleService {
         // 开始复制
         List<BpmTaskAssignRuleDO> newRules = BpmTaskAssignRuleConvert.INSTANCE.convertList2(rules);
         newRules.forEach(rule -> rule.setProcessDefinitionId(toProcessDefinitionId).setId(null));
-        taskRuleMapper.saveAll(newRules);
+        bpmTaskAssignRuleRepository.saveAll(newRules);
     }
 
     @Override

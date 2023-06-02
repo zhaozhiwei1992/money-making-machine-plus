@@ -2,10 +2,10 @@ package com.z.module.system.web.rest;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
-import com.z.module.system.domain.Authority;
-import com.z.module.system.service.RoleMenuService;
-import com.z.module.system.repository.AuthorityRepository;
 import com.z.framework.common.web.rest.vm.ResponseData;
+import com.z.module.system.domain.Authority;
+import com.z.module.system.repository.AuthorityRepository;
+import com.z.module.system.service.RoleMenuService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -136,6 +136,20 @@ public class RoleResource {
 
         roleMenuService.saveRoleMenu(roleList, menuList);
         return ResponseData.ok("success");
+    }
+
+
+    @Operation(description = "获取角色列表信息")
+    @GetMapping("/roles/list")
+    public ResponseEntity<ResponseData<List<Map<String, Object>>>> getAllDictList() {
+        final List<Authority> all = roleRepository.findAll();
+        final List<Map<String, Object>> resultMap = all.stream().map(m -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("value", m.getCode());
+            map.put("label", m.getName());
+            return map;
+        }).collect(Collectors.toList());
+        return ResponseData.ok(resultMap);
     }
 
 }

@@ -65,14 +65,15 @@ const taskAssignScriptDictDatas = getIntDictOptions(DICT_TYPE.BPM_TASK_ASSIGN_SC
 const getList = async () => {
   loading.value = true
   try {
-    list.value = await TaskAssignRuleApi.getTaskAssignRuleList(queryParams)
+    await TaskAssignRuleApi.getTaskAssignRuleList(queryParams).then((res) => {
+      list.value = res.data
+    })
   } finally {
     loading.value = false
   }
 }
 
 /** 翻译规则范围 */
-// TODO 芋艿：各种 ts 报错
 const getAssignRuleOptionName = (type, option) => {
   if (type === 10) {
     for (const roleOption of roleOptions.value) {
@@ -127,7 +128,7 @@ onMounted(async () => {
   // 获得角色列表
   roleOptions.value = await RoleApi.getSimpleRoleList()
   // 获得部门列表
-  deptOptions.value = await DeptApi.getSimpleDeptList()
+  // deptOptions.value = await DeptApi.getSimpleDeptList()
   // 获得岗位列表
   postOptions.value = await PostApi.getSimplePostList()
   // 获得用户列表
