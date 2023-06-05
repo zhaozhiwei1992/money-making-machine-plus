@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ContentWrap } from '@/components/ContentWrap'
 import { ElButton } from 'element-plus'
-import { ref, onMounted } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useEmitt } from '@/hooks/web/useEmitt'
 import { getToolButtonListApi } from '@/api/ui/toolbutton'
 
@@ -22,15 +22,34 @@ interface ButtonType {
 
 const buttons = ref<ButtonType[]>([])
 
+// 模拟后端返回的tab信息
+const buttonsSchema = reactive<ButtonType[]>([
+  {
+    id: 1,
+    name: '新增',
+    action: 'add',
+    type: 'primary',
+    size: 'default'
+  },
+  {
+    id: 2,
+    name: '删除',
+    action: 'del',
+    type: 'danger',
+    size: 'default'
+  }
+])
+
 // 初始化按钮
 onMounted(() => {
   console.log('x')
   // 父页面传入菜单id, 这里根据菜单id自己去后台获取编辑区信息
   console.log('父级传入menuid为: ' + props.menuid)
   // 获取按钮信息, 填充
-  getToolButtonListApi(props.menuid).then((res) => {
-    buttons.value.push(...res.data)
-  })
+  // getToolButtonListApi(props.menuid).then((res) => {
+  //   buttons.value.push(...res.data)
+  // })
+  buttons.value.push(...buttonsSchema)
 })
 
 //动态绑定操作按钮的点击事件, 父页面实现方法

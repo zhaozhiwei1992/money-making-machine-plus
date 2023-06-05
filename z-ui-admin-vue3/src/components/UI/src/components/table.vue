@@ -4,10 +4,34 @@ import { useI18n } from '@/hooks/web/useI18n'
 import { Table, TableExpose } from '@/components/Table'
 import { getTableListApi } from '@/api/table'
 import { TableData } from '@/api/table/types'
-import { ref, h, reactive } from 'vue'
+import { ref, unref, h, reactive } from 'vue'
 import { ElTag, ElButton } from 'element-plus'
 import { useTable } from '@/hooks/web/useTable'
 import { Pagination, TableColumn, TableSlotDefault } from '@/types/table'
+import { useEmitt } from '@/hooks/web/useEmitt'
+
+// 对外暴露一些方法, 通过事件 开始
+// 重新加载数据
+useEmitt({
+  name: 'tableLoadData',
+  callback: (tableObj: any) => {
+    console.log(tableObj, '数据查询对象')
+    // 填充数据查询参数
+    // tableObject.params.push()
+    // todo 多个列表如何区分??
+    getList()
+  }
+})
+
+// 获取选中数据
+useEmitt({
+  name: 'getSelectedData',
+  callback: (tableObj: any) => {
+    console.log(tableObj, '数据查询对象')
+    // 获取指定列表选中数据
+  }
+})
+// 对外暴露一些方法, 通过事件 结束
 
 const { t } = useI18n()
 
@@ -63,6 +87,15 @@ const columns = reactive<TableColumn[]>([
   }
 ])
 
+const { emitter } = useEmitt()
+
+// const getTableList = (params: any): Promise<IResponse> => {
+//   // 通过事件由业务实现返回数据, 怎么拿到值呢?
+//   // 1. 通过store中转, 2. 直接通过事件把数据发回来, 然后监听填充, 3. 动态传入列表取数url(感觉靠谱点)
+//   emitter.emit('getTableListApi', params)
+//   // return request.get({ url: '/example/list', params })
+// }
+
 const { register, tableObject, methods } = useTable<TableData>({
   getListApi: getTableListApi,
   response: {
@@ -85,39 +118,24 @@ const actionFn = (data: TableSlotDefault) => {
 }
 
 const paginationObj = ref<Pagination>()
+// 显示分页, 条数根据数据控制
+paginationObj.value = {
+  total: 0
+}
 
-// const showPagination = (show: boolean) => {
-//   if (show) {
-//     paginationObj.value = {
-//       total: tableObject.total
-//     }
-//   } else {
-//     paginationObj.value = undefined
-//   }
-// }
+// 显示多选
+unref(tableRef)?.setProps({
+  selection: true
+})
 
-// const showSelections = (show: boolean) => {
-//   unref(tableRef)?.setProps({
-//     selection: show
-//   })
-// }
-
+// 选中数据
 // const index = ref(1)
 
-// const changeTitle = () => {
-//   unref(tableRef)?.setColumn([
-//     {
-//       field: 'title',
-//       path: 'label',
-//       value: `${t('tableDemo.title')}${unref(index)}`
-//     }
-//   ])
-//   index.value++
-// }
+const title = ref('列表1')
 </script>
 
 <template>
-  <ContentWrap :title="`RefTable ${t('tableDemo.example')}`">
+  <ContentWrap :title="title">
     <Table
       ref="tableRef"
       v-model:pageSize="tableObject.pageSize"

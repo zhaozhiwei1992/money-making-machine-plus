@@ -2,6 +2,8 @@
 import { ref, reactive, onMounted } from 'vue'
 import type { TabsPaneContext } from 'element-plus'
 import { useEmitt } from '@/hooks/web/useEmitt'
+import { ElTabs, ElTabPane } from 'element-plus'
+import { ContentWrap } from '@/components/ContentWrap'
 
 const { emitter } = useEmitt()
 
@@ -27,11 +29,11 @@ interface TabType {
 const tabsSchema = reactive<TabType[]>([
   {
     code: 'first',
-    name: 'User'
+    name: '待审核'
   },
   {
     code: 'second',
-    name: 'Role'
+    name: '已审核'
   }
 ])
 
@@ -51,7 +53,9 @@ onMounted(() => {
     <el-tab-pane label="Role" name="third">Role</el-tab-pane>
     <el-tab-pane label="Task" name="fourth">Task</el-tab-pane>
   </el-tabs> -->
-  <el-tabs v-model="tabValue" type="card" @tab-click="handleClick">
-    <el-tab-pane :key="item.code" v-for="item in tabs" :label="item.name" :name="item.code" />
-  </el-tabs>
+  <ContentWrap>
+    <el-tabs v-model="tabValue" type="card" @tab-click="handleClick">
+      <el-tab-pane :key="item.code" v-for="item in tabs" :label="item.name" :name="item.code" />
+    </el-tabs>
+  </ContentWrap>
 </template>
