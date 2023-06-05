@@ -5,16 +5,13 @@ import View from '@/components/UI/src/View.vue'
 import { useEmitt } from '@/hooks/web/useEmitt'
 import * as methods from './demo1'
 
-const { emitter } = useEmitt()
-
 // 监听页签点击
 useEmitt({
   name: 'tabClick',
   callback: (tabCode: string) => {
     console.log(tabCode, '点击页签tabCode')
+    alert(tabCode)
     // 做一些业务特殊处理, 比如根据code, 重新让列表去查数据
-    // 构建查询条件, 查询数据
-    emitter.emit('tableLoadData', {})
   }
 })
 
@@ -45,16 +42,12 @@ useEmitt({
   }
 })
 
-// 获取列表数据, 业务必须监听实现, 列表并不知道怎么取数据, 需业务实现
+// 监听查询区点击
 useEmitt({
-  name: 'getTableDataList',
-  callback: (params: any) => {
-    console.log(params, '查询数据')
-    const res = methods.getTableListApi(params)
-    // 向子组件传输数据, provide不行
-    // provide('tableData', res)
-    // 取到数据后通过事件将数据发回去
-    emitter.emit('getTableDataListEnd', res)
+  name: 'searchClick',
+  callback: (data: any) => {
+    console.log(data, '查询数据')
+    // 触发列表查询事件
   }
 })
 

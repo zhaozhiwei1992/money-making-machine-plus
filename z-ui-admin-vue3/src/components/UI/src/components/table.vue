@@ -2,7 +2,7 @@
 import { ContentWrap } from '@/components/ContentWrap'
 import { useI18n } from '@/hooks/web/useI18n'
 import { Table, TableExpose } from '@/components/Table'
-import { getTableListApi } from '@/api/table'
+// import { getTableListApi } from '@/api/table'
 import { TableData } from '@/api/table/types'
 import { ref, unref, h, reactive } from 'vue'
 import { ElTag, ElButton } from 'element-plus'
@@ -11,15 +11,16 @@ import { Pagination, TableColumn, TableSlotDefault } from '@/types/table'
 import { useEmitt } from '@/hooks/web/useEmitt'
 
 // 对外暴露一些方法, 通过事件 开始
-// 重新加载数据
+// 重新加载数据, 查询区点击按钮,或者变更页签等触发
 useEmitt({
   name: 'tableLoadData',
-  callback: (tableObj: any) => {
-    console.log(tableObj, '数据查询对象')
-    // 填充数据查询参数
+  callback: (queryObj: any) => {
+    console.log(queryObj, '数据查询对象')
+    // 填充数据查询参数 queryObj
     // tableObject.params.push()
     // todo 多个列表如何区分??
-    getList()
+    // getList()
+    setSearchParams(queryObj)
   }
 })
 
@@ -31,6 +32,15 @@ useEmitt({
     // 获取指定列表选中数据
   }
 })
+
+const tableDataRes = ref<Promise<IResponse<any>>>()
+useEmitt({
+  name: 'getTableDataListEnd',
+  callback: (res: any) => {
+    tableDataRes.value = res
+  }
+})
+
 // 对外暴露一些方法, 通过事件 结束
 
 const { t } = useI18n()
@@ -89,12 +99,14 @@ const columns = reactive<TableColumn[]>([
 
 const { emitter } = useEmitt()
 
-// const getTableList = (params: any): Promise<IResponse> => {
-//   // 通过事件由业务实现返回数据, 怎么拿到值呢?
-//   // 1. 通过store中转, 2. 直接通过事件把数据发回来, 然后监听填充, 3. 动态传入列表取数url(感觉靠谱点)
-//   emitter.emit('getTableListApi', params)
-//   // return request.get({ url: '/example/list', params })
-// }
+const getTableListApi = (params: any): Promise<IResponse> => {
+  // 通过事件由业务实现返回数据, 怎么拿到值呢?
+  // 1. 通过store中转, 2. 直接通过事件把数据发回来, 然后监听填充(事件不能返回)
+  emitter.emit('getTableDataList', params)
+  // 这里有没有可能出现数据还没查到情况
+  console.log(tableDataRes.value, '返回列表数据')
+  return tableDataRes.value
+}
 
 const { register, tableObject, methods } = useTable<TableData>({
   getListApi: getTableListApi,
@@ -107,7 +119,7 @@ const { register, tableObject, methods } = useTable<TableData>({
   }
 })
 
-const { getList } = methods
+const { getList, setSearchParams } = methods
 
 getList()
 
@@ -120,7 +132,7 @@ const actionFn = (data: TableSlotDefault) => {
 const paginationObj = ref<Pagination>()
 // 显示分页, 条数根据数据控制
 paginationObj.value = {
-  total: 0
+  total: tableObject.total
 }
 
 // 显示多选

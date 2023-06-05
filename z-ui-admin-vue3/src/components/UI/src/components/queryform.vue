@@ -5,6 +5,9 @@ import { Search } from '@/components/Search'
 import { reactive, ref, unref } from 'vue'
 import { useValidator } from '@/hooks/web/useValidator'
 import { FormSchema } from '@/types/form'
+import { useEmitt } from '@/hooks/web/useEmitt'
+
+const { emitter } = useEmitt()
 
 const props = defineProps({
   title: String
@@ -81,6 +84,12 @@ const layout = ref('inline')
 layout.value = unref(layout) === 'inline' ? 'bottom' : 'inline'
 
 const buttomPosition = ref('right')
+
+const search = (data) => {
+  console.log(data, 'search')
+  // 需要将数据发到业务页面, 业务再把数据发给列表, 填充查询对象
+  emitter.emit('tableLoadData', data)
+}
 </script>
 
 <template>
@@ -90,6 +99,7 @@ const buttomPosition = ref('right')
       :is-col="isGrid"
       :layout="layout"
       :buttom-position="buttomPosition"
+      @search="search"
       expand
       expand-field="field3"
     />
