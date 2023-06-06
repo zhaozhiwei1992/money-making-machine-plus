@@ -190,7 +190,7 @@ const getRole = async () => {
   if (res) {
     const { wsCache } = useCache()
     const routers = res.data || []
-    console.log('返回routers信息', res)
+    // console.log('返回routers信息', res)
     wsCache.set('roleRouters', routers)
 
     // 全部都走后端路由

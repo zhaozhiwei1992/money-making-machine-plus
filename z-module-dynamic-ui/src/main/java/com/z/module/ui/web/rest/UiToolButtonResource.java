@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @RestController
+@RequestMapping("/ui")
 @Transactional
 @Slf4j
 public class UiToolButtonResource {
@@ -28,14 +29,14 @@ public class UiToolButtonResource {
     }
 
     /**
-     * {@code POST  /ui-tool-buttons} : Create a new uiToolButton.
+     * {@code POST  /tool-buttons} : Create a new uiToolButton.
      *
      * @param uiToolButton the uiToolButton to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new uiToolButton, or
      * with status {@code 400 (Bad Request)} if the uiToolButton has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("/ui-tool-buttons")
+    @PostMapping("/tool-buttons")
     public ResponseEntity<ResponseData<Object>> createUiToolButton(@RequestBody UiToolButton uiToolButton) throws URISyntaxException {
         log.debug("REST request to save UiToolButton : {}", uiToolButton);
         ExampleMatcher matcher = ExampleMatcher.matching();
@@ -50,12 +51,12 @@ public class UiToolButtonResource {
     }
 
     /**
-     * {@code GET  /ui-tool-buttons} : get all the uiToolButtons.
+     * {@code GET  /tool-buttons} : get all the uiToolButtons.
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of uiToolButtons in body.
      */
 
-    @GetMapping("/ui-tool-buttons")
+    @GetMapping("/tool-buttons")
     public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllUiToolButtons(Pageable pageable) {
         log.debug("REST request to get a page of UiComponents");
 
@@ -66,7 +67,7 @@ public class UiToolButtonResource {
         }});
     }
 
-    @GetMapping("/ui-tool-buttons/menu/{menuid}")
+    @GetMapping("/tool-buttons/menu/{menuid}")
     public ResponseEntity<ResponseData<List<UiToolButton>>> getUiToolButtonByMenuId(@PathVariable Long menuid) {
         final List<UiToolButton> byMenuIdOrderByOrderNumAsc =
                 uiToolButtonRepository.findByMenuIdOrderByOrderNumAsc(menuid);
@@ -74,11 +75,11 @@ public class UiToolButtonResource {
     }
 
     /**
-     * {@code DELETE  /ui-tool-buttons/:id} : delete the "id" uiToolButton.
+     * {@code DELETE  /tool-buttons/:id} : delete the "id" uiToolButton.
      *
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @DeleteMapping("/ui-tool-buttons")
+    @DeleteMapping("/tool-buttons")
     public ResponseEntity<ResponseData<String>> deleteUiToolButton(@RequestBody List<Long> idList) {
         this.uiToolButtonRepository.deleteAllByIdIn(idList);
         return ResponseData.ok("success");

@@ -271,7 +271,7 @@ public class MenuResource {
                     tree.putExtra("path", menuObj.getUrl());
                     tree.putExtra("component", menuObj.getComponent());
                     final Map<String, Object> metaMap = new HashMap<>();
-                    metaMap.put("menu_id", menuObj.getId());
+                    metaMap.put("menuId", menuObj.getId());
                     metaMap.put("title", menuObj.getName());
                     metaMap.put("icon", menuObj.getIconCls());
                     tree.putExtra("meta", metaMap);

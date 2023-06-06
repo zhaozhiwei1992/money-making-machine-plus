@@ -1,5 +1,5 @@
 import request from '@/config/axios'
-import type { TableData } from './types'
+import type { MenuVO } from './types'
 
 export const getTableListApi = (params: any): Promise<IResponse> => {
   params = { page: params.pageIndex, size: params.pageSize }
@@ -7,14 +7,14 @@ export const getTableListApi = (params: any): Promise<IResponse> => {
   return request.get({ url: '/menus', params })
 }
 
-export const saveTableApi = (data: Partial<TableData>): Promise<IResponse> => {
+export const saveTableApi = (data: Partial<MenuVO>): Promise<IResponse> => {
   return request.post({ url: '/menus', data })
 }
 
 // 获取指定数据详情
-export const getTableDetApi = (id: string): Promise<IResponse<TableData>> => {
+export const getMenuDetApi = (id: string): Promise<IResponse<MenuVO>> => {
   // url?id=xx
-  return request.get({ url: '/menus/detail', params: { id } })
+  return request.get({ url: '/menus/' + id })
 }
 
 // 批量删除

@@ -19,6 +19,7 @@ import java.util.List;
 
 @RestController
 @Transactional
+@RequestMapping("/ui")
 @Slf4j
 public class UiTabResource {
 
@@ -31,14 +32,14 @@ public class UiTabResource {
     }
 
     /**
-     * {@code POST  /ui-tabs} : Create a new uiTab.
+     * {@code POST  /tabs} : Create a new uiTab.
      *
      * @param uiTab the uiTab to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new uiTab, or with
      * status {@code 400 (Bad Request)} if the uiTab has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("/ui-tabs")
+    @PostMapping("/tabs")
     public ResponseEntity<ResponseData<UiTab>> createUiTab(@RequestBody UiTab uiTab) throws URISyntaxException {
         log.debug("REST request to save UiTab : {}", uiTab);
         if (uiTab.getId() != null) {
@@ -56,11 +57,11 @@ public class UiTabResource {
     }
 
     /**
-     * {@code GET  /ui-tabs} : get all the uiTabs.
+     * {@code GET  /tabs} : get all the uiTabs.
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of uiTabs in body.
      */
-    @GetMapping("/ui-tabs")
+    @GetMapping("/tabs")
     public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllUiTabs(Pageable pageable) {
         log.debug("REST request to get a page of UiTabs");
 
@@ -71,7 +72,7 @@ public class UiTabResource {
         }});
     }
 
-    @GetMapping("/ui-tabs/menu/{menuid}")
+    @GetMapping("/tabs/menu/{menuid}")
     public ResponseEntity<ResponseData<Object>> getUiTabByMenuId(@PathVariable Long menuid) {
         log.debug("REST request to get UiToolButton by menu : {}", menuid);
         final List<UiTab> byMenuId = uiTabRepository.findByMenuId(menuid);
@@ -79,11 +80,11 @@ public class UiTabResource {
     }
 
     /**
-     * {@code DELETE  /ui-tabs/:id} : delete the "id" uiTab.
+     * {@code DELETE  /tabs/:id} : delete the "id" uiTab.
      *
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @DeleteMapping("/ui-tabs/{id}")
+    @DeleteMapping("/tabs/{id}")
     public ResponseEntity<ResponseData<String>> deleteUiTab(@RequestBody List<Long> idList) {
         this.uiTabRepository.deleteAllByIdIn(idList);
         return ResponseData.ok("success");

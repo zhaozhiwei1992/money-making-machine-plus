@@ -2,13 +2,19 @@
 import { ContentWrap } from '@/components/ContentWrap'
 import { useI18n } from '@/hooks/web/useI18n'
 import { Table, TableExpose } from '@/components/Table'
-// import { getTableListApi } from '@/api/table'
+import { getTableConfigListApi } from '@/api/ui/table'
 import { TableData } from '@/api/table/types'
-import { ref, unref, h, reactive } from 'vue'
+import { ref, unref, h, reactive, inject, onMounted } from 'vue'
 import { ElTag, ElButton } from 'element-plus'
 import { useTable } from '@/hooks/web/useTable'
 import { Pagination, TableColumn, TableSlotDefault } from '@/types/table'
 import { useEmitt } from '@/hooks/web/useEmitt'
+
+const props = defineProps({
+  title: String,
+  componentId: String,
+  comRef: ref<any>
+})
 
 // 对外暴露一些方法, 通过事件 开始
 // 重新加载数据, 查询区点击按钮,或者变更页签等触发
@@ -20,7 +26,8 @@ useEmitt({
     // tableObject.params.push()
     // todo 多个列表如何区分??
     // getList()
-    setSearchParams(queryObj)
+    console.log(queryObj.componentId, '触发来源组件')
+    setSearchParams(queryObj.data)
   }
 })
 
@@ -43,59 +50,73 @@ useEmitt({
 
 // 对外暴露一些方法, 通过事件 结束
 
+const menuid: string | undefined = inject('menuid')
+
 const { t } = useI18n()
 
-const columns = reactive<TableColumn[]>([
-  {
-    field: 'index',
-    label: t('tableDemo.index'),
-    type: 'index'
-  },
-  {
-    field: 'content',
-    label: t('tableDemo.header'),
-    children: [
-      {
-        field: 'title',
-        label: t('tableDemo.title')
-      },
-      {
-        field: 'author',
-        label: t('tableDemo.author')
-      },
-      {
-        field: 'display_time',
-        label: t('tableDemo.displayTime')
-      },
-      {
-        field: 'importance',
-        label: t('tableDemo.importance'),
-        formatter: (_: Recordable, __: TableColumn, cellValue: number) => {
-          return h(
-            ElTag,
-            {
-              type: cellValue === 1 ? 'success' : cellValue === 2 ? 'warning' : 'danger'
-            },
-            () =>
-              cellValue === 1
-                ? t('tableDemo.important')
-                : cellValue === 2
-                ? t('tableDemo.good')
-                : t('tableDemo.commonly')
-          )
-        }
-      },
-      {
-        field: 'pageviews',
-        label: t('tableDemo.pageviews')
-      }
-    ]
-  },
-  {
-    field: 'action',
-    label: t('tableDemo.action')
-  }
-])
+const columns = reactive<TableColumn[]>([])
+// const columns = reactive<TableColumn[]>([
+//   {
+//     field: 'index',
+//     label: t('tableDemo.index'),
+//     type: 'index'
+//   },
+//   {
+//     field: 'content',
+//     label: t('tableDemo.header'),
+//     children: [
+//       {
+//         field: 'title',
+//         label: t('tableDemo.title')
+//       },
+//       {
+//         field: 'author',
+//         label: t('tableDemo.author')
+//       },
+//       {
+//         field: 'display_time',
+//         label: t('tableDemo.displayTime')
+//       },
+//       {
+//         field: 'importance',
+//         label: t('tableDemo.importance'),
+//         formatter: (_: Recordable, __: TableColumn, cellValue: number) => {
+//           return h(
+//             ElTag,
+//             {
+//               type: cellValue === 1 ? 'success' : cellValue === 2 ? 'warning' : 'danger'
+//             },
+//             () =>
+//               cellValue === 1
+//                 ? t('tableDemo.important')
+//                 : cellValue === 2
+//                 ? t('tableDemo.good')
+//                 : t('tableDemo.commonly')
+//           )
+//         }
+//       },
+//       {
+//         field: 'pageviews',
+//         label: t('tableDemo.pageviews')
+//       }
+//     ]
+//   },
+//   {
+//     field: 'action',
+//     label: t('tableDemo.action')
+//   }
+// ])
+
+onMounted(() => {
+  // 父页面传入菜单id, 这里根据菜单id自己去后台获取编辑区信息
+  console.log('父级传入menuid为: ' + menuid)
+  // 获取按钮信息, 填充
+  getTableConfigListApi(menuid).then((res) => {
+    columns.push(...res.data)
+  })
+  // 模拟测试
+  // buttons.value.push(...buttonsSchema)
+})
 
 const { emitter } = useEmitt()
 
@@ -142,14 +163,12 @@ unref(tableRef)?.setProps({
 
 // 选中数据
 // const index = ref(1)
-
-const title = ref('列表1')
 </script>
 
 <template>
-  <ContentWrap :title="title">
+  <ContentWrap :title="props.title">
     <Table
-      ref="tableRef"
+      ref="comRef"
       v-model:pageSize="tableObject.pageSize"
       v-model:currentPage="tableObject.currentPage"
       :data="tableObject.tableList"

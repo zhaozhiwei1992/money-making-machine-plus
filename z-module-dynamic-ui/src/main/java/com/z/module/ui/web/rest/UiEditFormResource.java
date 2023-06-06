@@ -30,6 +30,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("/ui")
 @Transactional
 @Slf4j
 public class UiEditFormResource {
@@ -43,14 +44,14 @@ public class UiEditFormResource {
     }
 
     /**
-     * {@code POST  /ui-editforms} : Create a new uiEditform.
+     * {@code POST  /editforms} : Create a new uiEditform.
      *
      * @param uiEditform the uiEditform to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new uiEditform, or with
      * status {@code 400 (Bad Request)} if the uiEditform has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("/ui-editforms")
+    @PostMapping("/editforms")
     public ResponseEntity<ResponseData<UiEditForm>> createUiEditForm(@RequestBody UiEditForm uiEditform) throws URISyntaxException {
         log.debug("REST request to save UiEditForm : {}", uiEditform);
         if (uiEditform.getId() != null) {
@@ -72,11 +73,11 @@ public class UiEditFormResource {
     }
 
     /**
-     * {@code GET  /ui-editforms} : get all the uiEditforms.
+     * {@code GET  /editforms} : get all the uiEditforms.
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of uiEditforms in body.
      */
-    @GetMapping("/ui-editforms")
+    @GetMapping("/editforms")
     public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllUiEditForms(Pageable pageable) {
         log.debug("REST request to get a page of UiComponents");
 
@@ -89,13 +90,13 @@ public class UiEditFormResource {
     }
 
     /**
-     * {@code GET  /ui-editforms/:id} : get the "id" uiEditform.
+     * {@code GET  /editforms/:id} : get the "id" uiEditform.
      *
      * @param id the id of the uiEditform to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the uiEditform, or with status
      * {@code 404 (Not Found)}.
      */
-    @GetMapping("/ui-editforms/{id}")
+    @GetMapping("/editforms/{id}")
     public ResponseEntity<UiEditForm> getUiEditForm(@PathVariable Long id) {
         log.debug("REST request to get UiEditForm : {}", id);
         Optional<UiEditForm> uiEditForm = uiEditFormRepository.findById(id);
@@ -105,7 +106,7 @@ public class UiEditFormResource {
     @Autowired
     private CommonEleService commonEleService;
 
-    @GetMapping("/ui-editforms/menu/{menuid}")
+    @GetMapping("/editforms/menu/{menuid}")
     public ResponseEntity<ResponseData<Object>> getUiEditFormByMenuId(@PathVariable Long menuid) {
         log.debug("REST request to get UiEditForm by menu : {}", menuid);
         final List<UiEditForm> editformByMenuId = uiEditFormRepository.findByMenuIdOrderByOrderNumAsc(menuid);
@@ -132,7 +133,7 @@ public class UiEditFormResource {
     }
 
     @Operation(description = "删除编辑区配置")
-    @DeleteMapping("/ui-editforms/{id}")
+    @DeleteMapping("/editforms/{id}")
     public ResponseEntity<ResponseData<String>> deleteUiEditForm(@RequestBody List<Long> idList) {
         log.debug("REST request to delete Examples, ids: {}", idList);
         this.uiEditFormRepository.deleteAllByIdIn(idList);

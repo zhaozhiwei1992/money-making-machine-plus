@@ -52,6 +52,13 @@
       <version>${revision}</version>
     </dependency>
 
+    <!--    动态ui模块-->
+    <dependency>
+      <groupId>com.z</groupId>
+      <artifactId>z-module-dynamic-ui</artifactId>
+      <version>${revision}</version>
+    </dependency>
+
 <!--    模块部分 结束 -->
 
     <!-- spring boot 配置所需依赖 -->

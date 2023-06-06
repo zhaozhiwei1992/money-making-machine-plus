@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @RestController
+@RequestMapping("/ui")
 @Transactional
 @Slf4j
 public class UiQueryFormResource {
@@ -31,13 +32,13 @@ public class UiQueryFormResource {
     }
 
     /**
-     * {@code POST  /ui-queryforms} : Create a new uiQueryForm.
+     * {@code POST  /queryforms} : Create a new uiQueryForm.
      *
      * @param uiQueryForm the uiQueryForm to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new uiQueryForm, or with status {@code 400 (Bad Request)} if the uiQueryForm has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("/ui-queryforms")
+    @PostMapping("/queryforms")
     public ResponseEntity<ResponseData<UiQueryForm>> createUiQueryForm(@RequestBody UiQueryForm uiQueryForm) throws URISyntaxException {
         log.debug("REST request to save UiQueryForm : {}", uiQueryForm);
         if (uiQueryForm.getId() != null) {
@@ -56,11 +57,11 @@ public class UiQueryFormResource {
     }
 
     /**
-     * {@code GET  /ui-queryforms} : get all the uiQueryForms.
+     * {@code GET  /queryforms} : get all the uiQueryForms.
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of uiQueryForms in body.
      */
-    @GetMapping("/ui-queryforms")
+    @GetMapping("/queryforms")
     public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllUiQueryForms(Pageable pageable) {
         log.debug("REST request to get all UiQueryForms");
         final Page<UiQueryForm> page = uiQueryFormRepository.findAll(pageable);
@@ -70,7 +71,7 @@ public class UiQueryFormResource {
         }});
     }
 
-    @GetMapping("/ui-queryforms/menu/{menuid}")
+    @GetMapping("/queryforms/menu/{menuid}")
     public ResponseEntity<ResponseData<List<UiQueryForm>>> getUiQueryFormByMenuId(@PathVariable Long menuid) {
         log.debug("REST request to get UiQueryForm by menu : {}", menuid);
         final List<UiQueryForm> byMenuIdOrderByOrderNumAsc = uiQueryFormRepository.findByMenuIdOrderByOrderNumAsc(menuid);
@@ -78,11 +79,11 @@ public class UiQueryFormResource {
     }
 
     /**
-     * {@code DELETE  /ui-queryforms/:id} : delete the "id" uiQueryForm.
+     * {@code DELETE  /queryforms/:id} : delete the "id" uiQueryForm.
      *
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @DeleteMapping("/ui-queryforms")
+    @DeleteMapping("/queryforms")
     public ResponseEntity<ResponseData<String>> deleteUiQueryForm(@RequestBody List<Long> idList) {
         this.uiQueryFormRepository.deleteAllByIdIn(idList);
         return ResponseData.ok("success");

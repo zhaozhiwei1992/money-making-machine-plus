@@ -28,6 +28,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("/ui")
 @Transactional
 public class UiTableResource {
 
@@ -48,14 +49,14 @@ public class UiTableResource {
     }
 
     /**
-     * {@code POST  /ui-tables} : Create a new uiTable.
+     * {@code POST  /tables} : Create a new uiTable.
      *
      * @param uiTable the uiTable to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new uiTable, or with
      * status {@code 400 (Bad Request)} if the uiTable has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("/ui-tables")
+    @PostMapping("/tables")
     public ResponseEntity<ResponseData<UiTable>> createUiTable(@RequestBody UiTable uiTable) throws URISyntaxException {
         log.debug("REST request to save UiTable : {}", uiTable);
         if (uiTable.getId() != null) {
@@ -74,11 +75,11 @@ public class UiTableResource {
     }
 
     /**
-     * {@code GET  /ui-tables} : get all the uiTables.
+     * {@code GET  /tables} : get all the uiTables.
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of uiTables in body.
      */
-    @GetMapping("/ui-tables")
+    @GetMapping("/tables")
     public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllUiTables(Pageable pageable) {
         Page<UiTable> page = uiTableRepository.findAll(pageable);
         return ResponseData.ok(new HashMap<String, Object>() {{
@@ -91,7 +92,7 @@ public class UiTableResource {
 
     private final CommonEleService commonEleService;
 
-    @GetMapping("/ui-tables/menu/{menuid}")
+    @GetMapping("/tables/menu/{menuid}")
     public ResponseEntity<ResponseData<List<Map<String, Object>>>> getUiTableByMenuId(@PathVariable Long menuid) {
         log.debug("REST request to get UiTable by menu : {}", menuid);
         List<UiTable> uiTableCols = uiTableRepository.findByMenuIdOrderByOrderNumAsc(menuid);
@@ -118,11 +119,11 @@ public class UiTableResource {
     }
 
     /**
-     * {@code DELETE  /ui-tables/:id} : delete the "id" uiTable.
+     * {@code DELETE  /tables/:id} : delete the "id" uiTable.
      *
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @DeleteMapping("/ui-tables")
+    @DeleteMapping("/tables")
     public ResponseEntity<ResponseData<String>> deleteUiTable(@RequestBody List<Long> idList) {
         this.uiTableRepository.deleteAllByIdIn(idList);
         return ResponseData.ok("success");

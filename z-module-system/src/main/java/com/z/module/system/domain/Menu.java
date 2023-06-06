@@ -57,4 +57,7 @@ public class Menu extends AbstractAuditingEntity implements Serializable {
     @Column(name = "component")
     private String component;
 
+    // 动态ui页面使用, 指定模板, 不指定默认为TemplateDefault
+    private String template;
+
 }

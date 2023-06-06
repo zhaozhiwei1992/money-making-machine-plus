@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ContentWrap } from '@/components/ContentWrap'
 import { ref } from 'vue'
-import View from '@/components/UI/src/View.vue'
+import TemplateDefault from '@/components/UI/src/TemplateDefault.vue'
 import { useEmitt } from '@/hooks/web/useEmitt'
 import * as methods from './demo1'
 
@@ -42,20 +42,11 @@ useEmitt({
   }
 })
 
-// 监听查询区点击
-useEmitt({
-  name: 'searchClick',
-  callback: (data: any) => {
-    console.log(data, '查询数据')
-    // 触发列表查询事件
-  }
-})
-
 const title = ref('动态UI演示1')
 </script>
 
 <template>
   <ContentWrap :title="title">
-    <View />
+    <TemplateDefault />
   </ContentWrap>
 </template>

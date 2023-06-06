@@ -1,4 +1,4 @@
-export type TableData = {
+export type MenuVO = {
   id: string
   name: string
   url: string
@@ -6,5 +6,6 @@ export type TableData = {
   order_num: number
   parent_id: string
   component: string
+  template: string
   config: string
 }
