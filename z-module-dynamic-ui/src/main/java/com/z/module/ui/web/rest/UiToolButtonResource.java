@@ -67,10 +67,10 @@ public class UiToolButtonResource {
         }});
     }
 
-    @GetMapping("/tool-buttons/menu/{menuid}")
-    public ResponseEntity<ResponseData<List<UiToolButton>>> getUiToolButtonByMenuId(@PathVariable Long menuid) {
+    @GetMapping("/tool-buttons/menu/{menuId}")
+    public ResponseEntity<ResponseData<List<UiToolButton>>> getUiToolButtonByMenuId(@PathVariable Long menuId) {
         final List<UiToolButton> byMenuIdOrderByOrderNumAsc =
-                uiToolButtonRepository.findByMenuIdOrderByOrderNumAsc(menuid);
+                uiToolButtonRepository.findByMenuIdOrderByOrderNumAsc(menuId);
         return ResponseData.ok(byMenuIdOrderByOrderNumAsc);
     }
 

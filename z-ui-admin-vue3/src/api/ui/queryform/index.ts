@@ -1,8 +1,8 @@
 import request from '@/config/axios'
 import type { QueryformVO } from './types'
 
-export const getQueryformListApi = (menuId: string | undefined): Promise<IResponse> => {
-  return request.get({ url: '/ui/queryform/list', params: { menuId } })
+export const getQueryformListByMenuApi = (menuId: string | undefined): Promise<IResponse> => {
+  return request.get({ url: '/ui/queryforms/menu/' + menuId })
 }
 
 export const saveTableApi = (data: Partial<QueryformVO>): Promise<IResponse> => {

@@ -24,7 +24,7 @@ export const audit = (btnObj: ButtonType) => {
 
 // 获取列表数据
 export const getTableListApi = async (params: any): Promise<IResponse> => {
-  params = { page: params.pageIndex, size: params.pageSize }
+  params = { ...params, page: params.pageIndex, size: params.pageSize }
   console.log('分页信息', params)
   return await request.get({ url: '/users', params })
 }

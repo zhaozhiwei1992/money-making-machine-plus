@@ -110,11 +110,11 @@ public class UiComponentResource {
         return ResponseData.ok(uiComponent.get());
     }
 
-    @GetMapping("/components/menu/{menuid}")
-    public ResponseEntity<ResponseData<List<UiComponent>>> getUiComponentByMenuId(@PathVariable Long menuid) {
-        log.debug("REST request to get UiComponent by menuid : {}", menuid);
+    @GetMapping("/components/menu/{menuId}")
+    public ResponseEntity<ResponseData<List<UiComponent>>> getUiComponentByMenuId(@PathVariable Long menuId) {
+        log.debug("REST request to get UiComponent by menuId : {}", menuId);
         final List<UiComponent> byMenuIdOrderByOrderNumAsc =
-                uiComponentRepository.findByMenuIdOrderByOrderNumAsc(menuid);
+                uiComponentRepository.findByMenuIdOrderByOrderNumAsc(menuId);
         return ResponseData.ok(byMenuIdOrderByOrderNumAsc);
     }
 

@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { ref, reactive, onMounted, inject } from 'vue'
+import { ref, onMounted, inject } from 'vue'
 import type { TabsPaneContext } from 'element-plus'
 import { useEmitt } from '@/hooks/web/useEmitt'
 import { ElTabs, ElTabPane } from 'element-plus'
 import { ContentWrap } from '@/components/ContentWrap'
-import { getTabListApi } from '@/api/ui/tab'
+import { getTabListByMenuApi } from '@/api/ui/tab'
 
 const { emitter } = useEmitt()
 
@@ -12,8 +12,6 @@ const props = defineProps({
   componentId: String,
   comRef: ref<any>
 })
-
-const menuid: string | undefined = inject('menuid')
 
 const tabValue = ref('')
 
@@ -47,12 +45,13 @@ const tabs = ref<TabType[]>([])
 onMounted(() => {
   // 这里通过异步接口后端获取返回
   // 获取页签信息, 填充
-  console.log(menuid, '页签区菜单id')
-  getTabListApi(menuid).then((res) => {
+  const menuId: string | undefined = inject('menuId')
+  console.log(menuId, '页签区菜单id')
+  getTabListByMenuApi(menuId).then((res) => {
     tabs.value.push(...res.data)
+    // 默认选中第一个
+    tabValue.value = tabs.value[0].code
   })
-  // 默认选中第一个
-  tabValue.value = tabs.value[0].code
   // tabs.value.push(...tabsSchema)
 })
 </script>

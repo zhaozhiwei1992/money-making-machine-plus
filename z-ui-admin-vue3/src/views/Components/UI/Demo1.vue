@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { ContentWrap } from '@/components/ContentWrap'
 import { onMounted, ref, defineAsyncComponent, provide } from 'vue'
-import TemplateDefault from '@/components/UI/src/TemplateDefault.vue'
+// import TemplateDefault from '@/components/UI/src/TemplateDefault.vue'
 import { useEmitt } from '@/hooks/web/useEmitt'
 import * as methods from './demo1'
 import { useRouter } from 'vue-router'
 import { getMenuDetApi } from '@/api/system/menu'
 
 // 所有的模板
-const templates = import.meta.glob('@/components/UI/src/*.vue')
+const templates: any = import.meta.glob('@/components/UI/src/*.vue')
 
 const { emitter } = useEmitt()
 
@@ -55,7 +55,7 @@ useEmitt({
   }
 })
 
-const title = ref('动态UI演示1')
+const title = ref('动态UI演示1-编辑页面')
 
 const menuId = ref()
 
@@ -72,10 +72,11 @@ onMounted(() => {
   const componentName = ref('')
   getMenuDetApi(menuId.value).then((res) => {
     componentName.value = res.data.template === null ? 'TemplateDefault' : res.data.template
-    console.log(componentName.value)
     console.log(templates, 'templates')
-    componentObj.value = templates['/src/components/UI/src/' + componentName.value + '.vue']
-    // console.log(componentObj.value)
+    // console.log(templates['/src/components/UI/src/' + componentName.value + '.vue'])
+    componentObj.value = defineAsyncComponent(
+      templates['/src/components/UI/src/' + componentName.value + '.vue']
+    )
     // vite用这个报错
     // defineAsyncComponent(
     //   () => import('@/components/UI/src/' + componentName.value + '.vue')

@@ -25,10 +25,15 @@ public class UiComponent extends AbstractAuditingEntity implements Serializable 
     private Integer orderNum;
 
     /**
-     * 自定义组件描述路径
+     * 组件名称: 跟组件文件名对应, 如xx.vue
      */
     @Column(name = "component")
     private String component;
+
+    /**
+     * 自定义名称, 可能存在多个列表, 分别用不同的名字
+     */
+    private String name;
 
     /**
      * 扩展配置

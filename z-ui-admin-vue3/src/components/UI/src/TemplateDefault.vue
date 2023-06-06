@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, onMounted, inject } from 'vue'
+import { ref, onMounted, inject, defineAsyncComponent } from 'vue'
 import { getComponentListApi } from '@/api/ui/view'
 
-const uiComponents = import.meta.glob('@/components/UI/src/components/*.vue')
+const uiComponents: any = import.meta.glob('@/components/UI/src/components/*.vue')
 
 // 动态组件
 interface ComponentType {
@@ -37,7 +37,7 @@ const components = ref<ComponentType[]>([])
 // ])
 
 onMounted(() => {
-  console.log('挂载组件')
+  console.log(uiComponents, '挂载组件')
   // 获取menuid
   const menuId: string | undefined = inject('menuId')
   // 获取所有组件信息, 通过下述方式push
@@ -48,7 +48,9 @@ onMounted(() => {
         name: element.name,
         // component: defineAsyncComponent(() => import('./components/' + element.name + '.vue'))
         // 上述方式会被vite报异常
-        component: uiComponents['/src/components/UI/src/components/' + element.name + '.vue']
+        component: defineAsyncComponent(
+          uiComponents['/src/components/UI/src/components/' + element.component + '.vue']
+        )
       }
       components.value.push(component)
     })
@@ -61,5 +63,11 @@ onMounted(() => {
 <template>
   <!-- 配置的界面都由该vue组件动态渲染 -->
   <!-- 动态加载组件 特殊的页面布局需单独增加文件, 进行特殊处理, 菜单template使用新组件-->
-  <component v-for="item in components" :is="item.component" :key="item.id" :ref="item.name" />
+  <component
+    v-for="item in components"
+    :is="item.component"
+    :key="item.id"
+    :ref="item.name"
+    :componentId="item.name"
+  />
 </template>

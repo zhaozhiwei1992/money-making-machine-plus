@@ -12,6 +12,7 @@ import com.z.module.system.web.vo.UserVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
@@ -126,7 +127,7 @@ public class UserResource {
 
     @Operation(description = "获取用户")
     @GetMapping("/users")
-    public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllUsers(Pageable pageable, String key) {
+    public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllUsers(Pageable pageable, UserVO userVO) {
         log.debug("REST request to get all User for an admin");
 
 //        final List<User> all = userRepository.findAll();
@@ -137,23 +138,21 @@ public class UserResource {
 
         Page<User> userPage;
         // 搜索
-        if(StrUtil.isNotEmpty(key)){
+        if(StrUtil.isNotEmpty(userVO.getName())){
             final User user = new User();
-            final List<String> cols = Arrays.asList("name", "login", "email");
-            //      2. 将传入属性, 填充给界面显示字段
-            final Map<String, String> map = cols.stream().collect(Collectors.toMap(s -> s, key2 -> key));
             //      3. 动态构建查询条件
-            BeanUtil.fillBeanWithMap(map, user, true);
+            BeanUtils.copyProperties(userVO, user);
             log.info("填充后对象信息 {}", user);
 
             //创建匹配器，即如何使用查询条件
             //构建对象
             ExampleMatcher matcher = ExampleMatcher
-                    .matchingAny()
+                    .matchingAll()
                     //改变默认字符串匹配方式：模糊查询
                     .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)
                     //改变默认大小写忽略方式：忽略大小写
                     .withIgnoreCase(true)
+                    .withIgnoreNullValues()
                     //名字采用“开始匹配”的方式查询
                     .withMatcher("name", ExampleMatcher.GenericPropertyMatchers.startsWith())
                     //忽略属性：是否关注。因为是基本类型，需要忽略掉

@@ -2,7 +2,7 @@
 import { ContentWrap } from '@/components/ContentWrap'
 import { useI18n } from '@/hooks/web/useI18n'
 import { Table, TableExpose } from '@/components/Table'
-import { getTableConfigListApi } from '@/api/ui/table'
+import { getTableColListByMenuApi } from '@/api/ui/table'
 import { TableData } from '@/api/table/types'
 import { ref, unref, h, reactive, inject, onMounted } from 'vue'
 import { ElTag, ElButton } from 'element-plus'
@@ -49,8 +49,6 @@ useEmitt({
 })
 
 // 对外暴露一些方法, 通过事件 结束
-
-const menuid: string | undefined = inject('menuid')
 
 const { t } = useI18n()
 
@@ -109,10 +107,18 @@ const columns = reactive<TableColumn[]>([])
 
 onMounted(() => {
   // 父页面传入菜单id, 这里根据菜单id自己去后台获取编辑区信息
-  console.log('父级传入menuid为: ' + menuid)
+  const menuId: string | undefined = inject('menuId')
+  console.log('父级传入menuid为: ' + menuId)
   // 获取按钮信息, 填充
-  getTableConfigListApi(menuid).then((res) => {
-    columns.push(...res.data)
+  getTableColListByMenuApi(menuId).then((res) => {
+    res.data.forEach((element) => {
+      const colItem: any = {
+        field: element.code,
+        label: element.name,
+        type: element.type
+      }
+      columns.push(colItem)
+    })
   })
   // 模拟测试
   // buttons.value.push(...buttonsSchema)

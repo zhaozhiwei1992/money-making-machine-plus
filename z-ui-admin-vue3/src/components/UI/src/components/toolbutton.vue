@@ -14,8 +14,6 @@ const props = defineProps({
   comRef: ref<any>
 })
 
-const menuid: string | undefined = inject('menuid')
-
 interface ButtonType {
   id: number
   name: string
@@ -47,9 +45,10 @@ const buttons = ref<ButtonType[]>([])
 // 初始化按钮
 onMounted(() => {
   // 父页面传入菜单id, 这里根据菜单id自己去后台获取编辑区信息
-  console.log('父级传入menuid为: ' + menuid)
+  const menuId: string | undefined = inject('menuId')
+  console.log('父级传入menuid为: ' + menuId)
   // 获取按钮信息, 填充
-  getToolButtonListApi(menuid).then((res) => {
+  getToolButtonListApi(menuId).then((res) => {
     buttons.value.push(...res.data)
   })
   // 模拟测试
