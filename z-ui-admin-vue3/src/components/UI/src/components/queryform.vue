@@ -2,10 +2,11 @@
 import { ContentWrap } from '@/components/ContentWrap'
 import { Search } from '@/components/Search'
 import { reactive, ref, unref, inject, onMounted } from 'vue'
-// import { useValidator } from '@/hooks/web/useValidator'
+import { useValidator } from '@/hooks/web/useValidator'
 import { FormSchema } from '@/types/form'
 import { useEmitt } from '@/hooks/web/useEmitt'
 import { getQueryformListByMenuApi } from '@/api/ui/queryform'
+import { getDictOptions } from '@/utils/dict'
 
 const { emitter } = useEmitt()
 
@@ -15,11 +16,9 @@ const props = defineProps({
   comRef: ref<any>
 })
 
-// const { required } = useValidator()
+const { required } = useValidator()
 
 const schema = reactive<FormSchema[]>([])
-
-// const { required } = useValidator()
 
 // 初始化编辑区信息
 onMounted(() => {
@@ -41,12 +40,13 @@ onMounted(() => {
       }
       // 如果是必填
       if (element.required === 'true') {
-        // formItem.formItemProps.rules.push(required())
+        formItem.formItemProps.rules.push(required())
       }
       // 填充翻译值集
       if (element.type == 'Select' || element.type === 'Radio') {
         // 获取值集填充
         console.log(element.source, '数据源id')
+        formItem.componentProps.options = getDictOptions(element.source)
       } else if (element.type === 'DatePicker') {
         // formItem.componentProps.type = element.format
       }
@@ -126,7 +126,7 @@ const buttomPosition = ref('right')
 
 const search = (data) => {
   // console.log(data, 'searchParam')
-  // 需要将数据发到业务页面, 业务再把数据发给列表, 填充查询对象
+  // 出发列表查询事件
   emitter.emit('tableLoadData', { componentId: props.componentId, data: data })
 }
 </script>

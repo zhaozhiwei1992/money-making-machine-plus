@@ -35,7 +35,6 @@ export const getIntDictOptions = (dictType: string) => {
   //   })
   // })
   console.log(dictOptions)
-  console.log('xx')
   return dictOptions
 }
 

@@ -1,10 +1,24 @@
 <script setup lang="ts">
 import { Form, FormExpose } from '@/components/Form'
 import { ContentWrap } from '@/components/ContentWrap'
-import { reactive, ref, inject, onMounted } from 'vue'
+import { reactive, ref, unref, inject, onMounted } from 'vue'
 // import { useValidator } from '@/hooks/web/useValidator'
-import { getEditformListApi } from '@/api/ui/editform'
+import { getEditformListByMenuApi } from '@/api/ui/editform'
 import { FormSchema } from '@/types/form'
+import { useEmitt } from '@/hooks/web/useEmitt'
+import { getDictOptions } from '@/utils/dict'
+
+// 对外提供一些方法 开始
+// 编辑区赋值
+useEmitt({
+  name: 'editform.setValue',
+  callback: (dataObj: any) => {
+    // 设置编辑区值
+    setValue(dataObj)
+  }
+})
+
+// 对外提供方法  结束
 
 const props = defineProps({
   title: String,
@@ -12,22 +26,44 @@ const props = defineProps({
   comRef: ref<FormExpose>
 })
 
-const menuid: string | undefined = inject('menuid')
-
 const schema = reactive<FormSchema[]>([])
 
 // 初始化编辑区信息
 onMounted(() => {
   // 这里通过异步接口后端获取返回
   // 获取页签信息, 填充
-  console.log(menuid, '页签区菜单id')
-  getEditformListApi(menuid).then((res) => {
-    schema.push(...res.data)
+  const menuId: string | undefined = inject('menuId')
+  getEditformListByMenuApi(menuId).then((res) => {
+    // 重新构建数据
+    res.data.forEach((element) => {
+      const formItem: FormSchema = {
+        field: element.code,
+        label: element.name,
+        component: element.type,
+        value: [], // checkbox需要
+        formItemProps: {
+          rules: []
+        },
+        componentProps: {}
+      }
+      // 如果是必填
+      if (element.required === 'true') {
+        formItem.formItemProps.rules.push(required())
+      }
+      // 填充翻译值集
+      if (element.type == 'Select' || element.type === 'Radio' || element.type === 'Checkbox') {
+        // 获取值集填充
+        console.log('数据源id', element.source)
+        formItem.componentProps.options = getDictOptions(element.source)
+      } else if (element.type === 'DatePicker') {
+        // formItem.componentProps.type = element.format
+      }
+      schema.push(formItem)
+    })
   })
-  // tabs.value.push(...tabsSchema)
 })
 
-// const formRef = ref<FormExpose>()
+const formRef = ref<FormExpose>()
 // const { required } = useValidator()
 // const { t } = useI18n()
 // const schema = reactive<FormSchema[]>([
@@ -128,21 +164,22 @@ onMounted(() => {
 //   })
 // }
 
-// const setValue = (reset: boolean) => {
-//   const elFormRef = unref(formRef)?.getElFormRef()
-//   if (reset) {
-//     elFormRef?.resetFields()
-//   } else {
-//     unref(formRef)?.setValues({
-//       field1: 'field1',
-//       field2: '2',
-//       field3: '2',
-//       field4: ['1', '3'],
-//       field5: '2022-01-27',
-//       field6: '17:00'
-//     })
-//   }
-// }
+// 设置编辑区值
+/**
+ * data: {
+ *    field1: 'field1',
+      field2: '2',
+      field3: '2',
+      field4: ['1', '3'],
+      field5: '2022-01-27',
+      field6: '17:00'
+ * }
+ */
+const setValue = (data) => {
+  const elFormRef = unref(formRef)?.getElFormRef()
+  elFormRef?.resetFields()
+  unref(formRef)?.setValues(data)
+}
 </script>
 
 <template>

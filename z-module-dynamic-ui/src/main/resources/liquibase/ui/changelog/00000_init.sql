@@ -50,3 +50,19 @@ INSERT INTO ui_t_table (id, created_by, created_date, last_modified_by, last_mod
 
 
 -- 新增页面 demo配置
+
+DELETE FROM ui_t_component WHERE id=5;
+DELETE FROM ui_t_component WHERE id=6;
+
+INSERT INTO ui_t_component (id, created_by, created_date, last_modified_by, last_modified_date, component, config, menu_id, order_num, name) VALUES(5, 'admin', NULL, NULL, NULL, 'editform', NULL, 58, 1, 'editform');
+INSERT INTO ui_t_component (id, created_by, created_date, last_modified_by, last_modified_date, component, config, menu_id, order_num, name) VALUES(6, 'admin', NULL, NULL, NULL, 'toolbutton', NULL, 58, 2, 'toolbutton');
+
+DELETE FROM ui_t_toolbutton WHERE id=3;
+
+INSERT INTO ui_t_toolbutton (id, created_by, created_date, last_modified_by, last_modified_date, `action`, code, config, menu_id, name, order_num) VALUES(3, 'admin', NULL, NULL, NULL, 'save', 'save', NULL, 58, '保存', 1);
+
+DELETE FROM ui_t_editform WHERE id in (7, 8, 9);
+
+INSERT INTO ui_t_queryform (id, created_by, created_date, last_modified_by, last_modified_date, code, config, is_source, menu_id, name, order_num, placeholder, requirement, `type`) VALUES(7, 'admin', NULL, NULL, NULL, 'name', NULL, NULL, 58, '姓名', 1, NULL, NULL, 'Input');
+INSERT INTO ui_t_queryform (id, created_by, created_date, last_modified_by, last_modified_date, code, config, is_source, menu_id, name, order_num, placeholder, requirement, `type`) VALUES(8, 'admin', NULL, NULL, NULL, 'login', NULL, NULL, 58, '登录名', 2, NULL, NULL, 'Input');
+INSERT INTO ui_t_queryform (id, created_by, created_date, last_modified_by, last_modified_date, code, config, is_source, menu_id, name, order_num, placeholder, requirement, `type`) VALUES(9, 'admin', NULL, NULL, NULL, 'createDate', NULL, NULL, 58, '创建日期', 4, NULL, NULL, 'DatePicker');
