@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Form, FormExpose } from '@/components/Form'
+import { useForm } from '@/hooks/web/useForm'
 import { ContentWrap } from '@/components/ContentWrap'
 import { reactive, ref, unref, inject, onMounted } from 'vue'
 // import { useValidator } from '@/hooks/web/useValidator'
@@ -15,6 +16,24 @@ useEmitt({
   callback: (dataObj: any) => {
     // 设置编辑区值
     setValue(dataObj)
+  }
+})
+
+const { emitter } = useEmitt()
+
+// 这个register感觉是用来绑定form的
+const { register, methods } = useForm({})
+
+useEmitt({
+  name: 'editform.getValue',
+  callback: (editObj: any) => {
+    // console.log('编辑区对象 ', editObj)
+    // 获取编辑区值
+    const { getFormData } = methods
+    getFormData().then((data) => {
+      // console.log('编辑区数据', data)
+      emitter.emit('editform.getValueEnd', data)
+    })
   }
 })
 
@@ -63,7 +82,7 @@ onMounted(() => {
   })
 })
 
-const formRef = ref<FormExpose>()
+const comRef = ref<FormExpose>()
 // const { required } = useValidator()
 // const { t } = useI18n()
 // const schema = reactive<FormSchema[]>([
@@ -176,14 +195,14 @@ const formRef = ref<FormExpose>()
  * }
  */
 const setValue = (data) => {
-  const elFormRef = unref(formRef)?.getElFormRef()
+  const elFormRef = unref(comRef)?.getElFormRef()
   elFormRef?.resetFields()
-  unref(formRef)?.setValues(data)
+  unref(comRef)?.setValues(data)
 }
 </script>
 
 <template>
   <ContentWrap :title="props.title">
-    <Form :schema="schema" ref="comRef" />
+    <Form :schema="schema" ref="comRef" @register="register" />
   </ContentWrap>
 </template>

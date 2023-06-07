@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, inject, defineAsyncComponent } from 'vue'
+import { ref, onMounted, inject, defineAsyncComponent, shallowRef } from 'vue'
 import { getComponentListApi } from '@/api/ui/view'
 
 const uiComponents: any = import.meta.glob('@/components/UI/src/components/*.vue')
@@ -48,9 +48,14 @@ onMounted(() => {
         name: element.name,
         // component: defineAsyncComponent(() => import('./components/' + element.name + '.vue'))
         // 上述方式会被vite报异常
-        component: defineAsyncComponent(
-          uiComponents['/src/components/UI/src/components/' + element.component + '.vue']
+        component: shallowRef(
+          defineAsyncComponent(
+            uiComponents['/src/components/UI/src/components/' + element.component + '.vue']
+          )
         )
+        // component: shallowRef(
+        //   uiComponents['/src/components/UI/src/components/' + element.component + '.vue']
+        // )
       }
       components.value.push(component)
     })

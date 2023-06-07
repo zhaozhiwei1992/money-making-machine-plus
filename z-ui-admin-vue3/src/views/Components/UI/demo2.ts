@@ -1,19 +1,21 @@
 import request from '@/config/axios'
 import { useEmitt } from '@/hooks/web/useEmitt'
-import { reactive } from 'vue'
+import { unref } from 'vue'
 
 const { emitter } = useEmitt()
 
 // 保存数据测试
-export const add = async (btnObj) => {
+export const save = (btnObj) => {
   // 获取编辑区数据
-  const data: any = reactive([])
   useEmitt({
     name: 'editform.getValueEnd',
     callback: (editData: any) => {
-      data.push(editData)
+      console.log('编辑data', editData)
+      const data = unref(editData)
+      request.post({ url: '/examples', data }).then((res) => {
+        console.log(btnObj.action, ' 保存返回: ', res)
+      })
     }
   })
   emitter.emit('editform.getValue', { componentId: 'editform' })
-  return await request.post({ url: '/examples', data })
 }

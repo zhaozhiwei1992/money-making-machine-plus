@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ContentWrap } from '@/components/ContentWrap'
-import { onMounted, ref, defineAsyncComponent, provide } from 'vue'
+import { onMounted, ref, defineAsyncComponent, provide, shallowRef } from 'vue'
 // import TemplateDefault from '@/components/UI/src/TemplateDefault.vue'
 import { useEmitt } from '@/hooks/web/useEmitt'
 import * as methods from './demo1'
@@ -64,7 +64,7 @@ const { currentRoute } = useRouter()
 menuId.value = currentRoute.value.name
 provide('menuId', menuId.value)
 
-const componentObj = ref()
+const componentObj = shallowRef()
 
 // 获取菜单使用的组件
 onMounted(() => {
