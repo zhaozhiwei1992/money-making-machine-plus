@@ -25,98 +25,7 @@
         </el-row>
         <el-row>
           <div class="grid-content bg-purple">
-            <el-table :data="tableData" style="width: 100%" ref="singleTable">
-              <el-table-column type="selection" width="55" />
-              <el-table-column prop="eleCatCode" label="分类编码" width="100">
-                <template #default="scope">
-                  <span v-if="treeSelected == true">{{ scope.row['eleCatCode'] }}</span>
-                  <!-- 可编辑场景下特殊处理 -->
-                  <el-input
-                    size="small"
-                    v-model="scope.row['eleCatCode']"
-                    placeholder="请输入要素分类编码"
-                  />
-                </template>
-              </el-table-column>
-              <el-table-column prop="eleCatName" label="分类名称" width="200">
-                <template #default="scope">
-                  <span v-if="treeSelected == true">{{ scope.row['eleCatName'] }}</span>
-                  <!-- 可编辑场景下特殊处理 -->
-                  <el-input
-                    size="small"
-                    v-model="scope.row['eleCatName']"
-                    placeholder="请输入要素分类名称"
-                  />
-                </template>
-              </el-table-column>
-              <el-table-column prop="eleCode" label="要素编码" width="100">
-                <template #default="scope">
-                  <!-- 可编辑场景下特殊处理 -->
-                  <el-input
-                    size="small"
-                    v-model="scope.row['eleCode']"
-                    placeholder="请输入要素编码"
-                  />
-                </template>
-              </el-table-column>
-              <el-table-column prop="eleName" label="要素名称" width="200">
-                <template #default="scope">
-                  <!-- 可编辑场景下特殊处理 -->
-                  <el-input
-                    size="small"
-                    v-model="scope.row['eleName']"
-                    placeholder="请输入要素名称"
-                  />
-                </template>
-              </el-table-column>
-              <el-table-column prop="parentId" label="父节点id" width="100">
-                <template #default="scope">
-                  <!-- 可编辑场景下特殊处理 -->
-                  <el-input
-                    size="small"
-                    v-model="scope.row['parentId']"
-                    placeholder="请输入父级id"
-                  />
-                </template>
-              </el-table-column>
-              <el-table-column prop="levelNo" label="级次" width="100" />
-              <el-table-column prop="isLeaf" label="是否末级" width="100">
-                <template #default="scope">
-                  <!-- 可编辑场景下特殊处理 -->
-                  <el-select
-                    size="small"
-                    v-model="scope.row['isLeaf']"
-                    placeholder="请选择内容"
-                    value=""
-                  >
-                    <el-option
-                      v-for="option in trueFalse"
-                      :value="option.value"
-                      :key="option.code"
-                      :label="option.name"
-                    />
-                  </el-select>
-                </template>
-              </el-table-column>
-              <el-table-column prop="isEnabled" label="是否启用" width="100">
-                <template #default="scope">
-                  <!-- 可编辑场景下特殊处理 -->
-                  <el-select
-                    size="small"
-                    v-model="scope.row['isEnabled']"
-                    placeholder="请选择内容"
-                    value=""
-                  >
-                    <el-option
-                      v-for="option in trueFalse"
-                      :value="option.value"
-                      :key="option.code"
-                      :label="option.name"
-                    />
-                  </el-select>
-                </template>
-              </el-table-column>
-            </el-table>
+            <EditTable :cols="columns" ref="editDataTable" />
           </div>
         </el-row>
       </ElCard>
@@ -125,22 +34,12 @@
 </template>
 
 <script name="EleUnionIndex" setup lang="ts">
-import {
-  ElButton,
-  ElTree,
-  ElInput,
-  ElTable,
-  ElTableColumn,
-  ElSelect,
-  ElOption,
-  ElRow,
-  ElCol,
-  ElCard,
-  ElMessage
-} from 'element-plus'
+import { ElButton, ElTree, ElInput, ElRow, ElCol, ElCard, ElMessage } from 'element-plus'
 import { ref, reactive, onMounted, watch, getCurrentInstance } from 'vue'
 import * as EleUnionApi from '@/api/system/ele-union'
 import { EleUnionTreeVo, EleUnionVO } from '@/api/system/ele-union/types'
+import { EditTable } from '@/components/EditTable'
+import { EditTableColumn } from '@/components/EditTable/src/types'
 
 interface TreeNodeType {
   id: string
@@ -152,6 +51,95 @@ const currentSelectTreeNode: TreeNodeType = reactive({
   label: ''
 })
 
+const trueFalse = [
+  { value: true, name: '是' },
+  { value: false, name: '否' }
+]
+
+// 获取可编辑列表中数据
+const columns: EditTableColumn[] = [
+  {
+    code: 'eleCatCode',
+    name: '要素分类编码',
+    type: 'Input',
+    required: false,
+    isEdit: true,
+    source: '',
+    width: 100,
+    mapping: []
+  },
+  {
+    code: 'eleCatName',
+    name: '要素分类名称',
+    type: 'Input',
+    required: false,
+    isEdit: true,
+    source: '',
+    width: 200,
+    mapping: []
+  },
+  {
+    code: 'eleCode',
+    name: '要素编码',
+    type: 'Input',
+    required: false,
+    isEdit: true,
+    source: '',
+    width: 100,
+    mapping: []
+  },
+  {
+    code: 'eleName',
+    name: '要素名称',
+    type: 'Input',
+    required: false,
+    isEdit: true,
+    source: '',
+    width: 200,
+    mapping: []
+  },
+  {
+    code: 'parentId',
+    name: '父节点id',
+    type: 'Input',
+    required: false,
+    isEdit: true,
+    source: '',
+    width: 100,
+    mapping: []
+  },
+  {
+    code: 'levelNo',
+    name: '级次',
+    type: 'Input',
+    required: false,
+    isEdit: true,
+    source: '',
+    width: 100,
+    mapping: []
+  },
+  {
+    code: 'isLeaf',
+    name: '是否末级',
+    type: 'Select',
+    required: false,
+    isEdit: true,
+    source: '',
+    width: 100,
+    mapping: trueFalse
+  },
+  {
+    code: 'isEnabled',
+    name: '是否启用',
+    type: 'Select',
+    required: false,
+    isEdit: true,
+    source: '',
+    width: 100,
+    mapping: trueFalse
+  }
+]
+
 const currentInstance: any = getCurrentInstance()
 
 const filterText = ref('')
@@ -160,13 +148,9 @@ const defaultProps = ref({
   children: 'children',
   label: 'label'
 })
-const tableData: EleUnionVO[] = reactive([])
-// 默认不选中
-const treeSelected = ref(false)
-const trueFalse = ref([
-  { value: true, code: true, name: '是' },
-  { value: false, code: false, name: '否' }
-])
+
+// 引用到字组件
+const editDataTable = ref()
 
 const filterNode = (value, data) => {
   if (!value) return true
@@ -180,19 +164,20 @@ const handleNodeClick = (data) => {
 }
 const deleteRow = () => {
   // 1. 获取列表选中行
-  const selectedData = currentInstance.ctx.$refs.singleTable.selection
+  const selectedData = editDataTable.value.getSelection()
   // 2. 不存在id, 直接删除tableData中数据
+  const editTableData = editDataTable.value.getList()
   selectedData.forEach((selected) => {
-    const filterData: EleUnionVO[] = tableData.filter(function (item) {
+    const filterData: EleUnionVO[] = editTableData.filter(function (item) {
       // 根据eleCode来删除数据
       return item.eleCode != selected.eleCode
     })
-    tableData.splice(0)
-    tableData.push(...filterData)
+    console.log('filterData', filterData)
+    editDataTable.value.setData(filterData)
   })
 }
 const addRow = () => {
-  tableData.push({
+  editDataTable.value.addRow({
     id: -1,
     eleCode: '',
     eleName: '',
@@ -207,7 +192,8 @@ const addRow = () => {
 
 const saveData = () => {
   // 保存列表数据
-  EleUnionApi.create(tableData)
+  const editTableData = editDataTable.value.getList()
+  EleUnionApi.create(editTableData)
     .then((res) => {
       console.log('保存成功', res)
       ElMessage.info('保存成功')
@@ -220,9 +206,7 @@ const saveData = () => {
 const initTableData = (treeData) => {
   // 根据分类id查询基础要素信息
   EleUnionApi.getDetail(treeData.id).then((res) => {
-    // 清空列表
-    tableData.splice(0)
-    tableData.push(...res.data)
+    editDataTable.value.setData(res.data)
   })
 }
 
