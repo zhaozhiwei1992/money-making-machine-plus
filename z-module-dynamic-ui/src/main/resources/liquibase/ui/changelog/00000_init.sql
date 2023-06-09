@@ -66,3 +66,36 @@ DELETE FROM ui_t_editform WHERE id in (7, 8, 9);
 INSERT INTO ui_t_editform (id, created_by, created_date, last_modified_by, last_modified_date, code, config, is_source, menu_id, name, order_num, placeholder, requirement, `type`) VALUES(7, 'admin', NULL, NULL, NULL, 'name', NULL, NULL, 58, '姓名', 1, NULL, NULL, 'Input');
 INSERT INTO ui_t_editform (id, created_by, created_date, last_modified_by, last_modified_date, code, config, is_source, menu_id, name, order_num, placeholder, requirement, `type`) VALUES(8, 'admin', NULL, NULL, NULL, 'login', NULL, NULL, 58, '登录名', 2, NULL, NULL, 'Input');
 INSERT INTO ui_t_editform (id, created_by, created_date, last_modified_by, last_modified_date, code, config, is_source, menu_id, name, order_num, placeholder, requirement, `type`) VALUES(9, 'admin', NULL, NULL, NULL, 'createDate', NULL, NULL, 58, '创建日期', 4, NULL, NULL, 'DatePicker');
+
+-- 可编辑列表测试 demo3
+DELETE FROM ui_t_component WHERE id=7;
+DELETE FROM ui_t_component WHERE id=8;
+
+INSERT INTO ui_t_component (id, created_by, created_date, last_modified_by, last_modified_date, component, config, menu_id, order_num, name) VALUES(8, 'admin', NULL, NULL, NULL, 'toolbutton', NULL, 60, 1, 'toolbutton');
+INSERT INTO ui_t_component (id, created_by, created_date, last_modified_by, last_modified_date, component, config, menu_id, order_num, name) VALUES(7, 'admin', NULL, NULL, NULL, 'edittable', NULL, 60, 2, 'edittable');
+
+DELETE FROM ui_t_toolbutton WHERE menu_id=60;
+
+INSERT INTO ui_t_table
+(id, created_by, created_date, last_modified_by, last_modified_date, code, config, is_edit, is_source, menu_id, name, order_num, requirement, `type`)
+VALUES(5, 'admin', NULL, NULL, NULL, 'name', NULL, 1, NULL, 60, '姓名', 2, NULL, 'Input');
+INSERT INTO ui_t_table
+(id, created_by, created_date, last_modified_by, last_modified_date, code, config, is_edit, is_source, menu_id, name, order_num, requirement, `type`)
+VALUES(6, 'admin', NULL, NULL, NULL, 'login', NULL, 1, NULL, 60, '登录名', 3, NULL, 'Input');
+INSERT INTO ui_t_table
+(id, created_by, created_date, last_modified_by, last_modified_date, code, config, is_edit, is_source, menu_id, name, order_num, requirement, `type`)
+VALUES(7, 'admin', NULL, NULL, NULL, 'mofDivCode', NULL, 1, NULL, 60, '区划', 4, NULL, 'Input');
+
+
+DELETE FROM ui_t_table WHERE menu_id = '60';
+
+INSERT INTO ui_t_table
+(id, created_by, created_date, last_modified_by, last_modified_date, code, config, is_edit, is_source, menu_id, name, order_num, requirement, `type`)
+VALUES(5, 'admin', NULL, NULL, NULL, 'name', NULL, 1, NULL, 60, '姓名', 2, NULL, 'Input');
+INSERT INTO ui_t_table
+(id, created_by, created_date, last_modified_by, last_modified_date, code, config, is_edit, is_source, menu_id, name, order_num, requirement, `type`)
+VALUES(6, 'admin', NULL, NULL, NULL, 'login', NULL, 1, NULL, 60, '登录名', 3, NULL, 'Input');
+INSERT INTO ui_t_table
+(id, created_by, created_date, last_modified_by, last_modified_date, code, config, is_edit, is_source, menu_id, name, order_num, requirement, `type`)
+VALUES(7, 'admin', NULL, NULL, NULL, 'mofDivCode', NULL, 1, NULL, 60, '区划', 4, NULL, 'Input');
+

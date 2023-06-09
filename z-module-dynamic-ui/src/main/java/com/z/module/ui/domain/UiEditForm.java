@@ -33,6 +33,9 @@ public class UiEditForm extends AbstractAuditingEntity implements Serializable {
     @Column(name = "is_source")
     private Boolean isSource;
 
+    // 数据源: 如ele_union中的分类编码
+    private String source;
+
     @Column(name = "is_edit")
     private Boolean isEdit;
 

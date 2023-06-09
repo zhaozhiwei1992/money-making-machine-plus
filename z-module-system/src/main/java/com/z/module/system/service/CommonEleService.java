@@ -195,9 +195,9 @@ public class CommonEleService {
         return byEleCatCode;
     }
 
-    public List<Tree<Long>> transToMapping(String mapping) {
+    public List<Tree<Long>> transToMapping(String eleCatCode) {
         // 1. 根据eleCatCode获取基础数据信息
-        final List<EleUnion> elementInfoByEleCatCode = this.findElementInfoByEleCatCode(String.valueOf(mapping));
+        final List<EleUnion> elementInfoByEleCatCode = this.findElementInfoByEleCatCode(String.valueOf(eleCatCode));
         //树形结构一些特殊配置
         TreeNodeConfig treeNodeConfig = new TreeNodeConfig();
         // 自定义属性名 都要默认值的

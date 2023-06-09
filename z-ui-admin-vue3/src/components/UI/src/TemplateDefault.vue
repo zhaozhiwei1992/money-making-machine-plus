@@ -60,8 +60,7 @@ onMounted(() => {
       components.value.push(component)
     })
   })
-  // components.value.push(...componentSchema)
-  console.log(components)
+  console.log('要加载的组件: ', components)
 })
 </script>
 

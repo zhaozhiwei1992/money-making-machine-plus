@@ -20,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URISyntaxException;
@@ -114,16 +115,10 @@ public class UiEditFormResource {
                 .stream()
                 .map(uiEditform -> {
                     final UiEditFormVO convert = Convert.convert(UiEditFormVO.class, uiEditform);
-                    if (uiEditform.getIsSource()) {
+                    if (StringUtils.hasText(uiEditform.getSource())) {
                         //  从config获取取数bean, 从而获取数据
-                        final String configJson = uiEditform.getConfig();
-                        final JSONObject jsonObject = JSONUtil.parseObj(configJson);
-                        convert.setConfig(jsonObject);
-                        final Object mapping = jsonObject.get("mapping");
-                        if (!Objects.isNull(mapping) && StrUtil.isNotEmpty(String.valueOf(mapping))) {
-                            // 2. 转换为翻译信息
-                            convert.setMapping(commonEleService.transToMapping(String.valueOf(mapping)));
-                        }
+                        // 2. 转换为翻译信息
+                        convert.setMapping(commonEleService.transToMapping(String.valueOf(uiEditform.getSource())));
                     }
 
                     return convert;

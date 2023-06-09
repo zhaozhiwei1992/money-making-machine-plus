@@ -66,7 +66,7 @@ provide('menuId', menuId.value)
 
 const componentObj = shallowRef()
 
-// 获取菜单使用的组件
+// 获取菜单使用的组件, 这逻辑如果是动态模板, 最好放到公共逻辑, 不用每次写
 onMounted(() => {
   // 获取componentName, 菜单表扩展配置中增加template: TemplateDefault
   const componentName = ref('')

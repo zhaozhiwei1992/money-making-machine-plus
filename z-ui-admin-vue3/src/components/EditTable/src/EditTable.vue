@@ -11,11 +11,55 @@ import {
   ElOption
 } from 'element-plus'
 import { EditTableColumn } from './types'
+import { useEmitt } from '@/hooks/web/useEmitt'
+import { getTableDataListApi } from '@/api/edittable'
 
 // 传入必要属性
 const props = defineProps({
   cols: Array<EditTableColumn>
 })
+
+const { emitter } = useEmitt()
+
+// 对外暴露一些方法, 通过事件 开始
+useEmitt({
+  name: 'edittable.tableLoadData',
+  callback: (queryObj: any) => {
+    console.log(queryObj, '数据查询对象')
+    console.log(queryObj.componentId, '触发来源组件')
+    // 根据传入参数获取数据
+    getTableDataListApi({ page: 1, size: 10, url: queryObj.url }).then((res) => {
+      tableData.value.push(...res.data)
+    })
+  }
+})
+
+// 获取选中数据
+useEmitt({
+  name: 'edittable.getSelectedData',
+  callback: (tableObj: any) => {
+    console.log(tableObj, '数据查询对象')
+    // 获取指定列表选中数据
+  }
+})
+
+useEmitt({
+  name: 'edittable.getDataList',
+  callback: (res: any) => {
+    console.log(res)
+    const data = getList()
+    emitter.emit('editDataTable.getDataListEnd', data)
+  }
+})
+
+useEmitt({
+  name: 'edittable.addRow',
+  callback: (data: any) => {
+    addRow(data)
+  }
+})
+
+// 对外暴露一些方法, 通过事件 结束
 
 const tableData = ref<any[]>([])
 

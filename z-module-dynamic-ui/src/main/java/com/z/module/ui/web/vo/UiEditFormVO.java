@@ -25,6 +25,8 @@ public class UiEditFormVO implements Serializable {
 
     private Boolean isSource;
 
+    private String source;
+
     private Boolean isEdit;
 
     private Boolean requirement;

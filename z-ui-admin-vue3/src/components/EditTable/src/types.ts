@@ -1,5 +1,6 @@
+// 翻译值集
 export interface MappingType {
-  value: string | boolean | number
+  value: string | number | boolean
   name: string
 }
 
