@@ -21,6 +21,7 @@ import org.springframework.beans.factory.serviceloader.ServiceFactoryBean;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URISyntaxException;
@@ -86,7 +87,7 @@ public class MenuResource {
     @Operation(description = "获取所有菜单")
     @GetMapping("/menus")
     public ResponseEntity<ResponseData<Map<String, Object>>> getAllMenus(
-            Pageable pageable, String key) {
+            Pageable pageable, Menu menu) {
         log.debug("REST request to get a page of UiComponents");
 
         // 根据id, 升序
@@ -96,37 +97,34 @@ public class MenuResource {
 
         Page<Menu> menuPage;
         // 搜索
-        if (StrUtil.isNotEmpty(key)) {
-            final Menu menu = new Menu();
-            final List<String> cols = Collections.singletonList("name");
-            //      2. 将传入属性, 填充给界面显示字段
-            final Map<String, String> map = cols.stream().collect(Collectors.toMap(s -> s, key2 -> key));
-            //      3. 动态构建查询条件
-            BeanUtil.fillBeanWithMap(map, menu, true);
-            log.info("填充后对象信息 {}", menu);
+//            final Menu menu = new Menu();
+//            final List<String> cols = Collections.singletonList("name");
+//            //      2. 将传入属性, 填充给界面显示字段
+//            final Map<String, String> map = cols.stream().collect(Collectors.toMap(s -> s, key2 -> key));
+//            //      3. 动态构建查询条件
+//            BeanUtil.fillBeanWithMap(map, menu, true);
+//            log.info("填充后对象信息 {}", menu);
 
-            //创建匹配器，即如何使用查询条件
-            //构建对象
-            ExampleMatcher matcher = ExampleMatcher
-                    .matchingAny()
-                    //改变默认字符串匹配方式：模糊查询
-                    .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)
-                    //改变默认大小写忽略方式：忽略大小写
-                    .withIgnoreCase(true)
-                    //名字采用“开始匹配”的方式查询
-                    .withMatcher("name", ExampleMatcher.GenericPropertyMatchers.startsWith())
-                    //忽略属性：是否关注。因为是基本类型，需要忽略掉
-                    .withIgnorePaths("id");
+        //创建匹配器，即如何使用查询条件
+        //构建对象
+        ExampleMatcher matcher = ExampleMatcher
+                .matchingAll()
+                //改变默认字符串匹配方式：模糊查询
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)
+                //改变默认大小写忽略方式：忽略大小写
+                .withIgnoreCase(true)
+                .withIgnoreNullValues()
+                //名字采用“开始匹配”的方式查询
+                .withMatcher("name", ExampleMatcher.GenericPropertyMatchers.startsWith())
+                //忽略属性：是否关注。因为是基本类型，需要忽略掉
+                .withIgnorePaths("id", "createdDate", "lastModifiedDate");
 
-            //创建实例
-            Example<Menu> ex = Example.of(menu, matcher);
-            menuPage = menuRepository.findAll(ex, pageable);
-        } else {
-            menuPage = menuRepository.findAll(pageable);
-        }
+        //创建实例
+        Example<Menu> ex = Example.of(menu, matcher);
+        menuPage = menuRepository.findAll(ex, pageable);
 
         //菜单属性转换成 下划线 再给前端, mapstruct? 直接采用Jackson的JsonNaming注解搞了先
-        return ResponseData.ok(new HashMap<String, Object>(){{
+        return ResponseData.ok(new HashMap<String, Object>() {{
             put("list", menuPage.getContent());
             put("total", Long.valueOf(menuPage.getTotalElements()).intValue());
         }});
@@ -213,14 +211,14 @@ public class MenuResource {
      * @return: java.util.List<cn.hutool.core.lang.tree.Tree < java.lang.Long>>
      * @Description: 根据菜单动态产生路由, 菜单表自己加的菜单就不用手动加路由了
      * <p>
-     *   declare interface AppCustomRouteRecordRaw extends Omit<RouteRecordRaw, 'meta'> {
-     *     name: string
-     *     meta: RouteMeta
-     *     component: string
-     *     path: string
-     *     redirect: string
-     *     children?: AppCustomRouteRecordRaw[]
-     *   }
+     * declare interface AppCustomRouteRecordRaw extends Omit<RouteRecordRaw, 'meta'> {
+     * name: string
+     * meta: RouteMeta
+     * component: string
+     * path: string
+     * redirect: string
+     * children?: AppCustomRouteRecordRaw[]
+     * }
      * 路由数据结构, 参考前端架子里的mock/role/index.ts  adminList
      * {
      * path: '/example',

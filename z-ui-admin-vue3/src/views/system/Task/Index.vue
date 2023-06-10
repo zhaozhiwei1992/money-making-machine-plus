@@ -59,7 +59,7 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'cron_expression',
+    field: 'cronExpression',
     label: '表达式',
     form: {
       colProps: {
@@ -71,7 +71,7 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'start_class',
+    field: 'startClass',
     label: '任务入口',
     form: {
       colProps: {

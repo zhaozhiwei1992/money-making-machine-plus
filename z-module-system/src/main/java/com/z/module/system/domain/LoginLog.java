@@ -1,7 +1,5 @@
 package com.z.module.system.domain;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.z.framework.common.domain.AbstractAuditingEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,7 +19,7 @@ import java.io.Serializable;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 // 简单粗暴注解, 前端都是下划线, 后端都用驼峰
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+//@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class LoginLog extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -48,5 +46,5 @@ public class LoginLog extends AbstractAuditingEntity implements Serializable {
      * 客户端ip
      */
     @Column(name = "client_ip")
-    private String clientIP;
+    private String clientIp;
 }

@@ -3,7 +3,7 @@ import type { TableData } from './types'
 
 export const getTableListApi = (params: any): Promise<IResponse> => {
   // 转换, 适配jpa PageRequest
-  params = { page: params.pageIndex, size: params.pageSize }
+  params = { ...params, page: params.pageIndex, size: params.pageSize }
   console.log('分页信息', params)
   // 这里直接写 params等价与 params: {page:xx, size:xx}
   return request.get({ url: '/task-params', params })

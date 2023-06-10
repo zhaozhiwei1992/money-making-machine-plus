@@ -70,7 +70,7 @@ public class RequestLoggingInterceptor implements HandlerInterceptor {
             requestLogging.setRequestURI(requestURI);
             final String method = request.getMethod();
             requestLogging.setRequestMethod(method);
-            requestLogging.setClientIP(clientIP);
+            requestLogging.setClientIp(clientIP);
 
             // 循环依赖, 这里主动获取bean: urlMappingService
             if(Objects.isNull(urlMappingService)){

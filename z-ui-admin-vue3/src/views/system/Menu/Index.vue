@@ -83,7 +83,7 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'icon_cls',
+    field: 'iconCls',
     label: '图标',
     form: {
       colProps: {
@@ -95,7 +95,7 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'order_num',
+    field: 'orderNum',
     label: '排序',
     form: {
       colProps: {
@@ -107,7 +107,7 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'parent_id',
+    field: 'parentId',
     label: '父菜单',
     form: {
       colProps: {

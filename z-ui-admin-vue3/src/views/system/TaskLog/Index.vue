@@ -35,22 +35,22 @@ const crudSchemas = reactive<CrudSchema[]>([
     type: 'index'
   },
   {
-    field: 'task_name',
+    field: 'taskName',
     label: '任务名称',
     search: {
       show: true
     }
   },
   {
-    field: 'start_time',
+    field: 'startTime',
     label: '开始时间'
   },
   {
-    field: 'end_time',
+    field: 'endTime',
     label: '结束时间'
   },
   {
-    field: 'total_time',
+    field: 'totalTime',
     label: '总耗时'
   },
   {
@@ -58,7 +58,7 @@ const crudSchemas = reactive<CrudSchema[]>([
     label: '是否成功'
   },
   {
-    field: 'trace_id',
+    field: 'traceId',
     label: '请求id'
   },
   {

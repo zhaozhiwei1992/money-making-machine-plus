@@ -21,7 +21,7 @@ import java.io.Serializable;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 // 简单粗暴注解, 前端都是下划线, 后端都用驼峰
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+//@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class Menu extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

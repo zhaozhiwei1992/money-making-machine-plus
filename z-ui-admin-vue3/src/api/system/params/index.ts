@@ -2,7 +2,7 @@ import request from '@/config/axios'
 import type { TableData } from './types'
 
 export const getTableListApi = (params: any): Promise<IResponse> => {
-  params = { page: params.pageIndex, size: params.pageSize }
+  params = { ...params, page: params.pageIndex, size: params.pageSize }
   return request.get({ url: '/params', params })
 }
 

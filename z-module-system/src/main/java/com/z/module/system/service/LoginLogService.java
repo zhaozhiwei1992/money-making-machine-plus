@@ -32,7 +32,7 @@ public class LoginLogService {
 
     public LoginLog save(LoginVO loginVM, HttpServletRequest request){
         final LoginLog loginLog = new LoginLog();
-        loginLog.setClientIP(ServletUtil.getClientIP(request));
+        loginLog.setClientIp(ServletUtil.getClientIP(request));
         final UserAgent userAgentParse = UserAgentUtil.parse(request.getHeader("User-Agent"));
         loginLog.setOs(userAgentParse.getOs().toString());
         final String username = loginVM.getUsername();

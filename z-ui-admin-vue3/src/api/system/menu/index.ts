@@ -2,7 +2,7 @@ import request from '@/config/axios'
 import type { MenuVO } from './types'
 
 export const getTableListApi = (params: any): Promise<IResponse> => {
-  params = { page: params.pageIndex, size: params.pageSize }
+  params = { ...params, page: params.pageIndex, size: params.pageSize }
   // 这里直接写 params等价与 params: {page:xx, size:xx}
   return request.get({ url: '/menus', params })
 }

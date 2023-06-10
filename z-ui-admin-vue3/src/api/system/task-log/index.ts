@@ -1,7 +1,7 @@
 import request from '@/config/axios'
 
 export const getTableListApi = (params: any): Promise<IResponse> => {
-  params = { page: params.pageIndex, size: params.pageSize }
+  params = { ...params, page: params.pageIndex, size: params.pageSize }
   return request.get({ url: '/task/logs', params })
 }
 

@@ -3,10 +3,12 @@ package com.z.module.system.config;
 import com.z.framework.common.config.CommonProperties;
 import com.z.framework.operatelog.config.RequestLogAutoConfiguration;
 import com.z.framework.common.exception.handler.CustomResponseErrorHandler;
+import com.z.module.system.aop.ParameterNameConverterFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.server.WebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -117,4 +119,22 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
                         && !c.getPackage().getName().contains("module.report")
         );
     }
+
+    /**
+     * @data: 2023/6/10-下午6:28
+     * @User: zhaozhiwei
+     * @method: getParameterNameConverterFilterRegistrationBean
+
+     * @return: org.springframework.boot.web.servlet.FilterRegistrationBean<com.z.module.system.aop.ParameterNameConverterFilter>
+     * @Description: 请求参数转换过滤器, 处理下划线参数如login_name, 参数接收不到问题
+     */
+//    @Bean
+//    public FilterRegistrationBean<ParameterNameConverterFilter> getParameterNameConverterFilterRegistrationBean() {
+//        FilterRegistrationBean<ParameterNameConverterFilter> registrationBean = new FilterRegistrationBean<>();
+//        registrationBean.setFilter(new ParameterNameConverterFilter());
+//        registrationBean.addUrlPatterns("/api/*");
+//        registrationBean.setName("parameterNameConverterFilter");
+//        registrationBean.setOrder(0);
+//        return registrationBean;
+//    }
 }

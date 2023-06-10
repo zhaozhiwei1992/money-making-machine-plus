@@ -62,7 +62,7 @@ public class SysParamResource {
 
     @Operation(description = "获取系统参数")
     @GetMapping("/params")
-    public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllSystemParams(Pageable pageable, String key) {
+    public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllSystemParams(Pageable pageable, SystemParam systemParam) {
         log.debug("REST request to get all SystemParam for an admin");
 
         // 根据id, 升序
@@ -71,35 +71,22 @@ public class SysParamResource {
         pageable = PageRequest.of(pageable.getPageNumber()-1, pageable.getPageSize(), sort);
 
         Page<SystemParam> taskPage;
-        // 搜索
-        if(StrUtil.isNotEmpty(key)){
-            final SystemParam task = new SystemParam();
-            final List<String> cols = Collections.singletonList("name");
-            //      2. 将传入属性, 填充给界面显示字段
-            final Map<String, String> map = cols.stream().collect(Collectors.toMap(s -> s, key2 -> key));
-            //      3. 动态构建查询条件
-            BeanUtil.fillBeanWithMap(map, task, true);
-            log.info("填充后对象信息 {}", task);
+        //创建匹配器，即如何使用查询条件
+        //构建对象
+        ExampleMatcher matcher = ExampleMatcher
+                .matchingAll()
+                //改变默认字符串匹配方式：模糊查询
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)
+                //改变默认大小写忽略方式：忽略大小写
+                .withIgnoreCase(true)
+                //名字采用“开始匹配”的方式查询
+                .withMatcher("name", ExampleMatcher.GenericPropertyMatchers.startsWith())
+                //忽略属性：是否关注。因为是基本类型，需要忽略掉
+                .withIgnorePaths("id", "createdDate", "lastModifiedDate");
 
-            //创建匹配器，即如何使用查询条件
-            //构建对象
-            ExampleMatcher matcher = ExampleMatcher
-                    .matchingAny()
-                    //改变默认字符串匹配方式：模糊查询
-                    .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)
-                    //改变默认大小写忽略方式：忽略大小写
-                    .withIgnoreCase(true)
-                    //名字采用“开始匹配”的方式查询
-                    .withMatcher("name", ExampleMatcher.GenericPropertyMatchers.startsWith())
-                    //忽略属性：是否关注。因为是基本类型，需要忽略掉
-                    .withIgnorePaths("id");
-
-            //创建实例
-            Example<SystemParam> ex = Example.of(task, matcher);
-            taskPage = sysParamRepository.findAll(ex, pageable);
-        }else{
-            taskPage = sysParamRepository.findAll(pageable);
-        }
+        //创建实例
+        Example<SystemParam> ex = Example.of(systemParam, matcher);
+        taskPage = sysParamRepository.findAll(ex, pageable);
 
         return ResponseData.ok(new HashMap<String, Object>(){{
             put("list", taskPage.getContent());
