@@ -1,6 +1,24 @@
 --liquibase formatted sql
 --changeset zzw:00001
 
+CREATE TABLE if not exists sys_menu (
+	id bigint primary key auto_increment,
+	created_by varchar(50) NULL,
+	created_date timestamp NULL,
+	last_modified_by varchar(50) NULL,
+	last_modified_date timestamp NULL,
+	config varchar(255) NULL,
+	enabled bool NULL,
+	icon_cls varchar(255) NULL,
+	keep_alive bool NULL,
+	name varchar(255) NOT NULL,
+	order_num int4 NULL,
+	parent_id int8 NOT NULL,
+	require_auth bool NULL,
+	url varchar(255) NOT NULL,
+	component varchar(255) NOT NULL
+);
+
 delete from sys_menu where id in (41, 42, 43, 44);
 
 INSERT INTO sys_menu
