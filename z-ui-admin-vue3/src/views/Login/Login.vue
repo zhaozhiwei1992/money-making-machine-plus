@@ -53,6 +53,12 @@ const toLogin = () => {
             </div>
           </TransitionGroup>
         </div>
+        <div
+          :class="prefixCls"
+          class="text-center text-[var(--el-text-color-placeholder)] bg-[var(--app-content-bg-color)] h-[var(--app-footer-height)] leading-[var(--app-footer-height)] dark:bg-[var(--el-bg-color)]"
+        >
+          <a href="https://beian.miit.gov.cn">京ICP备2023013672号</a>
+        </div>
       </div>
       <div class="flex-1 p-30px <sm:p-10px dark:bg-v-dark relative">
         <div class="flex justify-between items-center text-white @2xl:justify-end @xl:justify-end">
