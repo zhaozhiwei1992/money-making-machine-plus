@@ -4,7 +4,7 @@ NODE_ENV=production
 # 接口前缀, 这个变量不要改, axios通过这个作为key ,获取实际后端地址
 VITE_API_BASEPATH=pro
 
-VITE_SERVER_URL='https://zhao90807.top:8090'
+VITE_SERVER_URL='https://localhost:8443'
 
 # 打包路径
 VITE_BASE_PATH=/

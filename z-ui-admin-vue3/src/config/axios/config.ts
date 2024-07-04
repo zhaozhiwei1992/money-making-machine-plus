@@ -1,6 +1,6 @@
 // 获取.env.{profile}中的配置
 // 下述方式就不行, 为啥??
-const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL
+const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL || 'https://localhost:8090'
 
 const config: {
   base_url: {

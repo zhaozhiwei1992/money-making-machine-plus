@@ -78,5 +78,11 @@
       <artifactId>z-starter-job</artifactId>
     </dependency>
 
+<!--    https://blog.csdn.net/new_baibai/article/details/129307540-->
+    <dependency>
+      <groupId>org.springframework.session</groupId>
+      <artifactId>spring-session-core</artifactId>
+    </dependency>
+
   </dependencies>
 </project>

@@ -126,12 +126,15 @@ spring:
   thymeleaf:
     cache: true
 server:
+  port: 8443
   ssl:
-    key-store: classpath:zhao90807.top.jks
+    key-store: classpath:dev.com.jks
     #证书的密码（在生成证书的时候会指定一个密码）
-    key-store-password: 8l3h21uwzt75uo
+    key-store-password: 123456
     #执行证书的类型
     key-store-type: jks
+    # 别名
+    key-alias: dev.com
     enabled: true
 # ===================================================================
 # Ifmis specific properties
@@ -142,9 +145,10 @@ z:
     system:
   cors:
     # Allow Ionic for JHipster by default (* no longer allowed in Spring Boot 2.4+)
-    # 注意: 前端必须是localhost访问, 如果用127.0.0.1还是会拦截
+    # 注意: 前端必须是localhost访问, 如果用127.0.0.1还是会拦截, 这里修改为实际域名
     # 4000是admin-vue3, 8080: z-ui-app
-    allowed-origins: 'http://zhao90807.top:8090,https://zhao90807.top:8090,http://zhao90807.top,https://zhao90807.top'
+#    allowed-origins: 'http://dev.com:8090,https://dev.com:8090,http://dev.com,https://dev.com'
+    allowed-origins: 'http://localhost:8443,https://localhost:8443,http://localhost:4173,https://localhost:4173,http://localhost:3000,https://localhost:3000'
     allowed-methods: '*'
     allowed-headers: '*'
     exposed-headers: 'Authorization,Link,X-Total-Count,X-${z.app.name}-alert,X-${z.app.name}-error,X-${z.app.name}-params'

@@ -116,7 +116,7 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
       proxy: {
         // 选项写法
         '/api': {
-          target: 'http://127.0.0.1:8090',
+          target: env.VITE_SERVER_URL,
           changeOrigin: true,
           // 后端接口也有/api开头, 所以不要去掉了
           // rewrite: path => path.replace(/^\/api/, '')
