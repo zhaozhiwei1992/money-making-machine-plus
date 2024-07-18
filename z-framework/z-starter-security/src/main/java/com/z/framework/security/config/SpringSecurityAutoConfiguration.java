@@ -37,7 +37,10 @@ public class SpringSecurityAutoConfiguration extends WebSecurityConfigurerAdapte
      */
     public static String[] AUTH_WHITELIST = {
 //            静态资源白名单
+            "/index.html",
+            "/assets/**",
             "/favicon.ico",
+            "/logo.png",
             "/static/**",
             "/images/**",
             "/css/**",

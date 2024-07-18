@@ -18,6 +18,7 @@ node_modules/
 npm-debug.log.*
 /.awcache/*
 /.cache-loader/*
+z-public-server/src/main/resources/static/
 
 ######################
 # SASS
