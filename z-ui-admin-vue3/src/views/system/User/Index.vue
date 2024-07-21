@@ -63,12 +63,8 @@ const crudSchemas = reactive<CrudSchema[]>([
     label: '登录名'
   },
   {
-    field: 'mofDivCode',
-    label: '区划'
-  },
-  {
-    field: 'appid',
-    label: '系统标识'
+    field: 'createdBy',
+    label: '创建人'
   },
   {
     field: 'action',
@@ -173,9 +169,6 @@ const save = async () => {
       @register="register"
     >
       <template #action="{ row }">
-        <ElButton type="primary" v-hasPermi="['example:dialog:edit']" @click="action(row, 'edit')">
-          {{ t('exampleDemo.edit') }}
-        </ElButton>
         <ElButton
           type="success"
           v-hasPermi="['example:dialog:view']"
@@ -183,7 +176,12 @@ const save = async () => {
         >
           {{ t('exampleDemo.detail') }}
         </ElButton>
-        <ElButton type="danger" v-hasPermi="['example:dialog:delete']" @click="delData(row, false)">
+        <ElButton
+          v-if="row.createdBy === 'system'"
+          type="danger"
+          v-hasPermi="['example:dialog:delete']"
+          @click="delData(row, false)"
+        >
           {{ t('exampleDemo.del') }}
         </ElButton>
       </template>

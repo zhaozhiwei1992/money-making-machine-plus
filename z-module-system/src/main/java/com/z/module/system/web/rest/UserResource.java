@@ -3,8 +3,10 @@ package com.z.module.system.web.rest;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.util.StrUtil;
-import com.z.module.system.domain.Authority;
-import com.z.module.system.domain.User;
+import com.z.module.system.domain.*;
+import com.z.module.system.repository.UserAuthorityRepository;
+import com.z.module.system.repository.UserDepartmentRepository;
+import com.z.module.system.repository.UserPositionRepository;
 import com.z.module.system.repository.UserRepository;
 import com.z.framework.common.repository.CommonSqlRepository;
 import com.z.module.system.service.UserService;
@@ -16,7 +18,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
+import org.springframework.data.domain.Example;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +33,6 @@ import java.util.stream.Collectors;
 @Tag(name = "用户API")
 @RestController
 @Slf4j
-@Transactional(rollbackFor = Exception.class)
 public class UserResource {
 
     @Value("${z.app.name}")
@@ -43,12 +46,21 @@ public class UserResource {
 
     private final CommonSqlRepository commonSqlRepository;
 
+    private final UserAuthorityRepository userAuthorityRepository;
+
+    private final UserPositionRepository userPositionRepository;
+
+    private final UserDepartmentRepository userDepartmentRepository;
+
     public UserResource(UserService userService, UserRepository userRepository, PasswordEncoder passwordEncoder,
-                        CommonSqlRepository commonSqlRepository) {
+                        CommonSqlRepository commonSqlRepository, UserAuthorityRepository userAuthorityRepository, UserPositionRepository userPositionRepository, UserDepartmentRepository userDepartmentRepository) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.commonSqlRepository = commonSqlRepository;
+        this.userAuthorityRepository = userAuthorityRepository;
+        this.userPositionRepository = userPositionRepository;
+        this.userDepartmentRepository = userDepartmentRepository;
     }
 
     /**
@@ -65,6 +77,8 @@ public class UserResource {
      */
     @Operation(description = "新增用户")
     @PostMapping("/users")
+    @Transactional(rollbackFor = Exception.class)
+    @PreAuthorize("hasAuthority('system:user:add')")
     public ResponseEntity<ResponseData<User>> createUser(@RequestBody UserVO userVO) throws URISyntaxException {
         log.debug("REST request to save User : {}", userVO);
 
@@ -90,32 +104,40 @@ public class UserResource {
             userVO.setActivated(true);
         }
 
-        // 全部增加为经办
-        final Authority authority = new Authority();
-        authority.setCode("ROLE_USER");
-        final HashSet<Authority> authorities = new HashSet<>();
-        authorities.add(authority);
-
         final User user = new User();
         BeanUtil.copyProperties(userVO, user);
-        user.setAppid("system");
-
-        if (Objects.isNull(user.getId())) {
-            user.setAuthorities(authorities);
-        }
 
         User newUser = userRepository.save(user);
 
-        // 用户角色丢失特殊处理, 修改时setAuthorities失效
-        if (!Objects.isNull(userVO.getId())) {
-            final ArrayList<Map<String, Object>> userAuthorities = new ArrayList<>();
-            final Map<String, Object> userAuthority = new HashMap<>();
-            userAuthority.put("user_id", userVO.getId());
-            userAuthority.put("authority_code", userVO.getRole());
-            userAuthorities.add(userAuthority);
-            commonSqlRepository.deleteBySql("t_user_authority", " where user_id = '" + userVO.getId() + "'");
-            commonSqlRepository.insertDatas("t_user_authority", userAuthorities);
-        }
+        // 保存用户角色信息
+        final List<Long> roleIdList = userVO.getRoleIdList();
+        final List<UserAuthority> userAuthorities = roleIdList.stream().map(roleId -> {
+            final UserAuthority userAuthority = new UserAuthority();
+            userAuthority.setRoleId(roleId);
+            userAuthority.setUserId(newUser.getId());
+            return userAuthority;
+        }).collect(Collectors.toList());
+        userAuthorityRepository.saveAll(userAuthorities);
+
+        // 保存用户岗位信息
+        final List<Long> positionIdList = userVO.getPositionIdList();
+        final List<UserPosition> userPositionList = positionIdList.stream().map(positionId -> {
+            final UserPosition userPosition = new UserPosition();
+            userPosition.setPositionId(positionId);
+            userPosition.setUserId(newUser.getId());
+            return userPosition;
+        }).collect(Collectors.toList());
+        userPositionRepository.saveAll(userPositionList);
+
+        // 保存用户部门信息
+        final List<Long> departmentIdList = userVO.getDepartmentIdList();
+        final List<UserDepartment> userDepartmentList = departmentIdList.stream().map(departmentId -> {
+            final UserDepartment userDepartment = new UserDepartment();
+            userDepartment.setDeptId(departmentId);
+            userDepartment.setUserId(newUser.getId());
+            return userDepartment;
+        }).collect(Collectors.toList());
+        userDepartmentRepository.saveAll(userDepartmentList);
 
         return ResponseData.ok(newUser);
     }
@@ -140,15 +162,6 @@ public class UserResource {
         pageable = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize(), sort);
 
         Page<User> userPage;
-        // 搜索
-//        if(StrUtil.isNotEmpty(user.getName())){
-//            final User user = new User();
-        //      3. 动态构建查询条件
-//            BeanUtils.copyProperties(userVO, user);
-//            final CopyOptions copyOptions = CopyOptions.create();
-//            copyOptions.setIgnoreNullValue(true);
-//            BeanUtil.copyProperties(userVO, user, copyOptions);
-//            log.info("填充后对象信息 {}", user);
 
         //创建匹配器，即如何使用查询条件
         //构建对象
@@ -167,9 +180,6 @@ public class UserResource {
         //创建实例
         Example<User> ex = Example.of(user, matcher);
         userPage = userRepository.findAll(ex, pageable);
-//        }else{
-//            userPage = userRepository.findAll(pageable);
-//        }
 
         return ResponseData.ok(new HashMap<String, Object>() {{
             put("list", userPage.getContent());
@@ -179,6 +189,7 @@ public class UserResource {
 
     @Operation(description = "删除用户")
     @DeleteMapping("/users")
+    @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<ResponseData<String>> deleteUser(@RequestBody List<Long> idList) {
         log.debug("REST request to delete Examples, ids: {}", idList);
         this.userRepository.deleteAllByIdIn(idList);

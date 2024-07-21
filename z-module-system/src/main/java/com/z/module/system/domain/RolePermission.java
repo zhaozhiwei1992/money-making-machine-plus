@@ -8,11 +8,16 @@ import javax.persistence.Table;
 import java.io.Serializable;
 
 /**
- * 角色,菜单,按钮权限\n@author zhaozhiwei
+ * @author zhaozhiwei
+ * @version V1.0
+ * @Title: RolePermission
+ * @Package com/z/module/system/domain/RolePermission.java
+ * @Description: 角色和权限关系
+ * @date 2024/7/21 上午1:09
  */
 @Entity
-@Table(name = "sys_role_menu_button")
-public class RoleMenuToolButton extends AbstractAuditingEntity implements Serializable {
+@Table(name = "sys_role_permission")
+public class RolePermission extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -23,12 +28,9 @@ public class RoleMenuToolButton extends AbstractAuditingEntity implements Serial
     private String roleId;
 
     /**
-     * 菜单id
+     * 权限id
      */
-    @Column(name = "menu_id")
-    private String menuId;
-
-    @Column(name = "tool_button_id")
-    private Long toolButtonId;
+    @Column(name = "permission_id")
+    private String permissionId;
 
 }

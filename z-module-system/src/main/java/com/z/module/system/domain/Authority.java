@@ -12,9 +12,10 @@ import java.io.Serializable;
 
 /**
  * An authority (a security role) used by Spring Security.
+ * 角色
  */
 @Entity
-@Table(name = "t_authority")
+@Table(name = "sys_authority")
 @Data
 public class Authority extends AbstractAuditingEntity implements Serializable {
 

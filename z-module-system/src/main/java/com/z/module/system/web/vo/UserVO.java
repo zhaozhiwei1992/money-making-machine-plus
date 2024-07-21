@@ -3,6 +3,7 @@ package com.z.module.system.web.vo;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @Title: UserVM
@@ -31,9 +32,13 @@ public class UserVO implements Serializable {
 
     private String imageUrl;
 
-    private String appid;
+    // 角色id集合
+    private List<Long> roleIdList;
 
-    private String mofDivCode;
+    // 岗位id集合
+    private List<Long> positionIdList;
 
-    private String role;
+    // 部门id集合
+    private List<Long> departmentIdList;
+
 }

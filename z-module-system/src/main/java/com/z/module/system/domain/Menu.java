@@ -60,4 +60,12 @@ public class Menu extends AbstractAuditingEntity implements Serializable {
     // 动态ui页面使用, 指定模板, 不指定默认为TemplateDefault
     private String template;
 
+    // 菜单类型 1:菜单 2:按钮
+    @Column(name = "menu_type")
+    private Integer menuType;
+
+    // system:user:view
+    @Column(name = "permission_code")
+    private String permissionCode;
+
 }

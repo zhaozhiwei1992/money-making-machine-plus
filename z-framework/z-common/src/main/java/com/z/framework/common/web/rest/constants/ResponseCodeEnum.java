@@ -1,5 +1,7 @@
 package com.z.framework.common.web.rest.constants;
 
+import lombok.Getter;
+
 /**
  * @Title: ResponseCodeEnum
  * @Package gov/mof/fasp2/pay/remote/rest/constants/ResponseCodeEnum.java
@@ -8,6 +10,7 @@ package com.z.framework.common.web.rest.constants;
  * @date 2021/7/2 下午2:16
  * @version V1.0
  */
+@Getter
 public enum ResponseCodeEnum {
 
     /**
@@ -27,11 +30,4 @@ public enum ResponseCodeEnum {
         this.msg = msg;
     }
 
-    public Integer getCode() {
-        return code;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
 }

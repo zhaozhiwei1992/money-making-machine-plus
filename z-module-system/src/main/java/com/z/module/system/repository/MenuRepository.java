@@ -20,4 +20,6 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
     void deleteAllByIdIn(List<Long> idList);
 
     List<Menu> findAllByParentIdOrderByOrderNumAsc(Long parentId);
+
+    List<Menu> findAllByMenuTypeOrderByOrderNumAsc(Integer code);
 }

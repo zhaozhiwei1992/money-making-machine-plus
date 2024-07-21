@@ -8,4 +8,5 @@ export type MenuVO = {
   component: string
   template: string
   config: string
+  children: MenuVO[]
 }

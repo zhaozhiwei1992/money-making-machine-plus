@@ -4,6 +4,7 @@ import com.z.framework.common.config.Constants;
 import com.z.framework.common.domain.AbstractAuditingEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
@@ -18,8 +19,9 @@ import java.util.Set;
  * A user.
  */
 @Entity
-@Table(name = "t_user")
+@Table(name = "sys_user")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class User extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -47,24 +49,4 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Size(max = 256)
     @Column(name = "image_url", length = 256)
     private String imageUrl;
-
-    @JsonIgnore
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "t_user_authority",
-            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id"
-                    , foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))},
-            inverseJoinColumns = {@JoinColumn(name = "authority_code", referencedColumnName = "code"
-                    , foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT)
-            )}
-    )
-    @BatchSize(size = 20)
-    private Set<Authority> authorities = new HashSet<>();
-
-    @Column(name = "appid", length = 20)
-    private String appid;
-
-    @Size(min = 9, max = 9, message = "区划只能为9位")
-    @Column(name = "mof_div_code", length = 9)
-    private String mofDivCode;
 }

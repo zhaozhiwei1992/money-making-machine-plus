@@ -37,13 +37,6 @@ watch(
   (currentRow) => {
     if (!currentRow) return
     const { setValues } = methods
-    if (currentRow['menuType'] === '0') {
-      // 一级菜单扩展还是菜单
-      currentRow['menuType'] = 1
-    } else if (currentRow['menuType'] === '1') {
-      currentRow['menuType'] = 2
-    }
-    currentRow['parentId'] = currentRow.id
     setValues(currentRow)
   },
   {

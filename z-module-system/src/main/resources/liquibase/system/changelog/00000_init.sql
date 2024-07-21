@@ -3,22 +3,20 @@
 
 -- 判断表不存在先创建
 -- 用户表
-CREATE TABLE if not exists t_user (
+CREATE TABLE if not exists sys_user (
 	id bigint primary key auto_increment,
 	created_by varchar(50) NULL,
 	created_date timestamp NULL,
 	last_modified_by varchar(50) NULL,
 	last_modified_date timestamp NULL,
 	activated bool NOT NULL,
-	appid varchar(20) NULL,
 	image_url varchar(256) NULL,
 	login varchar(50) NOT NULL,
-	mof_div_code varchar(9) NULL,
 	name varchar(50) NULL,
 	password_hash varchar(60) NOT NULL
 );
 
-CREATE TABLE if not exists t_authority (
+CREATE TABLE if not exists sys_authority (
 	id bigint primary key auto_increment,
 	created_by varchar(50) NULL,
 	created_date timestamp NULL,
@@ -28,7 +26,7 @@ CREATE TABLE if not exists t_authority (
 	name varchar(50) NOT NULL
 );
 
-CREATE TABLE if not exists t_user_authority (
+CREATE TABLE if not exists sys_user_authority (
 	user_id int8 NOT NULL,
 	authority_code varchar(50) NOT NULL
 );
@@ -48,7 +46,9 @@ CREATE TABLE if not exists sys_menu (
 	parent_id int8 NOT NULL,
 	require_auth bool NULL,
 	url varchar(255) NOT NULL,
-	component varchar(255) NOT NULL
+	component varchar(255) NOT NULL,
+    menu_type  int(1)                default 1       comment '菜单类型（1菜单 2按钮）',
+    permission_code  varchar(100)     default null     comment '权限标识'
 );
 
 
@@ -65,83 +65,227 @@ CREATE TABLE if not exists sys_param (
 	value varchar(255) NULL
 );
 
+-- 权限
+CREATE TABLE if not exists sys_permissions (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  code varchar(64)     not null                    comment '权限编码',
+  name VARCHAR(255) NOT NULL UNIQUE,
+  type int(1) NOT NULL                            comment '权限类型,1:数据权限',
+  created_by varchar(50) NULL,
+  created_date timestamp NULL,
+  last_modified_by varchar(50) NULL,
+  last_modified_date timestamp NULL,
+  description VARCHAR(255)
+);
+
+delete from sys_permissions;
+INSERT INTO sys_permissions (
+  code, name, type, created_by, created_date, last_modified_by, last_modified_date, description
+) VALUES
+('ALL_DATA', '全部数据权限', 1, 'system', NOW(), 'system', NOW(), '访问所有数据的权限'),
+('CUSTOM_DATA', '自定义数据权限', 1, 'system', NOW(), 'system', NOW(), '根据自定义规则访问数据的权限'),
+('DEPT_DATA', '本部门数据权限', 1, 'system', NOW(), 'system', NOW(), '只能访问本部门数据的权限'),
+('DEPT_SUB_DATA', '本部门及以下数据权限', 1, 'system', NOW(), 'system', NOW(), '可以访问本部门及下属部门数据的权限');
+
+-- 岗位
+create table if not exists sys_positions
+(
+  id INT AUTO_INCREMENT PRIMARY KEY                        comment '岗位ID',
+  code     varchar(64)     not null                        comment '岗位编码',
+  name     varchar(50)     not null                        comment '岗位名称',
+  order_num     int(4)          not null                   comment '显示顺序',
+  status        char(1)         not null                   comment '状态（2正常 1停用）',
+  created_by varchar(50) NULL,
+  created_date timestamp NULL,
+  last_modified_by varchar(50) NULL,
+  last_modified_date timestamp NULL,
+  remark        varchar(500)    default null               comment '备注'
+) engine=innodb comment = '岗位信息表';
+
+-- 初始化岗位数据
+delete from sys_positions;
+INSERT INTO sys_positions (
+  code, name, order_num, status,
+  created_by, created_date, last_modified_by, last_modified_date,
+  remark
+) VALUES
+('CEO', '总裁', 1, '2','system', NOW(), 'system', NOW(),'公司最高执行官'),
+('VP', '副总裁', 2, '2','system', NOW(), 'system', NOW(),'公司高级管理职位'),
+('CEO', 'CEO', 3, '2','system', NOW(), 'system', NOW(),'负责公司的整体运营和管理'),
+('PM', '项目经理', 4, '2','system', NOW(), 'system', NOW(),'负责项目的规划、执行和监控'),
+('DM', '开发经理', 5, '2','system', NOW(), 'system', NOW(),'负责开发团队的管理工作'),
+('DEV', '开发工程师', 6, '2','system', NOW(), 'system', NOW(),'负责软件产品的设计和开发工作'),
+('TEST', '测试工程师', 7, '2','system', NOW(), 'system', NOW(),'负责软件产品的质量保证和测试工作');
+
+-- 部门
+create table if not exists sys_departments (
+  id INT AUTO_INCREMENT PRIMARY KEY comment '部门id',
+  parent_id         int             default 0                  comment '父部门id',
+  name              varchar(50)     default ''                 comment '部门名称',
+  order_num         int(4)          default 0                  comment '显示顺序',
+  leader            varchar(20)     default null               comment '负责人',
+  phone             varchar(11)     default null               comment '联系电话',
+  email             varchar(50)     default null               comment '邮箱',
+  status            char(1)         default '2'                comment '部门状态（2正常 1停用）',
+  created_by varchar(50) NULL,
+  created_date timestamp NULL,
+  last_modified_by varchar(50) NULL,
+  last_modified_date timestamp NULL
+) comment = '部门表';
+
+-- ----------------------------
+-- 初始化-部门表数据
+-- ----------------------------
+delete from sys_departments;
+INSERT INTO sys_departments (
+  id, parent_id, name, order_num, leader, phone, email, status,
+  created_by, created_date, last_modified_by, last_modified_date
+) VALUES
+(1, 0, 'xx科技', 1, 'CEO', '13800000000', 'ceo@xx.com', '2', 'system', NOW(), 'system', NOW()),
+(2, 1, '北京总部', 1, '总部经理', '13700000001', 'headquarters@xx.com', '2', 'system', NOW(), 'system', NOW()),
+(3, 2, '研发部', 1, '研发经理', '13700000010', 'r&d@xx.com', '2', 'system', NOW(), 'system', NOW()),
+(4, 2, '市场部', 2, '市场经理', '13700000011', 'marketing@xx.com', '2', 'system', NOW(), 'system', NOW()),
+(5, 2, '测试部', 3, '测试经理', '13700000012', 'testing@xx.com', '2', 'system', NOW(), 'system', NOW()),
+(6, 2, '产品部', 4, '产品经理', '13700000013', 'product@xx.com', '2', 'system', NOW(), 'system', NOW()),
+(7, 2, '运维部门', 5, '运维经理', '13700000014', 'ops@xx.com', '2', 'system', NOW(), 'system', NOW()),
+(8, 1, '山西分公司', 2, '分公司经理', '13700000015', 'shanxi@xx.com', '2', 'system', NOW(), 'system', NOW()),
+(9, 1, '浙江分公司', 3, '分公司经理', '13700000016', 'zhejiang@xx.com', '2', 'system', NOW(), 'system', NOW()),
+(10, 8, '销售部门', 1, '销售经理', '13700000017', 'sales@xx.com', '2', 'system', NOW(), 'system', NOW()),
+(11, 8, '财务部', 2, '财务经理', '13700000018', 'finance@xx.com', '2', 'system', NOW(), 'system', NOW()),
+(12, 8, '人力资源部', 3, '人事经理', '13700000019', 'hr@xx.com', '2', 'system', NOW(), 'system', NOW()),
+(13, 8, '项目管理部', 4, '项目经理', '13700000020', 'project@xx.com', '2', 'system', NOW(), 'system', NOW());
+
+alter table sys_departments auto_increment=15;
+
 -- ----------------------------
 -- 用户角色初始化
 -- ----------------------------
-delete from t_user;
-INSERT INTO t_user
-(id, created_by, created_date, last_modified_by, last_modified_date, activated, image_url, login, name, password_hash, appid, mof_div_code)
-VALUES(3, 'admin', '2022-07-14 11:27:02.515', NULL, '2022-08-18 15:42:42.015', false, NULL, 'user', '普通用户', '$2a$10$aQ9NOy/S2.UiNAmxOwNcjueSrRbwnYnUBbED.LE/DePeAeddPGCA.', 'system', '330000000');
-INSERT INTO t_user
-(id, created_by, created_date, last_modified_by, last_modified_date, activated, image_url, login, name, password_hash, appid, mof_div_code)
-VALUES(1, 'admin', '2022-07-14 11:25:56.594', NULL, '2022-07-27 09:05:07.221', false, NULL, 'admin', '系统管理员', '$2a$10$Uaq/uIj3D5VZ4Y5.I7MTB.pMXka6FKuCNy4A.ZnnRk9GshwYxBQZG', 'system', '330000000');
+delete from sys_user;
+INSERT INTO sys_user
+(id, created_by, created_date, last_modified_by, last_modified_date, activated, image_url, login, name, password_hash)
+VALUES
+(1, 'admin', '2022-07-14 11:25:56.594', NULL, '2022-07-27 09:05:07.221', false, NULL, 'admin', '系统管理员', '$2a$10$Uaq/uIj3D5VZ4Y5.I7MTB.pMXka6FKuCNy4A.ZnnRk9GshwYxBQZG'),
+(2, 'admin', '2022-07-14 11:27:02.515', NULL, '2022-08-18 15:42:42.015', false, NULL, 'user', '普通用户', '$2a$10$aQ9NOy/S2.UiNAmxOwNcjueSrRbwnYnUBbED.LE/DePeAeddPGCA.');
 
 -- 初始化序列
-alter table t_user auto_increment=4;
+alter table sys_user auto_increment=4;
 
+delete from sys_authority;
+-- 初始化角色数据
+INSERT INTO sys_authority
+(created_by, created_date, last_modified_by, last_modified_date, code, name)
+VALUES
+('system', NOW(), 'system', NOW(), 'ROLE_ADMIN', '管理员'),
+('system', NOW(), 'system', NOW(), 'ROLE_SYSTEM_OPS', '系统运维人员'),
+('system', NOW(), 'system', NOW(), 'ROLE_DEVELOPER', '开发人员'),
+('system', NOW(), 'system', NOW(), 'ROLE_TESTER', '测试人员'),
+('system', NOW(), 'system', NOW(), 'ROLE_GUEST', '访客'),
+('system', NOW(), 'system', NOW(), 'ROLE_SALES', '销售');
 
-delete from t_authority;
-INSERT INTO t_authority
-(id, created_by, created_date, last_modified_by, last_modified_date, code, name)
-VALUES(1, 'system', NULL, 'system', NULL, 'ROLE_ADMIN', '管理员');
-INSERT INTO t_authority
-(id, created_by, created_date, last_modified_by, last_modified_date, code, name)
-VALUES(2, 'system', NULL, 'system', NULL, 'ROLE_USER', '经办');
-
-alter table t_authority auto_increment=3;
-
-delete from t_user_authority;
-INSERT INTO t_user_authority
+delete from sys_user_authority;
+INSERT INTO sys_user_authority
 (user_id, authority_code)
 VALUES(1, 'ROLE_ADMIN');
-INSERT INTO t_user_authority
+INSERT INTO sys_user_authority
 (user_id, authority_code)
-VALUES(3, 'ROLE_USER');
+VALUES(2, 'ROLE_GUEST');
 
 -- ----------------------------
 -- 菜单初始化
 -- ----------------------------
 delete from sys_menu;
 
-INSERT INTO sys_menu
-(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component)
-VALUES(1, NULL, '2022-10-09 20:20:22', NULL, '2022-10-09 20:20:22', NULL, 1, NULL, NULL, '系统参数配置', 1, 2, NULL, 'params/list', 'views/system/Param/Index');
-INSERT INTO sys_menu
-(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component)
-VALUES(2, NULL, '2022-07-28 01:40:21', NULL, '2022-07-28 01:40:21', NULL, 1, 'ep:management', NULL, '系统管理', 15, 0, NULL, '/system', '#');
-INSERT INTO sys_menu
-(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component)
-VALUES(3, NULL, '2022-07-28 01:45:20', NULL, '2022-07-28 01:45:20', NULL, 1, NULL, NULL, '菜单管理', 3, 2, NULL, 'menu/list', 'views/system/Menu/Index');
-INSERT INTO sys_menu
-(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component)
-VALUES(4, NULL, '2022-07-28 01:45:40', NULL, '2022-07-28 01:45:40', NULL, 1, NULL, NULL, '角色管理', 4, 2, NULL, 'role/list', 'views/system/Role/Index');
-INSERT INTO sys_menu
-(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component)
-VALUES(5, NULL, '2022-07-28 01:45:57', NULL, '2022-07-28 01:45:57', NULL, 1, NULL, NULL, '用户管理', 5, 2, NULL, 'user/list', 'views/system/User/Index');
-INSERT INTO sys_menu
-(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component)
-VALUES(7, NULL, '2022-07-28 01:46:28', NULL, '2022-07-28 01:46:28', NULL, 1, NULL, NULL, '定时任务管理', 7, 2, NULL, 'task/list', 'views/system/Task/Index');
-INSERT INTO sys_menu
-(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component)
-VALUES(15, NULL, '2022-07-28 01:53:01', NULL, '2022-07-28 01:53:01', NULL, 1, 'ep:management', NULL, '日志查看', 8, 0, NULL, '/log', '#');
-INSERT INTO sys_menu
-(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component)
-VALUES(16, NULL, '2022-07-28 01:54:03', NULL, '2022-07-28 01:54:03', NULL, 1, NULL, NULL, '登录日志', 16, 15, NULL, 'login', 'views/system/LoginLog/Index');
-INSERT INTO sys_menu
-(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component)
-VALUES(17, NULL, '2022-07-28 01:54:24', NULL, '2022-07-28 01:54:24', NULL, 1, NULL, NULL, '接口请求日志', 17, 15, NULL, 'request', 'views/system/RequestLog/Index');
-INSERT INTO sys_menu
-(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component)
-VALUES(18, NULL, '2022-07-28 01:54:50', NULL, '2022-07-28 01:54:50', NULL, 1, NULL, NULL, '定时任务日志', 18, 15, NULL, 'task', 'views/system/TaskLog/Index');
-INSERT INTO sys_menu
-(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component)
-VALUES(21, NULL, '2023-04-22 14:12:24', NULL, '2023-04-22 14:12:24', '', 1, 'ant-design:dashboard-filled', NULL, '首页', 0, 0, NULL, '/dashboard', '#');
-INSERT INTO sys_menu
-(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component)
-VALUES(22, NULL, '2023-04-22 14:14:49', NULL, '2023-04-22 14:14:49', '', 1, '', NULL, '分析页', 20, 21, NULL, 'analysis', 'views/Dashboard/Analysis');
-INSERT INTO sys_menu
-(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component)
-VALUES(23, NULL, '2023-04-22 14:15:28', NULL, '2023-04-22 14:15:28', '', 1, '', NULL, '工作台', 21, 21, NULL, 'workplace', 'views/Dashboard/Workplace');
+INSERT INTO sys_menu (
+  id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component, menu_type, permission_code
+) VALUES
+-- 一级菜单
+(1, 'system', NOW(), 'system', NOW(), NULL, TRUE, 'ant-design:home-filled', TRUE, '首页',1, 0, TRUE, '/dashboard', '#', '0', 'dashboard:'),
+(2, 'system', NOW(), 'system', NOW(), NULL, TRUE, 'ant-design:setting-filled', TRUE, '系统管理',2, 0, TRUE, '/system', '#', '0', 'system:'),
+(3, 'system', NOW(), 'system', NOW(), NULL, TRUE, 'ant-design:code-outlined', TRUE, '开发者工具',3, 0, TRUE, '/tool', '#', '0', 'tool:'),
+(4, 'system', NOW(), 'system', NOW(), NULL, TRUE, 'ant-design:dashboard-filled', TRUE, '系统监控',4, 0, TRUE, '/monitor', '#', '0', 'monitor:'),
+(5, 'system', NOW(), 'system', NOW(), NULL, TRUE, 'ant-design:file-text-filled', TRUE, '动态报表',5, 0, TRUE, '/report', '#', '0', 'log:'),
+(6, 'system', NOW(), 'system', NOW(), NULL, TRUE, 'ant-design:file-text-filled', TRUE, '日志查看',6, 0, TRUE, '/log', '#', '0', 'log:'),
+(7, 'system', NOW(), 'system', NOW(), NULL, TRUE, 'ant-design:ellipsis', TRUE, '流程管理', 7, 0, TRUE, '/bpm', '#', '0', 'bpm:'),
+(8, 'system', NOW(), 'system', NOW(), NULL, TRUE, 'ant-design:eye-outlined', TRUE, 'demo演示',8, 0, TRUE, '/demo', '#', '0', 'demo:'),
+-- 二级菜单
+(10, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '分析页', 1, 1, TRUE, 'analysis', 'views/Dashboard/Analysis', '1', 'dashboard:analysis:view'),
+(11, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '工作台', 2, 1, TRUE, 'workplace', 'views/Dashboard/Workplace', '1', 'dashboard:workplace:view'),
+(15, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '用户管理', 1, 2, TRUE, 'user', 'views/system/User/Index', '1', 'system:user:view'),
+(16, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '角色管理', 2, 2, TRUE, 'role', 'views/system/Role/Index', '1', 'system:role:view'),
+(17, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '菜单管理', 3, 2, TRUE, 'menu', 'views/system/Menu/Index', '1', 'system:menu:view'),
+(18, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '岗位管理', 4, 2, TRUE, 'post', 'views/system/Post/Index', '1', 'system:post:view'),
+(19, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '部门管理', 5, 2, TRUE, 'dept', 'views/system/Dept/Index', '1', 'system:dept:view'),
+(20, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '系统参数配置', 6, 2, TRUE, 'params', 'views/system/Param/Index', '1', 'system:params:view'),
+(21, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '基础要素维护', 7, 2, TRUE, 'ele-union', 'views/system/EleUnion/Index', '1', 'system:ele-union:view'),
+(22, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '定时任务管理', 8, 2, TRUE, 'task', 'views/system/Task/Index', '1', 'system:task:view'),
+(23, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '通知公告', 9, 2, TRUE, 'notice', 'views/system/Notice/Index', '1', 'system:notice:view'),
+(50, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '登录日志', 1, 6, TRUE, 'login', 'views/system/LoginLog/Index', '1', 'log:login:view'),
+(51, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '接口请求日志', 2, 6, TRUE, 'request', 'views/system/RequestLog/Index', '1', 'log:request:view'),
+(52, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '定时任务日志', 3, 6, TRUE, 'task', 'views/system/TaskLog/Index', '1', 'log:task:view'),
+(70, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '代码生成',1, 3, TRUE, 'code/generator', 'views/CodeGenerator/Index', '1', 'tool:code:generator:view'),
+(71, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '接口测试swagger',2, 3, TRUE, 'swagger', 'views/system/Swagger/Index', '1', 'tool:swagger:view'),
+(72, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '接口测试doc',3, 3, TRUE, 'knife4j-doc', 'views/system/Knife4jDoc/Index', '1', 'tool:knife4j-doc:view'),
+(90, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '在线用户',1, 4, TRUE, 'online/users', '#', '1', 'monitor:online:user:view'),
+(91, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '服务监控',2, 4, TRUE, 'server', '#', '1', 'monitor:server:view'),
+(92, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '缓存监控',3, 4, TRUE, 'cache', '#', '1', 'monitor:cache:view'),
+(63, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '积木报表配置', 1, 5, TRUE, 'jimu', 'views/report/JMReport/view', '1', 'report:jimu:view'),
+(64, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, 'xx报表', 1, 5, TRUE, 'jimu', 'views/report/JMReport/view', '1', 'report:jimu:view');
+-- 用户管理按钮
+INSERT INTO sys_menu (
+  id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component, menu_type, permission_code
+) VALUES
+(201, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '新增', 1, 15, TRUE, 'system/user/add', '#', '2', 'system:user:add'),
+(202, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '编辑', 2, 15, TRUE, 'system/user/edit', '#', '2', 'system:user:edit'),
+(203, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '详情', 3, 15, TRUE, 'system/user/detail', '#', '2', 'system:user:detail'),
+(204, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '删除', 4, 15, TRUE, 'system/user/delete', '#', '2', 'system:user:delete'),
+(205, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '批量删除', 5, 15, TRUE, 'system/user/batch-delete', '#', '2', 'system:user:batchDelete');
 
+-- 角色管理按钮
+INSERT INTO sys_menu (
+  id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component, menu_type, permission_code
+) VALUES
+(251, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '新增', 1, 16, TRUE, 'system/role/add', '#', '2', 'system:role:add'),
+(252, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '编辑', 2, 16, TRUE, 'system/role/edit', '#', '2', 'system:role:edit'),
+(253, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '详情', 3, 16, TRUE, 'system/role/detail', '#', '2', 'system:role:detail'),
+(254, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '删除', 4, 16, TRUE, 'system/role/delete', '#', '2', 'system:role:delete'),
+(255, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '批量删除', 5, 16, TRUE, 'system/role/batch-delete', '#', '2', 'system:role:batchDelete');
 
-alter table sys_menu auto_increment=30;
+-- 菜单管理按钮
+INSERT INTO sys_menu (
+  id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component, menu_type, permission_code
+) VALUES
+(301, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '新增', 1, 17, TRUE, 'system/menu/add', '#', '2', 'system:menu:add'),
+(302, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '编辑', 2, 17, TRUE, 'system/menu/edit', '#', '2', 'system:menu:edit'),
+(303, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '详情', 3, 17, TRUE, 'system/menu/detail', '#', '2', 'system:menu:detail'),
+(304, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '删除', 4, 17, TRUE, 'system/menu/delete', '#', '2', 'system:menu:delete'),
+(305, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '批量删除', 5, 17, TRUE, 'system/menu/batch-delete', '#', '2', 'system:menu:batchDelete');
+
+-- 岗位管理按钮
+INSERT INTO sys_menu (
+  id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component, menu_type, permission_code
+) VALUES
+(351, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '新增', 1, 18, TRUE, 'system/post/add', '#', '2', 'system:post:add'),
+(352, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '编辑', 2, 18, TRUE, 'system/post/edit', '#', '2', 'system:post:edit'),
+(353, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '详情', 3, 18, TRUE, 'system/post/detail', '#', '2', 'system:post:detail'),
+(354, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '删除', 4, 18, TRUE, 'system/post/delete', '#', '2', 'system:post:delete'),
+(355, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '批量删除', 5, 18, TRUE, 'system/post/batch-delete', '#', '2', 'system:post:batchDelete');
+
+-- 部门管理按钮
+INSERT INTO sys_menu (
+  id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component, menu_type, permission_code
+) VALUES
+(401, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '新增', 1, 19, TRUE, 'system/dept/add', '#', '2', 'system:dept:add'),
+(402, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '编辑', 2, 19, TRUE, 'system/dept/edit', '#', '2', 'system:dept:edit'),
+(403, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '详情', 3, 19, TRUE, 'system/dept/detail', '#', '2', 'system:dept:detail'),
+(404, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '删除', 4, 19, TRUE, 'system/dept/delete', '#', '2', 'system:dept:delete'),
+(405, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '批量删除', 5, 19, TRUE, 'system/dept/batch-delete', '#', '2', 'system:dept:batchDelete');
+
+-- 系统参数配置按钮
+INSERT INTO sys_menu (
+  id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component, menu_type, permission_code
+) VALUES
+(451, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '新增', 1, 20, TRUE, 'system/params/add', '#', '2', 'system:params:add'),
+(452, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '编辑', 2, 20, TRUE, 'system/params/edit', '#', '2', 'system:params:edit'),
+(453, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '详情', 3, 20, TRUE, 'system/params/detail', '#', '2', 'system:params:detail'),
+(454, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '删除', 4, 20, TRUE, 'system/params/delete', '#', '2', 'system:params:delete'),
+(455, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '批量删除', 5, 20, TRUE, 'system/params/batch-delete', '#', '2', 'system:params:batchDelete');

@@ -1,18 +1,17 @@
-<script name="MenuIndex" setup lang="ts">
+<script name="UserIndex" setup lang="ts">
 import { ContentWrap } from '@/components/ContentWrap'
 import { Search } from '@/components/Search'
 import { Dialog } from '@/components/Dialog'
 import { useI18n } from '@/hooks/web/useI18n'
-import { ElButton, ElTag } from 'element-plus'
+import { ElButton } from 'element-plus'
 import { Table } from '@/components/Table'
-import { getTableListApi, saveTableApi, delTableListApi } from '@/api/system/menu'
+import { getTableListApi, saveTableApi, delTableListApi } from '@/api/system/user'
 import { useTable } from '@/hooks/web/useTable'
 import { TableData } from '@/api/table/types'
-import { ref, unref, reactive, h } from 'vue'
+import { ref, unref, reactive } from 'vue'
 import AddOrUpdate from './components/AddOrUpdate.vue'
 import Detail from './components/Detail.vue'
 import { CrudSchema, useCrudSchemas } from '@/hooks/web/useCrudSchemas'
-import { TableColumn } from '@/types/table'
 
 const { register, tableObject, methods } = useTable<TableData>({
   getListApi: getTableListApi,
@@ -46,7 +45,7 @@ const crudSchemas = reactive<CrudSchema[]>([
   },
   {
     field: 'name',
-    label: '菜单名称',
+    label: '中文名',
     search: {
       show: true
     },
@@ -60,100 +59,16 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'orderNum',
-    label: '排序',
-    form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
-    }
+    field: 'login',
+    label: '登录名'
   },
   {
-    field: 'url',
-    label: '请求地址',
-    form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
-    }
+    field: 'mofDivCode',
+    label: '区划'
   },
   {
-    field: 'component',
-    label: '组件路径',
-    form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
-    }
-  },
-  {
-    field: 'menuType',
-    label: '类型',
-    form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
-    },
-    formatter: (_: Recordable, __: TableColumn, cellValue: number) => {
-      let type
-      switch (cellValue) {
-        case 1:
-          type = 'success'
-          break
-        case 2:
-          type = 'danger'
-          break
-        default:
-          type = 'primary'
-      }
-      return h(
-        ElTag,
-        {
-          type: type
-        },
-        () => (cellValue === 1 ? '菜单' : cellValue === 2 ? '按钮' : '目录')
-      )
-    }
-  },
-  {
-    field: 'permissionCode',
-    label: '权限标识',
-    form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
-    }
-  },
-  {
-    field: 'config',
-    label: '扩展配置',
-    form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
-    }
-  },
-  {
-    field: 'createdBy',
-    label: '创建人'
+    field: 'appid',
+    label: '系统标识'
   },
   {
     field: 'action',
@@ -174,9 +89,9 @@ const dialogVisible = ref(false)
 
 const dialogTitle = ref('')
 
-const AddAction = (row: TableData | null) => {
+const AddAction = () => {
   dialogTitle.value = t('exampleDemo.add')
-  tableObject.currentRow = row
+  tableObject.currentRow = null
   dialogVisible.value = true
   actionType.value = ''
 }
@@ -256,22 +171,19 @@ const save = async () => {
         total: tableObject.total
       }"
       @register="register"
-      row-key="id"
-      border
     >
       <template #action="{ row }">
         <ElButton type="primary" v-hasPermi="['example:dialog:edit']" @click="action(row, 'edit')">
           {{ t('exampleDemo.edit') }}
         </ElButton>
-        <ElButton type="success" v-hasPermi="['example:dialog:view']" @click="AddAction(row)">
-          {{ t('exampleDemo.add') }}
-        </ElButton>
         <ElButton
-          v-if="row.createdBy != 'system'"
-          type="danger"
-          v-hasPermi="['example:dialog:delete']"
-          @click="delData(row, false)"
+          type="success"
+          v-hasPermi="['example:dialog:view']"
+          @click="action(row, 'detail')"
         >
+          {{ t('exampleDemo.detail') }}
+        </ElButton>
+        <ElButton type="danger" v-hasPermi="['example:dialog:delete']" @click="delData(row, false)">
           {{ t('exampleDemo.del') }}
         </ElButton>
       </template>

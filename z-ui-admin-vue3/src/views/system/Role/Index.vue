@@ -71,6 +71,13 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
+    field: 'createdBy',
+    label: '创建人',
+    search: {
+      show: true
+    }
+  },
+  {
     field: 'action',
     width: '260px',
     label: t('tableDemo.action'),
@@ -173,9 +180,6 @@ const save = async () => {
       @register="register"
     >
       <template #action="{ row }">
-        <ElButton type="primary" v-hasPermi="['example:dialog:edit']" @click="action(row, 'edit')">
-          {{ t('exampleDemo.edit') }}
-        </ElButton>
         <ElButton
           type="success"
           v-hasPermi="['example:dialog:view']"
@@ -183,7 +187,12 @@ const save = async () => {
         >
           {{ t('exampleDemo.detail') }}
         </ElButton>
-        <ElButton type="danger" v-hasPermi="['example:dialog:delete']" @click="delData(row, false)">
+        <ElButton
+          v-if="row.createdBy != 'system'"
+          type="danger"
+          v-hasPermi="['example:dialog:delete']"
+          @click="delData(row, false)"
+        >
           {{ t('exampleDemo.del') }}
         </ElButton>
       </template>

@@ -82,6 +82,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
             // token认证核心
             UsernamePasswordAuthenticationToken authentication = buildAuthentication(request, response);
+            //org.springframework.boot.web.servlet.filter.ErrorPageSecurityFilter.isAllowed
+            // 如果没有下边设置，上述校验不通过, 就会403
             SecurityContextHolder.getContext().setAuthentication(authentication);
             chain.doFilter(request, response);
         } catch (ExpiredJwtException e) {

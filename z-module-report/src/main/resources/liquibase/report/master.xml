@@ -5,5 +5,4 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
 <!--    <include file="liquibase/report/changelog/00000_jimureport.mysql5.7.create.sql" relativeToChangelogFile="false"/>-->
-    <include file="liquibase/report/changelog/00001_menu_create_zzw.sql" relativeToChangelogFile="false"/>
 </databaseChangeLog>

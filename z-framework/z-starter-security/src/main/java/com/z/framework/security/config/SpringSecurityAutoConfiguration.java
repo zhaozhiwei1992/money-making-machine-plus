@@ -1,6 +1,7 @@
 package com.z.framework.security.config;
 
 import com.z.framework.security.aop.JWTAuthenticationFilter;
+import com.z.framework.security.aop.MenuPermissionFilterTemplate;
 import com.z.framework.security.service.TokenProviderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -105,6 +106,9 @@ public class SpringSecurityAutoConfiguration extends WebSecurityConfigurerAdapte
     @Autowired
     private TokenProviderService tokenProviderService;
 
+    @Autowired
+    public MenuPermissionFilterTemplate menuPermissionFilter;
+
     /**
      * 配置请求拦截
      */
@@ -123,8 +127,10 @@ public class SpringSecurityAutoConfiguration extends WebSecurityConfigurerAdapte
                 .antMatchers(AUTH_WHITELIST).permitAll()
                 //其他所有请求需要身份认证
                 .anyRequest().authenticated()
+                // Can't configure anyRequest after itself   5.2版本以后只能有一个anyRequest,坑
+//                .anyRequest().access("@rbacServiceImpl.hasPermission(request, authentication)")
                 .and()
-                .addFilterBefore(new JWTAuthenticationFilter(tokenProviderService), UsernamePasswordAuthenticationFilter.class);
-
+                .addFilterBefore(new JWTAuthenticationFilter(tokenProviderService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(menuPermissionFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

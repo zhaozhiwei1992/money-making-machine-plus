@@ -1,27 +1,26 @@
 package com.z.module.system.web.rest;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.tree.Tree;
-import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.hutool.core.lang.tree.TreeUtil;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import com.z.framework.common.config.MenuTypeEnum;
 import com.z.framework.common.service.MenuRouterExtService;
+import com.z.framework.common.util.GenericTreeBuilderUtil;
+import com.z.framework.common.web.rest.vm.ResponseData;
+import com.z.framework.security.util.SecurityUtils;
 import com.z.module.system.domain.Menu;
 import com.z.module.system.repository.MenuRepository;
 import com.z.module.system.service.MenuService;
-import com.z.framework.security.util.SecurityUtils;
-import com.z.framework.common.web.rest.vm.ResponseData;
+import com.z.module.system.web.vo.MenuVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.serviceloader.ServiceFactoryBean;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URISyntaxException;
@@ -90,21 +89,6 @@ public class MenuResource {
             Pageable pageable, Menu menu) {
         log.debug("REST request to get a page of UiComponents");
 
-        // 根据id, 升序
-        Sort sort = Sort.by(Sort.Direction.ASC, "id");
-        // 分页
-        pageable = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize(), sort);
-
-        Page<Menu> menuPage;
-        // 搜索
-//            final Menu menu = new Menu();
-//            final List<String> cols = Collections.singletonList("name");
-//            //      2. 将传入属性, 填充给界面显示字段
-//            final Map<String, String> map = cols.stream().collect(Collectors.toMap(s -> s, key2 -> key));
-//            //      3. 动态构建查询条件
-//            BeanUtil.fillBeanWithMap(map, menu, true);
-//            log.info("填充后对象信息 {}", menu);
-
         //创建匹配器，即如何使用查询条件
         //构建对象
         ExampleMatcher matcher = ExampleMatcher
@@ -121,12 +105,19 @@ public class MenuResource {
 
         //创建实例
         Example<Menu> ex = Example.of(menu, matcher);
-        menuPage = menuRepository.findAll(ex, pageable);
+        final List<Menu> allMenusOrderByOrdernumAsc = menuRepository.findAll(ex);
+        final List<MenuVO> collect = allMenusOrderByOrdernumAsc.stream().map(m -> {
+            final MenuVO menuDTO = new MenuVO();
+            BeanUtils.copyProperties(m, menuDTO);
+            return menuDTO;
+        }).collect(Collectors.toList());
+        final GenericTreeBuilderUtil<MenuVO> menuDTOGenericTreeBuilderUtil = new GenericTreeBuilderUtil<>(MenuVO.class);
+        final List<MenuVO> menuDTOS = menuDTOGenericTreeBuilderUtil.buildTree(collect);
 
         //菜单属性转换成 下划线 再给前端, mapstruct? 直接采用Jackson的JsonNaming注解搞了先
         return ResponseData.ok(new HashMap<String, Object>() {{
-            put("list", menuPage.getContent());
-            put("total", Long.valueOf(menuPage.getTotalElements()).intValue());
+            put("list", menuDTOS);
+            put("total", 0);
         }});
 
     }
@@ -245,7 +236,7 @@ public class MenuResource {
     public ResponseEntity<ResponseData<List<Tree<Long>>>> getMenusRoute() {
         log.debug("REST request to get Menus Tree");
 
-        final List<Menu> allMenusOrderByOrdernumAsc = menuRepository.findAllByOrderByOrderNumAsc();
+        final List<Menu> allMenusOrderByOrdernumAsc = menuRepository.findAllByMenuTypeOrderByOrderNumAsc(MenuTypeEnum.MENU.getCode());
 
         //树形结构一些特殊配置
         TreeNodeConfig treeNodeConfig = new TreeNodeConfig();
