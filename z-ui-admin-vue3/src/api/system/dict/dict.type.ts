@@ -1,5 +1,3 @@
-import request from '@/config/axios'
-
 export type DictTypeVO = {
   id: number | undefined
   name: string

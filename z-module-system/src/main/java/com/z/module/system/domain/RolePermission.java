@@ -1,6 +1,8 @@
 package com.z.module.system.domain;
 
 import com.z.framework.common.domain.AbstractAuditingEntity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,6 +19,8 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "sys_role_permission")
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class RolePermission extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -25,12 +29,12 @@ public class RolePermission extends AbstractAuditingEntity implements Serializab
      * 角色id
      */
     @Column(name = "role_id")
-    private String roleId;
+    private Long roleId;
 
     /**
      * 权限id
      */
     @Column(name = "permission_id")
-    private String permissionId;
+    private Long permissionId;
 
 }

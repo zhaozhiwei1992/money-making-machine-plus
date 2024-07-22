@@ -5,9 +5,9 @@ import { Dialog } from '@/components/Dialog'
 import { useI18n } from '@/hooks/web/useI18n'
 import { ElButton } from 'element-plus'
 import { Table } from '@/components/Table'
-import { getTableListApi, saveTableApi, delTableListApi } from '@/api/system/user'
+import { getTableListApi, saveTableApi, delTableListApi } from '@/api/system/dept'
 import { useTable } from '@/hooks/web/useTable'
-import { TableData } from '@/api/table/types'
+import { TableData } from '@/api/system/dept/types'
 import { ref, unref, reactive } from 'vue'
 import AddOrUpdate from './components/AddOrUpdate.vue'
 import Detail from './components/Detail.vue'
@@ -45,7 +45,7 @@ const crudSchemas = reactive<CrudSchema[]>([
   },
   {
     field: 'name',
-    label: '中文名',
+    label: '部门名称',
     search: {
       show: true
     },
@@ -59,16 +59,64 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'login',
-    label: '登录名'
+    field: 'orderNum',
+    label: '排序',
+    form: {
+      colProps: {
+        span: 24
+      }
+    },
+    detail: {
+      span: 24
+    }
   },
   {
-    field: 'mofDivCode',
-    label: '区划'
+    field: 'leader',
+    label: '负责人',
+    form: {
+      colProps: {
+        span: 24
+      }
+    },
+    detail: {
+      span: 24
+    }
   },
   {
-    field: 'appid',
-    label: '系统标识'
+    field: 'phone',
+    label: '电话',
+    form: {
+      colProps: {
+        span: 24
+      }
+    },
+    detail: {
+      span: 24
+    }
+  },
+  {
+    field: 'email',
+    label: '邮件',
+    form: {
+      colProps: {
+        span: 24
+      }
+    },
+    detail: {
+      span: 24
+    }
+  },
+  {
+    field: 'status',
+    label: '状态',
+    form: {
+      colProps: {
+        span: 24
+      }
+    },
+    detail: {
+      span: 24
+    }
   },
   {
     field: 'action',
@@ -89,9 +137,9 @@ const dialogVisible = ref(false)
 
 const dialogTitle = ref('')
 
-const AddAction = () => {
+const AddAction = (row: TableData | null) => {
   dialogTitle.value = t('exampleDemo.add')
-  tableObject.currentRow = null
+  tableObject.currentRow = row
   dialogVisible.value = true
   actionType.value = ''
 }
@@ -155,6 +203,7 @@ const save = async () => {
     />
 
     <div class="mb-10px">
+      <!-- 这里增加一级部门 -->
       <ElButton type="primary" @click="AddAction">{{ t('exampleDemo.add') }}</ElButton>
       <ElButton :loading="delLoading" type="danger" @click="delData(null, true)">
         {{ t('exampleDemo.del') }}
@@ -171,19 +220,27 @@ const save = async () => {
         total: tableObject.total
       }"
       @register="register"
+      row-key="id"
+      border
     >
       <template #action="{ row }">
-        <ElButton type="primary" v-hasPermi="['example:dialog:edit']" @click="action(row, 'edit')">
+        <ElButton
+          v-if="row.createdBy != 'system'"
+          type="primary"
+          v-hasPermi="['example:dialog:edit']"
+          @click="action(row, 'edit')"
+        >
           {{ t('exampleDemo.edit') }}
         </ElButton>
-        <ElButton
-          type="success"
-          v-hasPermi="['example:dialog:view']"
-          @click="action(row, 'detail')"
-        >
-          {{ t('exampleDemo.detail') }}
+        <ElButton type="success" v-hasPermi="['example:dialog:view']" @click="AddAction(row)">
+          {{ t('exampleDemo.add') }}
         </ElButton>
-        <ElButton type="danger" v-hasPermi="['example:dialog:delete']" @click="delData(row, false)">
+        <ElButton
+          v-if="row.createdBy != 'system'"
+          type="danger"
+          v-hasPermi="['example:dialog:delete']"
+          @click="delData(row, false)"
+        >
           {{ t('exampleDemo.del') }}
         </ElButton>
       </template>

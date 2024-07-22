@@ -1,43 +1,21 @@
 import request from '@/config/axios'
+import { TableData } from './types'
 
-export interface DeptVO {
-  id?: number
-  name: string
-  parentId: number
-  status: number
-  sort: number
-  leaderUserId: number
-  phone: string
-  email: string
-  createTime: Date
+export const getTableListApi = (departments: any): Promise<IResponse> => {
+  departments = { ...departments, page: departments.pageIndex, size: departments.pageSize }
+  return request.get({ url: '/departments', departments })
 }
 
-// 查询部门（精简)列表
-export const getSimpleDeptList = async (): Promise<DeptVO[]> => {
-  return await request.get({ url: '/roles/list' })
+export const saveTableApi = (data: Partial<TableData>): Promise<IResponse> => {
+  return request.post({ url: '/departments', data })
 }
 
-// 查询部门列表
-export const getDeptPage = async (params: any) => {
-  return await request.get({ url: '/system/dept/list', params })
+// 获取指定数据详情
+export const getTableDetApi = (id: string): Promise<IResponse<TableData>> => {
+  return request.get({ url: '/departments/detail', departments: { id } })
 }
 
-// 查询部门详情
-export const getDept = async (id: number) => {
-  return await request.get({ url: '/system/dept/get?id=' + id })
-}
-
-// 新增部门
-export const createDept = async (data: DeptVO) => {
-  return await request.post({ url: '/system/dept/create', data: data })
-}
-
-// 修改部门
-export const updateDept = async (params: DeptVO) => {
-  return await request.put({ url: '/system/dept/update', data: params })
-}
-
-// 删除部门
-export const deleteDept = async (id: number) => {
-  return await request.delete({ url: '/system/dept/delete?id=' + id })
+// 批量删除
+export const delTableListApi = (ids: string[] | number[]): Promise<IResponse> => {
+  return request.delete({ url: '/departments', data: ids })
 }

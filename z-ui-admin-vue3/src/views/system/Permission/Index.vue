@@ -1,13 +1,13 @@
-<script name="UserIndex" setup lang="ts">
+<script name="MenuIndex" setup lang="ts">
 import { ContentWrap } from '@/components/ContentWrap'
 import { Search } from '@/components/Search'
 import { Dialog } from '@/components/Dialog'
 import { useI18n } from '@/hooks/web/useI18n'
 import { ElButton } from 'element-plus'
 import { Table } from '@/components/Table'
-import { getTableListApi, saveTableApi, delTableListApi } from '@/api/system/position'
+import { getTableListApi, saveTableApi, delTableListApi } from '@/api/system/permission'
 import { useTable } from '@/hooks/web/useTable'
-import { TableData } from '@/api/system/position/types'
+import { TableData } from '@/api/system/permission/types'
 import { ref, unref, reactive } from 'vue'
 import AddOrUpdate from './components/AddOrUpdate.vue'
 import Detail from './components/Detail.vue'
@@ -45,7 +45,7 @@ const crudSchemas = reactive<CrudSchema[]>([
   },
   {
     field: 'code',
-    label: '岗位名称',
+    label: '权限编码',
     search: {
       show: true
     },
@@ -60,7 +60,7 @@ const crudSchemas = reactive<CrudSchema[]>([
   },
   {
     field: 'name',
-    label: '岗位名称',
+    label: '权限名称',
     search: {
       show: true
     },
@@ -74,8 +74,8 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'orderNum',
-    label: '排序',
+    field: 'type',
+    label: '权限类型',
     form: {
       colProps: {
         span: 24
@@ -86,8 +86,8 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'status',
-    label: '状态',
+    field: 'description',
+    label: '备注',
     form: {
       colProps: {
         span: 24
@@ -96,10 +96,6 @@ const crudSchemas = reactive<CrudSchema[]>([
     detail: {
       span: 24
     }
-  },
-  {
-    field: 'createDate',
-    label: '创建日期'
   },
   {
     field: 'action',
@@ -120,9 +116,9 @@ const dialogVisible = ref(false)
 
 const dialogTitle = ref('')
 
-const AddAction = (row: TableData | null) => {
+const AddAction = () => {
   dialogTitle.value = t('exampleDemo.add')
-  tableObject.currentRow = row
+  tableObject.currentRow = null
   dialogVisible.value = true
   actionType.value = ''
 }
@@ -202,27 +198,19 @@ const save = async () => {
         total: tableObject.total
       }"
       @register="register"
-      row-key="id"
-      border
     >
       <template #action="{ row }">
-        <ElButton
-          v-if="row.createdBy != 'system'"
-          type="primary"
-          v-hasPermi="['example:dialog:edit']"
-          @click="action(row, 'edit')"
-        >
+        <ElButton type="primary" v-hasPermi="['example:dialog:edit']" @click="action(row, 'edit')">
           {{ t('exampleDemo.edit') }}
         </ElButton>
-        <ElButton type="success" v-hasPermi="['example:dialog:view']" @click="AddAction(row)">
-          {{ t('exampleDemo.add') }}
-        </ElButton>
         <ElButton
-          v-if="row.createdBy != 'system'"
-          type="danger"
-          v-hasPermi="['example:dialog:delete']"
-          @click="delData(row, false)"
+          type="success"
+          v-hasPermi="['example:dialog:view']"
+          @click="action(row, 'detail')"
         >
+          {{ t('exampleDemo.detail') }}
+        </ElButton>
+        <ElButton type="danger" v-hasPermi="['example:dialog:delete']" @click="delData(row, false)">
           {{ t('exampleDemo.del') }}
         </ElButton>
       </template>

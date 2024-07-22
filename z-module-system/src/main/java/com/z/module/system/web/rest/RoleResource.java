@@ -4,6 +4,7 @@ import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.module.system.domain.Authority;
 import com.z.module.system.repository.AuthorityRepository;
 import com.z.module.system.service.RoleMenuService;
+import com.z.module.system.service.RolePermissionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -29,9 +30,10 @@ public class RoleResource {
     private final AuthorityRepository roleRepository;
 
     public RoleResource(AuthorityRepository roleRepository,
-                        RoleMenuService roleMenuService) {
+                        RoleMenuService roleMenuService, RolePermissionService rolePermissionService) {
         this.roleRepository = roleRepository;
         this.roleMenuService = roleMenuService;
+        this.rolePermissionService = rolePermissionService;
     }
 
     /**
@@ -136,6 +138,19 @@ public class RoleResource {
             return map;
         }).collect(Collectors.toList());
         return ResponseData.ok(resultMap);
+    }
+
+    private final RolePermissionService rolePermissionService;
+
+    @Operation(description = "保存角色权限信息")
+    @PostMapping(value = "/roles/permission")
+    public ResponseEntity<ResponseData<String>> saveRolePermission(
+            @RequestParam(value = "roleList") List<Long> roleList,
+            @RequestParam(value = "permissionList") List<Long> permissionList
+    ) {
+
+        rolePermissionService.saveRolePermission(roleList, permissionList);
+        return ResponseData.ok("success");
     }
 
 }

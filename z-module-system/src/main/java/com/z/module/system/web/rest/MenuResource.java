@@ -18,7 +18,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -236,7 +238,9 @@ public class MenuResource {
     public ResponseEntity<ResponseData<List<Tree<Long>>>> getMenusRoute() {
         log.debug("REST request to get Menus Tree");
 
-        final List<Menu> allMenusOrderByOrdernumAsc = menuRepository.findAllByMenuTypeOrderByOrderNumAsc(MenuTypeEnum.MENU.getCode());
+        final List<Menu> allMenusOrderByOrdernumAsc =
+                menuRepository.findAllByMenuTypeInOrderByOrderNumAsc(Arrays.asList(MenuTypeEnum.DICT.getCode(),
+                        MenuTypeEnum.MENU.getCode()));
 
         //树形结构一些特殊配置
         TreeNodeConfig treeNodeConfig = new TreeNodeConfig();
