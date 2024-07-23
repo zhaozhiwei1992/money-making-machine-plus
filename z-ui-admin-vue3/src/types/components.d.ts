@@ -21,6 +21,7 @@ export type ComponentName =
   | 'InputPassword'
   | 'ImageCaptcha'
   | 'Editor'
+  | 'TreeSelect'
 
 export type ColProps = {
   span?: number

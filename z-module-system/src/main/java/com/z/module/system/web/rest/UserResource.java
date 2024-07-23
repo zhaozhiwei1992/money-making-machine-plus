@@ -4,10 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.util.StrUtil;
 import com.z.module.system.domain.*;
-import com.z.module.system.repository.UserAuthorityRepository;
-import com.z.module.system.repository.UserDepartmentRepository;
-import com.z.module.system.repository.UserPositionRepository;
-import com.z.module.system.repository.UserRepository;
+import com.z.module.system.repository.*;
 import com.z.framework.common.repository.CommonSqlRepository;
 import com.z.module.system.service.UserService;
 import com.z.framework.common.web.rest.vm.ResponseData;
@@ -53,7 +50,9 @@ public class UserResource {
     private final UserDepartmentRepository userDepartmentRepository;
 
     public UserResource(UserService userService, UserRepository userRepository, PasswordEncoder passwordEncoder,
-                        CommonSqlRepository commonSqlRepository, UserAuthorityRepository userAuthorityRepository, UserPositionRepository userPositionRepository, UserDepartmentRepository userDepartmentRepository) {
+                        CommonSqlRepository commonSqlRepository, UserAuthorityRepository userAuthorityRepository,
+                        UserPositionRepository userPositionRepository,
+                        UserDepartmentRepository userDepartmentRepository, PositionRepository positionRepository, DepartmentRepository departmentRepository) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -61,6 +60,8 @@ public class UserResource {
         this.userAuthorityRepository = userAuthorityRepository;
         this.userPositionRepository = userPositionRepository;
         this.userDepartmentRepository = userDepartmentRepository;
+        this.positionRepository = positionRepository;
+        this.departmentRepository = departmentRepository;
     }
 
     /**
@@ -142,6 +143,10 @@ public class UserResource {
         return ResponseData.ok(newUser);
     }
 
+    private final PositionRepository positionRepository;
+
+    private final DepartmentRepository departmentRepository;
+
     /**
      * {@code GET /admin/users} : get all users with all the details - calling this are only allowed for the
      * administrators.
@@ -180,9 +185,47 @@ public class UserResource {
         //创建实例
         Example<User> ex = Example.of(user, matcher);
         userPage = userRepository.findAll(ex, pageable);
+        final List<User> content = userPage.getContent();
+
+        // 获取岗位信息
+        List<UserPosition> userPositionList =
+                userPositionRepository.findAllByUserIdIn(content.stream().map(User::getId).collect(Collectors.toList()));
+        Map<Long, List<UserPosition>> userPositionGroupByUserId;
+        if (!userPositionList.isEmpty()) {
+            userPositionGroupByUserId =
+                    userPositionList.stream().collect(Collectors.groupingBy(UserPosition::getUserId));
+        } else {
+            userPositionGroupByUserId = Collections.emptyMap();
+        }
+
+        // 获取部门信息
+        List<UserDepartment> userDepartmentList =
+                userDepartmentRepository.findAllByUserIdIn(content.stream().map(User::getId).collect(Collectors.toList()));
+        Map<Long, List<UserDepartment>> userDepartmentGroupByUserId;
+        if(!userDepartmentList.isEmpty()){
+            userDepartmentGroupByUserId = userDepartmentList.stream().collect(Collectors.groupingBy(UserDepartment::getUserId));
+        } else {
+            userDepartmentGroupByUserId = Collections.emptyMap();
+        }
+
+        final List<UserVO> collect = content.stream().map(u -> {
+            final UserVO userVO = new UserVO();
+            BeanUtils.copyProperties(u, userVO);
+            if(!userPositionGroupByUserId.isEmpty()){
+                userVO.setPositionIdList(userPositionGroupByUserId.get(u.getId()).stream().map(UserPosition::getPositionId).collect(Collectors.toList()));
+                final Optional<Position> optional = positionRepository.findById(userVO.getPositionIdList().get(0));
+                optional.ifPresent(position -> userVO.setPositionName(position.getName()));
+            }
+            if(!userDepartmentGroupByUserId.isEmpty()){
+                userVO.setDepartmentIdList(userDepartmentGroupByUserId.get(u.getId()).stream().map(UserDepartment::getDeptId).collect(Collectors.toList()));
+                final Optional<Department> optional = departmentRepository.findById(userVO.getDepartmentIdList().get(0));
+                optional.ifPresent(department -> userVO.setDepartmentName(department.getName()));
+            }
+            return userVO;
+        }).collect(Collectors.toList());
 
         return ResponseData.ok(new HashMap<String, Object>() {{
-            put("list", userPage.getContent());
+            put("list", collect);
             put("total", Long.valueOf(userPage.getTotalElements()).intValue());
         }});
     }

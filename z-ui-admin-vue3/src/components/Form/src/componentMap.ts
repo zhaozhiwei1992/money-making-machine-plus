@@ -16,7 +16,8 @@ import {
   ElTimeSelect,
   ElTransfer,
   ElAutocomplete,
-  ElDivider
+  ElDivider,
+  ElTreeSelect
 } from 'element-plus'
 import { InputPassword } from '@/components/InputPassword'
 import { ImageCaptcha } from '@/components/ImageCaptcha'
@@ -45,7 +46,8 @@ const componentMap: Recordable<Component, ComponentName> = {
   RadioButton: ElRadioGroup,
   InputPassword: InputPassword,
   ImageCaptcha: ImageCaptcha,
-  Editor: Editor
+  Editor: Editor,
+  TreeSelect: ElTreeSelect
 }
 
 export { componentMap }

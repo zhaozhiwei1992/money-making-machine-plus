@@ -63,8 +63,84 @@ const crudSchemas = reactive<CrudSchema[]>([
     label: '登录名'
   },
   {
+    field: 'departmentName',
+    label: '部门',
+    form: {
+      component: 'Cascader',
+      componentProps: {
+        style: {
+          width: '100%'
+        },
+        options: [
+          {
+            label: '重要',
+            value: 3,
+            children: [
+              {
+                label: '重要',
+                value: 3
+              },
+              {
+                label: '良好',
+                value: 2
+              },
+              {
+                label: '一般',
+                value: 1
+              }
+            ]
+          },
+          {
+            label: '良好',
+            value: 2
+          },
+          {
+            label: '一般',
+            value: 1
+          }
+        ]
+      }
+    }
+  },
+  {
+    field: 'positionName',
+    label: '岗位',
+    form: {
+      component: 'Select',
+      componentProps: {
+        style: {
+          width: '100%'
+        },
+        options: [
+          {
+            label: '重要',
+            value: 3
+          },
+          {
+            label: '良好',
+            value: 2
+          },
+          {
+            label: '一般',
+            value: 1
+          }
+        ]
+      }
+    }
+  },
+  {
     field: 'createdBy',
-    label: '创建人'
+    label: '创建人',
+    form: {
+      show: false
+    }
+  },
+  {
+    field: 'createdDate',
+    label: '创建日期',
+    form: {
+      show: false
+    }
   },
   {
     field: 'action',

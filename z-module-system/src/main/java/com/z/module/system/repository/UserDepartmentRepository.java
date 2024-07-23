@@ -12,4 +12,6 @@ import java.util.List;
 @Repository
 public interface UserDepartmentRepository extends JpaRepository<UserDepartment, Long> {
     void deleteAllByIdIn(List<Long> idList);
+
+    List<UserDepartment> findAllByUserIdIn(List<Long> collect);
 }
