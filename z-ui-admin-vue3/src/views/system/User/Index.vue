@@ -3,15 +3,16 @@ import { ContentWrap } from '@/components/ContentWrap'
 import { Search } from '@/components/Search'
 import { Dialog } from '@/components/Dialog'
 import { useI18n } from '@/hooks/web/useI18n'
-import { ElButton } from 'element-plus'
+import { ElButton, ElTag } from 'element-plus'
 import { Table } from '@/components/Table'
 import { getTableListApi, saveTableApi, delTableListApi } from '@/api/system/user'
 import { useTable } from '@/hooks/web/useTable'
 import { TableData } from '@/api/table/types'
-import { ref, unref, reactive } from 'vue'
+import { ref, unref, reactive, h } from 'vue'
 import AddOrUpdate from './components/AddOrUpdate.vue'
 import Detail from './components/Detail.vue'
 import { CrudSchema, useCrudSchemas } from '@/hooks/web/useCrudSchemas'
+import { TableColumn } from '@/types/table'
 
 const { register, tableObject, methods } = useTable<TableData>({
   getListApi: getTableListApi,
@@ -63,8 +64,18 @@ const crudSchemas = reactive<CrudSchema[]>([
     label: '登录名'
   },
   {
-    field: 'departmentName',
+    field: 'departmentIdList',
     label: '部门',
+    formatter: (_: Recordable, __: TableColumn, cellValue: Array<number>) => {
+      console.log(cellValue)
+      return h(
+        ElTag,
+        {
+          type: 'success'
+        },
+        () => cellValue.join(',')
+      )
+    },
     form: {
       component: 'Cascader',
       componentProps: {
@@ -103,8 +114,34 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'positionName',
+    field: 'positionIdList',
     label: '岗位',
+    form: {
+      component: 'Select',
+      componentProps: {
+        style: {
+          width: '100%'
+        },
+        options: [
+          {
+            label: '重要',
+            value: 3
+          },
+          {
+            label: '良好',
+            value: 2
+          },
+          {
+            label: '一般',
+            value: 1
+          }
+        ]
+      }
+    }
+  },
+  {
+    field: 'roleIdList',
+    label: '角色',
     form: {
       component: 'Select',
       componentProps: {
