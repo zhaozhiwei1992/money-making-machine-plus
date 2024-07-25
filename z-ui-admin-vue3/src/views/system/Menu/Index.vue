@@ -53,22 +53,17 @@ const crudSchemas = reactive<CrudSchema[]>([
     form: {
       colProps: {
         span: 24
+      },
+      formItemProps: {
+        required: true
       }
-    },
-    detail: {
-      span: 24
     }
   },
   {
     field: 'orderNum',
     label: '排序',
     form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
+      show: false
     }
   },
   {
@@ -77,6 +72,9 @@ const crudSchemas = reactive<CrudSchema[]>([
     form: {
       colProps: {
         span: 24
+      },
+      formItemProps: {
+        required: true
       }
     },
     detail: {
@@ -89,6 +87,9 @@ const crudSchemas = reactive<CrudSchema[]>([
     form: {
       colProps: {
         span: 24
+      },
+      formItemProps: {
+        required: true
       }
     },
     detail: {
@@ -99,12 +100,7 @@ const crudSchemas = reactive<CrudSchema[]>([
     field: 'menuType',
     label: '类型',
     form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
+      show: false
     },
     formatter: (_: Recordable, __: TableColumn, cellValue: number) => {
       let type
@@ -133,6 +129,9 @@ const crudSchemas = reactive<CrudSchema[]>([
     form: {
       colProps: {
         span: 24
+      },
+      formItemProps: {
+        required: true
       }
     },
     detail: {
@@ -153,7 +152,10 @@ const crudSchemas = reactive<CrudSchema[]>([
   },
   {
     field: 'createdBy',
-    label: '创建人'
+    label: '创建人',
+    form: {
+      show: false
+    }
   },
   {
     field: 'action',

@@ -185,10 +185,10 @@ public class DepartmentResource {
 
         List<Department> positionList = departmentRepository.findAll();
         final List<SelectOptionVO> convert = departmentSelectMapper.convert(positionList);
-        final GenericTreeBuilderUtil genericTreeBuilderUtil = new GenericTreeBuilderUtil(SelectOptionVO.class);
-        final List list = genericTreeBuilderUtil.buildTree(convert);
+        final GenericTreeBuilderUtil<SelectOptionVO> genericTreeBuilderUtil = new GenericTreeBuilderUtil<>(SelectOptionVO.class);
+        final List<SelectOptionVO> list = genericTreeBuilderUtil.buildTree(convert);
 
         log.info("左侧树构建: {}", list);
-        return ResponseEntity.ok(convert);
+        return ResponseEntity.ok(list);
     }
 }

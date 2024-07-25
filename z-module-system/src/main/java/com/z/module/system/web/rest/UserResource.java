@@ -183,7 +183,7 @@ public class UserResource {
                 //名字采用“开始匹配”的方式查询
                 .withMatcher("name", ExampleMatcher.GenericPropertyMatchers.startsWith())
                 //忽略属性：是否关注。因为是基本类型，需要忽略掉
-                .withIgnorePaths("id", "createdDate", "lastModifiedDate");
+                .withIgnorePaths("id", "createdDate", "lastModifiedDate", "activated");
 
         //创建实例
         Example<User> ex = Example.of(user, matcher);

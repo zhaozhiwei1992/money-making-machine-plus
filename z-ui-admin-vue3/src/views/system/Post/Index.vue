@@ -98,19 +98,8 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'createDate',
+    field: 'createdDate',
     label: '创建日期'
-  },
-  {
-    field: 'action',
-    width: '260px',
-    label: t('tableDemo.action'),
-    form: {
-      show: false
-    },
-    detail: {
-      show: false
-    }
   }
 ])
 

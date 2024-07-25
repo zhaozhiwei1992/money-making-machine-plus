@@ -37,7 +37,7 @@ public class UserVO implements Serializable {
 
     private String password2;
 
-    private boolean activated = false;
+    private boolean activated = true;
 
     private String imageUrl;
 

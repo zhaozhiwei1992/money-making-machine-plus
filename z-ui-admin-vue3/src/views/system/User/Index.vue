@@ -53,6 +53,7 @@ async function fetchOptions() {
     deptOptions.value = departments
     positionOptions.value = positions
     roleOptions.value = roles
+    console.log('x', deptOptions.value)
   } catch (error) {
     console.error('Failed to fetch options:', error)
   }
@@ -79,11 +80,21 @@ const crudSchemas = reactive<CrudSchema[]>([
     label: '中文名',
     search: {
       show: true
+    },
+    form: {
+      formItemProps: {
+        required: true
+      }
     }
   },
   {
     field: 'login',
-    label: '登录名'
+    label: '登录名',
+    form: {
+      formItemProps: {
+        required: true
+      }
+    }
   },
   {
     field: 'departmentIdListStr',
@@ -121,6 +132,27 @@ const crudSchemas = reactive<CrudSchema[]>([
           width: '100%'
         },
         options: roleOptions
+      }
+    }
+  },
+  {
+    field: 'activated',
+    label: '激活',
+    formatter: (_: Recordable, __: TableColumn, cellValue: boolean) => {
+      return h(
+        ElTag,
+        {
+          type: 'success'
+        },
+        () => (cellValue === true ? '激活' : '未激活')
+      )
+    },
+    form: {
+      component: 'Switch',
+      componentProps: {
+        style: {
+          width: '100%'
+        }
       }
     }
   },

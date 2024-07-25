@@ -169,8 +169,8 @@ delete from sys_user;
 INSERT INTO sys_user
 (id, created_by, created_date, last_modified_by, last_modified_date, activated, image_url, login, name, password_hash)
 VALUES
-(1, 'admin', '2022-07-14 11:25:56.594', NULL, '2022-07-27 09:05:07.221', false, NULL, 'admin', '系统管理员', '$2a$10$Uaq/uIj3D5VZ4Y5.I7MTB.pMXka6FKuCNy4A.ZnnRk9GshwYxBQZG'),
-(2, 'admin', '2022-07-14 11:27:02.515', NULL, '2022-08-18 15:42:42.015', false, NULL, 'user', '普通用户', '$2a$10$aQ9NOy/S2.UiNAmxOwNcjueSrRbwnYnUBbED.LE/DePeAeddPGCA.');
+(1, 'admin', '2022-07-14 11:25:56.594', NULL, '2022-07-27 09:05:07.221', true, NULL, 'admin', '系统管理员', '$2a$10$Uaq/uIj3D5VZ4Y5.I7MTB.pMXka6FKuCNy4A.ZnnRk9GshwYxBQZG'),
+(2, 'admin', '2022-07-14 11:27:02.515', NULL, '2022-08-18 15:42:42.015', true, NULL, 'user', '普通用户', '$2a$10$aQ9NOy/S2.UiNAmxOwNcjueSrRbwnYnUBbED.LE/DePeAeddPGCA.');
 
 -- 初始化序列
 alter table sys_user auto_increment=4;
