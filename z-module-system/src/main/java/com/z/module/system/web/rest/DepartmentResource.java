@@ -3,13 +3,13 @@ package com.z.module.system.web.rest;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.hutool.core.lang.tree.TreeUtil;
-import cn.hutool.extra.spring.SpringUtil;
 import com.z.framework.common.util.GenericTreeBuilderUtil;
 import com.z.framework.common.web.rest.vm.ResponseData;
-import com.z.framework.security.util.SecurityUtils;
 import com.z.module.system.domain.Department;
 import com.z.module.system.repository.DepartmentRepository;
+import com.z.module.system.web.mapper.DepartmentSelectMapper;
 import com.z.module.system.web.vo.DepartmentVO;
+import com.z.module.system.web.vo.SelectOptionVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
@@ -35,8 +35,9 @@ public class DepartmentResource {
 
     private final DepartmentRepository departmentRepository;
 
-    public DepartmentResource(DepartmentRepository departmentRepository) {
+    public DepartmentResource(DepartmentRepository departmentRepository, DepartmentSelectMapper departmentSelectMapper) {
         this.departmentRepository = departmentRepository;
+        this.departmentSelectMapper = departmentSelectMapper;
     }
 
     /**
@@ -173,5 +174,21 @@ public class DepartmentResource {
         log.debug("REST request to delete Examples, ids: {}", idList);
         this.departmentRepository.deleteAllByIdIn(idList);
         return ResponseData.ok("success");
+    }
+
+    private final DepartmentSelectMapper departmentSelectMapper;
+
+    @Operation(description = "获取角色树")
+    @GetMapping("/departments/select")
+    public ResponseEntity<List<SelectOptionVO>> getDepartmentsSelect() {
+        log.debug("REST request to get Position Select");
+
+        List<Department> positionList = departmentRepository.findAll();
+        final List<SelectOptionVO> convert = departmentSelectMapper.convert(positionList);
+        final GenericTreeBuilderUtil genericTreeBuilderUtil = new GenericTreeBuilderUtil(SelectOptionVO.class);
+        final List list = genericTreeBuilderUtil.buildTree(convert);
+
+        log.info("左侧树构建: {}", list);
+        return ResponseEntity.ok(convert);
     }
 }

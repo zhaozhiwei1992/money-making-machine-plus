@@ -1,5 +1,6 @@
 import request from '@/config/axios'
 import type { TableData } from './types'
+import { ComponentOptions } from '@/types/components'
 
 export interface RoleVO {
   id: number
@@ -45,4 +46,9 @@ export const delTableListApi = (ids: string[] | number[]): Promise<IResponse> =>
 // 查询角色（精简)列表
 export const getSimpleRoleList = async (): Promise<RoleVO[]> => {
   return await request.get({ url: '/roles/list' })
+}
+
+// 查询角色树
+export const getRoleSelect = async (): Promise<ComponentOptions[]> => {
+  return await request.get({ url: '/roles/select' })
 }

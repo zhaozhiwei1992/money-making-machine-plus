@@ -1,5 +1,6 @@
 import request from '@/config/axios'
 import { TableData } from './types'
+import { ComponentOptions } from '@/types/components'
 
 export const getTableListApi = (departments: any): Promise<IResponse> => {
   departments = { ...departments, page: departments.pageIndex, size: departments.pageSize }
@@ -18,4 +19,9 @@ export const getTableDetApi = (id: string): Promise<IResponse<TableData>> => {
 // 批量删除
 export const delTableListApi = (ids: string[] | number[]): Promise<IResponse> => {
   return request.delete({ url: '/departments', data: ids })
+}
+
+// 查询部门树
+export const getDeptSelect = async (): Promise<ComponentOptions[]> => {
+  return await request.get({ url: '/departments/select' })
 }

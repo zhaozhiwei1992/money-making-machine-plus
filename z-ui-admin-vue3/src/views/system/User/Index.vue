@@ -6,13 +6,18 @@ import { useI18n } from '@/hooks/web/useI18n'
 import { ElButton, ElTag } from 'element-plus'
 import { Table } from '@/components/Table'
 import { getTableListApi, saveTableApi, delTableListApi } from '@/api/system/user'
+import { getRoleSelect } from '@/api/system/role'
+import { getDeptSelect } from '@/api/system/dept'
+import { getPositionSelect } from '@/api/system/position'
 import { useTable } from '@/hooks/web/useTable'
 import { TableData } from '@/api/table/types'
-import { ref, unref, reactive, h } from 'vue'
+import { ref, unref, reactive, h, onMounted } from 'vue'
 import AddOrUpdate from './components/AddOrUpdate.vue'
 import Detail from './components/Detail.vue'
 import { CrudSchema, useCrudSchemas } from '@/hooks/web/useCrudSchemas'
 import { TableColumn } from '@/types/table'
+import { ComponentOptions } from '@/types/components'
+import { UserVO } from '@/api/system/user/types'
 
 const { register, tableObject, methods } = useTable<TableData>({
   getListApi: getTableListApi,
@@ -32,6 +37,31 @@ getList()
 
 const { t } = useI18n()
 
+const roleOptions = ref<ComponentOptions[] | any>([])
+const deptOptions = ref<ComponentOptions[] | any>([])
+const positionOptions = ref<ComponentOptions[] | any>([])
+
+async function fetchOptions() {
+  try {
+    // 并行发起所有请求
+    const [roles, departments, positions] = await Promise.all([
+      getRoleSelect(),
+      getDeptSelect(),
+      getPositionSelect()
+    ])
+
+    deptOptions.value = departments
+    positionOptions.value = positions
+    roleOptions.value = roles
+  } catch (error) {
+    console.error('Failed to fetch options:', error)
+  }
+}
+
+onMounted(async () => {
+  fetchOptions()
+})
+
 const crudSchemas = reactive<CrudSchema[]>([
   {
     field: 'id',
@@ -49,14 +79,6 @@ const crudSchemas = reactive<CrudSchema[]>([
     label: '中文名',
     search: {
       show: true
-    },
-    form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
     }
   },
   {
@@ -64,57 +86,20 @@ const crudSchemas = reactive<CrudSchema[]>([
     label: '登录名'
   },
   {
-    field: 'departmentIdList',
+    field: 'departmentIdListStr',
     label: '部门',
-    formatter: (_: Recordable, __: TableColumn, cellValue: Array<number>) => {
-      console.log(cellValue)
-      return h(
-        ElTag,
-        {
-          type: 'success'
-        },
-        () => cellValue.join(',')
-      )
-    },
     form: {
       component: 'Cascader',
       componentProps: {
         style: {
           width: '100%'
         },
-        options: [
-          {
-            label: '重要',
-            value: 3,
-            children: [
-              {
-                label: '重要',
-                value: 3
-              },
-              {
-                label: '良好',
-                value: 2
-              },
-              {
-                label: '一般',
-                value: 1
-              }
-            ]
-          },
-          {
-            label: '良好',
-            value: 2
-          },
-          {
-            label: '一般',
-            value: 1
-          }
-        ]
+        options: deptOptions
       }
     }
   },
   {
-    field: 'positionIdList',
+    field: 'positionIdListStr',
     label: '岗位',
     form: {
       component: 'Select',
@@ -122,25 +107,12 @@ const crudSchemas = reactive<CrudSchema[]>([
         style: {
           width: '100%'
         },
-        options: [
-          {
-            label: '重要',
-            value: 3
-          },
-          {
-            label: '良好',
-            value: 2
-          },
-          {
-            label: '一般',
-            value: 1
-          }
-        ]
+        options: positionOptions
       }
     }
   },
   {
-    field: 'roleIdList',
+    field: 'roleIdListStr',
     label: '角色',
     form: {
       component: 'Select',
@@ -148,20 +120,7 @@ const crudSchemas = reactive<CrudSchema[]>([
         style: {
           width: '100%'
         },
-        options: [
-          {
-            label: '重要',
-            value: 3
-          },
-          {
-            label: '良好',
-            value: 2
-          },
-          {
-            label: '一般',
-            value: 1
-          }
-        ]
+        options: roleOptions
       }
     }
   },
@@ -238,7 +197,10 @@ const save = async () => {
   await write?.elFormRef?.validate(async (isValid) => {
     if (isValid) {
       loading.value = true
-      const data = (await write?.getFormData()) as TableData
+      const data = (await write?.getFormData()) as UserVO
+      // 数据特殊处理
+      data.departmentIdListStr = data.departmentIdListStr.join(',')
+      console.log(data)
       const res = await saveTableApi(data)
         .catch(() => {})
         .finally(() => {

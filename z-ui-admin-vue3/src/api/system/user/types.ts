@@ -6,3 +6,17 @@ export type TableData = {
   mofDivCode: string
   appid: number
 }
+
+export interface UserVO {
+  id: string
+  name: string
+  login: string
+  password: string
+  imageUrl: string
+  mofDivCode: string
+  appid: number
+  createTime: Date
+  roleIdListStr: string | string[]
+  positionIdListStr: string | string[]
+  departmentIdListStr: string | string[]
+}

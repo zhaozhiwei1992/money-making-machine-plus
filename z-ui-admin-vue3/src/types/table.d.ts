@@ -1,6 +1,7 @@
 export type TableColumn = {
   field: string
   label?: string
+  hidden?: boolean
   children?: TableColumn[]
 } & Recordable
 

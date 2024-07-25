@@ -1,22 +1,5 @@
 import request from '@/config/axios'
-import type { TableData } from './types'
-
-export interface UserVO {
-  id: number
-  username: string
-  nickname: string
-  deptId: number
-  postIds: string[]
-  email: string
-  mobile: string
-  sex: number
-  avatar: string
-  loginIp: string
-  status: number
-  remark: string
-  loginDate: Date
-  createTime: Date
-}
+import type { TableData, UserVO } from './types'
 
 export const getTableListApi = (params: any): Promise<IResponse> => {
   // 转换, 适配jpa PageRequest
@@ -26,7 +9,7 @@ export const getTableListApi = (params: any): Promise<IResponse> => {
   return request.get({ url: '/users', params })
 }
 
-export const saveTableApi = (data: Partial<TableData>): Promise<IResponse> => {
+export const saveTableApi = (data: Partial<UserVO>): Promise<IResponse> => {
   return request.post({ url: '/users', data })
 }
 

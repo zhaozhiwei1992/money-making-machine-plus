@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
  * @Title: TreeBuilderUtil
  * @Package com/z/framework/common/util/TreeBuilderUtil.java
  * @Description: 将List<Object>数据转换为tree形式
+ * 数据中必须提供, id和parentId, 并且属性中要包含children为自身集合
  * @author zhaozhiwei
  * @date 2024/7/21 下午8:50
  * @version V1.0

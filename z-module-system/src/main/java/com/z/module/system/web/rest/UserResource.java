@@ -1,13 +1,14 @@
 package com.z.module.system.web.rest;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.bean.copier.CopyOptions;
-import cn.hutool.core.util.StrUtil;
-import com.z.module.system.domain.*;
-import com.z.module.system.repository.*;
 import com.z.framework.common.repository.CommonSqlRepository;
-import com.z.module.system.service.UserService;
 import com.z.framework.common.web.rest.vm.ResponseData;
+import com.z.module.system.domain.User;
+import com.z.module.system.domain.UserAuthority;
+import com.z.module.system.domain.UserDepartment;
+import com.z.module.system.domain.UserPosition;
+import com.z.module.system.repository.*;
+import com.z.module.system.service.UserService;
 import com.z.module.system.web.vo.UserVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
-import org.springframework.data.domain.Example;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -111,7 +111,8 @@ public class UserResource {
         User newUser = userRepository.save(user);
 
         // 保存用户角色信息
-        final List<Long> roleIdList = userVO.getRoleIdList();
+        final String roleIdListStr = userVO.getRoleIdListStr();
+        final List<Long> roleIdList = Arrays.stream(roleIdListStr.split(",")).map(Long::valueOf).collect(Collectors.toList());
         final List<UserAuthority> userAuthorities = roleIdList.stream().map(roleId -> {
             final UserAuthority userAuthority = new UserAuthority();
             userAuthority.setRoleId(roleId);
@@ -121,7 +122,8 @@ public class UserResource {
         userAuthorityRepository.saveAll(userAuthorities);
 
         // 保存用户岗位信息
-        final List<Long> positionIdList = userVO.getPositionIdList();
+        final String positionIdListStr = userVO.getPositionIdListStr();
+        final List<Long> positionIdList = Arrays.stream(positionIdListStr.split(",")).map(Long::valueOf).collect(Collectors.toList());
         final List<UserPosition> userPositionList = positionIdList.stream().map(positionId -> {
             final UserPosition userPosition = new UserPosition();
             userPosition.setPositionId(positionId);
@@ -131,7 +133,8 @@ public class UserResource {
         userPositionRepository.saveAll(userPositionList);
 
         // 保存用户部门信息
-        final List<Long> departmentIdList = userVO.getDepartmentIdList();
+        final String departmentIdListStr = userVO.getDepartmentIdListStr();
+        final List<Long> departmentIdList = Arrays.stream(departmentIdListStr.split(",")).map(Long::valueOf).collect(Collectors.toList());
         final List<UserDepartment> userDepartmentList = departmentIdList.stream().map(departmentId -> {
             final UserDepartment userDepartment = new UserDepartment();
             userDepartment.setDeptId(departmentId);
@@ -212,14 +215,10 @@ public class UserResource {
             final UserVO userVO = new UserVO();
             BeanUtils.copyProperties(u, userVO);
             if(!userPositionGroupByUserId.isEmpty()){
-                userVO.setPositionIdList(userPositionGroupByUserId.get(u.getId()).stream().map(UserPosition::getPositionId).collect(Collectors.toList()));
-                final Optional<Position> optional = positionRepository.findById(userVO.getPositionIdList().get(0));
-                optional.ifPresent(position -> userVO.setPositionName(position.getName()));
+                userVO.setPositionIdListStr(userPositionGroupByUserId.get(u.getId()).stream().map(UserPosition::getPositionId).map(String::valueOf).collect(Collectors.joining(",")));
             }
             if(!userDepartmentGroupByUserId.isEmpty()){
-                userVO.setDepartmentIdList(userDepartmentGroupByUserId.get(u.getId()).stream().map(UserDepartment::getDeptId).collect(Collectors.toList()));
-                final Optional<Department> optional = departmentRepository.findById(userVO.getDepartmentIdList().get(0));
-                optional.ifPresent(department -> userVO.setDepartmentName(department.getName()));
+                userVO.setDepartmentIdListStr(userDepartmentGroupByUserId.get(u.getId()).stream().map(UserDepartment::getDeptId).map(String::valueOf).collect(Collectors.joining(",")));
             }
             return userVO;
         }).collect(Collectors.toList());

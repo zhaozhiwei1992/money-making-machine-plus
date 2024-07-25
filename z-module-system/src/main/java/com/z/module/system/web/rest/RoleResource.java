@@ -5,6 +5,8 @@ import com.z.module.system.domain.Authority;
 import com.z.module.system.repository.AuthorityRepository;
 import com.z.module.system.service.RoleMenuService;
 import com.z.module.system.service.RolePermissionService;
+import com.z.module.system.web.mapper.RoleSelectMapper;
+import com.z.module.system.web.vo.SelectOptionVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -30,10 +32,11 @@ public class RoleResource {
     private final AuthorityRepository roleRepository;
 
     public RoleResource(AuthorityRepository roleRepository,
-                        RoleMenuService roleMenuService, RolePermissionService rolePermissionService) {
+                        RoleMenuService roleMenuService, RolePermissionService rolePermissionService, RoleSelectMapper roleSelectMapper) {
         this.roleRepository = roleRepository;
         this.roleMenuService = roleMenuService;
         this.rolePermissionService = rolePermissionService;
+        this.roleSelectMapper = roleSelectMapper;
     }
 
     /**
@@ -151,6 +154,20 @@ public class RoleResource {
 
         rolePermissionService.saveRolePermission(roleList, permissionList);
         return ResponseData.ok("success");
+    }
+
+    private final RoleSelectMapper roleSelectMapper;
+
+    @Operation(description = "获取角色树")
+    @GetMapping("/roles/select")
+    public ResponseEntity<List<SelectOptionVO>> getRolesSelect() {
+        log.debug("REST request to get Roles Select");
+
+        List<Authority> authorityList = roleRepository.findAll();
+        final List<SelectOptionVO> convert = roleSelectMapper.convert(authorityList);
+
+        log.info("左侧树构建: {}", convert);
+        return ResponseEntity.ok(convert);
     }
 
 }

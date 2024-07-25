@@ -41,19 +41,13 @@ public class UserVO implements Serializable {
 
     private String imageUrl;
 
-    // 所属岗位名称
-    private String positionName;
-
-    // 所属部门名称
-    private String departmentName;
-
     // 角色id集合
-    private List<Long> roleIdList;
+    private String roleIdListStr;
 
     // 岗位id集合
-    private List<Long> positionIdList;
+    private String positionIdListStr;
 
     // 部门id集合
-    private List<Long> departmentIdList;
+    private String departmentIdListStr;
 
 }

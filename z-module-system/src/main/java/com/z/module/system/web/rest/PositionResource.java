@@ -3,6 +3,8 @@ package com.z.module.system.web.rest;
 import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.module.system.domain.Position;
 import com.z.module.system.repository.PositionRepository;
+import com.z.module.system.web.mapper.PositionSelectMapper;
+import com.z.module.system.web.vo.SelectOptionVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -25,8 +27,9 @@ public class PositionResource {
 
     private final PositionRepository positionRepository;
 
-    public PositionResource(PositionRepository roleRepository) {
+    public PositionResource(PositionRepository roleRepository, PositionSelectMapper positionSelectMapper) {
         this.positionRepository = roleRepository;
+        this.positionSelectMapper = positionSelectMapper;
     }
 
     /**
@@ -112,6 +115,20 @@ public class PositionResource {
             return map;
         }).collect(Collectors.toList());
         return ResponseData.ok(resultMap);
+    }
+
+    private final PositionSelectMapper positionSelectMapper;
+
+    @Operation(description = "获取岗位树")
+    @GetMapping("/positions/select")
+    public ResponseEntity<List<SelectOptionVO>> getPositionsSelect() {
+        log.debug("REST request to get Position Select");
+
+        List<Position> positionList = positionRepository.findAll();
+        final List<SelectOptionVO> convert = positionSelectMapper.convert(positionList);
+
+        log.info("左侧树构建: {}", convert);
+        return ResponseEntity.ok(convert);
     }
 
 }

@@ -27,8 +27,13 @@ CREATE TABLE if not exists sys_authority (
 );
 
 CREATE TABLE if not exists sys_user_authority (
+	id bigint primary key auto_increment,
+	created_by varchar(50) NULL,
+	created_date timestamp NULL,
+	last_modified_by varchar(50) NULL,
+	last_modified_date timestamp NULL,
 	user_id int8 NOT NULL,
-	authority_code varchar(50) NOT NULL
+	role_id int8 NOT NULL
 );
 
 CREATE TABLE if not exists sys_menu (
@@ -184,11 +189,11 @@ VALUES
 
 delete from sys_user_authority;
 INSERT INTO sys_user_authority
-(user_id, authority_code)
-VALUES(1, 'ROLE_ADMIN');
+(user_id, role_id)
+VALUES(1, 1);
 INSERT INTO sys_user_authority
-(user_id, authority_code)
-VALUES(2, 'ROLE_GUEST');
+(user_id, role_id)
+VALUES(2, 5);
 
 -- ----------------------------
 -- 菜单初始化
