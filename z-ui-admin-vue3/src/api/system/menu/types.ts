@@ -1,12 +1,19 @@
 export type MenuVO = {
-  id: string
-  name: string
+  id: number
+  createdBy: string
+  createdDate: Date
   url: string
-  icon_cls: string
-  order_num: number
-  parent_id: string
+  name: string
+  iconCls: string
+  orderNum: number
+  keepAlive: boolean
+  requireAuth: boolean
+  parentId: number
+  enabled: boolean
+  config: string
   component: string
   template: string
-  config: string
+  menuType: number
+  permissionCode: string
   children: MenuVO[]
 }

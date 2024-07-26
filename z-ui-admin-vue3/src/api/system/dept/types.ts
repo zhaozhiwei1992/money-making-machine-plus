@@ -1,5 +1,5 @@
 export type TableData = {
-  id?: number
+  id: number
   name: string
   parentId: number
   status: number

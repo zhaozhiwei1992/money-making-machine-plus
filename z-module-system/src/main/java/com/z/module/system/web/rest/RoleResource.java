@@ -101,6 +101,9 @@ public class RoleResource {
         //创建实例
         Example<Authority> ex = Example.of(role, matcher);
         rolePage = roleRepository.findAll(ex, pageable);
+        final List<Authority> content = rolePage.getContent();
+
+        // 获取关联菜单信息
 
         return ResponseData.ok(new HashMap<String, Object>() {{
             put("list", rolePage.getContent());

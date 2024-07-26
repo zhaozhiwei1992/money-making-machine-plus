@@ -7,7 +7,7 @@ import { ElButton, ElTag } from 'element-plus'
 import { Table } from '@/components/Table'
 import { getTableListApi, saveTableApi, delTableListApi } from '@/api/system/menu'
 import { useTable } from '@/hooks/web/useTable'
-import { TableData } from '@/api/table/types'
+import { MenuVO as TableData } from '@/api/system/menu/types'
 import { ref, unref, reactive, h } from 'vue'
 import AddOrUpdate from './components/AddOrUpdate.vue'
 import Detail from './components/Detail.vue'
@@ -178,6 +178,11 @@ const dialogTitle = ref('')
 
 const AddAction = (row: TableData | null) => {
   dialogTitle.value = t('exampleDemo.add')
+  // 外部新增按钮只能增加1级菜单 0: 目录, 1: 菜单, 2: 按钮
+  if (row) {
+    row.menuType = 0
+    row.parentId = 0
+  }
   tableObject.currentRow = row
   dialogVisible.value = true
   actionType.value = ''
@@ -203,6 +208,22 @@ const actionType = ref('')
 const action = (row: TableData, type: string) => {
   dialogTitle.value = t(type === 'edit' ? 'exampleDemo.edit' : 'exampleDemo.detail')
   actionType.value = type
+  // 选择数据新增按钮根据选择确定菜单类型， 0: 目录, 1: 菜单, 2: 按钮
+  if (row) {
+    if (row.menuType === 0) {
+      row.parentId = row.id
+      row.menuType = 1
+    } else if (row.menuType === 1) {
+      row.parentId = row.id
+      row.menuType = 2
+    } else if (row.menuType === 2) {
+      row.parentId = row.parentId
+      row.menuType = 2
+    } else {
+      row.menuType = 0
+      row.parentId = 0
+    }
+  }
   tableObject.currentRow = row
   dialogVisible.value = true
 }

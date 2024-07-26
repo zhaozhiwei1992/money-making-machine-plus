@@ -34,8 +34,8 @@ public class Position extends AbstractAuditingEntity implements Serializable {
     @Column(name = "order_num", nullable = false)
     private Integer orderNum;
 
-    @Column(name = "status", nullable = false, length = 1)
-    private String status;
+    @Column(name = "activated", nullable = false)
+    private boolean activated = true;
 
     @Column(name = "remark", length = 500)
     private String remark;

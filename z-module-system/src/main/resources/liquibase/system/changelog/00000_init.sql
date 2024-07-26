@@ -99,7 +99,7 @@ create table if not exists sys_positions
   code     varchar(64)     not null                        comment '岗位编码',
   name     varchar(50)     not null                        comment '岗位名称',
   order_num     int(4)          not null                   comment '显示顺序',
-  status        char(1)         not null                   comment '状态（2正常 1停用）',
+  activated bool NOT NULL                                  comment '状态（1正常 0停用）',
   created_by varchar(50) NULL,
   created_date timestamp NULL,
   last_modified_by varchar(50) NULL,
@@ -110,17 +110,17 @@ create table if not exists sys_positions
 -- 初始化岗位数据
 delete from sys_positions;
 INSERT INTO sys_positions (
-  code, name, order_num, status,
+  code, name, order_num, activated,
   created_by, created_date, last_modified_by, last_modified_date,
   remark
 ) VALUES
-('CEO', '总裁', 1, '2','system', NOW(), 'system', NOW(),'公司最高执行官'),
-('VP', '副总裁', 2, '2','system', NOW(), 'system', NOW(),'公司高级管理职位'),
-('CEO', 'CEO', 3, '2','system', NOW(), 'system', NOW(),'负责公司的整体运营和管理'),
-('PM', '项目经理', 4, '2','system', NOW(), 'system', NOW(),'负责项目的规划、执行和监控'),
-('DM', '开发经理', 5, '2','system', NOW(), 'system', NOW(),'负责开发团队的管理工作'),
-('DEV', '开发工程师', 6, '2','system', NOW(), 'system', NOW(),'负责软件产品的设计和开发工作'),
-('TEST', '测试工程师', 7, '2','system', NOW(), 'system', NOW(),'负责软件产品的质量保证和测试工作');
+('CEO', '总裁', 1, true,'system', NOW(), 'system', NOW(),'公司最高执行官'),
+('VP', '副总裁', 2, true,'system', NOW(), 'system', NOW(),'公司高级管理职位'),
+('CEO', 'CEO', 3, true,'system', NOW(), 'system', NOW(),'负责公司的整体运营和管理'),
+('PM', '项目经理', 4, true,'system', NOW(), 'system', NOW(),'负责项目的规划、执行和监控'),
+('DM', '开发经理', 5, true,'system', NOW(), 'system', NOW(),'负责开发团队的管理工作'),
+('DEV', '开发工程师', 6, true,'system', NOW(), 'system', NOW(),'负责软件产品的设计和开发工作'),
+('TEST', '测试工程师', 7, true,'system', NOW(), 'system', NOW(),'负责软件产品的质量保证和测试工作');
 
 -- 部门
 create table if not exists sys_departments (
@@ -131,7 +131,7 @@ create table if not exists sys_departments (
   leader            varchar(20)     default null               comment '负责人',
   phone             varchar(11)     default null               comment '联系电话',
   email             varchar(50)     default null               comment '邮箱',
-  status            char(1)         default '2'                comment '部门状态（2正常 1停用）',
+  activated bool NOT NULL           default true               comment '部门状态（1正常 0停用）',
   created_by varchar(50) NULL,
   created_date timestamp NULL,
   last_modified_by varchar(50) NULL,
@@ -143,22 +143,22 @@ create table if not exists sys_departments (
 -- ----------------------------
 delete from sys_departments;
 INSERT INTO sys_departments (
-  id, parent_id, name, order_num, leader, phone, email, status,
+  id, parent_id, name, order_num, leader, phone, email, activated,
   created_by, created_date, last_modified_by, last_modified_date
 ) VALUES
-(1, 0, 'xx科技', 1, 'CEO', '13800000000', 'ceo@xx.com', '2', 'system', NOW(), 'system', NOW()),
-(2, 1, '北京总部', 1, '总部经理', '13700000001', 'headquarters@xx.com', '2', 'system', NOW(), 'system', NOW()),
-(3, 2, '研发部', 1, '研发经理', '13700000010', 'r&d@xx.com', '2', 'system', NOW(), 'system', NOW()),
-(4, 2, '市场部', 2, '市场经理', '13700000011', 'marketing@xx.com', '2', 'system', NOW(), 'system', NOW()),
-(5, 2, '测试部', 3, '测试经理', '13700000012', 'testing@xx.com', '2', 'system', NOW(), 'system', NOW()),
-(6, 2, '产品部', 4, '产品经理', '13700000013', 'product@xx.com', '2', 'system', NOW(), 'system', NOW()),
-(7, 2, '运维部门', 5, '运维经理', '13700000014', 'ops@xx.com', '2', 'system', NOW(), 'system', NOW()),
-(8, 1, '山西分公司', 2, '分公司经理', '13700000015', 'shanxi@xx.com', '2', 'system', NOW(), 'system', NOW()),
-(9, 1, '浙江分公司', 3, '分公司经理', '13700000016', 'zhejiang@xx.com', '2', 'system', NOW(), 'system', NOW()),
-(10, 8, '销售部门', 1, '销售经理', '13700000017', 'sales@xx.com', '2', 'system', NOW(), 'system', NOW()),
-(11, 8, '财务部', 2, '财务经理', '13700000018', 'finance@xx.com', '2', 'system', NOW(), 'system', NOW()),
-(12, 8, '人力资源部', 3, '人事经理', '13700000019', 'hr@xx.com', '2', 'system', NOW(), 'system', NOW()),
-(13, 8, '项目管理部', 4, '项目经理', '13700000020', 'project@xx.com', '2', 'system', NOW(), 'system', NOW());
+(1, 0, 'xx科技', 1, 'CEO', '13800000000', 'ceo@xx.com', true, 'system', NOW(), 'system', NOW()),
+(2, 1, '北京总部', 1, '总部经理', '13700000001', 'headquarters@xx.com', true, 'system', NOW(), 'system', NOW()),
+(3, 2, '研发部', 1, '研发经理', '13700000010', 'r&d@xx.com', true, 'system', NOW(), 'system', NOW()),
+(4, 2, '市场部', 2, '市场经理', '13700000011', 'marketing@xx.com', true, 'system', NOW(), 'system', NOW()),
+(5, 2, '测试部', 3, '测试经理', '13700000012', 'testing@xx.com', true, 'system', NOW(), 'system', NOW()),
+(6, 2, '产品部', 4, '产品经理', '13700000013', 'product@xx.com', true, 'system', NOW(), 'system', NOW()),
+(7, 2, '运维部门', 5, '运维经理', '13700000014', 'ops@xx.com', true, 'system', NOW(), 'system', NOW()),
+(8, 1, '山西分公司', 2, '分公司经理', '13700000015', 'shanxi@xx.com', true, 'system', NOW(), 'system', NOW()),
+(9, 1, '浙江分公司', 3, '分公司经理', '13700000016', 'zhejiang@xx.com', true, 'system', NOW(), 'system', NOW()),
+(10, 8, '销售部门', 1, '销售经理', '13700000017', 'sales@xx.com', true, 'system', NOW(), 'system', NOW()),
+(11, 8, '财务部', 2, '财务经理', '13700000018', 'finance@xx.com', true, 'system', NOW(), 'system', NOW()),
+(12, 8, '人力资源部', 3, '人事经理', '13700000019', 'hr@xx.com', true, 'system', NOW(), 'system', NOW()),
+(13, 8, '项目管理部', 4, '项目经理', '13700000020', 'project@xx.com', true, 'system', NOW(), 'system', NOW());
 
 alter table sys_departments auto_increment=15;
 

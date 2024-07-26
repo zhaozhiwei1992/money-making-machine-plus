@@ -3,15 +3,16 @@ import { ContentWrap } from '@/components/ContentWrap'
 import { Search } from '@/components/Search'
 import { Dialog } from '@/components/Dialog'
 import { useI18n } from '@/hooks/web/useI18n'
-import { ElButton } from 'element-plus'
+import { ElButton, ElTag } from 'element-plus'
 import { Table } from '@/components/Table'
 import { getTableListApi, saveTableApi, delTableListApi } from '@/api/system/dept'
 import { useTable } from '@/hooks/web/useTable'
 import { TableData } from '@/api/system/dept/types'
-import { ref, unref, reactive } from 'vue'
+import { ref, unref, reactive, h } from 'vue'
 import AddOrUpdate from './components/AddOrUpdate.vue'
 import Detail from './components/Detail.vue'
 import { CrudSchema, useCrudSchemas } from '@/hooks/web/useCrudSchemas'
+import { TableColumn } from '@/types/table'
 
 const { register, tableObject, methods } = useTable<TableData>({
   getListApi: getTableListApi,
@@ -50,72 +51,64 @@ const crudSchemas = reactive<CrudSchema[]>([
       show: true
     },
     form: {
-      colProps: {
-        span: 24
+      formItemProps: {
+        required: true
       }
-    },
-    detail: {
-      span: 24
     }
   },
   {
     field: 'orderNum',
     label: '排序',
     form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
+      show: false
     }
   },
   {
     field: 'leader',
     label: '负责人',
     form: {
-      colProps: {
-        span: 24
+      formItemProps: {
+        required: true
       }
-    },
-    detail: {
-      span: 24
     }
   },
   {
     field: 'phone',
     label: '电话',
     form: {
-      colProps: {
-        span: 24
+      formItemProps: {
+        required: true
       }
-    },
-    detail: {
-      span: 24
     }
   },
   {
     field: 'email',
     label: '邮件',
     form: {
-      colProps: {
-        span: 24
+      formItemProps: {
+        required: true
       }
-    },
-    detail: {
-      span: 24
     }
   },
   {
     field: 'status',
     label: '状态',
-    form: {
-      colProps: {
-        span: 24
-      }
+    formatter: (_: Recordable, __: TableColumn, cellValue: boolean) => {
+      return h(
+        ElTag,
+        {
+          type: 'success'
+        },
+        () => (cellValue === true ? '启用' : '停用')
+      )
     },
-    detail: {
-      span: 24
+    form: {
+      component: 'Switch',
+      componentProps: {
+        style: {
+          width: '100%'
+        }
+      }
     }
   },
   {
@@ -140,6 +133,9 @@ const dialogTitle = ref('')
 const AddAction = (row: TableData | null) => {
   dialogTitle.value = t('exampleDemo.add')
   tableObject.currentRow = row
+  if (row) {
+    row.parentId = 0
+  }
   dialogVisible.value = true
   actionType.value = ''
 }
@@ -164,6 +160,9 @@ const actionType = ref('')
 const action = (row: TableData, type: string) => {
   dialogTitle.value = t(type === 'edit' ? 'exampleDemo.edit' : 'exampleDemo.detail')
   actionType.value = type
+  if (row) {
+    row.parentId = row.id
+  }
   tableObject.currentRow = row
   dialogVisible.value = true
 }

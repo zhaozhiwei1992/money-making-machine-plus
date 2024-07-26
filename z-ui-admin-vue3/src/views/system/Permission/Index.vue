@@ -3,15 +3,16 @@ import { ContentWrap } from '@/components/ContentWrap'
 import { Search } from '@/components/Search'
 import { Dialog } from '@/components/Dialog'
 import { useI18n } from '@/hooks/web/useI18n'
-import { ElButton } from 'element-plus'
+import { ElButton, ElTag } from 'element-plus'
 import { Table } from '@/components/Table'
 import { getTableListApi, saveTableApi, delTableListApi } from '@/api/system/permission'
 import { useTable } from '@/hooks/web/useTable'
 import { TableData } from '@/api/system/permission/types'
-import { ref, unref, reactive } from 'vue'
+import { ref, unref, reactive, h } from 'vue'
 import AddOrUpdate from './components/AddOrUpdate.vue'
 import Detail from './components/Detail.vue'
 import { CrudSchema, useCrudSchemas } from '@/hooks/web/useCrudSchemas'
+import { TableColumn } from '@/types/table'
 
 const { register, tableObject, methods } = useTable<TableData>({
   getListApi: getTableListApi,
@@ -50,12 +51,9 @@ const crudSchemas = reactive<CrudSchema[]>([
       show: true
     },
     form: {
-      colProps: {
-        span: 24
+      formItemProps: {
+        required: true
       }
-    },
-    detail: {
-      span: 24
     }
   },
   {
@@ -65,37 +63,43 @@ const crudSchemas = reactive<CrudSchema[]>([
       show: true
     },
     form: {
-      colProps: {
-        span: 24
+      formItemProps: {
+        required: true
       }
-    },
-    detail: {
-      span: 24
     }
   },
   {
     field: 'type',
     label: '权限类型',
-    form: {
-      colProps: {
-        span: 24
-      }
+    formatter: (_: Recordable, __: TableColumn, cellValue: number) => {
+      return h(
+        ElTag,
+        {
+          type: 'success'
+        },
+        () => (cellValue === 1 ? '数据权限' : '功能权限')
+      )
     },
-    detail: {
-      span: 24
+    form: {
+      component: 'Select',
+      componentProps: {
+        style: {
+          width: '100%'
+        },
+        options: [
+          { label: '数据权限', value: '1' },
+          { label: '功能权限', value: '2' }
+        ],
+        value: '1'
+      },
+      formItemProps: {
+        required: true
+      }
     }
   },
   {
     field: 'description',
-    label: '备注',
-    form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
-    }
+    label: '备注'
   },
   {
     field: 'action',

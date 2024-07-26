@@ -3,15 +3,16 @@ import { ContentWrap } from '@/components/ContentWrap'
 import { Search } from '@/components/Search'
 import { Dialog } from '@/components/Dialog'
 import { useI18n } from '@/hooks/web/useI18n'
-import { ElButton } from 'element-plus'
+import { ElButton, ElTag } from 'element-plus'
 import { Table } from '@/components/Table'
 import { getTableListApi, saveTableApi, delTableListApi } from '@/api/system/position'
 import { useTable } from '@/hooks/web/useTable'
 import { TableData } from '@/api/system/position/types'
-import { ref, unref, reactive } from 'vue'
+import { ref, unref, reactive, h } from 'vue'
 import AddOrUpdate from './components/AddOrUpdate.vue'
 import Detail from './components/Detail.vue'
 import { CrudSchema, useCrudSchemas } from '@/hooks/web/useCrudSchemas'
+import { TableColumn } from '@/types/table'
 
 const { register, tableObject, methods } = useTable<TableData>({
   getListApi: getTableListApi,
@@ -50,12 +51,9 @@ const crudSchemas = reactive<CrudSchema[]>([
       show: true
     },
     form: {
-      colProps: {
-        span: 24
+      formItemProps: {
+        required: true
       }
-    },
-    detail: {
-      span: 24
     }
   },
   {
@@ -65,41 +63,45 @@ const crudSchemas = reactive<CrudSchema[]>([
       show: true
     },
     form: {
-      colProps: {
-        span: 24
+      formItemProps: {
+        required: true
       }
-    },
-    detail: {
-      span: 24
     }
   },
   {
     field: 'orderNum',
     label: '排序',
     form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
+      show: false
     }
   },
   {
     field: 'status',
     label: '状态',
-    form: {
-      colProps: {
-        span: 24
-      }
+    formatter: (_: Recordable, __: TableColumn, cellValue: boolean) => {
+      return h(
+        ElTag,
+        {
+          type: 'success'
+        },
+        () => (cellValue === true ? '启用' : '停用')
+      )
     },
-    detail: {
-      span: 24
+    form: {
+      component: 'Switch',
+      componentProps: {
+        style: {
+          width: '100%'
+        }
+      }
     }
   },
   {
     field: 'createdDate',
-    label: '创建日期'
+    label: '创建日期',
+    form: {
+      show: false
+    }
   }
 ])
 

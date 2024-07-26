@@ -31,7 +31,7 @@ public class Department extends AbstractAuditingEntity implements Serializable {
 
     private String email;
 
-    @Column(name = "status", length = 1, nullable = false)
+    @Column(name = "activated", nullable = false)
     @NotEmpty(message = "状态不能为空")
-    private String status;
+    private boolean activated = true;
 }
