@@ -18,7 +18,6 @@ import java.util.Map;
  * @version V1.0
  */
 @RestController
-@RequestMapping("/api")
 public class OnLineUserResource {
 
     private OnLineUserService onLineUserService;

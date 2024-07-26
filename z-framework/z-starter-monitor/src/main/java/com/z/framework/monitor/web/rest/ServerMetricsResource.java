@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2022/6/30 下午10:18
  */
 @RestController
-@RequestMapping("/api")
 public class ServerMetricsResource {
 
     @GetMapping("/server/metrics")
