@@ -1,6 +1,8 @@
-package com.z.framework.monitor.web.vo;
+package com.z.framework.monitor.web.dto;
 
 import com.z.framework.monitor.web.util.NumberUtil;
+import com.z.framework.monitor.web.vo.FieldVO;
+import com.z.framework.monitor.web.vo.ServerVO;
 import lombok.Data;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
@@ -13,6 +15,7 @@ import oshi.software.os.OperatingSystem;
 import oshi.util.Util;
 
 import java.lang.management.ManagementFactory;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -21,9 +24,8 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author zhaozhiwei
@@ -198,6 +200,44 @@ public class Server {
         } else {
             return String.format("%d B", size);
         }
+    }
+
+    public ServerVO convert() {
+        final ServerVO serverVO = new ServerVO();
+        serverVO.setCpu(Arrays.stream(cpu.getClass().getDeclaredFields()).map(field -> {
+            try {
+                field.setAccessible(true);
+                return new FieldVO(field.getName(), "" + field.get(cpu));
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }).collect(Collectors.toList()));
+        serverVO.setSys(Arrays.stream(sys.getClass().getDeclaredFields()).map(field -> {
+            try {
+                field.setAccessible(true);
+                return new FieldVO(field.getName(), "" + field.get(sys));
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }).collect(Collectors.toList()));
+        serverVO.setMem(Arrays.stream(mem.getClass().getDeclaredFields()).map(field -> {
+            try {
+                field.setAccessible(true);
+                return new FieldVO(field.getName(), "" + field.get(mem));
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }).collect(Collectors.toList()));
+        serverVO.setJvm(Arrays.stream(jvm.getClass().getDeclaredFields()).map(field -> {
+            try {
+                field.setAccessible(true);
+                return new FieldVO(field.getName(), "" + field.get(jvm));
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }).collect(Collectors.toList()));
+        serverVO.setSysFiles(sysFiles);
+        return serverVO;
     }
 
     @Data

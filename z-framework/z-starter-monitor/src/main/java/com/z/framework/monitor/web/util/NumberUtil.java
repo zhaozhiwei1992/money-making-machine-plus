@@ -1,7 +1,5 @@
 package com.z.framework.monitor.web.util;
 
-import com.sun.xml.internal.ws.util.UtilException;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
@@ -197,7 +195,7 @@ public class NumberUtil {
     }
 
     public static BigDecimal mul(Number v1, Number v2) {
-        return mul(v1, v2);
+        return mul(new Number[]{v1, v2});
     }
 
     public static BigDecimal mul(Number... values) {
@@ -580,7 +578,7 @@ public class NumberUtil {
         }
 
         if (end - begin < size) {
-            throw new UtilException("Size is larger than range between begin and end!");
+            throw new RuntimeException("Size is larger than range between begin and end!");
         } else {
             Random ran = new Random();
             Set<Integer> set = new HashSet<>();

@@ -53,7 +53,6 @@ async function fetchOptions() {
     deptOptions.value = departments
     positionOptions.value = positions
     roleOptions.value = roles
-    console.log('x', deptOptions.value)
   } catch (error) {
     console.error('Failed to fetch options:', error)
   }

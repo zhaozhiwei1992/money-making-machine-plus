@@ -494,6 +494,12 @@
         <version>${revision}</version>
       </dependency>
 
+      <dependency>
+        <groupId>com.z</groupId>
+        <artifactId>z-starter-monitor</artifactId>
+        <version>${revision}</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 </project>

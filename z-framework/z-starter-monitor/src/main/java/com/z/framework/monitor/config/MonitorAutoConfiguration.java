@@ -13,5 +13,5 @@ import org.springframework.context.annotation.ComponentScan;
  */
 @AutoConfiguration
 @ComponentScan(value = {"com.z.framework.monitor"})
-public class CaptchaAutoConfiguration {
+public class MonitorAutoConfiguration {
 }

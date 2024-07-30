@@ -1,9 +1,9 @@
 package com.z.framework.monitor.web.rest;
 
-import com.z.framework.monitor.web.vo.Server;
+import com.z.framework.monitor.web.dto.Server;
+import com.z.framework.monitor.web.vo.ServerVO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -18,9 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class ServerMetricsResource {
 
     @GetMapping("/server/metrics")
-    public ResponseEntity<Server> metrics() throws Exception {
+    public ResponseEntity<ServerVO> metrics() throws Exception {
         final Server server = new Server();
         server.init();
-        return ResponseEntity.ok().body(server);
+        // Server信息转换为ServerVO形式
+        final ServerVO serverVO = server.convert();
+        return ResponseEntity.ok().body(serverVO);
     }
 }
