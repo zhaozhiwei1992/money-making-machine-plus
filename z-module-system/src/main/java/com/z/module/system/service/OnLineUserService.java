@@ -1,5 +1,6 @@
 package com.z.module.system.service;
 
+import com.z.module.system.web.vo.OnLineUserVO;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,18 +21,18 @@ import java.util.Map;
 @Service
 public class OnLineUserService {
 
-    private List<Map<String, Object>> onlineUserList = new ArrayList<>();
+    private List<OnLineUserVO> onlineUserList = new ArrayList<>();
 
-    public void add(Map<String, Object> map) {
-        onlineUserList.removeIf(next -> map.get("userName").equals(next.get("userName")));
-        onlineUserList.add(map);
+    public void add(OnLineUserVO onLineUserVO) {
+        onlineUserList.removeIf(next -> onLineUserVO.getUserName().equals(next.getUserName()));
+        onlineUserList.add(onLineUserVO);
     }
 
     public void delete(String loginName) {
-        onlineUserList.removeIf(next -> loginName.equals(next.get("userName")));
+        onlineUserList.removeIf(next -> loginName.equals(next.getUserName()));
     }
 
-    public List<Map<String, Object>> findAll() {
+    public List<OnLineUserVO> findAll() {
         return onlineUserList;
     }
 }

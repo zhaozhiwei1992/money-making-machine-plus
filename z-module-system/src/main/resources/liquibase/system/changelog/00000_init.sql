@@ -230,7 +230,7 @@ INSERT INTO sys_menu (
 (70, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '代码生成',1, 3, TRUE, 'code/generator', 'views/CodeGenerator/Index', '1', 'tool:code:generator:view'),
 (71, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '接口测试swagger',2, 3, TRUE, 'swagger', 'views/system/Swagger/Index', '1', 'tool:swagger:view'),
 (72, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '接口测试doc',3, 3, TRUE, 'knife4j-doc', 'views/system/Knife4jDoc/Index', '1', 'tool:knife4j-doc:view'),
-(90, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '在线用户',1, 4, TRUE, 'online/users', '#', '1', 'monitor:online:user:view'),
+(90, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '在线用户',1, 4, TRUE, 'online/users', 'views/system/OnLine/Index', '1', 'monitor:online:user:view'),
 (91, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '服务监控',2, 4, TRUE, 'server', 'views/framework/monitor/ServerInfoIndex', '1', 'monitor:server:view'),
 (92, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '缓存监控',3, 4, TRUE, 'cache', '#', '1', 'monitor:cache:view'),
 (63, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '积木报表配置', 1, 5, TRUE, 'jimu', 'views/report/JMReport/view', '1', 'report:jimu:view'),

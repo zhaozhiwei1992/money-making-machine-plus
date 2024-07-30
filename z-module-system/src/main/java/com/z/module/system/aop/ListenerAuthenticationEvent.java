@@ -4,6 +4,7 @@ import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.http.useragent.UserAgent;
 import cn.hutool.http.useragent.UserAgentUtil;
 import com.z.module.system.service.OnLineUserService;
+import com.z.module.system.web.vo.OnLineUserVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
@@ -17,7 +18,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 
 /**
  * @author zhaozhiwei
@@ -48,18 +48,18 @@ public class ListenerAuthenticationEvent {
         log.info("{} 认证成功", successEvent.getAuthentication().getName());
 
         //      获取客户端信息, 如果获取不到则调整在 com.example.web.rest.UserJWTController.authorize写入threadLocal这里获取
-        final HashMap<String, Object> onLineUser = new HashMap<>();
-        onLineUser.put("ip", ServletUtil.getClientIP(request));
+        final OnLineUserVO onLineUser = new OnLineUserVO();
+        onLineUser.setIp(ServletUtil.getClientIP(request));
         final UserAgent userAgentParse = UserAgentUtil.parse(request.getHeader("User-Agent"));
-        onLineUser.put("os", userAgentParse.getOs().toString());
+        onLineUser.setOs(userAgentParse.getOs().toString());
 
-        onLineUser.put("userName", successEvent.getAuthentication().getName());
-        onLineUser.put("browser", userAgentParse.getBrowser().toString());
+        onLineUser.setUserName(successEvent.getAuthentication().getName());
+        onLineUser.setBrowser(userAgentParse.getBrowser().toString());
         final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         final String format = dateTimeFormatter.format(
             LocalDateTime.ofInstant(Instant.ofEpochMilli(successEvent.getTimestamp()), ZoneId.of("Asia/Shanghai"))
         );
-        onLineUser.put("nowTime", format);
+        onLineUser.setNowTime(format);
         onLineUserService.add(onLineUser);
     }
 

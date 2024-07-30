@@ -1,29 +1,25 @@
 <script name="UserIndex" setup lang="ts">
 import { ContentWrap } from '@/components/ContentWrap'
-import { Search } from '@/components/Search'
-import { Dialog } from '@/components/Dialog'
-import { useI18n } from '@/hooks/web/useI18n'
-import { Table } from '@/components/Table'
 import { getServerInfo } from '@/api/framework/monitor/serverinfo'
-import { useTable } from '@/hooks/web/useTable'
-import { TableData, ServerInfo } from '@/api/framework/monitor/serverinfo/types'
-import { ref, unref, reactive, h, onMounted } from 'vue'
-import { TableColumn } from '@/types/table'
+import { TableData, SysFiles } from '@/api/framework/monitor/serverinfo/types'
+import { reactive, onMounted } from 'vue'
+import { ElRow, ElCard, ElCol, ElTable, ElTableColumn } from 'element-plus'
 
-let cpuInfos = reactive<TableData[]>([])
-let memInfos = reactive<TableData[]>([])
-let jvmInfos = reactive<TableData[]>([])
-let sysInfos = reactive<TableData[]>([])
-let diskInfos = reactive<TableData[]>([])
+const cpuInfos = reactive<TableData[]>([])
+const memInfos = reactive<TableData[]>([])
+const jvmInfos = reactive<TableData[]>([])
+const sysInfos = reactive<TableData[]>([])
+const diskInfos = reactive<SysFiles[]>([])
 
 onMounted(async () => {
   // 进入页面获取服务器信息,展现
   const serverInfo = await getServerInfo()
-  cpuInfos = serverInfo.data.cpu
-  memInfos = serverInfo.data.memory
-  diskInfos = serverInfo.data.disk
-  sysInfos = serverInfo.data.sys
-  jvmInfos = serverInfo.data.jvm
+  // reactive得用push才会生效,直接赋值界面不展现, 或者使用ref直接赋值
+  cpuInfos.push(...serverInfo.cpu)
+  memInfos.push(...serverInfo.mem)
+  diskInfos.push(...serverInfo.sysFiles)
+  sysInfos.push(...serverInfo.sys)
+  jvmInfos.push(...serverInfo.jvm)
 })
 </script>
 
@@ -56,7 +52,7 @@ onMounted(async () => {
           </ElTable>
         </ElCard>
       </ElCol>
-      <ElCol :span="24" class="card-box">
+      <ElCol :span="12" class="card-box">
         <ElCard>
           <template #header>
             <div class="card-header">
@@ -69,7 +65,7 @@ onMounted(async () => {
           </ElTable>
         </ElCard>
       </ElCol>
-      <ElCol :span="24" class="card-box">
+      <ElCol :span="12" class="card-box">
         <ElCard>
           <template #header>
             <div class="card-header">
@@ -89,9 +85,14 @@ onMounted(async () => {
               <span>磁盘状态信息</span>
             </div>
           </template>
-          <ElTable :data="diskinfos" style="width: 100%">
-            <ElTableColumn prop="type" label="属性" width="180" />
-            <ElTableColumn prop="value" label="值" width="180" />
+          <ElTable :data="diskInfos" style="width: 100%">
+            <ElTableColumn prop="typeName" label="磁盘" width="180" />
+            <ElTableColumn prop="dirName" label="挂载点" width="180" />
+            <ElTableColumn prop="sysTypeName" label="文件系统" width="180" />
+            <ElTableColumn prop="total" label="总空间" width="180" />
+            <ElTableColumn prop="used" label="已使用" width="180" />
+            <ElTableColumn prop="free" label="剩余" width="180" />
+            <ElTableColumn prop="usage" label="使用率" width="180" />
           </ElTable>
         </ElCard>
       </ElCol>
