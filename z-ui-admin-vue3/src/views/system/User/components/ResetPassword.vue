@@ -63,7 +63,7 @@ const { register, methods, elFormRef } = useForm({
 const save = async () => {
   const data = (await methods.getFormData()) as PasswordResetVO
   console.log(data)
-  const res = await resetPasswordApi(data)
+  await resetPasswordApi(data)
     .catch(() => {})
     .finally(() => {
       ElMessage.success('修改成功')
