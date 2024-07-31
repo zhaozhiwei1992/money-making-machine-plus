@@ -2,14 +2,18 @@ package com.z.module.system.web.rest;
 
 import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.module.system.domain.Authority;
+import com.z.module.system.domain.RoleMenu;
 import com.z.module.system.repository.AuthorityRepository;
+import com.z.module.system.repository.RoleMenuRepository;
 import com.z.module.system.service.RoleMenuService;
 import com.z.module.system.service.RolePermissionService;
 import com.z.module.system.web.mapper.RoleSelectMapper;
+import com.z.module.system.web.vo.RoleVO;
 import com.z.module.system.web.vo.SelectOptionVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,9 +35,10 @@ public class RoleResource {
 
     private final AuthorityRepository roleRepository;
 
-    public RoleResource(AuthorityRepository roleRepository,
+    public RoleResource(AuthorityRepository roleRepository, RoleMenuRepository roleMenuRepository,
                         RoleMenuService roleMenuService, RolePermissionService rolePermissionService, RoleSelectMapper roleSelectMapper) {
         this.roleRepository = roleRepository;
+        this.roleMenuRepository = roleMenuRepository;
         this.roleMenuService = roleMenuService;
         this.rolePermissionService = rolePermissionService;
         this.roleSelectMapper = roleSelectMapper;
@@ -64,6 +69,8 @@ public class RoleResource {
 
         return ResponseData.ok(newAuthority);
     }
+
+    private final RoleMenuRepository roleMenuRepository;
 
     /**
      * {@code GET /admin/roles} : get all roles with all the details - calling this are only allowed for the
@@ -104,9 +111,17 @@ public class RoleResource {
         final List<Authority> content = rolePage.getContent();
 
         // 获取关联菜单信息
+        final List<RoleMenu> roleMenuList = roleMenuRepository.findByRoleIdIn(content.stream().map(Authority::getId).collect(Collectors.toList()));
+        final List<RoleVO> roleVOList = content.stream().map(authority -> {
+            final RoleVO roleVO = new RoleVO();
+            BeanUtils.copyProperties(authority, roleVO);
+            final List<RoleMenu> collect = roleMenuList.stream().filter(roleMenu -> roleMenu.getRoleId().equals(role.getId())).collect(Collectors.toList());
+            roleVO.setMenuIdListStr(collect.stream().map(RoleMenu::getMenuId).map(String::valueOf).collect(Collectors.joining(",")));
+            return roleVO;
+        }).collect(Collectors.toList());
 
         return ResponseData.ok(new HashMap<String, Object>() {{
-            put("list", rolePage.getContent());
+            put("list", roleVOList);
             put("total", Long.valueOf(rolePage.getTotalElements()).intValue());
         }});
     }

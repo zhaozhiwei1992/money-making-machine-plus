@@ -3,12 +3,14 @@ package com.z.module.system.web.rest;
 import cn.hutool.core.bean.BeanUtil;
 import com.z.framework.common.repository.CommonSqlRepository;
 import com.z.framework.common.web.rest.vm.ResponseData;
+import com.z.framework.security.util.SecurityUtils;
 import com.z.module.system.domain.User;
 import com.z.module.system.domain.UserAuthority;
 import com.z.module.system.domain.UserDepartment;
 import com.z.module.system.domain.UserPosition;
 import com.z.module.system.repository.*;
 import com.z.module.system.service.UserService;
+import com.z.module.system.web.vo.PasswordResetVO;
 import com.z.module.system.web.vo.UserVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -250,5 +252,27 @@ public class UserResource {
             return map;
         }).collect(Collectors.toList());
         return ResponseData.ok(resultMap);
+    }
+
+    @Operation(description = "重置密码")
+    @PostMapping("/users/resetpass")
+    @Transactional(rollbackFor = Exception.class)
+    @PreAuthorize("hasAuthority('system:user:add')")
+    public ResponseEntity<ResponseData<User>> resetPassword(@RequestBody PasswordResetVO passwordResetVO) throws URISyntaxException {
+        log.debug("REST request to save User : {}", passwordResetVO);
+
+        // 1. 获取用户
+        final Optional<User> oneByLogin = userRepository.findOneByLogin(SecurityUtils.getCurrentLoginName());
+        // 2. 校验密码
+        final User user = oneByLogin.get();
+        if (!passwordEncoder.matches(passwordResetVO.getOldPassword(), user.getPassword())) {
+            return ResponseData.fail("旧密码不正确");
+        }
+        // 3. 填充用户并保存
+        final String newPassword = passwordResetVO.getNewPassword();
+        final String encode = passwordEncoder.encode(newPassword);
+        user.setPassword(encode);
+        User newUser = userRepository.save(user);
+        return ResponseData.ok(newUser);
     }
 }

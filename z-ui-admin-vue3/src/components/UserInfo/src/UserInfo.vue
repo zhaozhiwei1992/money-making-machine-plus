@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ElDropdown, ElDropdownMenu, ElDropdownItem, ElMessageBox } from 'element-plus'
+import { ElDropdown, ElDropdownMenu, ElDropdownItem, ElMessageBox, ElButton } from 'element-plus'
+import { Dialog } from '@/components/Dialog'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useCache } from '@/hooks/web/useCache'
 import { resetRouter } from '@/router'
@@ -8,6 +9,8 @@ import { loginOutApi } from '@/api/login'
 import { useDesign } from '@/hooks/web/useDesign'
 import { useTagsViewStore } from '@/store/modules/tagsView'
 import { useAppStore } from '@/store/modules/app'
+import ResetPassword from '@/views/system/User/components/ResetPassword.vue'
+import { ref, unref } from 'vue'
 
 const tagsViewStore = useTagsViewStore()
 
@@ -42,9 +45,21 @@ const loginOut = () => {
     .catch(() => {})
 }
 
+const writeRef = ref<ComponentRef<typeof ResetPassword>>()
+
+const dialogVisible = ref(false)
+const dialogTitle = ref('重置密码')
+
 // 重置密码
 const toResetPassword = () => {
   // 跳转密码重置页面
+  dialogVisible.value = true
+}
+
+const save = () => {
+  const write = unref(writeRef)
+  write?.save()
+  dialogVisible.value = false
 }
 </script>
 
@@ -71,4 +86,15 @@ const toResetPassword = () => {
       </ElDropdownMenu>
     </template>
   </ElDropdown>
+
+  <Dialog v-model="dialogVisible" :title="dialogTitle">
+    <ResetPassword ref="writeRef" />
+
+    <template #footer>
+      <ElButton type="primary" @click="save">
+        {{ t('exampleDemo.save') }}
+      </ElButton>
+      <ElButton @click="dialogVisible = false">{{ t('dialogDemo.close') }}</ElButton>
+    </template>
+  </Dialog>
 </template>

@@ -10,9 +10,12 @@ import com.z.framework.common.util.GenericTreeBuilderUtil;
 import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.framework.security.util.SecurityUtils;
 import com.z.module.system.domain.Menu;
+import com.z.module.system.domain.Position;
 import com.z.module.system.repository.MenuRepository;
 import com.z.module.system.service.MenuService;
+import com.z.module.system.web.mapper.MenuSelectMapper;
 import com.z.module.system.web.vo.MenuVO;
+import com.z.module.system.web.vo.SelectOptionVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
@@ -46,9 +49,10 @@ public class MenuResource {
 
     private final MenuRepository menuRepository;
 
-    public MenuResource(MenuRepository menuRepository, MenuService menuService) {
+    public MenuResource(MenuRepository menuRepository, MenuService menuService, MenuSelectMapper menuSelectMapper) {
         this.menuRepository = menuRepository;
         this.menuService = menuService;
+        this.menuSelectMapper = menuSelectMapper;
     }
 
     /**
@@ -318,5 +322,20 @@ public class MenuResource {
         List<Menu> menuList = menuRepository.findAllByParentIdOrderByOrderNumAsc(0L);
 
         return ResponseData.ok(menuList);
+    }
+
+    private final MenuSelectMapper menuSelectMapper;
+
+    @Operation(description = "获取岗位树")
+    @GetMapping("/menus/select")
+    public ResponseEntity<List<SelectOptionVO>> getPositionsSelect() {
+        log.debug("REST request to get Menu Select");
+
+        final List<Menu> menuList = menuRepository.findAll();
+        final List<SelectOptionVO> convert = menuSelectMapper.convert(menuList);
+        final GenericTreeBuilderUtil<SelectOptionVO> genericTreeBuilderUtil = new GenericTreeBuilderUtil<>(SelectOptionVO.class);
+        final List<SelectOptionVO> list = genericTreeBuilderUtil.buildTree(convert);
+        log.info("左侧树构建: {}", list);
+        return ResponseEntity.ok(convert);
     }
 }

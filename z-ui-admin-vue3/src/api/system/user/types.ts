@@ -20,3 +20,9 @@ export interface UserVO {
   positionIdListStr: string | string[]
   departmentIdListStr: string | string[]
 }
+
+export interface PasswordResetVO {
+  oldPassword: string
+  newPassword: string
+  confirmPassword: string
+}

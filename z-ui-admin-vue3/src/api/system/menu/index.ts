@@ -1,5 +1,6 @@
 import request from '@/config/axios'
 import type { MenuVO } from './types'
+import { ComponentOptions } from '@/types/components'
 
 export const getTableListApi = (params: any): Promise<IResponse> => {
   params = { ...params, page: params.pageIndex, size: params.pageSize }
@@ -21,4 +22,9 @@ export const getMenuDetApi = (id: string): Promise<IResponse<MenuVO>> => {
 export const delTableListApi = (ids: string[] | number[]): Promise<IResponse> => {
   // 适配后端, 直接使用RequestBody接收数据, 不能使用{ids}, 这种表示data里的是个map对象,key为ids
   return request.delete({ url: '/menus', data: ids })
+}
+
+// 查询菜单树
+export const getMenuSelect = async (): Promise<ComponentOptions[]> => {
+  return await request.get({ url: '/menus/select' })
 }

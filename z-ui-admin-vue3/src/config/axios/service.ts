@@ -78,12 +78,16 @@ service.interceptors.response.use(
     } else if (response.status === result_code) {
       return response.data
     } else {
-      ElMessage.error(response.data.message)
+      ElMessage.error(response.data.msg)
     }
   },
   (error: AxiosError) => {
-    console.log('err' + error) // for debug
-    ElMessage.error(error.message)
+    console.log('err' + error.response) // for debug
+    if (error.response?.data?.msg) {
+      ElMessage.error(error.response?.data?.msg)
+    } else {
+      ElMessage.error(error.message)
+    }
     return Promise.reject(error)
   }
 )

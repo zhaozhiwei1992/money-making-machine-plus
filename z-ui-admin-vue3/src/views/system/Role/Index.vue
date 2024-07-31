@@ -6,12 +6,22 @@ import { useI18n } from '@/hooks/web/useI18n'
 import { ElButton } from 'element-plus'
 import { Table } from '@/components/Table'
 import { getTableListApi, saveTableApi, delTableListApi } from '@/api/system/role'
+import { getMenuSelect } from '@/api/system/menu'
 import { useTable } from '@/hooks/web/useTable'
 import { TableData } from '@/api/table/types'
-import { ref, unref, reactive } from 'vue'
+import { ref, unref, reactive, onMounted } from 'vue'
 import AddOrUpdate from './components/AddOrUpdate.vue'
 import Detail from './components/Detail.vue'
 import { CrudSchema, useCrudSchemas } from '@/hooks/web/useCrudSchemas'
+import { ComponentOptions } from '@/types/components'
+
+const menuOptions = reactive<ComponentOptions[] | any>([])
+
+onMounted(() => {
+  getMenuSelect().then((res) => {
+    menuOptions.push(...res)
+  })
+})
 
 const { register, tableObject, methods } = useTable<TableData>({
   getListApi: getTableListApi,
@@ -45,36 +55,36 @@ const crudSchemas = reactive<CrudSchema[]>([
   },
   {
     field: 'code',
-    label: '角色编码',
-    form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
-    }
+    label: '角色编码'
   },
   {
     field: 'name',
     label: '角色名称',
     search: {
       show: true
-    },
+    }
+  },
+  {
+    field: 'menuIdListStr',
+    label: '菜单',
     form: {
-      colProps: {
-        span: 24
+      component: 'Cascader',
+      componentProps: {
+        style: {
+          width: '100%'
+        },
+        options: menuOptions,
+        props: {
+          multiple: true
+        }
       }
-    },
-    detail: {
-      span: 24
     }
   },
   {
     field: 'createdBy',
     label: '创建人',
-    search: {
-      show: true
+    form: {
+      show: false
     }
   },
   {
@@ -180,6 +190,9 @@ const save = async () => {
       @register="register"
     >
       <template #action="{ row }">
+        <ElButton type="primary" v-hasPermi="['example:dialog:edit']" @click="action(row, 'edit')">
+          {{ t('exampleDemo.edit') }}
+        </ElButton>
         <ElButton
           type="success"
           v-hasPermi="['example:dialog:view']"

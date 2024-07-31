@@ -183,8 +183,8 @@ public class DepartmentResource {
     public ResponseEntity<List<SelectOptionVO>> getDepartmentsSelect() {
         log.debug("REST request to get Position Select");
 
-        List<Department> positionList = departmentRepository.findAll();
-        final List<SelectOptionVO> convert = departmentSelectMapper.convert(positionList);
+        List<Department> departmentList = departmentRepository.findAll();
+        final List<SelectOptionVO> convert = departmentSelectMapper.convert(departmentList);
         final GenericTreeBuilderUtil<SelectOptionVO> genericTreeBuilderUtil = new GenericTreeBuilderUtil<>(SelectOptionVO.class);
         final List<SelectOptionVO> list = genericTreeBuilderUtil.buildTree(convert);
 

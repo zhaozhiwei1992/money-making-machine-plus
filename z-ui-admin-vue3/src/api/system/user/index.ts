@@ -1,5 +1,5 @@
 import request from '@/config/axios'
-import type { TableData, UserVO } from './types'
+import type { TableData, UserVO, PasswordResetVO } from './types'
 
 export const getTableListApi = (params: any): Promise<IResponse> => {
   // 转换, 适配jpa PageRequest
@@ -11,6 +11,10 @@ export const getTableListApi = (params: any): Promise<IResponse> => {
 
 export const saveTableApi = (data: Partial<UserVO>): Promise<IResponse> => {
   return request.post({ url: '/users', data })
+}
+
+export const resetPasswordApi = (data: Partial<PasswordResetVO>): Promise<IResponse> => {
+  return request.post({ url: '/users/resetpass', data })
 }
 
 // 获取指定数据详情

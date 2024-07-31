@@ -184,6 +184,8 @@ const crudSchemas = reactive<CrudSchema[]>([
 
 const { allSchemas } = useCrudSchemas(crudSchemas)
 
+console.log(allSchemas)
+
 const dialogVisible = ref(false)
 
 const dialogTitle = ref('')
