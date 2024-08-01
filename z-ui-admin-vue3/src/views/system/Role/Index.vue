@@ -55,11 +55,21 @@ const crudSchemas = reactive<CrudSchema[]>([
   },
   {
     field: 'code',
-    label: '角色编码'
+    label: '角色编码',
+    form: {
+      formItemProps: {
+        required: true
+      }
+    }
   },
   {
     field: 'name',
     label: '角色名称',
+    form: {
+      formItemProps: {
+        required: true
+      }
+    },
     search: {
       show: true
     }

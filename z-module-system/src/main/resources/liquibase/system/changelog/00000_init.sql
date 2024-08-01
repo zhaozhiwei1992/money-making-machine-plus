@@ -333,3 +333,29 @@ INSERT INTO sys_menu (
 (453, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '详情', 3, 20, TRUE, 'system/params/detail', '#', '2', 'system:params:detail'),
 (454, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '删除', 4, 20, TRUE, 'system/params/delete', '#', '2', 'system:params:delete'),
 (455, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '批量删除', 5, 20, TRUE, 'system/params/batch-delete', '#', '2', 'system:params:batchDelete');
+
+CREATE TABLE IF NOT EXISTS ele_union (
+  id bigint primary key auto_increment,
+  created_by varchar(50) NULL,
+  created_date timestamp NULL,
+  last_modified_by varchar(50) NULL,
+  last_modified_date timestamp NULL,
+  ele_cat_code VARCHAR(64) NOT NULL,
+  ele_cat_name VARCHAR(255) NOT NULL,
+  ele_code VARCHAR(64) NOT NULL,
+  ele_name VARCHAR(255) NOT NULL,
+  is_enabled TINYINT(1) NOT NULL DEFAULT 0,
+  is_leaf TINYINT(1) NOT NULL DEFAULT 0,
+  level_no INT NOT NULL DEFAULT 0,
+  parent_id VARCHAR(50) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB COMMENT='基础要素表';
+
+INSERT INTO ele_union
+(created_by, created_date, last_modified_by, last_modified_date, ele_cat_code, ele_cat_name, ele_code, ele_name, is_enabled, is_leaf, level_no, parent_id) VALUES
+('system', NOW(), 'system', NOW(), 'notice_rec_type', '公告接收类型', '1', '所有人', 1, 1, 0, '0'),
+('system', NOW(), 'system', NOW(), 'notice_rec_type', '公告接收类型', '2', '按用户', 1, 1, 0, '0'),
+('system', NOW(), 'system', NOW(), 'notice_rec_type', '公告接收类型', '3', '按角色', 0, 0, 0, '0'),
+('system', NOW(), 'system', NOW(), 'notice_rec_type', '公告接收类型', '4', '按单位', 0, 0, 0, '0'),
+('system', NOW(), 'system', NOW(), 'notice_type', '公告类型', '1', '通知公告', 0, 0, 0, '0'),
+('system', NOW(), 'system', NOW(), 'notice_type', '公告类型', '2', '规章制度', 0, 0, 0, '0'),
+('system', NOW(), 'system', NOW(), 'notice_type', '公告类型', '3', '政策文件', 0, 0, 0, '0');

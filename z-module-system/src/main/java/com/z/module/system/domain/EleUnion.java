@@ -46,6 +46,7 @@ public class EleUnion extends AbstractAuditingEntity implements Serializable {
 
     /**
      * 父级节点主键
+     * 父级id使用eleCode
      */
     @Column(name = "parent_id")
     private String parentId;

@@ -25,8 +25,8 @@ public class PermissionResource {
 
     private final PermissionRepository permissionRepository;
 
-    public PermissionResource(PermissionRepository roleRepository) {
-        this.permissionRepository = roleRepository;
+    public PermissionResource(PermissionRepository permissionRepository) {
+        this.permissionRepository = permissionRepository;
     }
 
     /**

@@ -326,7 +326,7 @@ public class MenuResource {
 
     private final MenuSelectMapper menuSelectMapper;
 
-    @Operation(description = "获取岗位树")
+    @Operation(description = "获取菜单树select")
     @GetMapping("/menus/select")
     public ResponseEntity<List<SelectOptionVO>> getPositionsSelect() {
         log.debug("REST request to get Menu Select");
@@ -336,6 +336,6 @@ public class MenuResource {
         final GenericTreeBuilderUtil<SelectOptionVO> genericTreeBuilderUtil = new GenericTreeBuilderUtil<>(SelectOptionVO.class);
         final List<SelectOptionVO> list = genericTreeBuilderUtil.buildTree(convert);
         log.info("左侧树构建: {}", list);
-        return ResponseEntity.ok(convert);
+        return ResponseEntity.ok(list);
     }
 }

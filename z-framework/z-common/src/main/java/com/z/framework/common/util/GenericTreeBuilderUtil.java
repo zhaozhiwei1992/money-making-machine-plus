@@ -54,7 +54,7 @@ public class GenericTreeBuilderUtil<T extends Serializable> {
                 throw new RuntimeException("Error while accessing field", e);
             }
 
-            if (parentId == null || parentId.equals(0L)) {
+            if (parentId == null || parentId.equals(0L) || parentId.equals("0") || parentId.equals("#")) {
                 // 如果parentId为0或者null,则当前节点为一级节点
                 rootList.add(node);
                 buildChildren(node, map);

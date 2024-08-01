@@ -1,10 +1,13 @@
 package com.z.module.system.web.rest;
 
+import com.z.framework.common.util.GenericTreeBuilderUtil;
 import com.z.framework.common.web.rest.errors.BadRequestAlertException;
 import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.module.system.domain.EleUnion;
 import com.z.module.system.repository.EleUnionRepository;
 import com.z.module.system.service.CommonEleService;
+import com.z.module.system.web.mapper.EleUnionSelectMapper;
+import com.z.module.system.web.vo.SelectOptionVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -34,9 +37,10 @@ public class EleUnionResource {
 
     private final CommonEleService commonEleService;
 
-    public EleUnionResource(EleUnionRepository eleUnionRepository, CommonEleService commonEleService) {
+    public EleUnionResource(EleUnionRepository eleUnionRepository, CommonEleService commonEleService, EleUnionSelectMapper eleUnionSelectMapper) {
         this.eleUnionRepository = eleUnionRepository;
         this.commonEleService = commonEleService;
+        this.eleUnionSelectMapper = eleUnionSelectMapper;
     }
 
     /**
@@ -159,5 +163,24 @@ public class EleUnionResource {
         log.debug("REST request to delete EleUnion : {}", id);
         eleUnionRepository.deleteById(id);
         return ResponseData.ok();
+    }
+
+    private final EleUnionSelectMapper eleUnionSelectMapper;
+
+    /**
+     * @data: 2024/8/1-下午3:58
+     * @User: zhaozhiwei
+     * @method: getElementInfoByCatCode
+      * @param eleCatCode :
+     * @return: org.springframework.http.ResponseEntity<java.util.List<com.z.module.system.web.vo.SelectOptionVO>>
+     * @Description: 获取基础要素select/cascade树形展现
+     */
+    @GetMapping("/ele-unions/element-info/select/{eleCatCode}")
+    public ResponseEntity<List<SelectOptionVO>> getElementInfoByCatCode(@PathVariable String eleCatCode) {
+        final List<EleUnion> elementInfoByEleCatCode = commonEleService.findElementInfoByEleCatCode(eleCatCode);
+        final List<SelectOptionVO> convert = eleUnionSelectMapper.convert(elementInfoByEleCatCode);
+        final GenericTreeBuilderUtil<SelectOptionVO> genericTreeBuilderUtil = new GenericTreeBuilderUtil<>(SelectOptionVO.class);
+        final List<SelectOptionVO> list = genericTreeBuilderUtil.buildTree(convert);
+        return ResponseEntity.ok(list);
     }
 }
