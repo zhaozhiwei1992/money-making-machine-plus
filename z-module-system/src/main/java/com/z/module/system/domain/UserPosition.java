@@ -18,7 +18,7 @@ import java.io.Serializable;
  * @date 2024/7/21 上午1:09
  */
 @Entity
-@Table(name = "sys_user_permission")
+@Table(name = "sys_user_position")
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class UserPosition extends AbstractAuditingEntity implements Serializable {

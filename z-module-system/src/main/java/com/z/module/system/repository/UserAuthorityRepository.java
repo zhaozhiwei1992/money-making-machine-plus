@@ -14,4 +14,6 @@ public interface UserAuthorityRepository extends JpaRepository<UserAuthority, Lo
     void deleteAllByIdIn(List<Long> idList);
 
     List<UserAuthority> findAllByUserId(Long id);
+
+    List<UserAuthority> findAllByUserIdIn(List<Long> collect);
 }

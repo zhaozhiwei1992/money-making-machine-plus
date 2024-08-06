@@ -7,6 +7,7 @@ import com.z.module.system.domain.EleUnion;
 import com.z.module.system.repository.EleUnionRepository;
 import com.z.module.system.service.CommonEleService;
 import com.z.module.system.web.mapper.EleUnionSelectMapper;
+import com.z.module.system.web.vo.EleSelectOptionVO;
 import com.z.module.system.web.vo.SelectOptionVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -176,11 +177,11 @@ public class EleUnionResource {
      * @Description: 获取基础要素select/cascade树形展现
      */
     @GetMapping("/ele-unions/element-info/select/{eleCatCode}")
-    public ResponseEntity<List<SelectOptionVO>> getElementInfoByCatCode(@PathVariable String eleCatCode) {
+    public ResponseEntity<List<EleSelectOptionVO>> getElementInfoByCatCode(@PathVariable String eleCatCode) {
         final List<EleUnion> elementInfoByEleCatCode = commonEleService.findElementInfoByEleCatCode(eleCatCode);
-        final List<SelectOptionVO> convert = eleUnionSelectMapper.convert(elementInfoByEleCatCode);
-        final GenericTreeBuilderUtil<SelectOptionVO> genericTreeBuilderUtil = new GenericTreeBuilderUtil<>(SelectOptionVO.class);
-        final List<SelectOptionVO> list = genericTreeBuilderUtil.buildTree(convert);
+        final List<EleSelectOptionVO> convert = eleUnionSelectMapper.convert(elementInfoByEleCatCode);
+        final GenericTreeBuilderUtil<EleSelectOptionVO> genericTreeBuilderUtil = new GenericTreeBuilderUtil<>(EleSelectOptionVO.class);
+        final List<EleSelectOptionVO> list = genericTreeBuilderUtil.buildTree(convert);
         return ResponseEntity.ok(list);
     }
 }

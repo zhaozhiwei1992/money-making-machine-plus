@@ -3,6 +3,7 @@ package com.z.module.system.web.rest;
 import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.module.system.domain.Authority;
 import com.z.module.system.domain.RoleMenu;
+import com.z.module.system.domain.UserAuthority;
 import com.z.module.system.repository.AuthorityRepository;
 import com.z.module.system.repository.RoleMenuRepository;
 import com.z.module.system.service.RoleMenuService;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,21 +53,35 @@ public class RoleResource {
      * mail with an activation link.
      * The role needs to be activated on creation.
      *
-     * @param roleDTO the role to create.
+     * @param roleVO the role to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new role, or with
      * status {@code 400 (Bad Request)} if the login or email is already in use.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @Operation(description = "新增角色")
     @PostMapping("/roles")
-    public ResponseEntity<ResponseData<Authority>> createAuthority(@RequestBody Authority roleDTO) throws URISyntaxException {
-        log.debug("REST request to save Authority : {}", roleDTO);
+    public ResponseEntity<ResponseData<Authority>> createAuthority(@RequestBody RoleVO roleVO) throws URISyntaxException {
+        log.debug("REST request to save Authority : {}", roleVO);
 
-        if (!roleDTO.getCode().startsWith(ROLE_START)) {
-            roleDTO.setCode(ROLE_START + roleDTO.getCode());
+        if (!roleVO.getCode().startsWith(ROLE_START)) {
+            roleVO.setCode(ROLE_START + roleVO.getCode());
         }
 
-        Authority newAuthority = roleRepository.save(roleDTO);
+        final Authority authority = new Authority();
+        BeanUtils.copyProperties(roleVO, authority);
+
+        Authority newAuthority = roleRepository.save(authority);
+
+        // 保存角色菜单信息
+        final String menuIdListStr = roleVO.getMenuIdListStr();
+        final List<Long> menuIdList = Arrays.stream(menuIdListStr.split(",")).map(Long::valueOf).collect(Collectors.toList());
+        final List<RoleMenu> roleMenus = menuIdList.stream().map(menuId -> {
+            final RoleMenu roleMenu = new RoleMenu();
+            roleMenu.setMenuId(menuId);
+            roleMenu.setMenuId(authority.getId());
+            return roleMenu;
+        }).collect(Collectors.toList());
+//        roleMenuRepository.save(roleMenus);
 
         return ResponseData.ok(newAuthority);
     }

@@ -213,14 +213,27 @@ public class UserResource {
             userDepartmentGroupByUserId = Collections.emptyMap();
         }
 
+        // 获取角色信息
+        List<UserAuthority> userAuthorityList =
+                userAuthorityRepository.findAllByUserIdIn(content.stream().map(User::getId).collect(Collectors.toList()));
+        Map<Long, List<UserAuthority>> userAuthorityGroupByUserId;
+        if(!userDepartmentList.isEmpty()){
+            userAuthorityGroupByUserId = userAuthorityList.stream().collect(Collectors.groupingBy(UserAuthority::getUserId));
+        } else {
+            userAuthorityGroupByUserId = Collections.emptyMap();
+        }
+
         final List<UserVO> collect = content.stream().map(u -> {
             final UserVO userVO = new UserVO();
             BeanUtils.copyProperties(u, userVO);
-            if(!userPositionGroupByUserId.isEmpty()){
+            if(!userPositionGroupByUserId.isEmpty() && !Objects.isNull(userPositionGroupByUserId.get(u.getId()))){
                 userVO.setPositionIdListStr(userPositionGroupByUserId.get(u.getId()).stream().map(UserPosition::getPositionId).map(String::valueOf).collect(Collectors.joining(",")));
             }
-            if(!userDepartmentGroupByUserId.isEmpty()){
+            if(!userDepartmentGroupByUserId.isEmpty() && !Objects.isNull(userDepartmentGroupByUserId.get(u.getId()))){
                 userVO.setDepartmentIdListStr(userDepartmentGroupByUserId.get(u.getId()).stream().map(UserDepartment::getDeptId).map(String::valueOf).collect(Collectors.joining(",")));
+            }
+            if(!userAuthorityGroupByUserId.isEmpty() && !Objects.isNull(userAuthorityGroupByUserId.get(u.getId()))){
+                userVO.setRoleIdListStr(userAuthorityGroupByUserId.get(u.getId()).stream().map(UserAuthority::getRoleId).map(String::valueOf).collect(Collectors.joining(",")));
             }
             return userVO;
         }).collect(Collectors.toList());

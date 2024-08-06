@@ -19,7 +19,7 @@ import java.io.Serializable;
  */
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "sys_user_permission")
+@Table(name = "sys_user_department")
 @Data
 public class UserDepartment extends AbstractAuditingEntity implements Serializable {
 
