@@ -3,17 +3,18 @@ import { ContentWrap } from '@/components/ContentWrap'
 import { Search } from '@/components/Search'
 import { Dialog } from '@/components/Dialog'
 import { useI18n } from '@/hooks/web/useI18n'
-import { ElButton } from 'element-plus'
+import { ElButton, ElTag } from 'element-plus'
 import { Table } from '@/components/Table'
 import { getTableListApi, saveTableApi, delTableListApi } from '@/api/system/role'
 import { getMenuSelect } from '@/api/system/menu'
 import { useTable } from '@/hooks/web/useTable'
-import { TableData } from '@/api/table/types'
-import { ref, unref, reactive, onMounted } from 'vue'
+import { RoleVO } from '@/api/system/role/types'
+import { ref, unref, reactive, onMounted, h } from 'vue'
 import AddOrUpdate from './components/AddOrUpdate.vue'
 import Detail from './components/Detail.vue'
 import { CrudSchema, useCrudSchemas } from '@/hooks/web/useCrudSchemas'
 import { ComponentOptions } from '@/types/components'
+import { TableColumn } from '@/types/table'
 
 const menuOptions = reactive<ComponentOptions[] | any>([])
 
@@ -23,7 +24,7 @@ onMounted(() => {
   })
 })
 
-const { register, tableObject, methods } = useTable<TableData>({
+const { register, tableObject, methods } = useTable<RoleVO>({
   getListApi: getTableListApi,
   delListApi: delTableListApi,
   response: {
@@ -75,8 +76,12 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'menuIdListStr',
+    field: 'menuIdList',
     label: '菜单',
+    formatter: (_: Recordable, __: TableColumn, cellValue: string[]) => {
+      const cellStr = cellValue.join(',')
+      return h(() => cellStr)
+    },
     form: {
       component: 'Cascader',
       componentProps: {
@@ -125,7 +130,7 @@ const AddAction = () => {
 
 const delLoading = ref(false)
 
-const delData = async (row: TableData | null, multiple: boolean) => {
+const delData = async (row: RoleVO | null, multiple: boolean) => {
   tableObject.currentRow = row
   const { delList, getSelections } = methods
   const selections = await getSelections()
@@ -140,7 +145,7 @@ const delData = async (row: TableData | null, multiple: boolean) => {
 
 const actionType = ref('')
 
-const action = (row: TableData, type: string) => {
+const action = (row: RoleVO, type: string) => {
   dialogTitle.value = t(type === 'edit' ? 'exampleDemo.edit' : 'exampleDemo.detail')
   actionType.value = type
   tableObject.currentRow = row
@@ -156,7 +161,7 @@ const save = async () => {
   await write?.elFormRef?.validate(async (isValid) => {
     if (isValid) {
       loading.value = true
-      const data = (await write?.getFormData()) as TableData
+      const data = (await write?.getFormData()) as RoleVO
       const res = await saveTableApi(data)
         .catch(() => {})
         .finally(() => {

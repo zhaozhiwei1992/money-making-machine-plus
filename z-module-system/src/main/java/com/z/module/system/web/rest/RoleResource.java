@@ -21,10 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Tag(name = "角色API")
@@ -73,15 +70,17 @@ public class RoleResource {
         Authority newAuthority = roleRepository.save(authority);
 
         // 保存角色菜单信息
-        final String menuIdListStr = roleVO.getMenuIdListStr();
-        final List<Long> menuIdList = Arrays.stream(menuIdListStr.split(",")).map(Long::valueOf).collect(Collectors.toList());
+        roleMenuRepository.deleteAllByRoleIdIn(Arrays.asList(newAuthority.getId()));
+        final List<List<String>> menuIdListString = roleVO.getMenuIdList();
+        final Set<Long> menuIdList = new HashSet<>();
+        menuIdListString.forEach(menuIds -> menuIdList.addAll(menuIds.stream().map(Long::valueOf).collect(Collectors.toList())));
         final List<RoleMenu> roleMenus = menuIdList.stream().map(menuId -> {
             final RoleMenu roleMenu = new RoleMenu();
             roleMenu.setMenuId(menuId);
-            roleMenu.setMenuId(authority.getId());
+            roleMenu.setRoleId(authority.getId());
             return roleMenu;
         }).collect(Collectors.toList());
-//        roleMenuRepository.save(roleMenus);
+        roleMenuRepository.saveAll(roleMenus);
 
         return ResponseData.ok(newAuthority);
     }
@@ -131,8 +130,8 @@ public class RoleResource {
         final List<RoleVO> roleVOList = content.stream().map(authority -> {
             final RoleVO roleVO = new RoleVO();
             BeanUtils.copyProperties(authority, roleVO);
-            final List<RoleMenu> collect = roleMenuList.stream().filter(roleMenu -> roleMenu.getRoleId().equals(role.getId())).collect(Collectors.toList());
-            roleVO.setMenuIdListStr(collect.stream().map(RoleMenu::getMenuId).map(String::valueOf).collect(Collectors.joining(",")));
+            final List<RoleMenu> collect = roleMenuList.stream().filter(roleMenu -> roleMenu.getRoleId().equals(roleVO.getId())).collect(Collectors.toList());
+            roleVO.setMenuIdList(Arrays.asList(collect.stream().map(m -> String.valueOf(m.getMenuId())).collect(Collectors.toList())));
             return roleVO;
         }).collect(Collectors.toList());
 

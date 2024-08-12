@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
 
 @Data
 public class RoleVO implements Serializable {
@@ -21,5 +22,5 @@ public class RoleVO implements Serializable {
     private String name;
 
     // 挂接菜单id集合
-    private String menuIdListStr;
+    private List<List<String>> menuIdList;
 }
