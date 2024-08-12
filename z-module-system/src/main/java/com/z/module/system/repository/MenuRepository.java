@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Spring Data SQL repository for the Menu entity.
@@ -24,4 +25,6 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
     List<Menu> findAllByMenuTypeOrderByOrderNumAsc(Integer code);
 
     List<Menu> findAllByMenuTypeInOrderByOrderNumAsc(List<Integer> list);
+
+    Optional<Menu> findOneByUrl(String requestURI);
 }

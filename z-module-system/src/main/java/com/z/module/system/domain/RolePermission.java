@@ -15,6 +15,10 @@ import java.io.Serializable;
  * @Title: RolePermission
  * @Package com/z/module/system/domain/RolePermission.java
  * @Description: 角色和权限关系
+ * 功能权限
+ * 1. 角色对菜单/按钮
+ * 2. 角色对接口
+ * 数据权限
  * @date 2024/7/21 上午1:09
  */
 @Entity

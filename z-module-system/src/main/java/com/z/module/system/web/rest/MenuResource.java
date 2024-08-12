@@ -10,8 +10,13 @@ import com.z.framework.common.util.GenericTreeBuilderUtil;
 import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.framework.security.util.SecurityUtils;
 import com.z.module.system.domain.Menu;
-import com.z.module.system.domain.Position;
+import com.z.module.system.domain.RoleMenu;
+import com.z.module.system.domain.User;
+import com.z.module.system.domain.UserAuthority;
 import com.z.module.system.repository.MenuRepository;
+import com.z.module.system.repository.RoleMenuRepository;
+import com.z.module.system.repository.UserAuthorityRepository;
+import com.z.module.system.repository.UserRepository;
 import com.z.module.system.service.MenuService;
 import com.z.module.system.web.mapper.MenuSelectMapper;
 import com.z.module.system.web.vo.MenuVO;
@@ -49,8 +54,17 @@ public class MenuResource {
 
     private final MenuRepository menuRepository;
 
-    public MenuResource(MenuRepository menuRepository, MenuService menuService, MenuSelectMapper menuSelectMapper) {
+    private final UserAuthorityRepository userAuthorityRepository;
+
+    private final UserRepository userRepository;
+
+    private final RoleMenuRepository roleMenuRepository;
+
+    public MenuResource(MenuRepository menuRepository, UserAuthorityRepository userAuthorityRepository, UserRepository userRepository, RoleMenuRepository roleMenuRepository, MenuService menuService, MenuSelectMapper menuSelectMapper) {
         this.menuRepository = menuRepository;
+        this.userAuthorityRepository = userAuthorityRepository;
+        this.userRepository = userRepository;
+        this.roleMenuRepository = roleMenuRepository;
         this.menuService = menuService;
         this.menuSelectMapper = menuSelectMapper;
     }
@@ -242,9 +256,19 @@ public class MenuResource {
     public ResponseEntity<ResponseData<List<Tree<Long>>>> getMenusRoute() {
         log.debug("REST request to get Menus Tree");
 
-        final List<Menu> allMenusOrderByOrdernumAsc =
-                menuRepository.findAllByMenuTypeInOrderByOrderNumAsc(Arrays.asList(MenuTypeEnum.DICT.getCode(),
-                        MenuTypeEnum.MENU.getCode()));
+        final String currentLoginName = SecurityUtils.getCurrentLoginName();
+        List<Menu> allMenusOrderByOrdernumAsc;
+        if("admin".equals(currentLoginName)){
+                    allMenusOrderByOrdernumAsc = menuRepository.findAllByMenuTypeInOrderByOrderNumAsc(Arrays.asList(MenuTypeEnum.DICT.getCode(),
+                            MenuTypeEnum.MENU.getCode()));
+        }else{
+            // 获取权限下的菜单
+            final Optional<User> oneByLogin = userRepository.findOneByLogin(currentLoginName);
+            final User user = oneByLogin.get();
+            final List<UserAuthority> allByUserId = userAuthorityRepository.findAllByUserId(user.getId());
+            final List<RoleMenu> roleMenuList = roleMenuRepository.findByRoleIdIn(allByUserId.stream().map(UserAuthority::getRoleId).collect(Collectors.toList()));
+            allMenusOrderByOrdernumAsc = menuRepository.findAllByIdInOrderByOrderNumAsc(roleMenuList.stream().map(RoleMenu::getMenuId).collect(Collectors.toList()));
+        }
 
         //树形结构一些特殊配置
         TreeNodeConfig treeNodeConfig = new TreeNodeConfig();
@@ -271,6 +295,7 @@ public class MenuResource {
                     metaMap.put("menuId", menuObj.getId());
                     metaMap.put("title", menuObj.getName());
                     metaMap.put("icon", menuObj.getIconCls());
+                    metaMap.put("permissionCode", menuObj.getPermissionCode());
                     tree.putExtra("meta", metaMap);
                 }
         );

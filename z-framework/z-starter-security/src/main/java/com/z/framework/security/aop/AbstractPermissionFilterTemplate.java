@@ -18,7 +18,7 @@ import java.io.IOException;
  * @date 2024/7/20 上午2:35
  * @version V1.0
  */
-public abstract class MenuPermissionFilterTemplate extends OncePerRequestFilter {
+public abstract class AbstractPermissionFilterTemplate extends OncePerRequestFilter {
 
     public boolean hasPermission(Authentication authentication, HttpServletRequest request) {
         return false;

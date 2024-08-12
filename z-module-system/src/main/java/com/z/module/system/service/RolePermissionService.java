@@ -13,7 +13,7 @@ import java.util.List;
  * @version V1.0
  * @Title: null.java
  * @Package com.longtu.service
- * @Description: 保存角色菜单配置信息
+ * @Description: 保存角色权限配置信息
  * @date 2022/8/18 下午3:03
  */
 @Service
@@ -25,7 +25,6 @@ public class RolePermissionService {
         this.rolePermissionRepository = rolePermissionRepository;
     }
 
-    @CacheEvict(allEntries = true, value = {"loginMenuCache"})
     public void saveRolePermission(List<Long> roleList, List<Long> permissionList) {
         final List<Long> roleIdList = new ArrayList<>();
 

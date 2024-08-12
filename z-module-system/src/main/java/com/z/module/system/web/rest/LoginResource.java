@@ -15,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Collections;
 
 /**
@@ -99,6 +102,11 @@ public class LoginResource {
 
                 // 记录token白名单, 注: 如果cache使用 redis之类的, 可以跟token同步增加失效时间
                 loginService.addTokenWriteList(token);
+
+                // 登录成功后设置全局用户信息，方便后续使用
+                final UsernamePasswordAuthenticationToken authenticationToken =
+                        new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>());
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
                 // 登录成功记录日志
                 loginLogService.save(loginVM, request);

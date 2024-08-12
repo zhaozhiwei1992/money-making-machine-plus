@@ -1,7 +1,7 @@
 package com.z.framework.security.config;
 
 import com.z.framework.security.aop.JWTAuthenticationFilter;
-import com.z.framework.security.aop.MenuPermissionFilterTemplate;
+import com.z.framework.security.aop.AbstractPermissionFilterTemplate;
 import com.z.framework.security.service.TokenProviderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -60,6 +60,7 @@ public class SpringSecurityAutoConfiguration extends WebSecurityConfigurerAdapte
 //           验证码
             "/captcha/numCode",
             "/api/captcha/numCode",
+            "/dashboard/analysis"
             // 临时测试
 //            "/",
 //            "/index",
@@ -107,7 +108,7 @@ public class SpringSecurityAutoConfiguration extends WebSecurityConfigurerAdapte
     private TokenProviderService tokenProviderService;
 
     @Autowired
-    public MenuPermissionFilterTemplate menuPermissionFilter;
+    public AbstractPermissionFilterTemplate abstractPermissionFilterTemplate;
 
     /**
      * 配置请求拦截
@@ -131,6 +132,6 @@ public class SpringSecurityAutoConfiguration extends WebSecurityConfigurerAdapte
 //                .anyRequest().access("@rbacServiceImpl.hasPermission(request, authentication)")
                 .and()
                 .addFilterBefore(new JWTAuthenticationFilter(tokenProviderService), UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(menuPermissionFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterAfter(abstractPermissionFilterTemplate, UsernamePasswordAuthenticationFilter.class);
     }
 }
