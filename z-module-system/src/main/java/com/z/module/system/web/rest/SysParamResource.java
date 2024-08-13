@@ -1,24 +1,20 @@
 package com.z.module.system.web.rest;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.util.StrUtil;
+import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.module.system.domain.SystemParam;
 import com.z.module.system.repository.SysParamRepository;
-import com.z.framework.common.web.rest.vm.ResponseData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URISyntaxException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Tag(name = "系统参数API")
 @RestController
@@ -45,6 +41,7 @@ public class SysParamResource {
      */
     @Operation(description = "新增系统参数")
     @PostMapping("/params")
+    @PreAuthorize("hasAuthority('system:params:add')")
     public ResponseEntity<ResponseData<SystemParam>> createSystemParam(@RequestBody SystemParam systemParam) throws URISyntaxException {
         log.debug("REST request to save SystemParam : {}", systemParam);
 
@@ -62,6 +59,7 @@ public class SysParamResource {
 
     @Operation(description = "获取系统参数")
     @GetMapping("/params")
+    @PreAuthorize("hasAuthority('system:params:view')")
     public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllSystemParams(Pageable pageable, SystemParam systemParam) {
         log.debug("REST request to get all SystemParam for an admin");
 
@@ -97,6 +95,7 @@ public class SysParamResource {
 
     @Operation(description = "删除系统参数")
     @DeleteMapping("/params")
+    @PreAuthorize("hasAuthority('system:params:delete')")
     public ResponseEntity<ResponseData<String>> deleteSystemParam(@RequestBody List<Long> idList) {
         log.debug("REST request to delete Examples, ids: {}", idList);
         this.sysParamRepository.deleteAllByIdIn(idList);

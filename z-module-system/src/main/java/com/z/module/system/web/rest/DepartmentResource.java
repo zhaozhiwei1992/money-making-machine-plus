@@ -19,6 +19,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,6 +51,7 @@ public class DepartmentResource {
      */
     @Operation(description = "新增部门")
     @PostMapping("/departments")
+    @PreAuthorize("hasAuthority('system:dept:add')")
     public ResponseEntity<ResponseData<Department>> createDepartment(@RequestBody Department department) throws URISyntaxException {
 
         ExampleMatcher matcher = ExampleMatcher.matching();
@@ -75,6 +77,7 @@ public class DepartmentResource {
      */
     @Operation(description = "获取所有部门")
     @GetMapping("/departments")
+    @PreAuthorize("hasAuthority('system:dept:view')")
     public ResponseEntity<ResponseData<Map<String, Object>>> getAllDepartments(
             Pageable pageable, Department department) {
         log.debug("REST request to get a page of UiComponents");
@@ -114,6 +117,7 @@ public class DepartmentResource {
 
     @Operation(description = "获取部门树")
     @GetMapping("/departments/tree")
+    @PreAuthorize("hasAuthority('system:dept:view')")
     public List<Tree<Long>> getDepartmentsTree() {
         log.debug("REST request to get Departments Tree");
 
@@ -162,6 +166,7 @@ public class DepartmentResource {
      * 404 (Not Found)}.
      */
     @GetMapping("/departments/{id}")
+    @PreAuthorize("hasAuthority('system:dept:view')")
     public ResponseEntity<ResponseData<Department>> getDepartment(@PathVariable Long id) {
         log.debug("REST request to get Department : {}", id);
         Optional<Department> department = departmentRepository.findById(id);
@@ -170,6 +175,7 @@ public class DepartmentResource {
 
     @Operation(description = "删除部门")
     @DeleteMapping("/departments")
+    @PreAuthorize("hasAuthority('system:dept:delete')")
     public ResponseEntity<ResponseData<String>> deleteDepartment(@RequestBody List<Long> idList) {
         log.debug("REST request to delete Examples, ids: {}", idList);
         this.departmentRepository.deleteAllByIdIn(idList);
@@ -178,8 +184,9 @@ public class DepartmentResource {
 
     private final DepartmentSelectMapper departmentSelectMapper;
 
-    @Operation(description = "获取角色树")
+    @Operation(description = "获取部门树")
     @GetMapping("/departments/select")
+    @PreAuthorize("hasAuthority('system:dept:view')")
     public ResponseEntity<List<SelectOptionVO>> getDepartmentsSelect() {
         log.debug("REST request to get Position Select");
 

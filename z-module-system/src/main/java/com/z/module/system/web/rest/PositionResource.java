@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,6 +47,7 @@ public class PositionResource {
      */
     @Operation(description = "新增岗位")
     @PostMapping("/positions")
+    @PreAuthorize("hasAuthority('system:post:add')")
     public ResponseEntity<ResponseData<Position>> createPosition(@RequestBody Position position) throws URISyntaxException {
         log.debug("REST request to save Position : {}", position);
 
@@ -64,6 +66,7 @@ public class PositionResource {
 
     @Operation(description = "获取岗位")
     @GetMapping("/positions")
+    @PreAuthorize("hasAuthority('system:post:view')")
     public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllPositions(Pageable pageable, Position role) {
         log.debug("REST request to get all Position for an admin");
 
@@ -98,6 +101,7 @@ public class PositionResource {
 
     @Operation(description = "删除岗位")
     @DeleteMapping("/positions")
+    @PreAuthorize("hasAuthority('system:post:delete')")
     public ResponseEntity<ResponseData<String>> deletePosition(@RequestBody List<Long> idList) {
         log.debug("REST request to delete Examples, ids: {}", idList);
         this.positionRepository.deleteAllByIdIn(idList);
@@ -106,6 +110,7 @@ public class PositionResource {
 
     @Operation(description = "获取岗位列表信息")
     @GetMapping("/positions/list")
+    @PreAuthorize("hasAuthority('system:post:view')")
     public ResponseEntity<ResponseData<List<Map<String, Object>>>> getAllDictList() {
         final List<Position> all = positionRepository.findAll();
         final List<Map<String, Object>> resultMap = all.stream().map(m -> {
@@ -121,6 +126,7 @@ public class PositionResource {
 
     @Operation(description = "获取岗位树")
     @GetMapping("/positions/select")
+    @PreAuthorize("hasAuthority('system:post:view')")
     public ResponseEntity<List<SelectOptionVO>> getPositionsSelect() {
         log.debug("REST request to get Position Select");
 

@@ -30,6 +30,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -79,6 +80,7 @@ public class MenuResource {
      */
     @Operation(description = "新增菜单")
     @PostMapping("/menus")
+    @PreAuthorize("hasAuthority('system:menu:add')")
     public ResponseEntity<ResponseData<Menu>> createMenu(@RequestBody Menu menu) throws URISyntaxException {
 
         ExampleMatcher matcher = ExampleMatcher.matching();
@@ -105,6 +107,7 @@ public class MenuResource {
      */
     @Operation(description = "获取所有菜单")
     @GetMapping("/menus")
+    @PreAuthorize("hasAuthority('system:menu:view')")
     public ResponseEntity<ResponseData<Map<String, Object>>> getAllMenus(
             Pageable pageable, Menu menu) {
         log.debug("REST request to get a page of UiComponents");
@@ -165,6 +168,7 @@ public class MenuResource {
      */
     @Operation(description = "获取菜单树")
     @GetMapping("/menus/tree")
+    @PreAuthorize("hasAuthority('system:menu:view')")
     public List<Tree<Long>> getMenusTree() {
         log.debug("REST request to get Menus Tree");
 
@@ -253,6 +257,7 @@ public class MenuResource {
      * ...
      */
     @GetMapping("/menus/route")
+    @PreAuthorize("hasAuthority('system:menu:view')")
     public ResponseEntity<ResponseData<List<Tree<Long>>>> getMenusRoute() {
         log.debug("REST request to get Menus Tree");
 
@@ -324,6 +329,7 @@ public class MenuResource {
      * 404 (Not Found)}.
      */
     @GetMapping("/menus/{id}")
+    @PreAuthorize("hasAuthority('system:menu:view')")
     public ResponseEntity<ResponseData<Menu>> getMenu(@PathVariable Long id) {
         log.debug("REST request to get Menu : {}", id);
         Optional<Menu> menu = menuRepository.findById(id);
@@ -332,6 +338,7 @@ public class MenuResource {
 
     @Operation(description = "删除菜单")
     @DeleteMapping("/menus")
+    @PreAuthorize("hasAuthority('system:menu:delete')")
     public ResponseEntity<ResponseData<String>> deleteMenu(@RequestBody List<Long> idList) {
         log.debug("REST request to delete Examples, ids: {}", idList);
         this.menuRepository.deleteAllByIdIn(idList);
@@ -340,6 +347,7 @@ public class MenuResource {
 
     @Operation(description = "获取所有一级菜单")
     @GetMapping("/menus/root")
+    @PreAuthorize("hasAuthority('system:menu:view')")
     public ResponseEntity<ResponseData<List<Menu>>> getAllRootMenus() {
         log.debug("REST request to get a page of Menus");
 
@@ -352,6 +360,7 @@ public class MenuResource {
 
     @Operation(description = "获取菜单树select")
     @GetMapping("/menus/select")
+    @PreAuthorize("hasAuthority('system:menu:view')")
     public ResponseEntity<List<SelectOptionVO>> getPositionsSelect() {
         log.debug("REST request to get Menu Select");
 
