@@ -12,8 +12,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.AntPathMatcher;
@@ -34,10 +42,16 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
     
-    private TokenProviderService tokenProviderService;
+    private final TokenProviderService tokenProviderService;
 
-    public JWTAuthenticationFilter(TokenProviderService tokenProviderService) {
+    private final AuthenticationManager authenticationManager;
+
+    private final UserDetailsService userDetailsService;
+
+    public JWTAuthenticationFilter(TokenProviderService tokenProviderService, AuthenticationManager authenticationManager, UserDetailsService userDetailsService) {
         this.tokenProviderService = tokenProviderService;
+        this.authenticationManager = authenticationManager;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -61,6 +75,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             }
         }
 
+        // token认证核心
 //        验证是否有认证信息
         final String s = extractHeaderToken(request);
         final String cookie = getCookie(request);
@@ -80,11 +95,14 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 //                throw new RuntimeException("Token已过期");
 //            }
 
-            // token认证核心
-            UsernamePasswordAuthenticationToken authentication = buildAuthentication(request, response);
+            // 这里可以直接返回AbstractAuthenticationToken,但是此时返回信息缺少权限信息
+            AbstractAuthenticationToken authenticationToken = buildAuthentication(request, response);
+            // 主动调用authenticate方法才可利用到loadUserByUsername方法，从而在authentication中填充权限信息
+            // 或者在build过程中直接主动填充即可
+//            Authentication authentication = authenticationManager.authenticate(authenticationToken);
             //org.springframework.boot.web.servlet.filter.ErrorPageSecurityFilter.isAllowed
             // 如果没有下边设置，上述校验不通过, 就会403
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             chain.doFilter(request, response);
         } catch (ExpiredJwtException e) {
             logger.error("Token已过期:", e);
@@ -193,10 +211,10 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             if (StringUtils.isNotBlank(userName)) {
 
                 // 获取数据库用户, 进行数据库用户二次校验, 根据用户状态控制是否允许登录
-                // retrieveUser(userName);
+                final UserDetails userDetails = retrieveUser(userName);
 
                 final UsernamePasswordAuthenticationToken authenticationToken =
-                        new UsernamePasswordAuthenticationToken(userName, null, new ArrayList<>());
+                        new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
 
                 // 通过security一个请求线程中带一些特殊信息, 通过request带也可以
                 final Object details = authenticationToken.getDetails();
@@ -221,5 +239,23 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             }
         }
         return null;
+    }
+
+    protected final UserDetails retrieveUser(String username) throws AuthenticationException {
+        UserDetails loadedUser;
+        try {
+            // 调用loadUserByUsername时加入type前缀
+            loadedUser = this.userDetailsService.loadUserByUsername(/*authentication.getType() + "&:@" +*/ username);
+        } catch (UsernameNotFoundException var6) {
+            throw var6;
+        } catch (Exception var7) {
+            throw new InternalAuthenticationServiceException(var7.getMessage(), var7);
+        }
+
+        if (loadedUser == null) {
+            throw new InternalAuthenticationServiceException("用户[" + username + "]不存在！");
+        } else {
+            return loadedUser;
+        }
     }
 }

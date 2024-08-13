@@ -24,9 +24,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * @author zhaozhiwei
+ * @version V1.0
+ * @Title: SpringSecurityAutoConfiguration
+ * @Package com/z/framework/security/config/SpringSecurityAutoConfiguration.java
+ * @Description:
+ * @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
+ * prePostEnabled = true 开启权限注解, 从而可以使用preAuthorize注解精细控制权限
+ * 规则: org.springframework.security.access.expression.SecurityExpressionRoot
+ * @date 2024/8/13 上午11:59
+ */
 @AutoConfiguration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true)
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 @ComponentScan(value = {"com.z.framework.security"})
 @EnableConfigurationProperties(CustomSecurityProperties.class)
 public class SpringSecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
@@ -107,7 +118,7 @@ public class SpringSecurityAutoConfiguration extends WebSecurityConfigurerAdapte
     @Autowired
     private TokenProviderService tokenProviderService;
 
-    @Autowired
+    //    @Autowired
     public AbstractPermissionFilterTemplate abstractPermissionFilterTemplate;
 
     /**
@@ -131,7 +142,9 @@ public class SpringSecurityAutoConfiguration extends WebSecurityConfigurerAdapte
                 // Can't configure anyRequest after itself   5.2版本以后只能有一个anyRequest,坑
 //                .anyRequest().access("@rbacServiceImpl.hasPermission(request, authentication)")
                 .and()
-                .addFilterBefore(new JWTAuthenticationFilter(tokenProviderService), UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(abstractPermissionFilterTemplate, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JWTAuthenticationFilter(tokenProviderService, authenticationManager(), userDetailsService), UsernamePasswordAuthenticationFilter.class);
+
+        // 打开下述注释可以自定义动态权限控制
+//                .addFilterAfter(abstractPermissionFilterTemplate, UsernamePasswordAuthenticationFilter.class);
     }
 }

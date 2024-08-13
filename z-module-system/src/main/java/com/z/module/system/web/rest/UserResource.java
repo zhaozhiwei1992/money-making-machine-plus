@@ -247,6 +247,7 @@ public class UserResource {
     @Operation(description = "删除用户")
     @DeleteMapping("/users")
     @Transactional(rollbackFor = Exception.class)
+    @PreAuthorize("hasAuthority('system:user:delete')")
     public ResponseEntity<ResponseData<String>> deleteUser(@RequestBody List<Long> idList) {
         log.debug("REST request to delete Examples, ids: {}", idList);
         this.userRepository.deleteAllByIdIn(idList);

@@ -103,10 +103,11 @@ public class LoginResource {
                 // 记录token白名单, 注: 如果cache使用 redis之类的, 可以跟token同步增加失效时间
                 loginService.addTokenWriteList(token);
 
-                // 登录成功后设置全局用户信息，方便后续使用
-                final UsernamePasswordAuthenticationToken authenticationToken =
-                        new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>());
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                // 登录成功后设置全局用户信息，方便后续使用, 前后端分离项目这一步其实也没啥用
+                // com.z.framework.security.aop.JWTAuthenticationFilter.doFilterInternal
+//                final UsernamePasswordAuthenticationToken authenticationToken =
+//                        new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>());
+//                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
                 // 登录成功记录日志
                 loginLogService.save(loginVM, request);

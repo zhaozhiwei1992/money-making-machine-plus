@@ -13,7 +13,15 @@ import java.util.stream.Collectors;
 
 import static com.z.framework.security.config.SpringSecurityAutoConfiguration.AUTH_WHITELIST;
 
-@Component
+/**
+ * @Title: CustomPermissionFilter
+ * @Package com/z/module/system/aop/CustomPermissionFilter.java
+ * @Description: 动态权限控制方案，比如按接口控制
+ * @author zhaozhiwei
+ * @date 2024/8/13 上午11:36
+ * @version V1.0
+ */
+//@Component
 public class CustomPermissionFilter extends AbstractPermissionFilterTemplate {
 
     private final UserAuthorityRepository userAuthorityRepository;
@@ -41,11 +49,11 @@ public class CustomPermissionFilter extends AbstractPermissionFilterTemplate {
     };
 
     public boolean hasPermission(Authentication authentication, HttpServletRequest request) {
+
         // 实现具体的权限检查逻辑
         // 注意, 白名单不能被拦截
         Set<String> urls = new HashSet<>(Arrays.asList(AUTH_WHITELIST));
 
-        //TODO 根据url或者前端传递permissionCode过来
         final String requestURI = request.getRequestURI();
         for (String url : urls) {
             if (antPathMatcher.match(url, requestURI)) {
@@ -67,12 +75,6 @@ public class CustomPermissionFilter extends AbstractPermissionFilterTemplate {
             return true;
         }
 
-        // 1. 获取当前请求菜单权限标识, 如: system:user:add
-        final Optional<Menu> oneByUrl = menuRepository.findOneByUrl(requestURI);
-        if (!oneByUrl.isPresent()) {
-            return false;
-        }
-
         // 2. 根据用户名去加载数据库中所属角色对应的所有权限标识
         final Optional<User> oneByLogin = userRepository.findOneByLogin(principal.toString());
         if (!oneByLogin.isPresent()) {
@@ -80,12 +82,9 @@ public class CustomPermissionFilter extends AbstractPermissionFilterTemplate {
         }
         final List<UserAuthority> roleList = userAuthorityRepository.findAllByUserId(oneByLogin.get().getId());
 
-        // 角色菜单/按钮权限
-        final List<Long> roleIdList = roleList.stream().map(UserAuthority::getRoleId).collect(Collectors.toList());
-        final List<RoleMenu> roleMenuList = roleMenuRepository.findByRoleIdIn(roleIdList);
-        if (roleMenuList.stream().map(RoleMenu::getMenuId).collect(Collectors.toList()).contains(oneByUrl.get().getId())) {
-            return true;
-        }
+        //TODO 前后端分离项目,前端请求rest接口应传递权限标识符,从而校验权限
+        // 使用统一的过滤器，避免每个方法增加权限preAuthority注解,麻烦
+        //TODO 角色权限表,获取接口权限
 
         return false;
     }

@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,6 +36,7 @@ public class LoginLogResource {
      */
     @Operation(description = "获取登录日志信息")
     @GetMapping("/login/logs")
+    @PreAuthorize("hasAuthority('log:login:view')")
     public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllLoginLoggings(Pageable pageable,
                                                                                      LoginLog loginLog) {
         log.debug("REST login to get all LoginLogging for an admin");
