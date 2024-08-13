@@ -83,6 +83,11 @@
       <artifactId>z-starter-monitor</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>com.z</groupId>
+      <artifactId>z-starter-cache</artifactId>
+    </dependency>
+
 <!--    https://blog.csdn.net/new_baibai/article/details/129307540-->
     <dependency>
       <groupId>org.springframework.session</groupId>

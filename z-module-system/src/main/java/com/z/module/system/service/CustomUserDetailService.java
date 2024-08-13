@@ -10,6 +10,7 @@ import com.z.module.system.repository.RoleMenuRepository;
 import com.z.module.system.repository.UserAuthorityRepository;
 import com.z.module.system.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -42,7 +43,10 @@ public class CustomUserDetailService implements UserDetailsService {
         this.roleMenuRepository = roleMenuRepository;
     }
 
+    private static final String LOAD_BY_USERNAME_CACHE = "loadByUserNameCache";
+
     @Override
+    @Cacheable(cacheNames = LOAD_BY_USERNAME_CACHE)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         User user = userRepository.findOneByLogin(username).orElse(new User());

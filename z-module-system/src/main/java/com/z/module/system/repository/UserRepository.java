@@ -16,10 +16,10 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     String USERS_BY_LOGIN_CACHE = "usersByLogin";
 
+    @Cacheable(cacheNames = USERS_BY_LOGIN_CACHE)
     Optional<User> findOneByLogin(String login);
 
     @EntityGraph(attributePaths = "authorities")
-    @Cacheable(cacheNames = USERS_BY_LOGIN_CACHE)
     Optional<User> findOneWithAuthoritiesByLogin(String login);
 
     void deleteByLogin(String login);
