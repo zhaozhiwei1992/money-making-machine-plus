@@ -177,8 +177,15 @@ const save = async () => {
     />
 
     <div class="mb-10px">
-      <ElButton type="primary" @click="AddAction">{{ t('exampleDemo.add') }}</ElButton>
-      <ElButton :loading="delLoading" type="danger" @click="delData(null, true)">
+      <ElButton type="primary" @click="AddAction" v-hasPermi="['system:post:add']">{{
+        t('exampleDemo.add')
+      }}</ElButton>
+      <ElButton
+        :loading="delLoading"
+        type="danger"
+        @click="delData(null, true)"
+        v-hasPermi="['system:post:delete']"
+      >
         {{ t('exampleDemo.del') }}
       </ElButton>
     </div>
@@ -200,18 +207,18 @@ const save = async () => {
         <ElButton
           v-if="row.createdBy != 'system'"
           type="primary"
-          v-hasPermi="['example:dialog:edit']"
+          v-hasPermi="['system:post:edit']"
           @click="action(row, 'edit')"
         >
           {{ t('exampleDemo.edit') }}
         </ElButton>
-        <ElButton type="success" v-hasPermi="['example:dialog:view']" @click="AddAction(row)">
+        <ElButton type="success" v-hasPermi="['system:post:add']" @click="AddAction(row)">
           {{ t('exampleDemo.add') }}
         </ElButton>
         <ElButton
           v-if="row.createdBy != 'system'"
           type="danger"
-          v-hasPermi="['example:dialog:delete']"
+          v-hasPermi="['system:post:delete']"
           @click="delData(row, false)"
         >
           {{ t('exampleDemo.del') }}
@@ -235,7 +242,13 @@ const save = async () => {
     />
 
     <template #footer>
-      <ElButton v-if="actionType !== 'detail'" type="primary" :loading="loading" @click="save">
+      <ElButton
+        v-if="actionType !== 'detail'"
+        type="primary"
+        :loading="loading"
+        @click="save"
+        v-hasPermi="['system:post:add']"
+      >
         {{ t('exampleDemo.save') }}
       </ElButton>
       <ElButton @click="dialogVisible = false">{{ t('dialogDemo.close') }}</ElButton>

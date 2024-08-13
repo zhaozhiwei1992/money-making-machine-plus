@@ -295,7 +295,6 @@ public class MenuResource {
                     metaMap.put("menuId", menuObj.getId());
                     metaMap.put("title", menuObj.getName());
                     metaMap.put("icon", menuObj.getIconCls());
-                    metaMap.put("permissionCode", menuObj.getPermissionCode());
                     tree.putExtra("meta", metaMap);
                 }
         );

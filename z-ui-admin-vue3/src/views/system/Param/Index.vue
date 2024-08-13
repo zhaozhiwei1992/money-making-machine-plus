@@ -195,8 +195,15 @@ const save = async () => {
     />
 
     <div class="mb-10px">
-      <ElButton type="primary" @click="AddAction">{{ t('exampleDemo.add') }}</ElButton>
-      <ElButton :loading="delLoading" type="danger" @click="delData(null, true)">
+      <ElButton type="primary" @click="AddAction" v-hasPermi="['system:params:add']">{{
+        t('exampleDemo.add')
+      }}</ElButton>
+      <ElButton
+        :loading="delLoading"
+        type="danger"
+        @click="delData(null, true)"
+        v-hasPermi="['system:param:delete']"
+      >
         {{ t('exampleDemo.del') }}
       </ElButton>
     </div>
@@ -213,17 +220,17 @@ const save = async () => {
       @register="register"
     >
       <template #action="{ row }">
-        <ElButton type="primary" v-hasPermi="['example:dialog:edit']" @click="action(row, 'edit')">
+        <ElButton type="primary" v-hasPermi="['system:params:edit']" @click="action(row, 'edit')">
           {{ t('exampleDemo.edit') }}
         </ElButton>
         <ElButton
           type="success"
-          v-hasPermi="['example:dialog:view']"
+          v-hasPermi="['system:params:detail']"
           @click="action(row, 'detail')"
         >
           {{ t('exampleDemo.detail') }}
         </ElButton>
-        <ElButton type="danger" v-hasPermi="['example:dialog:delete']" @click="delData(row, false)">
+        <ElButton type="danger" @click="delData(row, false)" v-hasPermi="['system:params:delete']">
           {{ t('exampleDemo.del') }}
         </ElButton>
       </template>
@@ -245,7 +252,13 @@ const save = async () => {
     />
 
     <template #footer>
-      <ElButton v-if="actionType !== 'detail'" type="primary" :loading="loading" @click="save">
+      <ElButton
+        v-if="actionType !== 'detail'"
+        type="primary"
+        :loading="loading"
+        @click="save"
+        v-hasPermi="['system:params:add']"
+      >
         {{ t('exampleDemo.save') }}
       </ElButton>
       <ElButton @click="dialogVisible = false">{{ t('dialogDemo.close') }}</ElButton>

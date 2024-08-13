@@ -205,20 +205,16 @@ const save = async () => {
       @register="register"
     >
       <template #action="{ row }">
-        <ElButton type="primary" v-hasPermi="['example:dialog:edit']" @click="action(row, 'edit')">
+        <ElButton type="primary" v-hasPermi="['system:role:edit']" @click="action(row, 'edit')">
           {{ t('exampleDemo.edit') }}
         </ElButton>
-        <ElButton
-          type="success"
-          v-hasPermi="['example:dialog:view']"
-          @click="action(row, 'detail')"
-        >
+        <ElButton type="success" v-hasPermi="['system:role:detail']" @click="action(row, 'detail')">
           {{ t('exampleDemo.detail') }}
         </ElButton>
         <ElButton
           v-if="row.createdBy != 'system'"
           type="danger"
-          v-hasPermi="['example:dialog:delete']"
+          v-hasPermi="['system:role:delete']"
           @click="delData(row, false)"
         >
           {{ t('exampleDemo.del') }}
@@ -242,7 +238,13 @@ const save = async () => {
     />
 
     <template #footer>
-      <ElButton v-if="actionType !== 'detail'" type="primary" :loading="loading" @click="save">
+      <ElButton
+        v-if="actionType !== 'detail'"
+        type="primary"
+        :loading="loading"
+        @click="save"
+        v-hasPermi="['system:role:add']"
+      >
         {{ t('exampleDemo.save') }}
       </ElButton>
       <ElButton @click="dialogVisible = false">{{ t('dialogDemo.close') }}</ElButton>

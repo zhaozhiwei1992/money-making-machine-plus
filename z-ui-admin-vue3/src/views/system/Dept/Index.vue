@@ -203,8 +203,15 @@ const save = async () => {
 
     <div class="mb-10px">
       <!-- 这里增加一级部门 -->
-      <ElButton type="primary" @click="AddAction">{{ t('exampleDemo.add') }}</ElButton>
-      <ElButton :loading="delLoading" type="danger" @click="delData(null, true)">
+      <ElButton type="primary" @click="AddAction" v-hasPermi="['system:dept:add']">{{
+        t('exampleDemo.add')
+      }}</ElButton>
+      <ElButton
+        :loading="delLoading"
+        type="danger"
+        @click="delData(null, true)"
+        v-hasPermi="['system:dept:delete']"
+      >
         {{ t('exampleDemo.del') }}
       </ElButton>
     </div>
@@ -226,18 +233,18 @@ const save = async () => {
         <ElButton
           v-if="row.createdBy != 'system'"
           type="primary"
-          v-hasPermi="['example:dialog:edit']"
+          v-hasPermi="['system:dept:edit']"
           @click="action(row, 'edit')"
         >
           {{ t('exampleDemo.edit') }}
         </ElButton>
-        <ElButton type="success" v-hasPermi="['example:dialog:view']" @click="AddAction(row)">
+        <ElButton type="success" v-hasPermi="['system:dept:add']" @click="AddAction(row)">
           {{ t('exampleDemo.add') }}
         </ElButton>
         <ElButton
           v-if="row.createdBy != 'system'"
           type="danger"
-          v-hasPermi="['example:dialog:delete']"
+          v-hasPermi="['system:dept:delete']"
           @click="delData(row, false)"
         >
           {{ t('exampleDemo.del') }}

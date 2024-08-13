@@ -186,8 +186,15 @@ const save = async () => {
     />
 
     <div class="mb-10px">
-      <ElButton type="primary" @click="AddAction">{{ t('exampleDemo.add') }}</ElButton>
-      <ElButton :loading="delLoading" type="danger" @click="delData(null, true)">
+      <ElButton type="primary" @click="AddAction" v-hasPermi="['system:permission:add']">{{
+        t('exampleDemo.add')
+      }}</ElButton>
+      <ElButton
+        :loading="delLoading"
+        type="danger"
+        @click="delData(null, true)"
+        v-hasPermi="['system:permission:delete']"
+      >
         {{ t('exampleDemo.del') }}
       </ElButton>
     </div>
@@ -204,7 +211,11 @@ const save = async () => {
       @register="register"
     >
       <template #action="{ row }">
-        <ElButton type="primary" v-hasPermi="['example:dialog:edit']" @click="action(row, 'edit')">
+        <ElButton
+          type="primary"
+          v-hasPermi="['system:permission:edit']"
+          @click="action(row, 'edit')"
+        >
           {{ t('exampleDemo.edit') }}
         </ElButton>
         <ElButton
@@ -214,7 +225,11 @@ const save = async () => {
         >
           {{ t('exampleDemo.detail') }}
         </ElButton>
-        <ElButton type="danger" v-hasPermi="['example:dialog:delete']" @click="delData(row, false)">
+        <ElButton
+          type="danger"
+          v-hasPermi="['system:permission:delete']"
+          @click="delData(row, false)"
+        >
           {{ t('exampleDemo.del') }}
         </ElButton>
       </template>

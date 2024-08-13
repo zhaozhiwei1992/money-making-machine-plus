@@ -16,7 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +29,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 /**
  * @author zhaozhiwei
@@ -54,12 +58,15 @@ public class LoginResource {
 
     private final LoginService loginService;
 
-    public LoginResource(UserRepository userRepository, PasswordEncoder passwordEncoder, LoginLogService loginLogService, TokenProviderService tokenProviderService, LoginService loginService) {
+    private final UserDetailsService userDetailsService;
+
+    public LoginResource(UserRepository userRepository, PasswordEncoder passwordEncoder, LoginLogService loginLogService, TokenProviderService tokenProviderService, LoginService loginService, UserDetailsService userDetailsService) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = passwordEncoder;
         this.loginLogService = loginLogService;
         this.tokenProviderService = tokenProviderService;
         this.loginService = loginService;
+        this.userDetailsService = userDetailsService;
     }
 
     /**
@@ -97,7 +104,11 @@ public class LoginResource {
             logger.info("数据库密码: {}", dbPassWord);
             if (bCryptPasswordEncoder.matches(password, dbPassWord)) {
                 String token = tokenProviderService.generateToken(username, loginVM.isRememberMe());
-                authedRespVO.setPermissions(Collections.singletonList("*.*.*"));
+                // 如果不需要前台动态控制按钮显示,可以返回***
+                // authedRespVO.setPermissions(Collections.singletonList("*.*.*"));
+                // 根据按钮权限动态控制前端按钮展现
+                final Collection<? extends GrantedAuthority> authorities = userDetailsService.loadUserByUsername(username).getAuthorities();
+                authedRespVO.setPermissions(authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
                 authedRespVO.setToken(token);
 
                 // 记录token白名单, 注: 如果cache使用 redis之类的, 可以跟token同步增加失效时间

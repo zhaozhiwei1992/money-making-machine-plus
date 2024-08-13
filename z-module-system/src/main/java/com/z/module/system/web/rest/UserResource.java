@@ -162,6 +162,7 @@ public class UserResource {
 
     @Operation(description = "获取用户")
     @GetMapping("/users")
+    @PreAuthorize("hasAuthority('system:user:view')")
     public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllUsers(Pageable pageable, User user) {
         log.debug("REST request to get all User for an admin");
 
@@ -256,6 +257,7 @@ public class UserResource {
 
     @Operation(description = "获取所有用户信息")
     @GetMapping("/users/all")
+    @PreAuthorize("hasAuthority('system:user:view')")
     public ResponseEntity<ResponseData<List<Map<String, Object>>>> getAllDictList() {
         final List<User> all = userRepository.findAll();
         final List<Map<String, Object>> resultMap = all.stream().map(m -> {
@@ -271,7 +273,6 @@ public class UserResource {
     @Operation(description = "重置密码")
     @PostMapping("/users/resetpass")
     @Transactional(rollbackFor = Exception.class)
-    @PreAuthorize("hasAuthority('system:user:add')")
     public ResponseEntity<ResponseData<User>> resetPassword(@RequestBody PasswordResetVO passwordResetVO) throws URISyntaxException {
         log.debug("REST request to save User : {}", passwordResetVO);
 

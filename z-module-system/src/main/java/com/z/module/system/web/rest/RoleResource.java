@@ -3,11 +3,8 @@ package com.z.module.system.web.rest;
 import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.module.system.domain.Authority;
 import com.z.module.system.domain.RoleMenu;
-import com.z.module.system.domain.UserAuthority;
 import com.z.module.system.repository.AuthorityRepository;
 import com.z.module.system.repository.RoleMenuRepository;
-import com.z.module.system.service.RoleMenuService;
-import com.z.module.system.service.RolePermissionService;
 import com.z.module.system.web.mapper.RoleSelectMapper;
 import com.z.module.system.web.vo.RoleVO;
 import com.z.module.system.web.vo.SelectOptionVO;
@@ -17,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,11 +33,9 @@ public class RoleResource {
     private final AuthorityRepository roleRepository;
 
     public RoleResource(AuthorityRepository roleRepository, RoleMenuRepository roleMenuRepository,
-                        RoleMenuService roleMenuService, RolePermissionService rolePermissionService, RoleSelectMapper roleSelectMapper) {
+                        RoleSelectMapper roleSelectMapper) {
         this.roleRepository = roleRepository;
         this.roleMenuRepository = roleMenuRepository;
-        this.roleMenuService = roleMenuService;
-        this.rolePermissionService = rolePermissionService;
         this.roleSelectMapper = roleSelectMapper;
     }
 
@@ -57,6 +53,7 @@ public class RoleResource {
      */
     @Operation(description = "新增角色")
     @PostMapping("/roles")
+    @PreAuthorize("hasAuthority('system:role:add')")
     public ResponseEntity<ResponseData<Authority>> createAuthority(@RequestBody RoleVO roleVO) throws URISyntaxException {
         log.debug("REST request to save Authority : {}", roleVO);
 
@@ -97,6 +94,7 @@ public class RoleResource {
 
     @Operation(description = "获取角色")
     @GetMapping("/roles")
+    @PreAuthorize("hasAuthority('system:role:view')")
     public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllAuthoritys(Pageable pageable, Authority role) {
         log.debug("REST request to get all Authority for an admin");
 
@@ -143,28 +141,16 @@ public class RoleResource {
 
     @Operation(description = "删除角色")
     @DeleteMapping("/roles")
+    @PreAuthorize("hasAuthority('system:role:delete')")
     public ResponseEntity<ResponseData<String>> deleteAuthority(@RequestBody List<Long> idList) {
         log.debug("REST request to delete Examples, ids: {}", idList);
         this.roleRepository.deleteAllByIdIn(idList);
         return ResponseData.ok("success");
     }
 
-    private final RoleMenuService roleMenuService;
-
-    @Operation(description = "保存角色菜单信息")
-    @PostMapping(value = "/roles/menu")
-    public ResponseEntity<ResponseData<String>> save(
-            @RequestParam(value = "roleList") List<Long> roleList,
-            @RequestParam(value = "menuList") List<Long> menuList
-    ) {
-
-        roleMenuService.saveRoleMenu(roleList, menuList);
-        return ResponseData.ok("success");
-    }
-
-
     @Operation(description = "获取角色列表信息")
     @GetMapping("/roles/list")
+    @PreAuthorize("hasAuthority('system:role:view')")
     public ResponseEntity<ResponseData<List<Map<String, Object>>>> getAllDictList() {
         final List<Authority> all = roleRepository.findAll();
         final List<Map<String, Object>> resultMap = all.stream().map(m -> {
@@ -176,23 +162,11 @@ public class RoleResource {
         return ResponseData.ok(resultMap);
     }
 
-    private final RolePermissionService rolePermissionService;
-
-    @Operation(description = "保存角色权限信息")
-    @PostMapping(value = "/roles/permission")
-    public ResponseEntity<ResponseData<String>> saveRolePermission(
-            @RequestParam(value = "roleList") List<Long> roleList,
-            @RequestParam(value = "permissionList") List<Long> permissionList
-    ) {
-
-        rolePermissionService.saveRolePermission(roleList, permissionList);
-        return ResponseData.ok("success");
-    }
-
     private final RoleSelectMapper roleSelectMapper;
 
     @Operation(description = "获取角色树")
     @GetMapping("/roles/select")
+    @PreAuthorize("hasAuthority('system:role:view')")
     public ResponseEntity<List<SelectOptionVO>> getRolesSelect() {
         log.debug("REST request to get Roles Select");
 
