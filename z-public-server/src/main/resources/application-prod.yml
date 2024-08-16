@@ -148,7 +148,13 @@ z:
     # 注意: 前端必须是localhost访问, 如果用127.0.0.1还是会拦截, 这里修改为实际域名
     # 4000是admin-vue3, 8080: z-ui-app
 #    allowed-origins: 'http://dev.com:8090,https://dev.com:8090,http://dev.com,https://dev.com'
-    allowed-origins: 'http://localhost:8443,https://localhost:8443,http://localhost:4173,https://localhost:4173,http://localhost:3000,https://localhost:3000'
+    allowed-origins:
+      - http://localhost:8443
+      - https://localhost:8443
+      - http://localhost:4173
+      - https://localhost:4173
+      - http://localhost:3000
+      - https://localhost:3000
     allowed-methods: '*'
     allowed-headers: '*'
     exposed-headers: 'Authorization,Link,X-Total-Count,X-${z.app.name}-alert,X-${z.app.name}-error,X-${z.app.name}-params'
