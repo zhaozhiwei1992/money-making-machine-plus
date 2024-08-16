@@ -1,5 +1,5 @@
 <template>
-  <view class="mine-container" :style="{height: `${windowHeight}px`}">
+  <view class="mine-container" :style="{ height: `${windowHeight}px` }">
     <!--顶部个人信息栏-->
     <view class="header-section">
       <view class="flex padding justify-between">
@@ -7,15 +7,19 @@
           <view v-if="!avatar" class="cu-avatar xl round bg-white">
             <view class="iconfont icon-people text-gray icon"></view>
           </view>
-          <image v-if="avatar" @click="handleToAvatar" :src="avatar" class="cu-avatar xl round" mode="widthFix">
+          <image
+            v-if="avatar"
+            @click="handleToAvatar"
+            :src="avatar"
+            class="cu-avatar xl round"
+            mode="widthFix"
+          >
           </image>
           <view v-if="!name" @click="handleToLogin" class="login-tip">
             点击登录
           </view>
           <view v-if="name" @click="handleToInfo" class="user-info">
-            <view class="u_title">
-              用户名：{{ name }}
-            </view>
+            <view class="u_title"> 用户名：{{ name }} </view>
           </view>
         </view>
         <view @click="handleToInfo" class="flex align-center">
@@ -71,126 +75,130 @@
           </view>
         </view>
       </view>
-
     </view>
   </view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        name: this.$store.state.user.name,
-        version: getApp().globalData.config.appInfo.version
-      }
-    },
-    computed: {
-      avatar() {
-        return this.$store.state.user.avatar
-      },
-      windowHeight() {
-        return uni.getSystemInfoSync().windowHeight - 50
-      }
-    },
-    methods: {
-      handleToInfo() {
-        this.$tab.navigateTo('/pages/mine/info/index')
-      },
-      handleToEditInfo() {
-        this.$tab.navigateTo('/pages/mine/info/edit')
-      },
-      handleToSetting() {
-        this.$tab.navigateTo('/pages/mine/setting/index')
-      },
-      handleToLogin() {
-        this.$tab.reLaunch('/pages/login')
-      },
-      handleToAvatar() {
-        this.$tab.navigateTo('/pages/mine/avatar/index')
-      },
-      handleLogout() {
-        this.$modal.confirm('确定注销并退出系统吗？').then(() => {
-          this.$store.dispatch('LogOut').then(() => {
-            this.$tab.reLaunch('/pages/index')
-          })
-        })
-      },
-      handleHelp() {
-        this.$tab.navigateTo('/pages/mine/help/index')
-      },
-      handleAbout() {
-        this.$tab.navigateTo('/pages/mine/about/index')
-      },
-      handleJiaoLiuQun() {
-        this.$modal.showToast('QQ群：①133713780、②146013835')
-      },
-      handleBuilding() {
-        this.$modal.showToast('模块建设中~')
-      }
-    }
-  }
+<script setup lang="ts">
+import { reactive, computed, onMounted, ref } from "vue";
+const name = ref("");
+const version = ref("");
+
+onMounted(() => {
+  name.value = uni.getStorageSync("username");
+  version.value = uni.getStorageSync("version");
+});
+
+const avatar = computed(() => "");
+const windowHeight = computed(() => uni.getSystemInfoSync().windowHeight - 50);
+
+const handleToInfo = () => {
+  uni.navigateTo({ url: "/pages/mine/info/index" });
+};
+const handleToEditInfo = () => {
+  uni.navigateTo({ url: "/pages/mine/info/edit" });
+};
+
+const handleToSetting = () => {
+  uni.navigateTo({ url: "/pages/mine/setting/index" });
+};
+
+const handleToLogin = () => {
+  uni.navigateTo({ url: "/pages/login" });
+};
+
+const handleToAvatar = () => {
+  uni.navigateTo({ url: "/pages/mine/avatar/index" });
+};
+
+const handleLogout = () => {
+  // this.$modal.confirm('确定注销并退出系统吗？').then(() => {
+  //   this.$store.dispatch('LogOut').then(() => {
+  //     this.$tab.reLaunch('/pages/index')
+  //   })
+  // })
+};
+
+const handleHelp = () => {
+  uni.navigateTo({ url: "/pages/mine/help/index" });
+};
+
+const handleAbout = () => {
+  uni.navigateTo({ url: "/pages/mine/about/index" });
+};
+
+const handleJiaoLiuQun = () => {
+  uni.showToast({ title: "QQ群：①123、②321" });
+};
+
+const handleBuilding = () => {
+  uni.showToast({
+    title: "模块建设中~",
+    image: "https://cdn.uviewui.com/uview/demo/toast/error.png",
+    duration: 2000,
+  });
+};
 </script>
 
 <style lang="scss">
-  page {
-    background-color: #f5f6f7;
-  }
+page {
+  background-color: #f5f6f7;
+}
 
-  .mine-container {
-    width: 100%;
-    height: 100%;
+.mine-container {
+  width: 100%;
+  height: 100%;
 
+  .header-section {
+    padding: 15px 15px 45px 15px;
+    background-color: #3c96f3;
+    color: white;
 
-    .header-section {
-      padding: 15px 15px 45px 15px;
-      background-color: #3c96f3;
-      color: white;
+    .login-tip {
+      font-size: 18px;
+      margin-left: 10px;
+    }
 
-      .login-tip {
+    .cu-avatar {
+      border: 2px solid #eaeaea;
+
+      .icon {
+        font-size: 40px;
+      }
+    }
+
+    .user-info {
+      margin-left: 15px;
+
+      .u_title {
         font-size: 18px;
-        margin-left: 10px;
-      }
-
-      .cu-avatar {
-        border: 2px solid #eaeaea;
-
-        .icon {
-          font-size: 40px;
-        }
-      }
-
-      .user-info {
-        margin-left: 15px;
-
-        .u_title {
-          font-size: 18px;
-          line-height: 30px;
-        }
+        line-height: 30px;
       }
     }
+  }
 
-    .content-section {
-      position: relative;
-      top: -50px;
+  .content-section {
+    position: relative;
+    top: -50px;
 
-      .mine-actions {
-        margin: 15px 15px;
-        padding: 20px 0px;
-        border-radius: 8px;
-        background-color: white;
+    .mine-actions {
+      margin: 15px 15px;
+      padding: 20px 0px;
+      border-radius: 8px;
+      background-color: white;
 
-        .action-item {
-          .icon {
-            font-size: 28px;
-          }
+      .action-item {
+        .icon {
+          font-size: 28px;
+        }
 
-          .text {
-            display: block;
-            font-size: 13px;
-            margin: 8px 0px;
-          }
+        .text {
+          display: block;
+          font-size: 13px;
+          margin: 8px 0px;
         }
       }
     }
   }
+}
 </style>

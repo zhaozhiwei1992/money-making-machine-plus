@@ -78,7 +78,6 @@
   import { ref, reactive, onMounted } from 'vue';
 
 const data = reactive([
-    { image: '/static/images/banner/banner01.jpg' },
     { image: '/static/images/banner/banner02.jpg' },
     { image: '/static/images/banner/banner03.jpg' }
   ]
