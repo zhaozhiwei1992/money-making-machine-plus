@@ -1,10 +1,12 @@
-import axios, {
+import type {
   AxiosInstance,
   InternalAxiosRequestConfig,
   AxiosRequestHeaders,
   AxiosResponse,
   AxiosError
 } from 'axios'
+
+import axios from 'axios'
 
 import qs from 'qs'
 

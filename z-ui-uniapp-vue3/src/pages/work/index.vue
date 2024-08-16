@@ -95,7 +95,11 @@ function changeSwiper(e: any) {
 }
 
 function changeGrid() {
-  showToast('模块建设中~');
+  uni.showToast({
+    title: '模块建设中~',
+    image: 'https://cdn.uviewui.com/uview/demo/toast/error.png',
+    duration: 2000
+  });
 }
 
 // 如果需要在组件挂载后执行某些操作，可以使用 onMounted 钩子
@@ -103,11 +107,6 @@ onMounted(() => {
   // 组件挂载后的代码
 });
 
-// 定义 showToast 函数，如果使用了某个UI库，可能需要导入相应的方法
-function showToast(message: string) {
-  // 这里以一个示例实现，具体实现取决于你使用的UI库
-  console.log(message);
-}
 </script>
 
 <style lang="scss">

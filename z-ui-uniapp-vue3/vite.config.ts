@@ -5,7 +5,7 @@ import uni from "@dcloudio/vite-plugin-uni";
 export default defineConfig({
   plugins: [uni()],
   server: {
-    port: 5174,
+    port: 5173,
     proxy: {
       // 选项写法
       '/api': {
@@ -15,9 +15,10 @@ export default defineConfig({
         // rewrite: path => path.replace(/^\/api/, '')
       }
     },
-    hmr: {
-      overlay: false
-    },
+    // hmr: {
+    //   overlay: false
+    // },
+    hmr: true,
     host: '0.0.0.0'
   },
 });
