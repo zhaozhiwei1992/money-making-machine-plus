@@ -3,7 +3,7 @@
     <view class="example">
       <uni-forms ref="form" :model="user" labelWidth="80px">
         <uni-forms-item label="用户昵称" name="username">
-          <uni-easyinput v-model="user.username" placeholder="请输入昵称" />
+          <uni-easyinput v-model="user.name" placeholder="请输入昵称" />
         </uni-forms-item>
         <uni-forms-item label="手机号码" name="phonenumber">
           <uni-easyinput v-model="user.phonenumber" placeholder="请输入手机号码" />
@@ -81,21 +81,13 @@ const rules = reactive({
 
 const name:string|any = ref("");
 
-onMounted(() => {
+onMounted( async () => {
   name.value = uni.getStorageSync("username");
-});
-
-const onLoad = async () => {
   // 获取登录用户名
-  const response = await getUserDetLoginApi(name);
-  user.value = response.data;
-};
-
-const onReady = () => {
-  // 假设你有一个表单引用，你需要设置表单的规则
-  // 这里需要根据你的具体实现来调整
-  // this.$refs.form.setRules(rules.value);
-};
+  const response = await getUserDetLoginApi(name.value);
+  console.log(response)
+  user.value = response;
+});
 
 const submit = async () => {
   try {
@@ -103,7 +95,7 @@ const submit = async () => {
     if (isValid) {
       await saveTableApi(user.value);
       uni.showToast({
-        title: "登录成功",
+        title: "保存成功",
         image: "https://cdn.uviewui.com/uview/demo/toast/success.png",
         duration: 2000,
       });
