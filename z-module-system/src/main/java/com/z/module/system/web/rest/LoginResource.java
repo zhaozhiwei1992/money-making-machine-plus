@@ -14,10 +14,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,9 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.stream.Collectors;
 
 /**
@@ -78,7 +75,7 @@ public class LoginResource {
      */
     @Operation(description = "登录认证")
     @PostMapping("/login")
-    public ResponseEntity<ResponseData<AuthedRespVO>> login(@Valid @RequestBody LoginVO loginVM, HttpServletRequest request) {
+    public AuthedRespVO login(@Valid @RequestBody LoginVO loginVM, HttpServletRequest request) {
 
         // 验证码校验
         // 1. 获取写入的验证码信息
@@ -91,7 +88,7 @@ public class LoginResource {
         // 3. 不相同则返回登录页面
         if(!attribute.equals(captcha)){
             logger.error("登录出错, 请输入正确的验证码");
-            return ResponseData.fail("验证码错误");
+            throw new RuntimeException("验证码错误");
         }
 
         try {
@@ -122,24 +119,24 @@ public class LoginResource {
 
                 // 登录成功记录日志
                 loginLogService.save(loginVM, request);
-                return ResponseData.ok(authedRespVO);
+                return authedRespVO;
             }else{
                 log.error(String.format("登录失败, 用户: %s, 密码: %s, 数据库密码: %s", username, password, dbPassWord));
-                return ResponseData.fail(String.format("用户密码不匹配, 登录用户: %s, 密码: %s", username, password));
+                throw new RuntimeException(String.format("用户密码不匹配, 登录用户: %s, 密码: %s", username, password));
             }
         } catch (Exception e) {
             logger.error("登录出错", e);
-            return ResponseData.fail();
+            throw new RuntimeException("登录出错");
         }
     }
 
     @Operation(description = "退出")
     @GetMapping("loginOut")
-    public ResponseEntity<ResponseData<Object>> loginOut(){
+    public String loginOut(){
 
         // 删除当前token
         loginService.removeTokenWriteList();
 
-        return ResponseData.ok();
+        return "success";
     }
 }

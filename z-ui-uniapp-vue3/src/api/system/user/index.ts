@@ -1,8 +1,7 @@
 import request from '@/config/axios'
 import type { UserVO, PasswordResetVO } from './types'
-import type { TableResponse } from '@/types/table'
 
-export const getTableListApi = (params: any): Promise<TableResponse> => {
+export const getTableListApi = (params: any): Promise<IResponse> => {
   // 转换, 适配jpa PageRequest
   params = { ...params, page: params.pageIndex, size: params.pageSize }
   console.log('分页信息', params)
@@ -10,11 +9,11 @@ export const getTableListApi = (params: any): Promise<TableResponse> => {
   return request.get({ url: '/users', params })
 }
 
-export const saveTableApi = (data: Partial<UserVO>): Promise<UserVO> => {
+export const saveTableApi = (data: Partial<UserVO>): Promise<IResponse> => {
   return request.post({ url: '/users', data })
 }
 
-export const resetPasswordApi = (data: Partial<PasswordResetVO>): Promise<UserVO | string> => {
+export const resetPasswordApi = (data: Partial<PasswordResetVO>): Promise<IResponse> => {
   return request.post({ url: '/users/resetpass', data })
 }
 
@@ -24,8 +23,13 @@ export const getTableDetApi = (id: string): Promise<IResponse<UserVO>> => {
   return request.get({ url: '/users/detail', params: { id } })
 }
 
+// 根据登录名获取指定数据详情
+export const getUserDetLoginApi = (login: string): Promise<UserVO> => {
+  return request.get({ url: '/users/detail/login', params: { login } })
+}
+
 // 批量删除
-export const delTableListApi = (ids: string[] | number[]): Promise<string> => {
+export const delTableListApi = (ids: string[] | number[]): Promise<IResponse> => {
   // 适配后端, 直接使用RequestBody接收数据, 不能使用{ids}, 这种表示data里的是个map对象,key为ids
   return request.delete({ url: '/users', data: ids })
 }

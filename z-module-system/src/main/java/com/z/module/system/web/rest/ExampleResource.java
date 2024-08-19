@@ -1,17 +1,15 @@
 package com.z.module.system.web.rest;
 
+import com.z.framework.common.web.rest.vm.ResponseData;
+import com.z.framework.security.util.SecurityUtils;
 import com.z.module.system.domain.Example;
 import com.z.module.system.repository.ExampleRepository;
-import com.z.framework.security.util.SecurityUtils;
-import com.z.framework.common.web.rest.constants.ResponseCodeEnum;
-import com.z.framework.common.web.rest.vm.ResponseData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -78,26 +76,22 @@ public class ExampleResource {
      * @User: zhaozhiwei
      * @method: deleteExample
       * @param idList : 
-     * @return: org.springframework.http.ResponseEntity<java.lang.Void>
+     * @return: org.springframework.http.java.lang.Void
      * @Description: 批量删除示例
      */
     @PostMapping("/examples/batch/delete")
-    public ResponseEntity<Void> deleteExample(@RequestParam List<Long> idList) {
+    public Void deleteExample(@RequestParam List<Long> idList) {
         log.debug("REST request to delete Examples, ids: {}", idList);
         this.exampleRepository.deleteAllByIdIn(idList);
-        return ResponseEntity.ok().build();
+        return null;
     }
 
     @Operation(description = "测试里的hello world")
     @GetMapping("/examples/echo")
-    public ResponseEntity<ResponseData<String>> echo(){
+    public String echo(){
         log.info("认证通过");
         final String currentLoginName = SecurityUtils.getCurrentLoginName();
         final String tokenId = SecurityUtils.getTokenId();
-        // 获取当前认证通过信息
-        final ResponseData<String> responseData = new ResponseData<>();
-        responseData.setCode(ResponseCodeEnum.SUCCESS.getCode());
-        responseData.setData(currentLoginName);
-        return ResponseEntity.ok().body(responseData);
+        return tokenId;
     }
 }

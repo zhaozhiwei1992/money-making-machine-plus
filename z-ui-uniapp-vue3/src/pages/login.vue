@@ -46,9 +46,10 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, readonly, ref } from "vue";
-import type { UserType } from '@/api/login/types'
-import {loginApi} from "@/api/login";
+import type { UserType } from "@/api/login/types";
+import { loginApi } from "@/api/login";
 
+const loginForm = ref<any>(null);
 
 const items = reactive(["用户密码登录", "手机号登录"]);
 const current = ref(0);
@@ -75,7 +76,7 @@ const rules = reactive({
     ],
     validateTrigger: "submit",
   },
-})
+});
 
 // 定义方法
 const mobileSignIn = () => {
@@ -84,14 +85,17 @@ const mobileSignIn = () => {
 };
 
 const signIn = async () => {
-  // 通过表单用户密码登录
-  const res = await loginApi(userInfo);
-  // 返回token 写入缓存
-  console.log(res)
-  uni.setStorageSync("token", res.data.token);
-  uni.setStorageSync("username", res.data.username);
-  // 跳转首页, 首页是tabBar需要用switchTab
-  uni.switchTab({ url: '/pages/index/index' });
+  const isValid = await loginForm.value.validate();
+  if (isValid) {
+    // 通过表单用户密码登录
+    const res = await loginApi(userInfo);
+    // 返回token 写入缓存
+    console.log(res);
+    uni.setStorageSync("token", res.token);
+    uni.setStorageSync("username", res.username);
+    // 跳转首页, 首页是tabBar需要用switchTab
+    uni.switchTab({ url: "/pages/index/index" });
+  }
 };
 
 const onClickItem = (e: any) => {
@@ -100,6 +104,5 @@ const onClickItem = (e: any) => {
   }
 };
 
-onMounted(() => {
-});
+onMounted(() => {});
 </script>

@@ -2,8 +2,8 @@
   <view class="container">
     <view class="example">
       <uni-forms ref="form" :model="user" labelWidth="80px">
-        <uni-forms-item label="用户昵称" name="nickName">
-          <uni-easyinput v-model="user.nickName" placeholder="请输入昵称" />
+        <uni-forms-item label="用户昵称" name="username">
+          <uni-easyinput v-model="user.username" placeholder="请输入昵称" />
         </uni-forms-item>
         <uni-forms-item label="手机号码" name="phonenumber">
           <uni-easyinput v-model="user.phonenumber" placeholder="请输入手机号码" />
@@ -20,75 +20,98 @@
   </view>
 </template>
 
-<script>
-  import { getUserProfile } from "@/api/system/user"
-  import { updateUserProfile } from "@/api/system/user"
+<script setup lang="ts">
+import { onMounted, reactive, ref } from 'vue';
+import { getUserDetLoginApi, saveTableApi } from "@/api/system/user";
+import type {UserVO} from "@/api/system/user/types";
 
-  export default {
-    data() {
-      return {
-        user: {
-          nickName: "",
-          phonenumber: "",
-          email: "",
-          sex: ""
-        },
-        sexs: [{
-          text: '男',
-          value: "0"
-        }, {
-          text: '女',
-          value: "1"
-        }],
-        rules: {
-          nickName: {
-            rules: [{
-              required: true,
-              errorMessage: '用户昵称不能为空'
-            }]
-          },
-          phonenumber: {
-            rules: [{
-              required: true,
-              errorMessage: '手机号码不能为空'
-            }, {
-              pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
-              errorMessage: '请输入正确的手机号码'
-            }]
-          },
-          email: {
-            rules: [{
-              required: true,
-              errorMessage: '邮箱地址不能为空'
-            }, {
-              format: 'email',
-              errorMessage: '请输入正确的邮箱地址'
-            }]
-          }
-        }
-      }
-    },
-    onLoad() {
-      this.getUser()
-    },
-    onReady() {
-      this.$refs.form.setRules(this.rules)
-    },
-    methods: {
-      getUser() {
-        getUserProfile().then(response => {
-          this.user = response.data
-        })
-      },
-      submit(ref) {
-        this.$refs.form.validate().then(res => {
-          updateUserProfile(this.user).then(response => {
-            this.$modal.msgSuccess("修改成功")
-          })
-        })
-      }
-    }
+const form = ref<any>(null);
+
+const user = ref<UserVO>({
+  id: "",
+  name: "",
+  login: "",
+  createdDate: "",
+  sex: "",
+  phonenumber: "",
+  email: "",
+  positionIdListStr: "",
+  roleIdListStr: ""
+});
+
+const sexs = ref([
+  {
+    text: '男',
+    value: "0"
+  },
+  {
+    text: '女',
+    value: "1"
   }
+]);
+
+const rules = reactive({
+  username: [
+    {
+      required: true,
+      message: '用户昵称不能为空'
+    }
+  ],
+  phonenumber: [
+    {
+      required: true,
+      message: '手机号码不能为空'
+    },
+    {
+      pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
+      message: '请输入正确的手机号码'
+    }
+  ],
+  email: [
+    {
+      required: true,
+      message: '邮箱地址不能为空'
+    },
+    {
+      type: 'email',
+      message: '请输入正确的邮箱地址'
+    }
+  ]
+});
+
+const name:string|any = ref("");
+
+onMounted(() => {
+  name.value = uni.getStorageSync("username");
+});
+
+const onLoad = async () => {
+  // 获取登录用户名
+  const response = await getUserDetLoginApi(name);
+  user.value = response.data;
+};
+
+const onReady = () => {
+  // 假设你有一个表单引用，你需要设置表单的规则
+  // 这里需要根据你的具体实现来调整
+  // this.$refs.form.setRules(rules.value);
+};
+
+const submit = async () => {
+  try {
+    const isValid = await form.value.validate();
+    if (isValid) {
+      await saveTableApi(user.value);
+      uni.showToast({
+        title: "登录成功",
+        image: "https://cdn.uviewui.com/uview/demo/toast/success.png",
+        duration: 2000,
+      });
+    }
+  } catch (error) {
+    // 处理验证失败的情况
+  }
+};
 </script>
 
 <style lang="scss">

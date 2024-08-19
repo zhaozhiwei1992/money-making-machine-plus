@@ -1,6 +1,5 @@
 package com.z.module.system.web.rest;
 
-import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.module.system.domain.Position;
 import com.z.module.system.repository.PositionRepository;
 import com.z.module.system.web.mapper.PositionSelectMapper;
@@ -48,12 +47,12 @@ public class PositionResource {
     @Operation(description = "新增岗位")
     @PostMapping("/positions")
     @PreAuthorize("hasAuthority('system:post:add')")
-    public ResponseEntity<ResponseData<Position>> createPosition(@RequestBody Position position) throws URISyntaxException {
+    public Position createPosition(@RequestBody Position position) throws URISyntaxException {
         log.debug("REST request to save Position : {}", position);
 
         Position newPosition = positionRepository.save(position);
 
-        return ResponseData.ok(newPosition);
+        return newPosition;
     }
 
     /**
@@ -67,7 +66,7 @@ public class PositionResource {
     @Operation(description = "获取岗位")
     @GetMapping("/positions")
     @PreAuthorize("hasAuthority('system:post:view')")
-    public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllPositions(Pageable pageable, Position role) {
+    public HashMap<String, Object> getAllPositions(Pageable pageable, Position role) {
         log.debug("REST request to get all Position for an admin");
 
         // 根据id, 升序
@@ -93,25 +92,25 @@ public class PositionResource {
         Example<Position> ex = Example.of(role, matcher);
         rolePage = positionRepository.findAll(ex, pageable);
 
-        return ResponseData.ok(new HashMap<String, Object>() {{
+        return new HashMap<String, Object>() {{
             put("list", rolePage.getContent());
             put("total", Long.valueOf(rolePage.getTotalElements()).intValue());
-        }});
+        }};
     }
 
     @Operation(description = "删除岗位")
     @DeleteMapping("/positions")
     @PreAuthorize("hasAuthority('system:post:delete')")
-    public ResponseEntity<ResponseData<String>> deletePosition(@RequestBody List<Long> idList) {
+    public String deletePosition(@RequestBody List<Long> idList) {
         log.debug("REST request to delete Examples, ids: {}", idList);
         this.positionRepository.deleteAllByIdIn(idList);
-        return ResponseData.ok("success");
+        return "success";
     }
 
     @Operation(description = "获取岗位列表信息")
     @GetMapping("/positions/list")
     @PreAuthorize("hasAuthority('system:post:view')")
-    public ResponseEntity<ResponseData<List<Map<String, Object>>>> getAllDictList() {
+    public List<Map<String, Object>> getAllDictList() {
         final List<Position> all = positionRepository.findAll();
         final List<Map<String, Object>> resultMap = all.stream().map(m -> {
             Map<String, Object> map = new HashMap<>();
@@ -119,7 +118,7 @@ public class PositionResource {
             map.put("label", m.getName());
             return map;
         }).collect(Collectors.toList());
-        return ResponseData.ok(resultMap);
+        return resultMap;
     }
 
     private final PositionSelectMapper positionSelectMapper;
@@ -127,14 +126,14 @@ public class PositionResource {
     @Operation(description = "获取岗位树")
     @GetMapping("/positions/select")
     @PreAuthorize("hasAuthority('system:post:view')")
-    public ResponseEntity<List<SelectOptionVO>> getPositionsSelect() {
+    public List<SelectOptionVO> getPositionsSelect() {
         log.debug("REST request to get Position Select");
 
         List<Position> positionList = positionRepository.findAll();
         final List<SelectOptionVO> convert = positionSelectMapper.convert(positionList);
 
         log.info("左侧树构建: {}", convert);
-        return ResponseEntity.ok(convert);
+        return convert;
     }
 
 }

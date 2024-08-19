@@ -1,6 +1,5 @@
 package com.z.module.system.web.rest;
 
-import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.module.system.domain.Authority;
 import com.z.module.system.domain.RoleMenu;
 import com.z.module.system.repository.AuthorityRepository;
@@ -54,7 +53,7 @@ public class RoleResource {
     @Operation(description = "新增角色")
     @PostMapping("/roles")
     @PreAuthorize("hasAuthority('system:role:add')")
-    public ResponseEntity<ResponseData<Authority>> createAuthority(@RequestBody RoleVO roleVO) throws URISyntaxException {
+    public Authority createAuthority(@RequestBody RoleVO roleVO) throws URISyntaxException {
         log.debug("REST request to save Authority : {}", roleVO);
 
         if (!roleVO.getCode().startsWith(ROLE_START)) {
@@ -79,7 +78,7 @@ public class RoleResource {
         }).collect(Collectors.toList());
         roleMenuRepository.saveAll(roleMenus);
 
-        return ResponseData.ok(newAuthority);
+        return newAuthority;
     }
 
     private final RoleMenuRepository roleMenuRepository;
@@ -95,7 +94,7 @@ public class RoleResource {
     @Operation(description = "获取角色")
     @GetMapping("/roles")
     @PreAuthorize("hasAuthority('system:role:view')")
-    public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllAuthoritys(Pageable pageable, Authority role) {
+    public HashMap<String, Object> getAllAuthoritys(Pageable pageable, Authority role) {
         log.debug("REST request to get all Authority for an admin");
 
 //        final List<Authority> all = roleRepository.findAll();
@@ -133,25 +132,25 @@ public class RoleResource {
             return roleVO;
         }).collect(Collectors.toList());
 
-        return ResponseData.ok(new HashMap<String, Object>() {{
+        return new HashMap<String, Object>() {{
             put("list", roleVOList);
             put("total", Long.valueOf(rolePage.getTotalElements()).intValue());
-        }});
+        }};
     }
 
     @Operation(description = "删除角色")
     @DeleteMapping("/roles")
     @PreAuthorize("hasAuthority('system:role:delete')")
-    public ResponseEntity<ResponseData<String>> deleteAuthority(@RequestBody List<Long> idList) {
+    public String deleteAuthority(@RequestBody List<Long> idList) {
         log.debug("REST request to delete Examples, ids: {}", idList);
         this.roleRepository.deleteAllByIdIn(idList);
-        return ResponseData.ok("success");
+        return "success";
     }
 
     @Operation(description = "获取角色列表信息")
     @GetMapping("/roles/list")
     @PreAuthorize("hasAuthority('system:role:view')")
-    public ResponseEntity<ResponseData<List<Map<String, Object>>>> getAllDictList() {
+    public List<Map<String, Object>> getAllDictList() {
         final List<Authority> all = roleRepository.findAll();
         final List<Map<String, Object>> resultMap = all.stream().map(m -> {
             Map<String, Object> map = new HashMap<>();
@@ -159,7 +158,7 @@ public class RoleResource {
             map.put("label", m.getName());
             return map;
         }).collect(Collectors.toList());
-        return ResponseData.ok(resultMap);
+        return resultMap;
     }
 
     private final RoleSelectMapper roleSelectMapper;
@@ -167,14 +166,14 @@ public class RoleResource {
     @Operation(description = "获取角色树")
     @GetMapping("/roles/select")
     @PreAuthorize("hasAuthority('system:role:view')")
-    public ResponseEntity<List<SelectOptionVO>> getRolesSelect() {
+    public List<SelectOptionVO> getRolesSelect() {
         log.debug("REST request to get Roles Select");
 
         List<Authority> authorityList = roleRepository.findAll();
         final List<SelectOptionVO> convert = roleSelectMapper.convert(authorityList);
 
         log.info("左侧树构建: {}", convert);
-        return ResponseEntity.ok(convert);
+        return convert;
     }
 
 }

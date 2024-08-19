@@ -1,7 +1,6 @@
 package com.z.module.system.web.rest;
 
 import com.z.framework.common.util.date.DateUtils;
-import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.framework.operatelog.domain.RequestLog;
 import com.z.framework.operatelog.repository.RequestLogRepository;
 import com.z.framework.security.util.SecurityUtils;
@@ -17,7 +16,6 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,7 +49,7 @@ public class AnalysisResource {
 
     @Operation(description = "用户访问来源")
     @GetMapping("/userAccessSource")
-    public ResponseEntity<ResponseData<List<Map<String, Object>>>> userAccessSource() {
+    public List<Map<String, Object>> userAccessSource() {
         // 通过登录日志, 构建访问来源
         final List<LoginLogCount> countByBrowserAndOs = loginLogRepository.getCountByBrowserAndOs();
         final List<Map<String, Object>> collect = countByBrowserAndOs.stream().map(m -> {
@@ -60,12 +58,12 @@ public class AnalysisResource {
             map.put("value", m.getCount());
             return map;
         }).collect(Collectors.toList());
-        return ResponseData.ok(collect);
+        return collect;
     }
 
     @Operation(description = "每周用户活跃")
     @GetMapping("/weeklyUserActivity")
-    public ResponseEntity<ResponseData<List<Map<String, Object>>>> weeklyUserActivity() {
+    public List<Map<String, Object>> weeklyUserActivity() {
         // 获取本周, 1-7用户每天登录数
         final Instant startDayOfWeek = DateUtils.getStartDayOfWeek(LocalDateTime.now());
         final Instant endDayOfWeek = DateUtils.getEndDayOfWeek(LocalDateTime.now());
@@ -94,12 +92,12 @@ public class AnalysisResource {
                 "dayOfWeek")))).collect(Collectors.toList());
 
         // 排序
-        return ResponseData.ok(collect1);
+        return collect1;
     }
 
     @Operation(description = "每月用户活跃")
     @GetMapping("/monthlyUserActivity")
-    public ResponseEntity<ResponseData<List<Map<String, Object>>>> monthlyUserActivity() {
+    public List<Map<String, Object>> monthlyUserActivity() {
         // 获取本年, 用户每月登录数
         final Integer year = SecurityUtils.getYear();
         final List<LoginLogMonthlyGroupCount> allByYearGroupByMonth =
@@ -113,19 +111,19 @@ public class AnalysisResource {
                     map.put("name", "analysis." + month.toString().toLowerCase());
                     return map;
                 }).collect(Collectors.toList());
-        return ResponseData.ok(collect);
+        return collect;
     }
 
     /**
      * @data: 2023/6/1-上午10:51
      * @User: zhaozhiwei
      * @method: getOneDict
-     * @return: org.springframework.http.ResponseEntity<com.z.framework.common.web.rest.vm.ResponseData < java.util.List < java.util.Map < java.lang.String, java.lang.Object>>>>
+     * @return: org.springframework.http.com.z.framework.common.web.rest.vm.ResponseData < java.util.List < java.util.Map < java.lang.String, java.lang.Object>>>
      * @Description: 返回: 当前登录用户数, 注册用户数, 总接口访问量, 当日接口访问量
      */
     @Operation(description = "统计数据")
     @GetMapping("/total")
-    public ResponseEntity<ResponseData<Map<String, Object>>> getOneDict() {
+    public Map<String, Object> getOneDict() {
         final Map<String, Object> result = new HashMap<>();
         // 当前用户数
         final Cache tokenBlackCache = cacheManager.getCache("tokenWriteListCache");
@@ -151,7 +149,7 @@ public class AnalysisResource {
         final long todayRequestLogCount = requestLogRepository.count(of);
         result.put("todayRequestLogCount", todayRequestLogCount);
 
-        return ResponseData.ok(result);
+        return result;
     }
 
 }

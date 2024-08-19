@@ -1,6 +1,5 @@
 package com.z.module.system.web.rest;
 
-import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.module.system.domain.SystemParam;
 import com.z.module.system.repository.SysParamRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,12 +41,12 @@ public class SysParamResource {
     @Operation(description = "新增系统参数")
     @PostMapping("/params")
     @PreAuthorize("hasAuthority('system:params:add')")
-    public ResponseEntity<ResponseData<SystemParam>> createSystemParam(@RequestBody SystemParam systemParam) throws URISyntaxException {
+    public SystemParam createSystemParam(@RequestBody SystemParam systemParam) throws URISyntaxException {
         log.debug("REST request to save SystemParam : {}", systemParam);
 
         SystemParam newSystemParam = sysParamRepository.save(systemParam);
 
-        return ResponseData.ok(newSystemParam);
+        return newSystemParam;
     }
 
     /**
@@ -60,7 +59,7 @@ public class SysParamResource {
     @Operation(description = "获取系统参数")
     @GetMapping("/params")
     @PreAuthorize("hasAuthority('system:params:view')")
-    public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllSystemParams(Pageable pageable, SystemParam systemParam) {
+    public HashMap<String, Object> getAllSystemParams(Pageable pageable, SystemParam systemParam) {
         log.debug("REST request to get all SystemParam for an admin");
 
         // 根据id, 升序
@@ -86,19 +85,19 @@ public class SysParamResource {
         Example<SystemParam> ex = Example.of(systemParam, matcher);
         taskPage = sysParamRepository.findAll(ex, pageable);
 
-        return ResponseData.ok(new HashMap<String, Object>(){{
+        return new HashMap<String, Object>(){{
             put("list", taskPage.getContent());
             put("total", Long.valueOf(taskPage.getTotalElements()).intValue());
-        }});
+        }};
     }
 
 
     @Operation(description = "删除系统参数")
     @DeleteMapping("/params")
     @PreAuthorize("hasAuthority('system:params:delete')")
-    public ResponseEntity<ResponseData<String>> deleteSystemParam(@RequestBody List<Long> idList) {
+    public String deleteSystemParam(@RequestBody List<Long> idList) {
         log.debug("REST request to delete Examples, ids: {}", idList);
         this.sysParamRepository.deleteAllByIdIn(idList);
-        return ResponseData.ok("success");
+        return "success";
     }
 }

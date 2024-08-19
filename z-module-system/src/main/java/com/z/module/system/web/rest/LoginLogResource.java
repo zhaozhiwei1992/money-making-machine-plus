@@ -1,6 +1,5 @@
 package com.z.module.system.web.rest;
 
-import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.module.system.domain.LoginLog;
 import com.z.module.system.repository.LoginLogRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,8 +36,8 @@ public class LoginLogResource {
     @Operation(description = "获取登录日志信息")
     @GetMapping("/login/logs")
     @PreAuthorize("hasAuthority('log:login:view')")
-    public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllLoginLoggings(Pageable pageable,
-                                                                                     LoginLog loginLog) {
+    public HashMap<String, Object> getAllLoginLoggings(Pageable pageable,
+                                                                       LoginLog loginLog) {
         log.debug("REST login to get all LoginLogging for an admin");
 
         // 根据id, 升序
@@ -63,10 +62,10 @@ public class LoginLogResource {
         Example<LoginLog> ex = Example.of(loginLog, matcher);
         loginLoggingPage = requestLogRepository.findAll(ex, pageable);
 
-        return ResponseData.ok(new HashMap<String, Object>() {{
+        return new HashMap<String, Object>() {{
             put("list", loginLoggingPage.getContent());
             put("total", Long.valueOf(loginLoggingPage.getTotalElements()).intValue());
-        }});
+        }};
     }
 
 }

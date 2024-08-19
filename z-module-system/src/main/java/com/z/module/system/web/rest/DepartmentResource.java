@@ -4,7 +4,6 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.hutool.core.lang.tree.TreeUtil;
 import com.z.framework.common.util.GenericTreeBuilderUtil;
-import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.module.system.domain.Department;
 import com.z.module.system.repository.DepartmentRepository;
 import com.z.module.system.web.mapper.DepartmentSelectMapper;
@@ -52,7 +51,7 @@ public class DepartmentResource {
     @Operation(description = "新增部门")
     @PostMapping("/departments")
     @PreAuthorize("hasAuthority('system:dept:add')")
-    public ResponseEntity<ResponseData<Department>> createDepartment(@RequestBody Department department) throws URISyntaxException {
+    public Department createDepartment(@RequestBody Department department) throws URISyntaxException {
 
         ExampleMatcher matcher = ExampleMatcher.matching();
         final Department filterObj = new Department();
@@ -67,7 +66,7 @@ public class DepartmentResource {
         }
 
         Department result = departmentRepository.save(department);
-        return ResponseData.ok(result);
+        return result;
     }
 
     /**
@@ -78,7 +77,7 @@ public class DepartmentResource {
     @Operation(description = "获取所有部门")
     @GetMapping("/departments")
     @PreAuthorize("hasAuthority('system:dept:view')")
-    public ResponseEntity<ResponseData<Map<String, Object>>> getAllDepartments(
+    public HashMap<String, Object> getAllDepartments(
             Pageable pageable, Department department) {
         log.debug("REST request to get a page of UiComponents");
 
@@ -108,11 +107,10 @@ public class DepartmentResource {
         final List<DepartmentVO> departmentDTOS = departmentDTOGenericTreeBuilderUtil.buildTree(collect);
 
         //部门属性转换成 下划线 再给前端, mapstruct? 直接采用Jackson的JsonNaming注解搞了先
-        return ResponseData.ok(new HashMap<String, Object>() {{
+        return new HashMap<String, Object>() {{
             put("list", departmentDTOS);
             put("total", 0);
-        }});
-
+        }};
     }
 
     @Operation(description = "获取部门树")
@@ -167,19 +165,19 @@ public class DepartmentResource {
      */
     @GetMapping("/departments/{id}")
     @PreAuthorize("hasAuthority('system:dept:view')")
-    public ResponseEntity<ResponseData<Department>> getDepartment(@PathVariable Long id) {
+    public Department getDepartment(@PathVariable Long id) {
         log.debug("REST request to get Department : {}", id);
         Optional<Department> department = departmentRepository.findById(id);
-        return ResponseData.ok(department.get());
+        return department.get();
     }
 
     @Operation(description = "删除部门")
     @DeleteMapping("/departments")
     @PreAuthorize("hasAuthority('system:dept:delete')")
-    public ResponseEntity<ResponseData<String>> deleteDepartment(@RequestBody List<Long> idList) {
+    public String deleteDepartment(@RequestBody List<Long> idList) {
         log.debug("REST request to delete Examples, ids: {}", idList);
         this.departmentRepository.deleteAllByIdIn(idList);
-        return ResponseData.ok("success");
+        return "success";
     }
 
     private final DepartmentSelectMapper departmentSelectMapper;
@@ -187,7 +185,7 @@ public class DepartmentResource {
     @Operation(description = "获取部门树")
     @GetMapping("/departments/select")
     @PreAuthorize("hasAuthority('system:dept:view')")
-    public ResponseEntity<List<SelectOptionVO>> getDepartmentsSelect() {
+    public List<SelectOptionVO> getDepartmentsSelect() {
         log.debug("REST request to get Position Select");
 
         List<Department> departmentList = departmentRepository.findAll();
@@ -196,6 +194,6 @@ public class DepartmentResource {
         final List<SelectOptionVO> list = genericTreeBuilderUtil.buildTree(convert);
 
         log.info("左侧树构建: {}", list);
-        return ResponseEntity.ok(list);
+        return list;
     }
 }

@@ -206,7 +206,7 @@ const saveData = () => {
 const initTableData = (treeData) => {
   // 根据分类id查询基础要素信息
   EleUnionApi.getDetail(treeData.id).then((res) => {
-    editDataTable.value.setData(res.data)
+    editDataTable.value.setData(res)
   })
 }
 
@@ -214,7 +214,7 @@ const initLeftTreeData = () => {
   EleUnionApi.getTree().then((res) => {
     // 清空原数据, 重新填充
     treeData.splice(0)
-    treeData.push(...res.data)
+    treeData.push(...res)
   })
 }
 

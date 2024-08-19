@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -92,7 +93,7 @@ public class GoViewProjectResource {
             goViewProjectDO.setName(goViewProjectUpdateReqVO.getProjectName());
             return ResponseData.ok(true);
         }
-        return ResponseData.fail("没有找到该项目");
+        throw new RuntimeException("没有找到该项目");
     }
 
     //发布/取消项目状态
@@ -107,9 +108,9 @@ public class GoViewProjectResource {
                 goViewProjectDO.setStatus(goViewProjectUpdateReqVO.getState());
                 return ResponseData.ok(true);
             }
-            return ResponseData.fail("没有找到该项目");
+            throw new RuntimeException("没有找到该项目");
         }
-        return ResponseData.fail("警告非法字段");
+        throw new RuntimeException("警告非法字段");
     }
 
     /**
@@ -126,7 +127,7 @@ public class GoViewProjectResource {
 
         final Optional<GoViewProjectDO> byId = goViewProjectRepository.findById(data.getProjectId());
         if (!byId.isPresent()) {
-            return ResponseData.fail("找不到该项目: " + data.getProjectId());
+            throw new RuntimeException("找不到该项目: " + data.getProjectId());
         }
         // 查询项目读应的数据
         final GoViewProjectDO goViewProjectDO = byId.get();

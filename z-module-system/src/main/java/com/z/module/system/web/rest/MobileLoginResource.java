@@ -1,6 +1,5 @@
 package com.z.module.system.web.rest;
 
-import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.framework.security.service.TokenProviderService;
 import com.z.framework.security.util.SecurityUtils;
 import com.z.module.system.domain.User;
@@ -15,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,7 +64,7 @@ public class MobileLoginResource {
      */
     @Operation(description = "用户密码登录认证")
     @PostMapping("/login")
-    public ResponseEntity<ResponseData<AuthedRespVO>> loginUserNamePassword(@Valid @RequestBody LoginVO loginVM, HttpServletRequest request) {
+    public AuthedRespVO loginUserNamePassword(@Valid @RequestBody LoginVO loginVM, HttpServletRequest request) {
 
         final AuthedRespVO authedRespVO = new AuthedRespVO();
         authedRespVO.setUsername(loginVM.getUsername());
@@ -86,20 +84,20 @@ public class MobileLoginResource {
 
                 // 登录成功记录日志
                 loginLogService.save(loginVM, request);
-                return ResponseData.ok(authedRespVO);
+                return authedRespVO;
             }else{
                 log.error(String.format("登录失败, 用户: %s, 密码: %s, 数据库密码: %s", username, password, dbPassWord));
-                return ResponseData.fail(String.format("用户密码不匹配, 登录用户: %s, 密码: %s", username, password));
+                throw new RuntimeException(String.format("用户密码不匹配, 登录用户: %s, 密码: %s", username, password));
             }
         } catch (Exception e) {
             logger.error("登录出错", e);
-            return ResponseData.fail();
+            throw new RuntimeException("登录出错");
         }
     }
 
     @Operation(description = "退出")
     @GetMapping("loginOut")
-    public ResponseEntity<ResponseData<Object>> loginOut(){
+    public String loginOut(){
         // 销毁token, 防止下次使用
         final Cache tokenBlackCache = cacheManager.getCache("tokenBlackCache");
         List<String> cacheBlockList;
@@ -111,12 +109,12 @@ public class MobileLoginResource {
         cacheBlockList.add(SecurityUtils.getTokenId());
         tokenBlackCache.put("tokenBlack", cacheBlockList);
 
-        return ResponseData.ok();
+        return "success";
     }
 
     @Operation(description = "验证码登录认证")
     @PostMapping("/login/sms")
-    public ResponseEntity<ResponseData<AuthedRespVO>> loginUserSms(@Valid @RequestBody LoginVO loginVM, HttpServletRequest request) {
+    public AuthedRespVO loginUserSms(@Valid @RequestBody LoginVO loginVM, HttpServletRequest request) {
 
         final AuthedRespVO authedRespVO = new AuthedRespVO();
         authedRespVO.setUsername(loginVM.getUsername());
@@ -136,14 +134,14 @@ public class MobileLoginResource {
 
                 // 登录成功记录日志
                 loginLogService.save(loginVM, request);
-                return ResponseData.ok(authedRespVO);
+                return authedRespVO;
             }else{
                 log.error(String.format("登录失败, 用户: %s, 密码: %s, 数据库密码: %s", username, password, dbPassWord));
-                return ResponseData.fail(String.format("用户密码不匹配, 登录用户: %s, 密码: %s", username, password));
+                throw new RuntimeException(String.format("用户密码不匹配, 登录用户: %s, 密码: %s", username, password));
             }
         } catch (Exception e) {
             logger.error("登录出错", e);
-            return ResponseData.fail();
+            throw new RuntimeException("登录出错");
         }
     }
 }

@@ -2,13 +2,11 @@ package com.z.module.system.web.rest;
 
 import com.z.framework.common.util.GenericTreeBuilderUtil;
 import com.z.framework.common.web.rest.errors.BadRequestAlertException;
-import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.module.system.domain.EleUnion;
 import com.z.module.system.repository.EleUnionRepository;
 import com.z.module.system.service.CommonEleService;
 import com.z.module.system.web.mapper.EleUnionSelectMapper;
 import com.z.module.system.web.vo.EleSelectOptionVO;
-import com.z.module.system.web.vo.SelectOptionVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -53,13 +51,13 @@ public class EleUnionResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/ele-unions")
-    public ResponseEntity<ResponseData<EleUnion>> createEleUnion(@RequestBody EleUnion eleUnion) throws URISyntaxException {
+    public EleUnion createEleUnion(@RequestBody EleUnion eleUnion) throws URISyntaxException {
         log.debug("REST request to save EleUnion : {}", eleUnion);
         if (eleUnion.getId() != null) {
             throw new BadRequestAlertException("A new eleUnion cannot already have an ID", ENTITY_NAME, "idexists");
         }
         EleUnion result = eleUnionRepository.save(eleUnion);
-        return ResponseData.ok(result);
+        return result;
     }
 
     /**
@@ -68,10 +66,10 @@ public class EleUnionResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of eleUnions in body.
      */
     @GetMapping("/ele-unions")
-    public ResponseEntity<ResponseData<List<EleUnion>>> getAllEleUnions() {
+    public List<EleUnion> getAllEleUnions() {
         log.debug("REST request to get all EleUnions");
         final List<EleUnion> all = eleUnionRepository.findAll();
-        return ResponseData.ok(all);
+        return all;
     }
 
     /**
@@ -82,7 +80,7 @@ public class EleUnionResource {
      * @Description: 获取基础信息左侧要素列表
      */
     @GetMapping("/ele-unions/left-tree")
-    public ResponseEntity<ResponseData<Object>> getEleUnionsLeftTree() {
+    public List<Map<String, Object>> getEleUnionsLeftTree() {
         log.debug("REST request to get all getEleUnionsLeftTree");
 
         //1. 获取所有ele_的信息
@@ -92,7 +90,7 @@ public class EleUnionResource {
             map.put("id", map.get("eleCatCode"));
             map.put("label", map.get("eleCatCode") + "-" + map.get("eleCatName"));
         }
-        return ResponseData.ok(allEleCategory);
+        return allEleCategory;
     }
 
     /**
@@ -100,11 +98,11 @@ public class EleUnionResource {
      * @data: 2022/6/21-下午9:32
      * @User: zhaozhiwei
      * @method: saveOrUpdate
-     * @return: org.springframework.http.ResponseEntity<com.example.domain.EleUnion>
+     * @return: org.springframework.http.com.example.domain.EleUnion
      * @Description: 保存提交的数据
      */
     @PostMapping("/ele-unions/save/update")
-    public ResponseEntity<ResponseData<List<EleUnion>>> saveOrUpdate(@RequestBody List<EleUnion> eleUnionList) throws URISyntaxException {
+    public List<EleUnion> saveOrUpdate(@RequestBody List<EleUnion> eleUnionList) throws URISyntaxException {
         log.debug("REST request to save EleUnionList : {}", eleUnionList);
         //1. 清理掉已经删除的数据, id不在范围内的就是
         final String eleCatCode = eleUnionList.get(0).getEleCatCode();
@@ -118,7 +116,7 @@ public class EleUnionResource {
         }
         eleUnionRepository.deleteAllById(deleteIds);
         eleUnionRepository.saveAll(eleUnionList);
-        return ResponseData.ok(eleUnionList);
+        return eleUnionList;
     }
 
     /**
@@ -129,10 +127,10 @@ public class EleUnionResource {
      * @Description: 根据选中的左侧节点id查询基础信息
      */
     @GetMapping("/ele-unions/element-info/{id}")
-    public ResponseEntity<ResponseData<List<EleUnion>>> getElementInfoByNodeId(@PathVariable String id) {
+    public List<EleUnion> getElementInfoByNodeId(@PathVariable String id) {
         log.debug("REST request to get all getElementInfoByNodeId");
         final List<EleUnion> elementInfoByEleCatCode = commonEleService.findElementInfoByEleCatCode(id);
-        return ResponseData.ok(elementInfoByEleCatCode);
+        return elementInfoByEleCatCode;
     }
 
     /**
@@ -143,11 +141,11 @@ public class EleUnionResource {
      * {@code 404 (Not Found)}.
      */
     @GetMapping("/ele-unions/{id}")
-    public ResponseEntity<ResponseData<Optional<EleUnion>>> getEleUnion(@PathVariable Long id) {
+    public Optional<EleUnion> getEleUnion(@PathVariable Long id) {
         log.debug("REST request to get EleUnion : {}", id);
         Optional<EleUnion> eleUnion = eleUnionRepository.findById(id);
         if (eleUnion.isPresent()) {
-            return ResponseData.ok(eleUnion);
+            return eleUnion;
         } else {
             throw new RuntimeException("找不到该要素信息, id: " + id);
         }
@@ -160,10 +158,10 @@ public class EleUnionResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/ele-unions/{id}")
-    public ResponseEntity<ResponseData<Object>> deleteEleUnion(@PathVariable Long id) {
+    public String deleteEleUnion(@PathVariable Long id) {
         log.debug("REST request to delete EleUnion : {}", id);
         eleUnionRepository.deleteById(id);
-        return ResponseData.ok();
+        return "success";
     }
 
     private final EleUnionSelectMapper eleUnionSelectMapper;
@@ -173,15 +171,15 @@ public class EleUnionResource {
      * @User: zhaozhiwei
      * @method: getElementInfoByCatCode
       * @param eleCatCode :
-     * @return: org.springframework.http.ResponseEntity<java.util.List<com.z.module.system.web.vo.SelectOptionVO>>
+     * @return: org.springframework.http.java.util.List<com.z.module.system.web.vo.SelectOptionVO>
      * @Description: 获取基础要素select/cascade树形展现
      */
     @GetMapping("/ele-unions/element-info/select/{eleCatCode}")
-    public ResponseEntity<List<EleSelectOptionVO>> getElementInfoByCatCode(@PathVariable String eleCatCode) {
+    public List<EleSelectOptionVO> getElementInfoByCatCode(@PathVariable String eleCatCode) {
         final List<EleUnion> elementInfoByEleCatCode = commonEleService.findElementInfoByEleCatCode(eleCatCode);
         final List<EleSelectOptionVO> convert = eleUnionSelectMapper.convert(elementInfoByEleCatCode);
         final GenericTreeBuilderUtil<EleSelectOptionVO> genericTreeBuilderUtil = new GenericTreeBuilderUtil<>(EleSelectOptionVO.class);
         final List<EleSelectOptionVO> list = genericTreeBuilderUtil.buildTree(convert);
-        return ResponseEntity.ok(list);
+        return list;
     }
 }

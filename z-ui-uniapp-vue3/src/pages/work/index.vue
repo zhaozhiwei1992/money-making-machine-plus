@@ -1,8 +1,17 @@
 <template>
   <view class="work-container">
     <!-- 轮播图 -->
-    <uni-swiper-dot class="uni-swiper-dot-box" :info="data" :current="current" field="content">
-      <swiper class="swiper-box" :current="swiperDotIndex" @change="changeSwiper">
+    <uni-swiper-dot
+      class="uni-swiper-dot-box"
+      :info="data"
+      :current="current"
+      field="content"
+    >
+      <swiper
+        class="swiper-box"
+        :current="swiperDotIndex"
+        @change="changeSwiper"
+      >
         <swiper-item v-for="(item, index) in data" :key="index">
           <view class="swiper-item" @click="clickBannerItem(item)">
             <image :src="item.image" mode="aspectFill" :draggable="false" />
@@ -15,58 +24,14 @@
     <uni-section title="系统管理" type="line"></uni-section>
     <view class="grid-body">
       <uni-grid :column="4" :showBorder="false" @change="changeGrid">
-        <uni-grid-item>
+        <uni-grid-item
+          v-for="(item, index) in dynamicGrid"
+          :index="index"
+          :key="index"
+        >
           <view class="grid-item-box">
-            <uni-icons type="person-filled" size="30"></uni-icons>
-            <text class="text">用户管理</text>
-          </view>
-        </uni-grid-item>
-        <uni-grid-item>
-          <view class="grid-item-box">
-            <uni-icons type="staff-filled" size="30"></uni-icons>
-            <text class="text">角色管理</text>
-          </view>
-        </uni-grid-item>
-        <uni-grid-item>
-          <view class="grid-item-box">
-            <uni-icons type="color" size="30"></uni-icons>
-            <text class="text">菜单管理</text>
-          </view>
-        </uni-grid-item>
-        <uni-grid-item>
-          <view class="grid-item-box">
-            <uni-icons type="settings-filled" size="30"></uni-icons>
-            <text class="text">部门管理</text>
-          </view>
-        </uni-grid-item>
-        <uni-grid-item>
-          <view class="grid-item-box">
-            <uni-icons type="heart-filled" size="30"></uni-icons>
-            <text class="text">岗位管理</text>
-          </view>
-        </uni-grid-item>
-        <uni-grid-item>
-          <view class="grid-item-box">
-            <uni-icons type="bars" size="30"></uni-icons>
-            <text class="text">字典管理</text>
-          </view>
-        </uni-grid-item>
-        <uni-grid-item>
-          <view class="grid-item-box">
-            <uni-icons type="gear-filled" size="30"></uni-icons>
-            <text class="text">参数设置</text>
-          </view>
-        </uni-grid-item>
-        <uni-grid-item>
-          <view class="grid-item-box">
-            <uni-icons type="chat-filled" size="30"></uni-icons>
-            <text class="text">通知公告</text>
-          </view>
-        </uni-grid-item>
-        <uni-grid-item>
-          <view class="grid-item-box">
-            <uni-icons type="wallet-filled" size="30"></uni-icons>
-            <text class="text">日志管理</text>
+            <uni-icons :type="item.type" size="30"></uni-icons>
+            <text class="text">{{ item.text }}</text>
           </view>
         </uni-grid-item>
       </uni-grid>
@@ -75,13 +40,51 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, onMounted } from "vue";
+
+const dynamicGrid = reactive([
+  {
+    type: "person-filled",
+    text: "用户管理",
+  },
+  {
+    type: "staff-filled",
+    text: "角色管理",
+  },
+  {
+    type: "color",
+    text: "菜单管理",
+  },
+  {
+    type: "settings-filled",
+    text: "部门管理",
+  },
+  {
+    type: "heart-filled",
+    text: "岗位管理",
+  },
+  {
+    type: "bars",
+    text: "字典管理",
+  },
+  {
+    type: "gear-filled",
+    text: "参数设置",
+  },
+  {
+    type: "chat-filled",
+    text: "通知公告",
+  },
+  {
+    type: "wallet-filled",
+    text: "日志管理",
+  },
+]);
 
 const data = reactive([
-    { image: '/static/images/banner/banner02.jpg' },
-    { image: '/static/images/banner/banner03.jpg' }
-  ]
-);
+  { image: "/static/images/banner/banner02.jpg" },
+  { image: "/static/images/banner/banner03.jpg" },
+]);
 const current = ref(0);
 const swiperDotIndex = ref(0);
 
@@ -95,9 +98,9 @@ function changeSwiper(e: any) {
 
 function changeGrid() {
   uni.showToast({
-    title: '模块建设中~',
-    image: 'https://cdn.uviewui.com/uview/demo/toast/error.png',
-    duration: 2000
+    title: "模块建设中~",
+    image: "https://cdn.uviewui.com/uview/demo/toast/error.png",
+    duration: 2000,
   });
 }
 
@@ -105,81 +108,51 @@ function changeGrid() {
 onMounted(() => {
   // 组件挂载后的代码
 });
-
 </script>
 
 <style lang="scss">
+.grid-item-box {
+  flex: 1;
   /* #ifndef APP-NVUE */
-  page {
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-    background-color: #fff;
-    min-height: 100%;
-    height: auto;
-  }
-
-  view {
-    font-size: 14px;
-    line-height: inherit;
-  }
-
+  display: flex;
   /* #endif */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 15px 0;
+}
 
-  .text {
-    text-align: center;
-    font-size: 26rpx;
-    margin-top: 10rpx;
-  }
+.swiper {
+  height: 300rpx;
+}
 
-  .grid-item-box {
-    flex: 1;
+.swiper-box {
+  height: 150px;
+}
+
+.swiper-item {
+  /* #ifndef APP-NVUE */
+  display: flex;
+  /* #endif */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  height: 300rpx;
+  line-height: 300rpx;
+}
+
+@media screen and (min-width: 500px) {
+  .uni-swiper-dot-box {
+    width: 400px;
     /* #ifndef APP-NVUE */
-    display: flex;
+    margin: 0 auto;
     /* #endif */
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 15px 0;
+    margin-top: 8px;
   }
 
-  .uni-margin-wrap {
-    width: 690rpx;
+  .image {
     width: 100%;
-    ;
   }
-
-  .swiper {
-    height: 300rpx;
-  }
-
-  .swiper-box {
-    height: 150px;
-  }
-
-  .swiper-item {
-    /* #ifndef APP-NVUE */
-    display: flex;
-    /* #endif */
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
-    height: 300rpx;
-    line-height: 300rpx;
-  }
-
-  @media screen and (min-width: 500px) {
-    .uni-swiper-dot-box {
-      width: 400px;
-      /* #ifndef APP-NVUE */
-      margin: 0 auto;
-      /* #endif */
-      margin-top: 8px;
-    }
-
-    .image {
-      width: 100%;
-    }
-  }
+}
 </style>

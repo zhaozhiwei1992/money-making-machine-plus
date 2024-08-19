@@ -7,7 +7,6 @@ import cn.hutool.extra.spring.SpringUtil;
 import com.z.framework.common.config.MenuTypeEnum;
 import com.z.framework.common.service.MenuRouterExtService;
 import com.z.framework.common.util.GenericTreeBuilderUtil;
-import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.framework.security.util.SecurityUtils;
 import com.z.module.system.domain.Menu;
 import com.z.module.system.domain.RoleMenu;
@@ -81,7 +80,7 @@ public class MenuResource {
     @Operation(description = "新增菜单")
     @PostMapping("/menus")
     @PreAuthorize("hasAuthority('system:menu:add')")
-    public ResponseEntity<ResponseData<Menu>> createMenu(@RequestBody Menu menu) throws URISyntaxException {
+    public Menu createMenu(@RequestBody Menu menu) throws URISyntaxException {
 
         ExampleMatcher matcher = ExampleMatcher.matching();
         final Menu filterObj = new Menu();
@@ -97,7 +96,7 @@ public class MenuResource {
         }
 
         Menu result = menuRepository.save(menu);
-        return ResponseData.ok(result);
+        return result;
     }
 
     /**
@@ -108,7 +107,7 @@ public class MenuResource {
     @Operation(description = "获取所有菜单")
     @GetMapping("/menus")
     @PreAuthorize("hasAuthority('system:menu:view')")
-    public ResponseEntity<ResponseData<Map<String, Object>>> getAllMenus(
+    public HashMap<String, Object> getAllMenus(
             Pageable pageable, Menu menu) {
         log.debug("REST request to get a page of UiComponents");
 
@@ -138,10 +137,10 @@ public class MenuResource {
         final List<MenuVO> menuDTOS = menuDTOGenericTreeBuilderUtil.buildTree(collect);
 
         //菜单属性转换成 下划线 再给前端, mapstruct? 直接采用Jackson的JsonNaming注解搞了先
-        return ResponseData.ok(new HashMap<String, Object>() {{
+        return new HashMap<String, Object>() {{
             put("list", menuDTOS);
             put("total", 0);
-        }});
+        }};
 
     }
 
@@ -258,7 +257,7 @@ public class MenuResource {
      */
     @GetMapping("/menus/route")
     @PreAuthorize("hasAuthority('system:menu:view')")
-    public ResponseEntity<ResponseData<List<Tree<Long>>>> getMenusRoute() {
+    public List<Tree<Long>> getMenusRoute() {
         log.debug("REST request to get Menus Tree");
 
         final String currentLoginName = SecurityUtils.getCurrentLoginName();
@@ -318,7 +317,7 @@ public class MenuResource {
             treeNodes.addAll(menuRouterBean.customTreeNodeList());
         }
 
-        return ResponseData.ok(treeNodes);
+        return treeNodes;
     }
 
     /**
@@ -330,30 +329,30 @@ public class MenuResource {
      */
     @GetMapping("/menus/{id}")
     @PreAuthorize("hasAuthority('system:menu:view')")
-    public ResponseEntity<ResponseData<Menu>> getMenu(@PathVariable Long id) {
+    public Menu getMenu(@PathVariable Long id) {
         log.debug("REST request to get Menu : {}", id);
         Optional<Menu> menu = menuRepository.findById(id);
-        return ResponseData.ok(menu.get());
+        return menu.get();
     }
 
     @Operation(description = "删除菜单")
     @DeleteMapping("/menus")
     @PreAuthorize("hasAuthority('system:menu:delete')")
-    public ResponseEntity<ResponseData<String>> deleteMenu(@RequestBody List<Long> idList) {
+    public String deleteMenu(@RequestBody List<Long> idList) {
         log.debug("REST request to delete Examples, ids: {}", idList);
         this.menuRepository.deleteAllByIdIn(idList);
-        return ResponseData.ok("success");
+        return "success";
     }
 
     @Operation(description = "获取所有一级菜单")
     @GetMapping("/menus/root")
     @PreAuthorize("hasAuthority('system:menu:view')")
-    public ResponseEntity<ResponseData<List<Menu>>> getAllRootMenus() {
+    public List<Menu> getAllRootMenus() {
         log.debug("REST request to get a page of Menus");
 
         List<Menu> menuList = menuRepository.findAllByParentIdOrderByOrderNumAsc(0L);
 
-        return ResponseData.ok(menuList);
+        return menuList;
     }
 
     private final MenuSelectMapper menuSelectMapper;
@@ -361,7 +360,7 @@ public class MenuResource {
     @Operation(description = "获取菜单树select")
     @GetMapping("/menus/select")
     @PreAuthorize("hasAuthority('system:menu:view')")
-    public ResponseEntity<List<SelectOptionVO>> getPositionsSelect() {
+    public List<SelectOptionVO> getPositionsSelect() {
         log.debug("REST request to get Menu Select");
 
         final List<Menu> menuList = menuRepository.findAll();
@@ -369,6 +368,6 @@ public class MenuResource {
         final GenericTreeBuilderUtil<SelectOptionVO> genericTreeBuilderUtil = new GenericTreeBuilderUtil<>(SelectOptionVO.class);
         final List<SelectOptionVO> list = genericTreeBuilderUtil.buildTree(convert);
         log.info("左侧树构建: {}", list);
-        return ResponseEntity.ok(list);
+        return list;
     }
 }

@@ -1,6 +1,5 @@
 package com.z.module.system.web.rest;
 
-import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.module.system.domain.Permission;
 import com.z.module.system.repository.PermissionRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -43,12 +42,12 @@ public class PermissionResource {
      */
     @Operation(description = "新增权限")
     @PostMapping("/permissions")
-    public ResponseEntity<ResponseData<Permission>> createPermission(@RequestBody Permission permission) throws URISyntaxException {
+    public Permission createPermission(@RequestBody Permission permission) throws URISyntaxException {
         log.debug("REST request to save Permission : {}", permission);
 
         Permission newPermission = permissionRepository.save(permission);
 
-        return ResponseData.ok(newPermission);
+        return newPermission;
     }
 
     /**
@@ -61,7 +60,7 @@ public class PermissionResource {
 
     @Operation(description = "获取权限")
     @GetMapping("/permissions")
-    public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllPermissions(Pageable pageable, Permission role) {
+    public HashMap<String, Object> getAllPermissions(Pageable pageable, Permission role) {
         log.debug("REST request to get all Permission for an admin");
 
 //        final List<Permission> all = roleRepository.findAll();
@@ -88,23 +87,23 @@ public class PermissionResource {
         Example<Permission> ex = Example.of(role, matcher);
         permissionPage = permissionRepository.findAll(ex, pageable);
 
-        return ResponseData.ok(new HashMap<String, Object>() {{
+        return new HashMap<String, Object>() {{
             put("list", permissionPage.getContent());
             put("total", Long.valueOf(permissionPage.getTotalElements()).intValue());
-        }});
+        }};
     }
 
     @Operation(description = "删除权限")
     @DeleteMapping("/permissions")
-    public ResponseEntity<ResponseData<String>> deletePermission(@RequestBody List<Long> idList) {
+    public String deletePermission(@RequestBody List<Long> idList) {
         log.debug("REST request to delete Examples, ids: {}", idList);
         this.permissionRepository.deleteAllByIdIn(idList);
-        return ResponseData.ok("success");
+        return "success";
     }
 
     @Operation(description = "获取权限列表信息")
     @GetMapping("/permissions/list")
-    public ResponseEntity<ResponseData<List<Map<String, Object>>>> getAllDictList() {
+    public List<Map<String, Object>> getAllDictList() {
         final List<Permission> all = permissionRepository.findAll();
         final List<Map<String, Object>> resultMap = all.stream().map(m -> {
             Map<String, Object> map = new HashMap<>();
@@ -112,7 +111,7 @@ public class PermissionResource {
             map.put("label", m.getName());
             return map;
         }).collect(Collectors.toList());
-        return ResponseData.ok(resultMap);
+        return resultMap;
     }
 
 }

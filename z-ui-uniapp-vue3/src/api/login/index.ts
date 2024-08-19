@@ -1,7 +1,7 @@
 import request from '@/config/axios'
 import type { UserType, UserLoginType } from './types'
 
-const loginApi = (data: UserLoginType): Promise<IResponse<UserType>>  => {
+const loginApi = (data: UserLoginType): Promise<UserType>  => {
     return request.post({ url: '/mobile/login', data });
 };
 

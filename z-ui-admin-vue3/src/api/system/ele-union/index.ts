@@ -2,7 +2,7 @@ import request from '@/config/axios'
 import { EleUnionVO } from './types'
 
 // 查询基础信息左侧树
-export const getTree = async (): Promise<IResponse> => {
+export const getTree = async (): Promise<any> => {
   return request.get({ url: '/ele-unions/left-tree' })
 }
 

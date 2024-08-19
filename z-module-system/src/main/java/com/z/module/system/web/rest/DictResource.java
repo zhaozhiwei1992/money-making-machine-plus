@@ -1,16 +1,12 @@
 package com.z.module.system.web.rest;
 
-import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.module.system.domain.EleUnion;
 import com.z.module.system.service.CommonEleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import liquibase.pro.packaged.H;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -33,7 +29,7 @@ public class DictResource {
 
     @Operation(description = "获取数据字典")
     @GetMapping("/dict/list")
-    public ResponseEntity<ResponseData<Map<String, List<Map<String, Object>>>>> getAllDictList() {
+    public Map<String, List<Map<String, Object>>> getAllDictList() {
         final List<EleUnion> all = commonEleService.findAll();
         Map<String, List<Map<String, Object>>> resultMap = all.stream()
                 .collect(Collectors.groupingBy(EleUnion::getEleCatCode, Collectors.mapping(eleUnion -> {
@@ -44,12 +40,12 @@ public class DictResource {
                     map.put("label", eleUnion.getEleName());
                     return map;
                 }, Collectors.toList())));
-        return ResponseData.ok(resultMap);
+        return resultMap;
     }
 
     @Operation(description = "获取数据字典")
     @GetMapping("/dict/one")
-    public ResponseEntity<ResponseData<List<Map<String, Object>>>> getOneDict() {
+    public List<Map<String, Object>> getOneDict() {
 //        final List<Map<String, Object>> allEleCategory = commonEleService.findAllEleCategory();
         final List<Map<String, Object>> maps = new ArrayList<>();
         {
@@ -58,7 +54,7 @@ public class DictResource {
             map.put("lable", "hh");
             maps.add(map);
         }
-        return ResponseData.ok(maps);
+        return maps;
     }
 
 }

@@ -1,6 +1,5 @@
 package com.z.module.screen.web.rest;
 
-import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.framework.security.service.TokenProviderService;
 import com.z.framework.security.util.SecurityUtils;
 import com.z.module.screen.web.vo.LoginVO;
@@ -54,7 +53,7 @@ public class GoViewSysResource {
      */
     @Operation(description = "登录认证")
     @PostMapping("/login")
-    public ResponseEntity<ResponseData<Map<String, Object>>> login(@Valid @RequestBody LoginVO loginVM, HttpServletRequest request) {
+    public ResponseEntity<Map<String, Object>> login(@Valid @RequestBody LoginVO loginVM, HttpServletRequest request) {
 
         try {
             log.info("登录用户信息 {}", loginVM);
@@ -83,20 +82,20 @@ public class GoViewSysResource {
 //                        "loginDevice": "default-device",
 //                        "tag": null
                 map.put("token", tokenInfo);
-                return ResponseData.ok(map);
+                return ResponseEntity.ok(map);
             }else{
                 log.error(String.format("登录失败, 用户: %s, 密码: %s, 数据库密码: %s", username, password, dbPassWord));
-                return ResponseData.fail(String.format("用户密码不匹配, 登录用户: %s, 密码: %s", username, password));
+                throw new RuntimeException(String.format("用户密码不匹配, 登录用户: %s, 密码: %s", username, password));
             }
         } catch (Exception e) {
             log.error("登录出错", e);
-            return ResponseData.fail();
+            throw new RuntimeException("登录出错");
         }
     }
 
     @Operation(description = "退出")
     @GetMapping("logout")
-    public ResponseEntity<ResponseData<Object>> loginOut(){
+    public ResponseEntity<String> loginOut(){
         // 销毁token, 防止下次使用
         final Cache tokenBlackCache = cacheManager.getCache("tokenBlackCache");
         List<String> cacheBlockList;
@@ -108,12 +107,12 @@ public class GoViewSysResource {
         cacheBlockList.add(SecurityUtils.getTokenId());
         tokenBlackCache.put("tokenBlack", cacheBlockList);
 
-        return ResponseData.ok();
+        return ResponseEntity.ok("x");
     }
 
     @Operation(description = "获取oss地址")
     @GetMapping("/getOssInfo")
-    public ResponseEntity<ResponseData<Object>> getOssInfo() {
-        return ResponseData.ok();
+    public ResponseEntity<String> getOssInfo() {
+        return ResponseEntity.ok("x");
     }
 }

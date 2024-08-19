@@ -1,6 +1,5 @@
 package com.z.module.system.web.rest;
 
-import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.module.system.service.OnLineUserService;
 import com.z.module.system.web.vo.OnLineUserVO;
 import org.springframework.data.domain.Pageable;
@@ -33,16 +32,16 @@ public class OnLineUserResource {
     }
 
     @GetMapping("/online/users")
-    public ResponseEntity<ResponseData<HashMap<String, Object>>> onLineUsers(Pageable pageable, OnLineUserVO onLineUserVO) {
+    public HashMap<String, Object> onLineUsers(Pageable pageable, OnLineUserVO onLineUserVO) {
         final List<OnLineUserVO> all = onLineUserService.findAll();
-        return ResponseData.ok(new HashMap<String, Object>() {{
+        return new HashMap<String, Object>() {{
             put("list", all);
             put("total", all.size());
-        }});
+        }};
     }
 
     @DeleteMapping("/online/users/{loginName}")
-    public ResponseEntity<Object> onLineUserDelete(@PathVariable String loginName) {
+    public Object onLineUserDelete(@PathVariable String loginName) {
         onLineUserService.delete(loginName);
         //        todo 强制用户下线, token失效
         //        获取用户对应token

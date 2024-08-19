@@ -6,14 +6,14 @@ interface RoleParams {
 }
 
 // 请求时得看下是否自动增加了
-export const loginApi = (data: UserType): Promise<IResponse<UserType>> => {
+export const loginApi = (data: UserType): Promise<UserType> => {
   return request.post({ url: '/login', data })
   // 等价
   // const options = { data: data }
   // return request.post({ url: '/login', ...options })
 }
 
-export const loginOutApi = (): Promise<IResponse> => {
+export const loginOutApi = (): Promise<string> => {
   return request.get({ url: '/loginOut' })
 }
 
@@ -27,19 +27,15 @@ export const getUserListApi = ({ params }: AxiosConfig) => {
   }>({ url: '/users', params })
 }
 
-export const getAdminRoleApi = (
-  params: RoleParams
-): Promise<IResponse<AppCustomRouteRecordRaw[]>> => {
+export const getAdminRoleApi = (params: RoleParams): Promise<AppCustomRouteRecordRaw[]> => {
   return request.get({ url: '/role/list', params })
 }
 
-export const getTestRoleApi = (params: RoleParams): Promise<IResponse<string[]>> => {
+export const getTestRoleApi = (params: RoleParams): Promise<string[]> => {
   return request.get({ url: '/role/list', params })
 }
 
-export const getMenuRouteListApi = (
-  params: RoleParams
-): Promise<IResponse<AppCustomRouteRecordRaw[]>> => {
+export const getMenuRouteListApi = (params: RoleParams): Promise<AppCustomRouteRecordRaw[]> => {
   return request.get({ url: '/menus/route', params })
 }
 

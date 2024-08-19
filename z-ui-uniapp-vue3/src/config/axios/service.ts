@@ -71,8 +71,6 @@ service.interceptors.response.use(
     ) {
       // 如果是文件流，直接返回response
       return response
-    } else if (response.data.code === result_code) {
-      return response.data
     } else if (response.status === result_code) {
       return response.data
     } else {

@@ -1,6 +1,5 @@
 package com.z.framework.common.exception.handler;
 
-import com.z.framework.common.web.rest.vm.ResponseData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +15,7 @@ import java.util.Set;
 public class RestApiExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ResponseData<String>> handleConstraintViolationException(ConstraintViolationException cve){
+    public ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException cve){
         Set<ConstraintViolation<?>> cves = cve.getConstraintViolations();
         final StringBuilder buffer = new StringBuilder();
         for (ConstraintViolation<?> constraintViolation : cves) {
@@ -24,13 +23,13 @@ public class RestApiExceptionHandler {
             buffer.append("---");
         }
         log.error(buffer.toString());
-        return ResponseData.fail(buffer.toString());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(buffer.toString());
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ResponseData<Object>> handleException(Exception e){
+    public ResponseEntity<Object> handleException(Exception e){
         log.error(e.toString(), e);
-        return ResponseData.fail(e.toString());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
     }
 
 }

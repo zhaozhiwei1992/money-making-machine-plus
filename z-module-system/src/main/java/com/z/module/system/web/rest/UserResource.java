@@ -2,7 +2,6 @@ package com.z.module.system.web.rest;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.z.framework.common.repository.CommonSqlRepository;
-import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.framework.security.util.SecurityUtils;
 import com.z.module.system.domain.User;
 import com.z.module.system.domain.UserAuthority;
@@ -82,7 +81,7 @@ public class UserResource {
     @PostMapping("/users")
     @Transactional(rollbackFor = Exception.class)
     @PreAuthorize("hasAuthority('system:user:add')")
-    public ResponseEntity<ResponseData<User>> createUser(@RequestBody UserVO userVO) throws URISyntaxException {
+    public User createUser(@RequestBody UserVO userVO) throws URISyntaxException {
         log.debug("REST request to save User : {}", userVO);
 
         if (Objects.isNull(userVO.getPassword())) {
@@ -145,7 +144,7 @@ public class UserResource {
         }).collect(Collectors.toList());
         userDepartmentRepository.saveAll(userDepartmentList);
 
-        return ResponseData.ok(newUser);
+        return newUser;
     }
 
     private final PositionRepository positionRepository;
@@ -163,7 +162,7 @@ public class UserResource {
     @Operation(description = "获取用户")
     @GetMapping("/users")
     @PreAuthorize("hasAuthority('system:user:view')")
-    public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllUsers(Pageable pageable, User user) {
+    public HashMap<String, Object> getAllUsers(Pageable pageable, User user) {
         log.debug("REST request to get all User for an admin");
 
 //        final List<User> all = userRepository.findAll();
@@ -239,26 +238,26 @@ public class UserResource {
             return userVO;
         }).collect(Collectors.toList());
 
-        return ResponseData.ok(new HashMap<String, Object>() {{
+        return new HashMap<String, Object>() {{
             put("list", collect);
             put("total", Long.valueOf(userPage.getTotalElements()).intValue());
-        }});
+        }};
     }
 
     @Operation(description = "删除用户")
     @DeleteMapping("/users")
     @Transactional(rollbackFor = Exception.class)
     @PreAuthorize("hasAuthority('system:user:delete')")
-    public ResponseEntity<ResponseData<String>> deleteUser(@RequestBody List<Long> idList) {
+    public String deleteUser(@RequestBody List<Long> idList) {
         log.debug("REST request to delete Examples, ids: {}", idList);
         this.userRepository.deleteAllByIdIn(idList);
-        return ResponseData.ok("success");
+        return "success";
     }
 
     @Operation(description = "获取所有用户信息")
     @GetMapping("/users/all")
     @PreAuthorize("hasAuthority('system:user:view')")
-    public ResponseEntity<ResponseData<List<Map<String, Object>>>> getAllDictList() {
+    public List<Map<String, Object>> getAllDictList() {
         final List<User> all = userRepository.findAll();
         final List<Map<String, Object>> resultMap = all.stream().map(m -> {
             Map<String, Object> map = new HashMap<>();
@@ -267,13 +266,13 @@ public class UserResource {
             map.put("nickname", m.getName());
             return map;
         }).collect(Collectors.toList());
-        return ResponseData.ok(resultMap);
+        return resultMap;
     }
 
     @Operation(description = "重置密码")
     @PostMapping("/users/resetpass")
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<ResponseData<User>> resetPassword(@RequestBody PasswordResetVO passwordResetVO) throws URISyntaxException {
+    public User resetPassword(@RequestBody PasswordResetVO passwordResetVO) throws URISyntaxException {
         log.debug("REST request to save User : {}", passwordResetVO);
 
         // 1. 获取用户
@@ -281,13 +280,70 @@ public class UserResource {
         // 2. 校验密码
         final User user = oneByLogin.get();
         if (!passwordEncoder.matches(passwordResetVO.getOldPassword(), user.getPassword())) {
-            return ResponseData.fail("旧密码不正确");
+            throw new RuntimeException("旧密码不正确");
         }
         // 3. 填充用户并保存
         final String newPassword = passwordResetVO.getNewPassword();
         final String encode = passwordEncoder.encode(newPassword);
         user.setPassword(encode);
         User newUser = userRepository.save(user);
-        return ResponseData.ok(newUser);
+        return newUser;
+    }
+
+    @Operation(description = "获取用户")
+    @GetMapping("/users/detail/login")
+    @PreAuthorize("hasAuthority('system:user:view')")
+    public UserVO getUserDetailByLogin(String login) {
+        log.debug("REST request to get all User for an admin");
+
+        final Optional<User> oneByLogin = userRepository.findOneByLogin(login);
+
+        if(oneByLogin.isPresent()){
+            final User user = oneByLogin.get();
+            // 获取岗位信息
+            List<UserPosition> userPositionList =
+                    userPositionRepository.findAllByUserIdIn(Arrays.asList(user.getId()));
+            Map<Long, List<UserPosition>> userPositionGroupByUserId;
+            if(!userPositionList.isEmpty()){
+                userPositionGroupByUserId = userPositionList.stream().collect(Collectors.groupingBy(UserPosition::getUserId));
+            }else {
+                userPositionGroupByUserId = Collections.emptyMap();
+            }
+
+            // 获取部门信息
+            List<UserDepartment> userDepartmentList =
+                    userDepartmentRepository.findAllByUserIdIn(Arrays.asList(user.getId()));
+            Map<Long, List<UserDepartment>> userDepartmentGroupByUserId;
+            if(!userDepartmentList.isEmpty()){
+                userDepartmentGroupByUserId = userDepartmentList.stream().collect(Collectors.groupingBy(UserDepartment::getUserId));
+            } else {
+                userDepartmentGroupByUserId = Collections.emptyMap();
+            }
+
+            // 获取角色信息
+            List<UserAuthority> userAuthorityList =
+                    userAuthorityRepository.findAllByUserIdIn(Arrays.asList(user.getId()));
+            Map<Long, List<UserAuthority>> userAuthorityGroupByUserId;
+            if(!userDepartmentList.isEmpty()){
+                userAuthorityGroupByUserId = userAuthorityList.stream().collect(Collectors.groupingBy(UserAuthority::getUserId));
+            } else {
+                userAuthorityGroupByUserId = Collections.emptyMap();
+            }
+
+            final UserVO userVO = new UserVO();
+            BeanUtils.copyProperties(user, userVO);
+            if(!userPositionGroupByUserId.isEmpty() && !Objects.isNull(userPositionGroupByUserId.get(user.getId()))){
+                userVO.setPositionIdListStr(userPositionGroupByUserId.get(user.getId()).stream().map(UserPosition::getPositionId).map(String::valueOf).collect(Collectors.joining(",")));
+            }
+            if(!userDepartmentGroupByUserId.isEmpty() && !Objects.isNull(userDepartmentGroupByUserId.get(user.getId()))){
+                userVO.setDepartmentIdListStr(userDepartmentGroupByUserId.get(user.getId()).stream().map(UserDepartment::getDeptId).map(String::valueOf).collect(Collectors.joining(",")));
+            }
+            if(!userAuthorityGroupByUserId.isEmpty() && !Objects.isNull(userAuthorityGroupByUserId.get(user.getId()))){
+                userVO.setRoleIdListStr(userAuthorityGroupByUserId.get(user.getId()).stream().map(UserAuthority::getRoleId).map(String::valueOf).collect(Collectors.joining(",")));
+            }
+            return userVO;
+        }
+
+        throw new RuntimeException("找不到用户: " + login);
     }
 }

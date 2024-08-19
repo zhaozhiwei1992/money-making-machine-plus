@@ -31,6 +31,18 @@
 			"style": {
 				"navigationBarTitleText": "我的"
 			}
+		},
+		{
+			"path": "pages/mine/info/edit",
+			"style": {
+				"navigationBarTitleText": "编辑个人信息"
+			}
+		},
+		{
+			"path": "pages/mine/info/index",
+			"style": {
+				"navigationBarTitleText": "个人信息"
+			}
 		}
 	],
 	"globalStyle": {

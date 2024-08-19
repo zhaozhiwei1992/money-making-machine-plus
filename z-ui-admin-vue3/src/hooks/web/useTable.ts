@@ -16,7 +16,7 @@ interface TableResponse<T = any> {
 }
 
 interface UseTableConfig<T = any> {
-  getListApi: (option: any) => Promise<IResponse<TableResponse<T>>>
+  getListApi: (option: any) => Promise<TableResponse<T>>
   delListApi?: (option: any) => Promise<IResponse>
   // 返回数据格式配置
   response: {
@@ -132,8 +132,8 @@ export const useTable = <T = any>(config?: UseTableConfig<T>) => {
       })
       console.log('列表查询返回', res)
       if (res) {
-        tableObject.tableList = get(res.data || {}, config?.response.list as string)
-        tableObject.total = get(res.data || {}, config?.response?.total as string) || 0
+        tableObject.tableList = get(res || {}, config?.response.list as string)
+        tableObject.total = get(res || {}, config?.response?.total as string) || 0
       }
     },
     setProps: async (props: TableProps = {}) => {

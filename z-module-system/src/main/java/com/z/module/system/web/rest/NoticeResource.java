@@ -1,6 +1,5 @@
 package com.z.module.system.web.rest;
 
-import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.module.system.domain.Notice;
 import com.z.module.system.repository.NoticeRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,12 +40,12 @@ public class NoticeResource {
      */
     @Operation(description = "新增通知公告")
     @PostMapping("/notices")
-    public ResponseEntity<ResponseData<Notice>> createNotice(@RequestBody Notice notice) throws URISyntaxException {
+    public Notice createNotice(@RequestBody Notice notice) throws URISyntaxException {
         log.debug("REST request to save Notice : {}", notice);
 
         Notice newNotice = noticeRepository.save(notice);
 
-        return ResponseData.ok(newNotice);
+        return newNotice;
     }
 
     /**
@@ -59,7 +58,7 @@ public class NoticeResource {
 
     @Operation(description = "获取通知公告")
     @GetMapping("/notices")
-    public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllNotices(Pageable pageable, Notice role) {
+    public HashMap<String, Object> getAllNotices(Pageable pageable, Notice role) {
         log.debug("REST request to get all Notice for an admin");
 
 //        final List<Notice> all = roleRepository.findAll();
@@ -86,17 +85,17 @@ public class NoticeResource {
         Example<Notice> ex = Example.of(role, matcher);
         noticePage = noticeRepository.findAll(ex, pageable);
 
-        return ResponseData.ok(new HashMap<String, Object>() {{
+        return new HashMap<String, Object>() {{
             put("list", noticePage.getContent());
             put("total", Long.valueOf(noticePage.getTotalElements()).intValue());
-        }});
+        }};
     }
 
     @Operation(description = "删除通知公告")
     @DeleteMapping("/notices")
-    public ResponseEntity<ResponseData<String>> deleteNotice(@RequestBody List<Long> idList) {
+    public String deleteNotice(@RequestBody List<Long> idList) {
         log.debug("REST request to delete Examples, ids: {}", idList);
         this.noticeRepository.deleteAllByIdIn(idList);
-        return ResponseData.ok("success");
+        return "success";
     }
 }

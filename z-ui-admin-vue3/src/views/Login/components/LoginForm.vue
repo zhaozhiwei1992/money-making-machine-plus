@@ -147,10 +147,10 @@ const signIn = async () => {
 
         if (res) {
           // 返回用户信息, 带token
-          wsCache.set(appStore.getUserInfo, res.data)
+          wsCache.set(appStore.getUserInfo, res)
           // 设置token id
           // wsCache.set('token', res.data.token)
-          authUtil.setToken(res.data)
+          authUtil.setToken(res)
           // 使用后端动态路由只需要把这里放开
           appStore.setDynamicRouter(true)
           if (appStore.getDynamicRouter) {
@@ -189,7 +189,7 @@ const getRole = async () => {
   const res = await getMenuRouteListApi(params)
   if (res) {
     const { wsCache } = useCache()
-    const routers = res.data || []
+    const routers = res || []
     // console.log('返回routers信息', res)
     wsCache.set('roleRouters', routers)
 
