@@ -19,6 +19,8 @@ export interface UserVO {
   roleIdListStr: string | string[]
   positionIdListStr: string | string[]
   departmentIdListStr: string | string[]
+  phonenumber: string
+  email: string
 }
 
 export interface PasswordResetVO {

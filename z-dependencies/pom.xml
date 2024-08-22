@@ -449,6 +449,13 @@
         <version>2.3.2</version>
       </dependency>
 
+<!--      微信小程序-->
+      <dependency>
+        <groupId>com.github.binarywang</groupId>
+        <artifactId>weixin-java-miniapp</artifactId>
+        <version>4.4.8.B</version>
+      </dependency>
+
       <!-- 业务组件 -->
 <!--      这里按照需要, 现在版本都是跟着整体版本走, 没啥必要注册-->
       <dependency>

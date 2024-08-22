@@ -17,7 +17,7 @@ interface TableResponse<T = any> {
 
 interface UseTableConfig<T = any> {
   getListApi: (option: any) => Promise<TableResponse<T>>
-  delListApi?: (option: any) => Promise<IResponse>
+  delListApi?: (option: any) => Promise<string | null>
   // 返回数据格式配置
   response: {
     list: string

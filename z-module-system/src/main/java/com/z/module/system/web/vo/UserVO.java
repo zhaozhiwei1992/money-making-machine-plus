@@ -2,6 +2,7 @@ package com.z.module.system.web.vo;
 
 import lombok.Data;
 
+import javax.persistence.Column;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.List;
@@ -50,4 +51,7 @@ public class UserVO implements Serializable {
     // 部门id集合
     private String departmentIdListStr;
 
+    private String email;
+
+    private String phoneNumber;
 }

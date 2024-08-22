@@ -94,5 +94,10 @@
       <artifactId>spring-session-core</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>com.github.binarywang</groupId>
+      <artifactId>weixin-java-miniapp</artifactId>
+    </dependency>
+
   </dependencies>
 </project>

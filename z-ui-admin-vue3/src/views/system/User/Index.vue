@@ -96,6 +96,19 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
+    field: 'phoneNumber',
+    label: '手机号',
+    form: {
+      formItemProps: {
+        required: true
+      }
+    }
+  },
+  {
+    field: 'email',
+    label: '邮箱'
+  },
+  {
     field: 'departmentIdListStr',
     label: '部门',
     form: {

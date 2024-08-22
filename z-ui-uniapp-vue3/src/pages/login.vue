@@ -47,7 +47,7 @@
 <script setup lang="ts">
 import { onMounted, reactive, readonly, ref } from "vue";
 import type { UserType } from "@/api/login/types";
-import { loginApi } from "@/api/login";
+import { loginApi, loginByPhoneApi } from "@/api/login";
 
 const loginForm = ref<any>(null);
 
@@ -79,9 +79,15 @@ const rules = reactive({
 });
 
 // 定义方法
-const mobileSignIn = () => {
+const mobileSignIn = async () => {
   // 通过微信接口获取手机号
+  const phonenumber = "13800000000";
   // 登录逻辑
+  const res = await loginByPhoneApi(phonenumber);
+  uni.setStorageSync("token", res.token);
+  uni.setStorageSync("username", res.username);
+  // 跳转首页, 首页是tabBar需要用switchTab
+  uni.switchTab({ url: "/pages/index/index" });
 };
 
 const signIn = async () => {

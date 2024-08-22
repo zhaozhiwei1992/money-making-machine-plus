@@ -1,36 +1,31 @@
 import request from '@/config/axios'
 import type { UserType, UserLoginType } from './types'
 
-const loginApi = (data: UserLoginType): Promise<UserType>  => {
+export const loginApi = (data: UserLoginType): Promise<UserType>  => {
     return request.post({ url: '/mobile/login', data });
 };
 
-var loginOutApi = function () {
+export const loginByPhoneApi = (phonenum: string): Promise<UserType>  => {
+    return request.post({ url: '/mobile/phonnum/login', data: phonenum });
+};
+
+export var loginOutApi = function () {
     return request.get({ url: '/mobile/loginOut' });
 };
 
-var getUserListApi = function (_a) {
+export var getUserListApi = function (_a) {
     var params = _a.params;
     return request.get({ url: '/users', params: params });
 };
 
-var getAdminRoleApi = function (params) {
+export var getAdminRoleApi = function (params) {
     return request.get({ url: '/role/list', params: params });
 };
 
-var getTestRoleApi = function (params) {
+export var getTestRoleApi = function (params) {
     return request.get({ url: '/role/list', params: params });
 };
 
-var getMenuRouteListApi = function (params) {
+export var getMenuRouteListApi = function (params) {
     return request.get({ url: '/menus/route', params: params });
 };
-
-export {
-    loginApi,
-    loginOutApi,
-    getUserListApi,
-    getAdminRoleApi,
-    getTestRoleApi,
-    getMenuRouteListApi
-}

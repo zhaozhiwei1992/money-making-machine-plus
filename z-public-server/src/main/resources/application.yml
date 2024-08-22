@@ -371,3 +371,14 @@ z:
           secretKey: ??
           bucketName: goview
           staticDomain: ??
+---
+#微信小程序
+wx:
+  miniapp:
+    defaultappid: wxd46fa7c6e2fa9577 #微信小程序的appid
+    configs:
+      - appid: wxd46fa7c6e2fa9577 #微信小程序的appid
+        secret: 034aa321f2aceab47ad0f953ad65213c #微信小程序的Secret
+        token: #微信小程序消息服务器配置的token
+        aesKey: #微信小程序消息服务器配置的EncodingAESKey
+        msgDataFormat: JSON
