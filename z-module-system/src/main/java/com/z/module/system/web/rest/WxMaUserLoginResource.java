@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -32,7 +31,7 @@ import java.util.Optional;
  */
 @RestController
 @Slf4j
-@RequestMapping("/mobile/wx/user")
+@RequestMapping("/mobile/wx")
 public class WxMaUserLoginResource {
 	private final WxMaService wxMaService;
 
@@ -57,10 +56,9 @@ public class WxMaUserLoginResource {
 	 * 登陆接口
 	 */
 	@GetMapping("/login")
-	public Map<String, Object> login(String code, String mobile, HttpServletResponse response) throws Exception {
+	public Map<String, Object> login(String code) throws Exception {
 		if (StringUtils.isBlank(code)) {
-			throw new RuntimeException("empty jscode");
-
+			throw new RuntimeException("empty code");
 		}
 
 		if (!wxMaService.switchover(appid)) {
@@ -69,10 +67,11 @@ public class WxMaUserLoginResource {
 
 		try {
 			//根据手机获取用户的信息
-
-			final Optional<User> oneByPhoneNumber = userRepository.findOneByPhoneNumber(mobile);
+			WxMaPhoneNumberInfo phoneNoInfo = wxMaService.getUserService().getPhoneNoInfo(code);
+			String phoneNumber = phoneNoInfo.getPhoneNumber();
+			final Optional<User> oneByPhoneNumber = userRepository.findOneByPhoneNumber(phoneNumber);
 			if(!oneByPhoneNumber.isPresent()) {
-				throw new RuntimeException("手机号"+mobile+"未注册");
+				throw new RuntimeException("手机号"+phoneNumber+"未注册");
 
 			}
 			Map<String, Object> map = new HashMap<>();
@@ -81,9 +80,9 @@ public class WxMaUserLoginResource {
 			String openid = session.getOpenid();
 			final User user = oneByPhoneNumber.get();
 			String token = tokenProviderService.generateToken(user.getLogin(), false);
-			//记录openid和uiserid的关联
+			//记录openid和login的关联
 			loginService.saveOpenidUserLogin(openid, user.getLogin());
-			map.put("mobile", mobile);
+			map.put("mobile", phoneNumber);
 			map.put("openid", openid);
 			map.put("token", token);
 			return map;
@@ -102,7 +101,7 @@ public class WxMaUserLoginResource {
 	 * 检查登陆接口
 	 */
 	@GetMapping("/checkLogin")
-	public Map<String, Object> checkLogin(String code, HttpServletResponse response) throws Exception {
+	public Map<String, Object> checkLogin(String code) throws Exception {
 		Map<String, Object> map = new HashMap<>();
 		if (StringUtils.isBlank(code)) {
 			throw new RuntimeException("参数不全");
@@ -115,10 +114,9 @@ public class WxMaUserLoginResource {
 		try {
 			WxMaJscode2SessionResult session = wxMaService.getUserService().getSessionInfo(code);
 			String openid = session.getOpenid();
-			log.info(session.getSessionKey());
-			// 先获取openkey
-			log.info(session.getOpenid());
-			// 检查openkey是不是已经关联了用户手机号
+			log.info("sessionKey: {}", session.getSessionKey());
+			log.info("openId: {}", session.getOpenid());
+			// 检查openKey是不是已经关联了用户手机号
 			final Optional<UserOpenId> oneByOpenId = userOpenIdRepository.findOneByOpenId(openid);
 			if(!oneByOpenId.isPresent()){
 				throw new RuntimeException("没有关联手机号");
@@ -170,8 +168,7 @@ public class WxMaUserLoginResource {
 	/**
 	 * <pre>
 	 * 获取用户绑定手机号信息
-	 * 前端通过小程序组件获取 code(动态里ingpai)
-	 * 参考:  https://blog.csdn.net/weixin_46662539/article/details/122447656
+	 * 前端通过小程序组件获取 code
 	 * </pre>
 	 */
 	@GetMapping("/phone")

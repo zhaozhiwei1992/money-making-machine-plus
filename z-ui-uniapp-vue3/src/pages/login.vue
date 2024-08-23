@@ -47,7 +47,7 @@
 <script setup lang="ts">
 import { onMounted, reactive, readonly, ref } from "vue";
 import type { UserType } from "@/api/login/types";
-import { loginApi, loginByPhoneApi } from "@/api/login";
+import { loginApi, loginByPhoneApi, loginByWxApi } from "@/api/login";
 
 const loginForm = ref<any>(null);
 
@@ -78,7 +78,30 @@ const rules = reactive({
   },
 });
 
-// 定义方法
+// 微信登录
+const wxSignIn = async () => {
+  const code: string = await new Promise((resolve, reject) => {
+    // uni.login非异步，所以用Promise包装
+    uni.login({
+      provider: "weixin",
+      onlyAuthorize: true, // 微信登录仅请求授权认证
+      success: (res) => {
+        resolve(res.code);
+      },
+      fail: (err) => {
+        reject(err);
+      },
+    });
+  });
+  // 登录逻辑
+  const res = await loginByWxApi(code);
+  uni.setStorageSync("token", res.token);
+  uni.setStorageSync("username", res.username);
+  // 跳转首页, 首页是tabBar需要用switchTab
+  uni.switchTab({ url: "/pages/index/index" });
+};
+
+// 手机号登录
 const mobileSignIn = async () => {
   // 通过微信接口获取手机号
   const phonenumber = "13800000000";

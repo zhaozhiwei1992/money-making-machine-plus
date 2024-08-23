@@ -60,10 +60,10 @@ public class WxMaMediaResource {
             try {
                 MultipartFile file = multiRequest.getFile(it.next());
                 File newFile = new File(Files.createTempDir(), file.getOriginalFilename());
-                log.info("filePath is ：" + newFile.toString());
+                log.info("filePath is ：{}", newFile);
                 file.transferTo(newFile);
                 WxMediaUploadResult uploadResult = wxMaService.getMediaService().uploadMedia(WxMaConstants.KefuMsgType.IMAGE, newFile);
-                log.info("media_id ： " + uploadResult.getMediaId());
+                log.info("media_id ： {}", uploadResult.getMediaId());
                 result.add(uploadResult.getMediaId());
             } catch (IOException e) {
                 log.error(e.getMessage(), e);

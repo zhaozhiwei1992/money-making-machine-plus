@@ -35,7 +35,7 @@ import java.util.Arrays;
 public class WebConfigurer implements ServletContextInitializer, WebServerFactoryCustomizer<WebServerFactory>,
         WebMvcConfigurer {
 
-    private final Logger log = LoggerFactory.getLogger(RequestLogAutoConfiguration.class);
+    private final Logger log = LoggerFactory.getLogger(WebConfigurer.class);
 
     private final Environment env;
 

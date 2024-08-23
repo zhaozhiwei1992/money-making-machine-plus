@@ -1,8 +1,12 @@
-import request from '@/config/axios'
-import type { UserType, UserLoginType } from './types'
+import request from '@/config/axios';
+import type { UserLoginType, UserType } from './types';
 
 export const loginApi = (data: UserLoginType): Promise<UserType>  => {
     return request.post({ url: '/mobile/login', data });
+};
+
+export const loginByWxApi = (code: string): Promise<UserType>  => {
+    return request.post({ url: '/mobile/wx/login', data: code });
 };
 
 export const loginByPhoneApi = (phonenum: string): Promise<UserType>  => {

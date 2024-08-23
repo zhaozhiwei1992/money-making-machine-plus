@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 @Configuration
 @EnableConfigurationProperties(WxMaProperties.class)
 public class WxMaConfiguration {
+
     private final WxMaProperties properties;
 
     public WxMaConfiguration(WxMaProperties properties) {
@@ -79,7 +80,7 @@ public class WxMaConfiguration {
     };
 
     private final WxMaMessageHandler logHandler = (wxMessage, context, service, sessionManager) -> {
-        log.info("收到消息：" + wxMessage.toString());
+        log.info("收到消息：{}", wxMessage.toString());
         service.getMsgService().sendKefuMsg(WxMaKefuMessage.newTextBuilder().content("收到信息为：" + wxMessage.toJson())
             .toUser(wxMessage.getFromUser()).build());
         return null;
@@ -103,7 +104,7 @@ public class WxMaConfiguration {
                     .toUser(wxMessage.getFromUser())
                     .build());
         } catch (WxErrorException e) {
-            e.printStackTrace();
+            log.error("回复图片消息失败", e);
         }
 
         return null;
@@ -120,7 +121,7 @@ public class WxMaConfiguration {
                     .toUser(wxMessage.getFromUser())
                     .build());
         } catch (WxErrorException e) {
-            e.printStackTrace();
+            log.error("生成二维码失败", e);
         }
 
         return null;
