@@ -1,7 +1,6 @@
 package com.z.module.ui.web.rest;
 
 import com.z.framework.common.web.rest.errors.BadRequestAlertException;
-import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.module.ui.domain.UiQueryForm;
 import com.z.module.ui.repository.UiQueryFormRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +38,7 @@ public class UiQueryFormResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/queryforms")
-    public ResponseEntity<ResponseData<UiQueryForm>> createUiQueryForm(@RequestBody UiQueryForm uiQueryForm) throws URISyntaxException {
+    public UiQueryForm createUiQueryForm(@RequestBody UiQueryForm uiQueryForm) throws URISyntaxException {
         log.debug("REST request to save UiQueryForm : {}", uiQueryForm);
         if (uiQueryForm.getId() != null) {
             throw new BadRequestAlertException("A new uiQueryForm cannot already have an ID", ENTITY_NAME, "idexists");
@@ -53,7 +52,7 @@ public class UiQueryFormResource {
         uiQueryForm.setOrderNum(Integer.parseInt(String.valueOf(count + 1)));
 
         UiQueryForm result = uiQueryFormRepository.save(uiQueryForm);
-        return ResponseData.ok(result);
+        return result;
     }
 
     /**
@@ -62,20 +61,20 @@ public class UiQueryFormResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of uiQueryForms in body.
      */
     @GetMapping("/queryforms")
-    public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllUiQueryForms(Pageable pageable) {
+    public HashMap<String, Object> getAllUiQueryForms(Pageable pageable) {
         log.debug("REST request to get all UiQueryForms");
         final Page<UiQueryForm> page = uiQueryFormRepository.findAll(pageable);
-        return ResponseData.ok(new HashMap<String, Object>(){{
+        return new HashMap<String, Object>(){{
             put("list", page.getContent());
             put("total", Long.valueOf(page.getTotalElements()).intValue());
-        }});
+        }};
     }
 
     @GetMapping("/queryforms/menu/{menuid}")
-    public ResponseEntity<ResponseData<List<UiQueryForm>>> getUiQueryFormByMenuId(@PathVariable Long menuid) {
+    public List<UiQueryForm> getUiQueryFormByMenuId(@PathVariable Long menuid) {
         log.debug("REST request to get UiQueryForm by menu : {}", menuid);
         final List<UiQueryForm> byMenuIdOrderByOrderNumAsc = uiQueryFormRepository.findByMenuIdOrderByOrderNumAsc(menuid);
-        return ResponseData.ok(byMenuIdOrderByOrderNumAsc);
+        return byMenuIdOrderByOrderNumAsc;
     }
 
     /**
@@ -84,8 +83,8 @@ public class UiQueryFormResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/queryforms")
-    public ResponseEntity<ResponseData<String>> deleteUiQueryForm(@RequestBody List<Long> idList) {
+    public String deleteUiQueryForm(@RequestBody List<Long> idList) {
         this.uiQueryFormRepository.deleteAllByIdIn(idList);
-        return ResponseData.ok("success");
+        return "success";
     }
 }

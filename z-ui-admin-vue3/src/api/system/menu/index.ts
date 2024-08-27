@@ -1,6 +1,6 @@
 import request from '@/config/axios'
-import type { MenuVO } from './types'
 import { ComponentOptions } from '@/types/components'
+import type { MenuVO } from './types'
 
 export const getTableListApi = (params: any): Promise<IResponse> => {
   params = { ...params, page: params.pageIndex, size: params.pageSize }
@@ -13,7 +13,7 @@ export const saveTableApi = (data: Partial<MenuVO>): Promise<IResponse> => {
 }
 
 // 获取指定数据详情
-export const getMenuDetApi = (id: string): Promise<IResponse<MenuVO>> => {
+export const getMenuDetApi = (id: string): Promise<MenuVO> => {
   // url?id=xx
   return request.get({ url: '/menus/' + id })
 }

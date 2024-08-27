@@ -57,7 +57,7 @@ public class UiTableResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/tables")
-    public ResponseEntity<ResponseData<UiTable>> createUiTable(@RequestBody UiTable uiTable) throws URISyntaxException {
+    public UiTable createUiTable(@RequestBody UiTable uiTable) throws URISyntaxException {
         log.debug("REST request to save UiTable : {}", uiTable);
         if (uiTable.getId() != null) {
             throw new BadRequestAlertException("A new uiTable cannot already have an ID", ENTITY_NAME, "idexists");
@@ -70,8 +70,7 @@ public class UiTableResource {
         final long count = uiTableRepository.count(of);
         uiTable.setOrderNum(Integer.parseInt(String.valueOf(count + 1)));
 
-        UiTable result = uiTableRepository.save(uiTable);
-        return ResponseData.ok(result);
+        return uiTableRepository.save(uiTable);
     }
 
     /**
@@ -80,12 +79,12 @@ public class UiTableResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of uiTables in body.
      */
     @GetMapping("/tables")
-    public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllUiTables(Pageable pageable) {
+    public HashMap<String, Object> getAllUiTables(Pageable pageable) {
         Page<UiTable> page = uiTableRepository.findAll(pageable);
-        return ResponseData.ok(new HashMap<String, Object>() {{
+        return new HashMap<String, Object>() {{
             put("list", page.getContent());
             put("total", Long.valueOf(page.getTotalElements()).intValue());
-        }});
+        }};
     }
 
     private final UiComponentRepository uiComponentRepository;
@@ -93,12 +92,18 @@ public class UiTableResource {
     private final CommonEleService commonEleService;
 
     @GetMapping("/tables/menu/{menuid}")
-    public ResponseEntity<ResponseData<List<Map<String, Object>>>> getUiTableByMenuId(@PathVariable Long menuid) {
+    public List<Map<String, Object>> getUiTableByMenuId(@PathVariable Long menuid) {
         log.debug("REST request to get UiTable by menu : {}", menuid);
         List<UiTable> uiTableCols = uiTableRepository.findByMenuIdOrderByOrderNumAsc(menuid);
 
+        // TODO 多表头处理
+
         // 转换为map, 填充翻译值集信息
-        final List<Map<String, Object>> collect = uiTableCols
+        // 根据是否存在数据源配置来填充mapping信息, 对于select需要id, label, 对于cascader, 则要构建为树型
+        // 所以直接不管是啥都按树来即可
+        // config中获取mapping配置, 为ele中的eleCatCode编码
+        // 2. 转换为翻译信息
+        return uiTableCols
                 .stream()
                 .map(bean -> {
                     final Map<String, Object> map = BeanUtil.beanToMap(bean);
@@ -115,7 +120,6 @@ public class UiTableResource {
                     return map;
                 })
                 .collect(Collectors.toList());
-        return ResponseData.ok(collect);
     }
 
     /**
@@ -124,8 +128,8 @@ public class UiTableResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/tables")
-    public ResponseEntity<ResponseData<String>> deleteUiTable(@RequestBody List<Long> idList) {
+    public String deleteUiTable(@RequestBody List<Long> idList) {
         this.uiTableRepository.deleteAllByIdIn(idList);
-        return ResponseData.ok("success");
+        return "success";
     }
 }

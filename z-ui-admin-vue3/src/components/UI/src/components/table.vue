@@ -2,18 +2,18 @@
 import { ContentWrap } from '@/components/ContentWrap'
 import { useI18n } from '@/hooks/web/useI18n'
 import { Table, TableExpose } from '@/components/Table'
-import { getTableColListByMenuApi } from '@/api/ui/table'
+import { getTableColListByMenuApi, getTableDataListApi } from '@/api/ui/table'
 import { TableData } from '@/api/table/types'
 import { ref, unref, reactive, inject, onMounted } from 'vue'
 import { ElButton } from 'element-plus'
 import { useTable } from '@/hooks/web/useTable'
-import { Pagination, TableColumn, TableSlotDefault } from '@/types/table'
+import { Pagination, TableColumn, TableResponse, TableSlotDefault } from '@/types/table'
 import { useEmitt } from '@/hooks/web/useEmitt'
+import { TableVO } from '@/api/ui/table/types'
 
 const props = defineProps({
   title: String,
-  componentId: String,
-  comRef: ref<any>
+  componentId: String
 })
 
 // 对外暴露一些方法, 通过事件 开始
@@ -53,72 +53,20 @@ useEmitt({
 const { t } = useI18n()
 
 const columns = reactive<TableColumn[]>([])
-// const columns = reactive<TableColumn[]>([
-//   {
-//     field: 'index',
-//     label: t('tableDemo.index'),
-//     type: 'index'
-//   },
-//   {
-//     field: 'content',
-//     label: t('tableDemo.header'),
-//     children: [
-//       {
-//         field: 'title',
-//         label: t('tableDemo.title')
-//       },
-//       {
-//         field: 'author',
-//         label: t('tableDemo.author')
-//       },
-//       {
-//         field: 'display_time',
-//         label: t('tableDemo.displayTime')
-//       },
-//       {
-//         field: 'importance',
-//         label: t('tableDemo.importance'),
-//         formatter: (_: Recordable, __: TableColumn, cellValue: number) => {
-//           return h(
-//             ElTag,
-//             {
-//               type: cellValue === 1 ? 'success' : cellValue === 2 ? 'warning' : 'danger'
-//             },
-//             () =>
-//               cellValue === 1
-//                 ? t('tableDemo.important')
-//                 : cellValue === 2
-//                 ? t('tableDemo.good')
-//                 : t('tableDemo.commonly')
-//           )
-//         }
-//       },
-//       {
-//         field: 'pageviews',
-//         label: t('tableDemo.pageviews')
-//       }
-//     ]
-//   },
-//   {
-//     field: 'action',
-//     label: t('tableDemo.action')
-//   }
-// ])
 
-onMounted(() => {
+onMounted(async () => {
   // 父页面传入菜单id, 这里根据菜单id自己去后台获取编辑区信息
   const menuId: string | undefined = inject('menuId')
   console.log('父级传入menuid为: ' + menuId)
   // 获取按钮信息, 填充
-  getTableColListByMenuApi(menuId).then((res) => {
-    res.data.forEach((element) => {
-      const colItem: any = {
-        field: element.code,
-        label: element.name,
-        type: element.type
-      }
-      columns.push(colItem)
-    })
+  const res = await getTableColListByMenuApi(menuId)
+  res.forEach((element) => {
+    const colItem: any = {
+      field: element.code,
+      label: element.name,
+      type: element.type
+    }
+    columns.push(colItem)
   })
   // 模拟测试
   // buttons.value.push(...buttonsSchema)
@@ -126,17 +74,18 @@ onMounted(() => {
 
 const { emitter } = useEmitt()
 
-const getTableListApi = (params: any): Promise<IResponse> => {
-  // 通过事件由业务实现返回数据, 怎么拿到值呢?
-  // 1. 通过store中转, 2. 直接通过事件把数据发回来, 然后监听填充(事件不能返回)
-  emitter.emit('getTableDataList', params)
-  // 这里有没有可能出现数据还没查到情况
-  console.log(tableDataRes.value, '返回列表数据')
-  return tableDataRes.value
+const getTableList = async (): Promise<TableResponse<T>> => {
+  // 调用事件, 需要业务去实现获取数据方法
+  emitter.emit('tableLoadData', {
+    componentId: props.componentId
+  })
+  emitter.on('getTableDataListEnd', (data) => {
+    return data
+  })
 }
 
-const { register, tableObject, methods } = useTable<TableData>({
-  getListApi: getTableListApi,
+const { register, tableObject, methods } = useTable<TableVO>({
+  getListApi: getTableList,
   response: {
     list: 'list',
     total: 'total'
@@ -167,6 +116,9 @@ unref(tableRef)?.setProps({
   selection: true
 })
 
+const tableRefs = reactive({})
+tableRefs[props.componentId] = ref(null)
+
 // 选中数据
 // const index = ref(1)
 </script>
@@ -174,7 +126,7 @@ unref(tableRef)?.setProps({
 <template>
   <ContentWrap :title="props.title">
     <Table
-      ref="comRef"
+      ref="tableRefs[props.componentId]"
       v-model:pageSize="tableObject.pageSize"
       v-model:currentPage="tableObject.currentPage"
       :data="tableObject.tableList"
@@ -183,7 +135,7 @@ unref(tableRef)?.setProps({
       @register="register"
     >
       <template #action="data">
-        <ElButton type="primary" @click="actionFn(data as TableSlotDefault)">
+        <ElButton type="primary" @click="actionFn(data)">
           {{ t('tableDemo.action') }}
         </ElButton>
       </template>

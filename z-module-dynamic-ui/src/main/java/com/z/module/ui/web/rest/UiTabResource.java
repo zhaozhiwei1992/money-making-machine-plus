@@ -1,7 +1,6 @@
 package com.z.module.ui.web.rest;
 
 import com.z.framework.common.web.rest.errors.BadRequestAlertException;
-import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.module.ui.domain.UiTab;
 import com.z.module.ui.repository.UiTabRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +39,7 @@ public class UiTabResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/tabs")
-    public ResponseEntity<ResponseData<UiTab>> createUiTab(@RequestBody UiTab uiTab) throws URISyntaxException {
+    public UiTab createUiTab(@RequestBody UiTab uiTab) throws URISyntaxException {
         log.debug("REST request to save UiTab : {}", uiTab);
         if (uiTab.getId() != null) {
             throw new BadRequestAlertException("A new uiTab cannot already have an ID", ENTITY_NAME, "idexists");
@@ -52,8 +51,7 @@ public class UiTabResource {
         final long count = uiTabRepository.count(of);
         uiTab.setOrderNum(Integer.parseInt(String.valueOf(count + 1)));
 
-        UiTab result = uiTabRepository.save(uiTab);
-        return ResponseData.ok(result);
+        return uiTabRepository.save(uiTab);
     }
 
     /**
@@ -62,21 +60,21 @@ public class UiTabResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of uiTabs in body.
      */
     @GetMapping("/tabs")
-    public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllUiTabs(Pageable pageable) {
+    public HashMap<String, Object> getAllUiTabs(Pageable pageable) {
         log.debug("REST request to get a page of UiTabs");
 
         Page<UiTab> page = uiTabRepository.findAll(pageable);
-        return ResponseData.ok(new HashMap<String, Object>() {{
+        return new HashMap<String, Object>() {{
             put("list", page.getContent());
             put("total", Long.valueOf(page.getTotalElements()).intValue());
-        }});
+        }};
     }
 
     @GetMapping("/tabs/menu/{menuid}")
-    public ResponseEntity<ResponseData<Object>> getUiTabByMenuId(@PathVariable Long menuid) {
+    public Object getUiTabByMenuId(@PathVariable Long menuid) {
         log.debug("REST request to get UiToolButton by menu : {}", menuid);
         final List<UiTab> byMenuId = uiTabRepository.findByMenuId(menuid);
-        return ResponseData.ok(byMenuId);
+        return byMenuId;
     }
 
     /**
@@ -85,8 +83,8 @@ public class UiTabResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/tabs/{id}")
-    public ResponseEntity<ResponseData<String>> deleteUiTab(@RequestBody List<Long> idList) {
+    public String deleteUiTab(@RequestBody List<Long> idList) {
         this.uiTabRepository.deleteAllByIdIn(idList);
-        return ResponseData.ok("success");
+        return "success";
     }
 }

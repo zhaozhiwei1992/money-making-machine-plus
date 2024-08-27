@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, inject, defineAsyncComponent, shallowRef } from 'vue'
 import { getComponentListApi } from '@/api/ui/view'
+import { useEmitt } from '@/hooks/web/useEmitt'
 
 const uiComponents: any = import.meta.glob('@/components/UI/src/components/*.vue')
 
@@ -36,31 +37,42 @@ const components = ref<ComponentType[]>([])
 //   }
 // ])
 
-onMounted(() => {
+onMounted(async () => {
   console.log(uiComponents, '挂载组件')
   // 获取menuid
   const menuId: string | undefined = inject('menuId')
   // 获取所有组件信息, 通过下述方式push
-  getComponentListApi(menuId).then((res) => {
-    res.data.forEach((element) => {
-      const component: ComponentType = {
-        id: element.id,
-        name: element.name,
-        // component: defineAsyncComponent(() => import('./components/' + element.name + '.vue'))
-        // 上述方式会被vite报异常
-        component: shallowRef(
-          defineAsyncComponent(
-            uiComponents['/src/components/UI/src/components/' + element.component + '.vue']
-          )
+  const res = await getComponentListApi(menuId)
+  res.forEach((element) => {
+    const component: ComponentType = {
+      id: element.id,
+      name: element.name,
+      // component: defineAsyncComponent(() => import('./components/' + element.name + '.vue'))
+      // 上述方式会被vite报异常
+      component: shallowRef(
+        defineAsyncComponent(
+          uiComponents['/src/components/UI/src/components/' + element.component + '.vue']
         )
-        // component: shallowRef(
-        //   uiComponents['/src/components/UI/src/components/' + element.component + '.vue']
-        // )
-      }
-      components.value.push(component)
-    })
+      )
+      // component: shallowRef(
+      //   uiComponents['/src/components/UI/src/components/' + element.component + '.vue']
+      // )
+    }
+    components.value.push(component)
   })
-  console.log('要加载的组件: ', components)
+  console.log('加载的组件: ', components)
+})
+
+// 定义所有组件引用, 方便在业务代码中获取组件
+const componentRefs = ref({})
+
+const setItemRef = (name) => {
+  return (el) => {
+    componentRefs.value[name] = el
+  }
+}
+defineExpose({
+  componentRefs
 })
 </script>
 
@@ -71,7 +83,7 @@ onMounted(() => {
     v-for="item in components"
     :is="item.component"
     :key="item.id"
-    :ref="item.name"
+    :ref="setItemRef(item.name)"
     :componentId="item.name"
   />
 </template>

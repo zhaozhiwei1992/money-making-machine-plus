@@ -1,11 +1,9 @@
 package com.z.module.ui.web.rest;
 
 import com.z.framework.common.web.rest.errors.BadRequestAlertException;
-import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.module.ui.domain.UiComponent;
 import com.z.module.ui.repository.UiComponentRepository;
 import io.swagger.v3.oas.annotations.Operation;
-import liquibase.pro.packaged.R;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,10 +40,10 @@ public class UiComponentResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/components")
-    public ResponseEntity<ResponseData<UiComponent>> createUiComponent(@RequestBody UiComponent uiComponent) throws URISyntaxException {
+    public UiComponent createUiComponent(@RequestBody UiComponent uiComponent) throws URISyntaxException {
         log.debug("REST request to save UiComponent : {}", uiComponent);
         UiComponent result = uiComponentRepository.save(uiComponent);
-        return ResponseData.ok(result);
+        return result;
     }
 
     /**
@@ -59,24 +57,23 @@ public class UiComponentResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/components/{id}")
-    public ResponseEntity<ResponseData<UiComponent>> updateUiComponent(
+    public UiComponent updateUiComponent(
             @PathVariable(value = "id", required = false) final Long id,
             @RequestBody UiComponent uiComponent
     ) throws URISyntaxException {
         log.debug("REST request to update UiComponent : {}, {}", id, uiComponent);
         if (uiComponent.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "id null");
         }
         if (!Objects.equals(id, uiComponent.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "id invalid");
         }
 
         if (!uiComponentRepository.existsById(id)) {
-            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "id not found");
         }
 
-        UiComponent result = uiComponentRepository.save(uiComponent);
-        return ResponseData.ok(result);
+        return uiComponentRepository.save(uiComponent);
     }
 
     /**
@@ -86,14 +83,14 @@ public class UiComponentResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of uiComponents in body.
      */
     @GetMapping("/components")
-    public ResponseEntity<ResponseData<HashMap<String, Object>>> getUiComponents(Pageable pageable) {
+    public HashMap<String, Object> getUiComponents(Pageable pageable) {
         log.debug("REST request to get a page of UiComponents");
 
         Page<UiComponent> page = uiComponentRepository.findAll(pageable);
-        return ResponseData.ok(new HashMap<String, Object>() {{
+        return new HashMap<String, Object>() {{
             put("list", page.getContent());
             put("total", Long.valueOf(page.getTotalElements()).intValue());
-        }});
+        }};
     }
 
     /**
@@ -104,25 +101,23 @@ public class UiComponentResource {
      * {@code 404 (Not Found)}.
      */
     @GetMapping("/components/{id}")
-    public ResponseEntity<ResponseData<UiComponent>> getUiComponent(@PathVariable Long id) {
+    public UiComponent getUiComponent(@PathVariable Long id) {
         log.debug("REST request to get UiComponent : {}", id);
         Optional<UiComponent> uiComponent = uiComponentRepository.findById(id);
-        return ResponseData.ok(uiComponent.get());
+        return uiComponent.orElse(null);
     }
 
     @GetMapping("/components/menu/{menuId}")
-    public ResponseEntity<ResponseData<List<UiComponent>>> getUiComponentByMenuId(@PathVariable Long menuId) {
+    public List<UiComponent> getUiComponentByMenuId(@PathVariable Long menuId) {
         log.debug("REST request to get UiComponent by menuId : {}", menuId);
-        final List<UiComponent> byMenuIdOrderByOrderNumAsc =
-                uiComponentRepository.findByMenuIdOrderByOrderNumAsc(menuId);
-        return ResponseData.ok(byMenuIdOrderByOrderNumAsc);
+        return uiComponentRepository.findByMenuIdOrderByOrderNumAsc(menuId);
     }
 
     @Operation(description = "删除编辑区配置")
     @DeleteMapping("/components/{id}")
-    public ResponseEntity<ResponseData<String>> deleteUiComponent(@RequestBody List<Long> idList) {
+    public String deleteUiComponent(@RequestBody List<Long> idList) {
         log.debug("REST request to delete Examples, ids: {}", idList);
         this.uiComponentRepository.deleteAllByIdIn(idList);
-        return ResponseData.ok("success");
+        return "success";
     }
 }

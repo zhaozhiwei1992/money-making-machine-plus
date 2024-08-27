@@ -12,8 +12,7 @@ const { emitter } = useEmitt()
 
 const props = defineProps({
   title: String,
-  componentId: String,
-  comRef: ref<any>
+  componentId: String
 })
 
 const { required } = useValidator()

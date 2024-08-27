@@ -35,4 +35,7 @@ public class UiToolButton extends AbstractAuditingEntity implements Serializable
 
     @Column(name = "config")
     private String config;
+
+    @Column(name = "permission_code")
+    private String permissionCode;
 }

@@ -10,6 +10,11 @@ interface ButtonType {
   size: any
 }
 
+export const save = (data: any) => {
+  // 输出表单数据
+  alert(data.name)
+}
+
 export const add = (btnObj: ButtonType) => {
   alert(btnObj.name)
 }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ContentWrap } from '@/components/ContentWrap'
 import { ElButton } from 'element-plus'
-import { ref, onMounted, inject } from 'vue'
+import { ref, onMounted, inject, reactive } from 'vue'
 import { useEmitt } from '@/hooks/web/useEmitt'
 import { getToolButtonListApi } from '@/api/ui/toolbutton'
 
@@ -10,8 +10,7 @@ const { emitter } = useEmitt()
 // 设置props
 const props = defineProps({
   title: String,
-  componentId: String,
-  comRef: ref<any>
+  componentId: String
 })
 
 interface ButtonType {
@@ -24,33 +23,14 @@ interface ButtonType {
 
 const buttons = ref<ButtonType[]>([])
 
-// 模拟后端返回的tab信息
-// const buttonsSchema = reactive<ButtonType[]>([
-//   {
-//     id: 1,
-//     name: '新增',
-//     action: 'add',
-//     type: 'primary',
-//     size: 'default'
-//   },
-//   {
-//     id: 2,
-//     name: '删除',
-//     action: 'del',
-//     type: 'danger',
-//     size: 'default'
-//   }
-// ])
-
 // 初始化按钮
-onMounted(() => {
+onMounted(async () => {
   // 父页面传入菜单id, 这里根据菜单id自己去后台获取编辑区信息
   const menuId: string | undefined = inject('menuId')
   console.log('父级传入menuid为: ' + menuId)
   // 获取按钮信息, 填充
-  getToolButtonListApi(menuId).then((res) => {
-    buttons.value.push(...res.data)
-  })
+  const res = await getToolButtonListApi(menuId)
+  buttons.value.push(...res)
   // 模拟测试
   // buttons.value.push(...buttonsSchema)
 })
@@ -60,11 +40,14 @@ const handleClick = (item) => {
   // 子组件里用$emit向父组件触发一个事件，父组件监听这个事件就行了。
   emitter.emit('buttonClick', { componentId: props.componentId, item: item })
 }
+
+const toolbuttonRefs = reactive({})
+toolbuttonRefs[props.componentId] = ref(null)
 </script>
 <template>
   <ContentWrap>
     <el-button
-      ref="toolbutton"
+      ref="toolbuttonRefs[props.componentId]"
       :type="item.type"
       plain
       v-for="(item, i) in buttons"

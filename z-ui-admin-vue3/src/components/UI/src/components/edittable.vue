@@ -17,21 +17,20 @@ const columns = reactive<EditTableColumn[]>([])
 
 console.log('可编辑列表, 列信息', columns)
 
-onMounted(() => {
+onMounted(async () => {
   // 父页面传入菜单id, 这里根据菜单id自己去后台获取编辑区信息
   const menuId: string | undefined = inject('menuId')
   console.log('父级传入menuid为x: ' + menuId)
   // 获取列表信息, 填充
-  getTableColListByMenuApi(menuId).then((res) => {
-    res.data.forEach((element) => {
-      const colItem: any = {
-        ...element,
-        field: element.code,
-        label: element.name,
-        type: element.type
-      }
-      columns.push(colItem)
-    })
+  const res = getTableColListByMenuApi(menuId)
+  res.forEach((element) => {
+    const colItem: any = {
+      ...element,
+      field: element.code,
+      label: element.name,
+      type: element.type
+    }
+    columns.push(colItem)
   })
   console.log('可编辑列表, 列信息', columns)
 })

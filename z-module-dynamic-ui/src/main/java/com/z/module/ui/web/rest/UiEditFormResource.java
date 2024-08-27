@@ -2,11 +2,7 @@ package com.z.module.ui.web.rest;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
 import com.z.framework.common.web.rest.errors.BadRequestAlertException;
-import com.z.framework.common.web.rest.vm.ResponseData;
-import com.z.framework.common.web.util.ResponseUtil;
 import com.z.module.system.service.CommonEleService;
 import com.z.module.ui.domain.UiEditForm;
 import com.z.module.ui.repository.UiEditFormRepository;
@@ -26,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -53,7 +48,7 @@ public class UiEditFormResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/editforms")
-    public ResponseEntity<ResponseData<UiEditForm>> createUiEditForm(@RequestBody UiEditForm uiEditform) throws URISyntaxException {
+    public UiEditForm createUiEditForm(@RequestBody UiEditForm uiEditform) throws URISyntaxException {
         log.debug("REST request to save UiEditForm : {}", uiEditform);
         if (uiEditform.getId() != null) {
             throw new BadRequestAlertException("A new uiEditform cannot already have an ID", ENTITY_NAME, "idexists");
@@ -69,8 +64,7 @@ public class UiEditFormResource {
             uiEditform.setPlaceholder("请输入" + uiEditform.getName());
         }
 
-        UiEditForm result = uiEditFormRepository.save(uiEditform);
-        return ResponseData.ok(result);
+        return uiEditFormRepository.save(uiEditform);
     }
 
     /**
@@ -79,15 +73,14 @@ public class UiEditFormResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of uiEditforms in body.
      */
     @GetMapping("/editforms")
-    public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllUiEditForms(Pageable pageable) {
+    public HashMap<String, Object> getAllUiEditForms(Pageable pageable) {
         log.debug("REST request to get a page of UiComponents");
 
         Page<UiEditForm> page = uiEditFormRepository.findAll(pageable);
-
-        return ResponseData.ok(new HashMap<String, Object>(){{
+        return new HashMap<String, Object>() {{
             put("list", page.getContent());
             put("total", Long.valueOf(page.getTotalElements()).intValue());
-        }});
+        }};
     }
 
     /**
@@ -98,20 +91,22 @@ public class UiEditFormResource {
      * {@code 404 (Not Found)}.
      */
     @GetMapping("/editforms/{id}")
-    public ResponseEntity<UiEditForm> getUiEditForm(@PathVariable Long id) {
+    public UiEditForm getUiEditForm(@PathVariable Long id) {
         log.debug("REST request to get UiEditForm : {}", id);
         Optional<UiEditForm> uiEditForm = uiEditFormRepository.findById(id);
-        return ResponseUtil.wrapOrNotFound(uiEditForm);
+        return uiEditForm.orElse(null);
     }
 
     @Autowired
     private CommonEleService commonEleService;
 
     @GetMapping("/editforms/menu/{menuid}")
-    public ResponseEntity<ResponseData<Object>> getUiEditFormByMenuId(@PathVariable Long menuid) {
+    public List<UiEditFormVO> getUiEditFormByMenuId(@PathVariable Long menuid) {
         log.debug("REST request to get UiEditForm by menu : {}", menuid);
         final List<UiEditForm> editformByMenuId = uiEditFormRepository.findByMenuIdOrderByOrderNumAsc(menuid);
-        final List<UiEditFormVO> uiEditFormDtoList = editformByMenuId
+        //  从config获取取数bean, 从而获取数据
+        // 2. 转换为翻译信息
+        return editformByMenuId
                 .stream()
                 .map(uiEditform -> {
                     final UiEditFormVO convert = Convert.convert(UiEditFormVO.class, uiEditform);
@@ -124,14 +119,13 @@ public class UiEditFormResource {
                     return convert;
                 })
                 .collect(Collectors.toList());
-        return ResponseData.ok(uiEditFormDtoList);
     }
 
     @Operation(description = "删除编辑区配置")
     @DeleteMapping("/editforms/{id}")
-    public ResponseEntity<ResponseData<String>> deleteUiEditForm(@RequestBody List<Long> idList) {
+    public String deleteUiEditForm(@RequestBody List<Long> idList) {
         log.debug("REST request to delete Examples, ids: {}", idList);
         this.uiEditFormRepository.deleteAllByIdIn(idList);
-        return ResponseData.ok("success");
+        return "success";
     }
 }
