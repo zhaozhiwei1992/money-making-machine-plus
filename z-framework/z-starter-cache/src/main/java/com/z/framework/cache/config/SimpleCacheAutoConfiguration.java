@@ -14,6 +14,7 @@ import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -42,6 +43,7 @@ import java.util.stream.Collectors;
 @ConfigurationProperties("z.cache-config")
 @Slf4j
 @Data
+@ComponentScan(value = {"com.z.framework.cache"})
 public class SimpleCacheAutoConfiguration {
 
     /**
@@ -89,6 +91,7 @@ public class SimpleCacheAutoConfiguration {
     public static class CacheSpec {
         private Integer expireTime;
         private Integer maxSize;
+        private String remark;
     }
 
     @Bean

@@ -4,6 +4,7 @@ logging:
     tech.jhipster: DEBUG
     org.hibernate.SQL: DEBUG
     com.example: DEBUG
+    org.springframework.web: trace
 
 spring:
   jpa:

@@ -304,19 +304,24 @@ z:
         expire-time: 10
         # 缓存最大数量
         max-size: 200
+        remark: '用户菜单缓存'
       usersByLogin:
         expire-time: 60
         max-size: 200
+        remark: '用户信息缓存'
       loadByUserNameCache:
         expire-time: 60
         max-size: 200
+        remark: '用户信息缓存'
       sysParamCache:
         expire-time: 60
         max-size: 200
+        remark: '系统参数缓存'
       tokenWriteListCache:
         # 代理服务里token默认有效期为24小时, 除非主动退出
         expire-time: 86400
         max-size: 200
+        remark: 'token白名单缓存'
 
 # 验证码
 kaptcha:
