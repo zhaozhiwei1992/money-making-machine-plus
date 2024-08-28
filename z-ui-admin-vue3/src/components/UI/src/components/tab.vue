@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, onMounted, inject, reactive } from 'vue'
 import type { TabsPaneContext } from 'element-plus'
+import { ElTabs, ElTabPane } from 'element-plus'
 import { useEmitt } from '@/hooks/web/useEmitt'
 import { ContentWrap } from '@/components/ContentWrap'
 import { getTabListByMenuApi } from '@/api/ui/tab'
@@ -10,8 +11,6 @@ const { emitter } = useEmitt()
 const props = defineProps({
   componentId: String
 })
-
-const tabValue = ref('')
 
 const handleClick = (tab: TabsPaneContext, event: Event) => {
   console.log(tab, event)
@@ -37,6 +36,8 @@ interface TabType {
 //   }
 // ])
 
+const tabValue = ref('')
+
 const tabs = ref<TabType[]>([])
 
 // 初始化页签信息
@@ -51,14 +52,11 @@ onMounted(async () => {
   tabValue.value = tabs.value[0].code
   // tabs.value.push(...tabsSchema)
 })
-
-const tabRefs = reactive({})
-tabRefs[props.name] = ref(null)
 </script>
 <template>
   <ContentWrap>
-    <el-tabs v-model="tabValue" type="card" @tab-click="handleClick" ref="tabRefs[props.name]]">
-      <el-tab-pane :key="item.code" v-for="item in tabs" :label="item.name" :name="item.code" />
-    </el-tabs>
+    <ElTabs v-model="tabValue" type="card" @tab-click="handleClick">
+      <ElTabPane :key="item.code" v-for="item in tabs" :label="item.name" :name="item.code" />
+    </ElTabs>
   </ContentWrap>
 </template>

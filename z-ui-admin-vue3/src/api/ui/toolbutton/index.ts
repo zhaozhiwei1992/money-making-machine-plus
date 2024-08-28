@@ -1,7 +1,7 @@
 import request from '@/config/axios'
 import type { ToolButtonVO } from './types'
 
-export const getToolButtonListApi = (menuId: string | undefined): Promise<ToolButtonVO> => {
+export const getToolButtonListApi = (menuId: string | undefined): Promise<ToolButtonVO[]> => {
   return request.get({ url: '/ui/tool-buttons/menu/' + menuId })
 }
 

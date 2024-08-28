@@ -12,17 +12,6 @@ const templates: any = import.meta.glob('@/components/UI/src/*.vue')
 
 const { emitter } = useEmitt()
 
-// 监听页签点击
-useEmitt({
-  name: 'tabClick',
-  callback: (tabObj) => {
-    console.log(tabObj.componentId, tabObj.tabCode, '点击页签tabCode')
-    // 做一些业务特殊处理, 比如根据code, 重新让列表去查数据
-    // 构建查询条件, 查询数据
-    emitter.emit('tableLoadData', {})
-  }
-})
-
 const defaultTemplateRef = ref()
 
 // 获取内部组件

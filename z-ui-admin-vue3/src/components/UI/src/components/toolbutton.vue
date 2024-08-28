@@ -4,6 +4,7 @@ import { ElButton } from 'element-plus'
 import { ref, onMounted, inject, reactive } from 'vue'
 import { useEmitt } from '@/hooks/web/useEmitt'
 import { getToolButtonListApi } from '@/api/ui/toolbutton'
+import { ToolButtonVO } from '@/api/ui/toolbutton/types'
 
 const { emitter } = useEmitt()
 
@@ -13,15 +14,7 @@ const props = defineProps({
   componentId: String
 })
 
-interface ButtonType {
-  id: number
-  name: string
-  action: string
-  type: any
-  size: any
-}
-
-const buttons = ref<ButtonType[]>([])
+const buttons = ref<ToolButtonVO[]>([])
 
 // 初始化按钮
 onMounted(async () => {
@@ -41,13 +34,12 @@ const handleClick = (item) => {
   emitter.emit('buttonClick', { componentId: props.componentId, item: item })
 }
 
-const toolbuttonRefs = reactive({})
-toolbuttonRefs[props.componentId] = ref(null)
+// const toolbuttonRefs = reactive({})
+// toolbuttonRefs[props.componentId] = ref(null)
 </script>
 <template>
   <ContentWrap>
     <el-button
-      ref="toolbuttonRefs[props.componentId]"
       :type="item.type"
       plain
       v-for="(item, i) in buttons"

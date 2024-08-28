@@ -16,19 +16,20 @@ const props = defineProps({
   componentId: String
 })
 
+const { emitter } = useEmitt()
+
 // 对外暴露一些方法, 通过事件 开始
 // 重新加载数据, 查询区点击按钮,或者变更页签等触发
-useEmitt({
-  name: 'tableLoadData',
-  callback: (queryObj: any) => {
-    console.log(queryObj, '数据查询对象')
-    // 填充数据查询参数 queryObj
-    // tableObject.params.push()
-    // todo 多个列表如何区分??
-    // getList()
-    console.log(queryObj.componentId, '触发来源组件')
-    setSearchParams(queryObj.data)
-  }
+emitter.on('tableLoadData', ({ queryObj, componentId }) => {
+  console.log(queryObj, '数据查询对象')
+  // 填充数据查询参数 queryObj
+  // tableObject.params.push()
+  // todo 多个列表如何区分??
+  // getList()
+  console.log(queryObj.componentId, '触发来源组件')
+  setSearchParams(queryObj.data)
+
+  console.log(componentId, '触发来源组件')
 })
 
 // 获取选中数据
@@ -71,8 +72,6 @@ onMounted(async () => {
   // 模拟测试
   // buttons.value.push(...buttonsSchema)
 })
-
-const { emitter } = useEmitt()
 
 const getTableList = async (): Promise<TableResponse<T>> => {
   // 调用事件, 需要业务去实现获取数据方法

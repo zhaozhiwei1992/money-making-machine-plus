@@ -76,16 +76,6 @@ INSERT INTO ui_t_component (id, created_by, created_date, last_modified_by, last
 
 DELETE FROM ui_t_toolbutton WHERE menu_id=60;
 
-INSERT INTO ui_t_table
-(id, created_by, created_date, last_modified_by, last_modified_date, code, config, is_edit, is_source, menu_id, name, order_num, requirement, `type`)
-VALUES(5, 'admin', NULL, NULL, NULL, 'name', NULL, 1, NULL, 60, '姓名', 2, NULL, 'Input');
-INSERT INTO ui_t_table
-(id, created_by, created_date, last_modified_by, last_modified_date, code, config, is_edit, is_source, menu_id, name, order_num, requirement, `type`)
-VALUES(6, 'admin', NULL, NULL, NULL, 'login', NULL, 1, NULL, 60, '登录名', 3, NULL, 'Input');
-INSERT INTO ui_t_table
-(id, created_by, created_date, last_modified_by, last_modified_date, code, config, is_edit, is_source, menu_id, name, order_num, requirement, `type`)
-VALUES(7, 'admin', NULL, NULL, NULL, 'mofDivCode', NULL, 1, NULL, 60, '区划', 4, NULL, 'Input');
-
 
 DELETE FROM ui_t_table WHERE menu_id = '60';
 

@@ -9,19 +9,36 @@ import { useRouter } from 'vue-router'
 const title = ref('动态UI演示2-录入页面')
 const { emitter } = useEmitt()
 
+// 监听页签点击
+emitter.on('tabClick', (tabObj: any) => {
+  console.log(tabObj.componentId, tabObj.tabCode, '点击页签tabCode')
+  // 做一些业务特殊处理, 比如根据code, 重新让列表去查数据
+  // 构建查询条件, 查询数据
+  // emitter.emit('tableLoadData', {})
+})
+
 // 监听按钮点击
-useEmitt({
-  name: 'buttonClick',
-  callback: (btnObj) => {
-    console.log(btnObj, '点击按钮对象')
-    return methods[btnObj.item.action](btnObj.item)
-  }
+emitter.on('buttonClick', (btnObj: any) => {
+  console.log(btnObj, '点击按钮对象')
+  return methods[btnObj.item.action](btnObj.item)
 })
 
 // 初始化, 对编辑区简单赋值
 onMounted(() => {
-  emitter.emit('editform.setValue', { username: 'zhangsan' })
+  // emitter.emit('editform.setValue', { username: 'zhangsan' })
+  setEditform1Data()
 })
+
+const setEditform1Data = async () => {
+  await getComponent().editform.setValueForForm('editform', { name: '张三' })
+}
+
+const defaultTemplateRef = ref(null)
+
+// 获取内部组件
+const getComponent = () => {
+  return defaultTemplateRef.value?.componentRefs
+}
 
 const menuId = ref()
 
@@ -33,6 +50,6 @@ provide('menuId', menuId.value)
 
 <template>
   <ContentWrap :title="title">
-    <TemplateDefault />
+    <TemplateDefault ref="defaultTemplateRef" />
   </ContentWrap>
 </template>

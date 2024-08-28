@@ -10,16 +10,13 @@ import { useEmitt } from '@/hooks/web/useEmitt'
 import { getDictOptions } from '@/utils/dict'
 
 // 对外提供一些方法 开始
-// 编辑区赋值
-useEmitt({
-  name: 'editform.setValue',
-  callback: (dataObj: any) => {
-    // 设置编辑区值
-    setValue(dataObj)
-  }
-})
-
 const { emitter } = useEmitt()
+
+// 编辑区赋值
+emitter.on('editform.setValue', (dataObj: any) => {
+  // 设置编辑区值
+  setValueForForm('editform', dataObj)
+})
 
 // 这个register感觉是用来绑定form的
 const { register, methods } = useForm({})
@@ -87,7 +84,8 @@ const setValueForForm = (formName, data) => {
 }
 
 defineExpose({
-  getFormData
+  getFormData,
+  setValueForForm
 })
 </script>
 
