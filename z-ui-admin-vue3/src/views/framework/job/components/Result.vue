@@ -12,17 +12,17 @@ const props = defineProps({
 })
 
 // 初始化响应式状态
-const dayRule = ref('')
-const dayRuleSup = ref('')
-const dateArr = ref([])
-const resultList = ref([])
+const dayRule =  ref('')
+const dayRuleSup: any = ref('')
+const dateArr =  ref([])
+const resultList: any = ref([])
 const isShow = ref(false)
 // 表达式值变化时，开始去计算结果
 const expressionChange = () => {
   // 计算开始-隐藏结果
   isShow.value = false
   // 获取规则数组[0秒、1分、2时、3日、4月、5星期、6年]
-  let ruleArr = props?.ex?.split(' ')
+  const ruleArr:any = props?.ex?.split(' ')
   // 用于记录进入循环的次数
   let nums = 0
   // 用于暂时存符号时间规则结果的数组
@@ -148,15 +148,15 @@ const expressionChange = () => {
         // 判断日期的合法性，不合法的话也是跳出当前循环
         if (
           checkDate(YY + '-' + MM + '-' + thisDD + ' 00:00:00') !== true &&
-          dayRule !== 'workDay' &&
-          dayRule !== 'lastWeek' &&
-          dayRule !== 'lastDay'
+          dayRule.value !== 'workDay' &&
+          dayRule.value !== 'lastWeek' &&
+          dayRule.value !== 'lastDay'
         ) {
           resetDay()
           continue goMonth
         }
         // 如果日期规则中有值时
-        if (dayRule == 'lastDay') {
+        if (dayRule.value == 'lastDay') {
           // 如果不是合法日期则需要将前将日期调到合法日期即月末最后一天
 
           if (checkDate(YY + '-' + MM + '-' + thisDD + ' 00:00:00') !== true) {
@@ -166,7 +166,7 @@ const expressionChange = () => {
               thisDD = DD < 10 ? '0' + DD : DD
             }
           }
-        } else if (dayRule == 'workDay') {
+        } else if (dayRule.value == 'workDay') {
           // 校验并调整如果是2月30号这种日期传进来时需调整至正常月底
           if (checkDate(YY + '-' + MM + '-' + thisDD + ' 00:00:00') !== true) {
             while (DD > 0 && checkDate(YY + '-' + MM + '-' + thisDD + ' 00:00:00') !== true) {
@@ -187,18 +187,18 @@ const expressionChange = () => {
             }
           } else if (thisWeek == 7) {
             // 当星期6时只需判断不是1号就可进行操作
-            if (dayRuleSup !== 1) {
+            if (dayRuleSup.value != '1') {
               DD--
             } else {
               DD += 2
             }
           }
-        } else if (dayRule == 'weekDay') {
+        } else if (dayRule.value == 'weekDay') {
           // 如果指定了是星期几
           // 获取当前日期是属于星期几
           let thisWeek = formatDate(new Date(YY + '-' + MM + '-' + DD + ' 00:00:00'), 'week')
           // 校验当前星期是否在星期池（dayRuleSup）中
-          if (dayRuleSup.indexOf(thisWeek) < 0) {
+          if (dayRuleSup.value.indexOf(thisWeek) < 0) {
             // 如果到达最大值时
             if (Di == DDate.length - 1) {
               resetDay()
@@ -210,7 +210,7 @@ const expressionChange = () => {
             }
             continue
           }
-        } else if (dayRule == 'assWeek') {
+        } else if (dayRule.value == 'assWeek') {
           // 如果指定了是第几周的星期几
           // 获取每月1号是属于星期几
           let thisWeek = formatDate(new Date(YY + '-' + MM + '-' + DD + ' 00:00:00'), 'week')
@@ -219,7 +219,7 @@ const expressionChange = () => {
           } else {
             DD = dayRuleSup[0] * 7 + dayRuleSup[1] - thisWeek + 1
           }
-        } else if (dayRule == 'lastWeek') {
+        } else if (dayRule.value == 'lastWeek') {
           // 如果指定了每月最后一个星期几
           // 校验并调整如果是2月30号这种日期传进来时需调整至正常月底
           if (checkDate(YY + '-' + MM + '-' + thisDD + ' 00:00:00') !== true) {
@@ -229,12 +229,12 @@ const expressionChange = () => {
             }
           }
           // 获取月末最后一天是星期几
-          let thisWeek = formatDate(new Date(YY + '-' + MM + '-' + thisDD + ' 00:00:00'), 'week')
+          const thisWeek = formatDate(new Date(YY + '-' + MM + '-' + thisDD + ' 00:00:00'), 'week')
           // 找到要求中最近的那个星期几
           if (dayRuleSup < thisWeek) {
-            DD -= thisWeek - dayRuleSup
+            DD -= thisWeek - dayRuleSup.value
           } else if (dayRuleSup > thisWeek) {
-            DD -= 7 - (dayRuleSup - thisWeek)
+            DD -= 7 - (dayRuleSup.value - thisWeek)
           }
         }
         // 判断时间值是否小于10置换成“05”这种格式
@@ -325,9 +325,9 @@ const expressionChange = () => {
   }
   // 判断100年内的结果条数
   if (resultArr.length == 0) {
-    resultList = ['没有达到条件的结果！']
+    resultList.value = ['没有达到条件的结果！']
   } else {
-    resultList = resultArr
+    resultList.value = resultArr
     if (resultArr.length !== 5) {
       resultList.push('最近100年内只有上面' + resultArr.length + '条结果！')
     }
@@ -374,55 +374,55 @@ const getMonthArr = (rule) => {
 // 获取"日"数组-主要为日期规则
 const getWeekArr = (rule) => {
   // 只有当日期规则的两个值均为“”时则表达日期是有选项的
-  if (dayRule == '' && dayRuleSup == '') {
+  if (dayRule.value == '' && dayRuleSup.value == '') {
     if (rule.indexOf('-') >= 0) {
-      dayRule = 'weekDay'
-      dayRuleSup = getCycleArr(rule, 7, false)
+      dayRule.value =  'weekDay'
+      dayRuleSup.value = getCycleArr(rule, 7, false)
     } else if (rule.indexOf('#') >= 0) {
-      dayRule = 'assWeek'
+      dayRule.value =  'assWeek'
       let matchRule = rule.match(/[0-9]{1}/g)
-      dayRuleSup = [Number(matchRule[1]), Number(matchRule[0])]
+      dayRuleSup.value = [Number(matchRule[1]), Number(matchRule[0])]
       dateArr[3] = [1]
       if (dayRuleSup[1] == 7) {
         dayRuleSup[1] = 0
       }
     } else if (rule.indexOf('L') >= 0) {
-      dayRule = 'lastWeek'
-      dayRuleSup = Number(rule.match(/[0-9]{1,2}/g)[0])
+      dayRule.value =  'lastWeek'
+      dayRuleSup.value = Number(rule.match(/[0-9]{1,2}/g)[0])
       dateArr[3] = [31]
-      if (dayRuleSup == 7) {
-        dayRuleSup = 0
+      if (dayRuleSup.value == 7) {
+        dayRuleSup.value = 0
       }
     } else if (rule !== '*' && rule !== '?') {
-      dayRule = 'weekDay'
-      dayRuleSup = getAssignArr(rule)
+      dayRule.value =  'weekDay'
+      dayRuleSup.value = getAssignArr(rule)
     }
   }
 }
 // 获取"日"数组-少量为日期规则
 const getDayArr = (rule) => {
   dateArr[3] = getOrderArr(1, 31)
-  dayRule = ''
-  dayRuleSup = ''
+  dayRule.value =  ''
+  dayRuleSup.value = ''
   if (rule.indexOf('-') >= 0) {
     dateArr[3] = getCycleArr(rule, 31, false)
-    dayRuleSup = 'null'
+    dayRuleSup.value = 'null'
   } else if (rule.indexOf('/') >= 0) {
     dateArr[3] = getAverageArr(rule, 31)
-    dayRuleSup = 'null'
+    dayRuleSup.value = 'null'
   } else if (rule.indexOf('W') >= 0) {
-    dayRule = 'workDay'
-    dayRuleSup = Number(rule.match(/[0-9]{1,2}/g)[0])
+    dayRule.value =  'workDay'
+    dayRuleSup.value = Number(rule.match(/[0-9]{1,2}/g)[0])
     dateArr[3] = [dayRuleSup]
   } else if (rule.indexOf('L') >= 0) {
-    dayRule = 'lastDay'
-    dayRuleSup = 'null'
+    dayRule.value =  'lastDay'
+    dayRuleSup.value = 'null'
     dateArr[3] = [31]
   } else if (rule !== '*' && rule !== '?') {
     dateArr[3] = getAssignArr(rule)
-    dayRuleSup = 'null'
+    dayRuleSup.value = 'null'
   } else if (rule == '*') {
-    dayRuleSup = 'null'
+    dayRuleSup.value = 'null'
   }
 }
 // 获取"时"数组
