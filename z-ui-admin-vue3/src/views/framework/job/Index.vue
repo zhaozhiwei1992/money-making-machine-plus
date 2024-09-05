@@ -3,11 +3,17 @@ import { ContentWrap } from '@/components/ContentWrap'
 import { Search } from '@/components/Search'
 import { Dialog } from '@/components/Dialog'
 import { useI18n } from '@/hooks/web/useI18n'
-import { ElButton } from 'element-plus'
+import { ElButton, ElMessage } from 'element-plus'
 import { Table } from '@/components/Table'
-import { getTableListApi, saveTableApi, delTableListApi } from '@/api/system/task'
+import {
+  getTableListApi,
+  saveTableApi,
+  delTableListApi,
+  startApi,
+  stopApi
+} from '@/api/system/task'
 import { useTable } from '@/hooks/web/useTable'
-import { TableData } from '@/api/table/types'
+import { TableData } from '@/api/system/task/types'
 import { ref, unref, reactive } from 'vue'
 import AddOrUpdate from './components/AddOrUpdate.vue'
 import Detail from './components/Detail.vue'
@@ -135,6 +141,30 @@ const delData = async (row: TableData | null, multiple: boolean) => {
   })
 }
 
+const start = async () => {
+  const { getSelections } = methods
+  const selections = await getSelections()
+  const ids = selections.map((v) => v.id)
+  const res = await startApi(ids)
+  if ('success' === res) {
+    // 保存成功
+    ElMessage.info('已启用')
+    getList()
+  }
+}
+
+const stop = async () => {
+  const { getSelections } = methods
+  const selections = await getSelections()
+  const ids = selections.map((v) => v.id)
+  const res = await stopApi(ids)
+  if ('success' === res) {
+    // 保存成功
+    ElMessage.info('已停用')
+    getList()
+  }
+}
+
 const actionType = ref('')
 
 const action = (row: TableData, type: string) => {
@@ -179,10 +209,12 @@ const save = async () => {
     />
 
     <div class="mb-10px">
-      <ElButton type="primary" @click="AddAction">{{ t('exampleDemo.add') }}</ElButton>
+      <ElButton type="primary" @click="AddAction">{{ t('button.add') }}</ElButton>
       <ElButton :loading="delLoading" type="danger" @click="delData(null, true)">
-        {{ t('exampleDemo.del') }}
+        {{ t('button.del') }}
       </ElButton>
+      <ElButton type="primary" @click="start()">{{ t('button.start') }}</ElButton>
+      <ElButton type="primary" @click="stop()">{{ t('button.stop') }}</ElButton>
     </div>
 
     <Table

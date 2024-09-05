@@ -1,7 +1,6 @@
 package com.z.framework.job.web.rest;
 
 import com.z.framework.common.web.rest.errors.BadRequestAlertException;
-import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.framework.job.domain.TaskParam;
 import com.z.framework.job.repository.TaskParamRepository;
 import com.z.framework.job.service.QuartzJobExecuteService;
@@ -10,7 +9,9 @@ import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -47,14 +48,12 @@ public class TaskParamResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/task-params")
-    public ResponseEntity<ResponseData<TaskParam>> createTaskParam(@RequestBody TaskParam taskParam) throws URISyntaxException {
+    public TaskParam createTaskParam(@RequestBody TaskParam taskParam) throws URISyntaxException {
         log.debug("REST request to save TaskParam : {}", taskParam);
         if (taskParam.getId() != null) {
             throw new BadRequestAlertException("A new taskParam cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        TaskParam result = taskParamRepository.save(taskParam);
-
-        return ResponseData.ok(result);
+        return taskParamRepository.save(taskParam);
     }
 
     /**
@@ -64,13 +63,17 @@ public class TaskParamResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of taskParams in body.
      */
     @GetMapping("/task-params")
-    public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllTaskParams(Pageable pageable) {
+    public HashMap<String, Object> getAllTaskParams(Pageable pageable) {
         log.debug("REST request to get a page of TaskParams");
+        // 根据id, 升序
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdDate");
+        // 分页
+        pageable = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize(), sort);
         Page<TaskParam> page = taskParamRepository.findAll(pageable);
-        return ResponseData.ok(new HashMap<String, Object>(){{
+        return new HashMap<String, Object>(){{
             put("list", page.getContent());
             put("total", Long.valueOf(page.getTotalElements()).intValue());
-        }});
+        }};
     }
 
     /**
@@ -81,10 +84,10 @@ public class TaskParamResource {
      * {@code 404 (Not Found)}.
      */
     @GetMapping("/task-params/{id}")
-    public ResponseEntity<ResponseData<TaskParam>> getTaskParam(@PathVariable Long id) {
+    public TaskParam getTaskParam(@PathVariable Long id) {
         log.debug("REST request to get TaskParam : {}", id);
         Optional<TaskParam> taskParam = taskParamRepository.findById(id);
-        return ResponseData.ok(taskParam.get());
+        return taskParam.orElse(new TaskParam());
     }
 
     /**
@@ -96,7 +99,7 @@ public class TaskParamResource {
      * @Description: 删除选中的任务
      */
     @DeleteMapping("/task-params")
-    public ResponseEntity<ResponseData<String>> deleteSelectTaskParam(@RequestBody List<Long> idList) {
+    public String deleteSelectTaskParam(@RequestBody List<Long> idList) {
         log.debug("REST request to delete select TaskParam.id : {}", idList);
         final List<TaskParam> delList = taskParamRepository.findAllById(idList);
         for (TaskParam taskParam : delList) {
@@ -105,13 +108,13 @@ public class TaskParamResource {
             }
         }
         taskParamRepository.deleteAllById(idList);
-        return ResponseData.ok("success");
+        return "success";
     }
 
     private final QuartzJobManagerService quartzJobManagerService;
 
     @PostMapping("/task-params/start")
-    public ResponseEntity<ResponseData<Object>> startSelectTaskParam(@RequestBody List<Long> idList) {
+    public String startSelectTaskParam(@RequestBody List<Long> idList) {
         log.debug("REST request to start select TaskParam.id : {}", idList);
 
         final List<TaskParam> executeList = taskParamRepository.findAllById(idList);
@@ -132,11 +135,11 @@ public class TaskParamResource {
 //        利用hibernate session自动提交, 这里不需要保存, 待测试
 //        taskParamRepository.saveAll(executeList);
 
-        return ResponseData.ok();
+        return "success";
     }
 
     @PostMapping("/task-params/stop")
-    public ResponseEntity<ResponseData<Object>> stopSelectTaskParam(@RequestBody List<Long> idList) {
+    public String stopSelectTaskParam(@RequestBody List<Long> idList) {
         log.debug("REST request to stop select TaskParam.id : {}", idList);
 
         final List<TaskParam> executeList = taskParamRepository.findAllById(idList);
@@ -145,12 +148,12 @@ public class TaskParamResource {
             try {
                 quartzJobManagerService.deleteJob(taskParam.getStartClass(), "defaultGroup");
             } catch (SchedulerException e) {
-                log.error("定时任务停用异常: " + taskParam.getName(), e);
+                log.error("定时任务停用异常: {}", taskParam.getName(), e);
             }
         });
 
 //        利用Hibernate 自动更新
 //        taskParamRepository.saveAll(executeList);
-        return ResponseData.ok();
+        return "success";
     }
 }

@@ -439,5 +439,16 @@ export default {
   inputPasswordDemo: {
     title: 'InputPassword',
     inputPasswordDes: 'Secondary packaging of Input components based on ElementPlus'
+  },
+  button: {
+    add: 'add',
+    del: 'del',
+    edit: 'edit',
+    save: 'save',
+    detail: 'detail',
+    obsolute: 'obsolute',
+    restore: 'restore',
+    start: 'start',
+    stop: 'stop'
   }
 }

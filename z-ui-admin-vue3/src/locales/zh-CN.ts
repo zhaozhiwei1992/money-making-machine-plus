@@ -435,5 +435,16 @@ export default {
   inputPasswordDemo: {
     title: '密码输入框',
     inputPasswordDes: '基于 ElementPlus 的 Input 组件二次封装'
+  },
+  button: {
+    add: '新增',
+    del: '删除',
+    edit: '编辑',
+    save: '保存',
+    detail: '详情',
+    obsolute: '作废',
+    restore: '恢复',
+    start: '启动',
+    stop: '停止'
   }
 }
