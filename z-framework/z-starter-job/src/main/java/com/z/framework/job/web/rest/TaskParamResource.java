@@ -173,7 +173,7 @@ public class TaskParamResource {
             String key = entry.getKey();
             CustomJobInterface value = entry.getValue();
             Map<String, Object> map = new HashMap<>();
-            map.put("value", key);
+            map.put("value", key + "#execute");
             map.put("id", key);
             map.put("label", value.getClass().getAnnotation(JobDescription.class).value());
             result.add(map);

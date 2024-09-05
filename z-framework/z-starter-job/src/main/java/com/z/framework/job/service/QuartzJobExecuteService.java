@@ -1,13 +1,11 @@
 package com.z.framework.job.service;
 
+import cn.hutool.extra.spring.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 /**
  * 自定义定时任务
@@ -24,15 +22,15 @@ public class QuartzJobExecuteService implements Job {
         final String jobName = jobDetail.getKey().getName();
         try {
             final String[] split = jobName.split("#");
-            final Class<?> forName = Class.forName(split[0]);
-            final Method method = forName.getMethod(split[1], null);
-
-            //            todo 必要时这里可以做耗时统计
-            method.invoke(forName.newInstance(), null);
-        } catch (
-            ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e
-        ) {
-            log.error("定时任务触发异常", e);
+//            final Class<?> forName = Class.forName(split[0]);
+//            final Method method = forName.getMethod(split[1], null);
+//            method.invoke(forName.newInstance(), null);
+            CustomJobInterface bean = SpringUtil.getBean(split[0]);
+            long l = System.currentTimeMillis();
+            bean.execute();
+            log.info("定时任务执行耗时: {}", System.currentTimeMillis() - l);
+        } catch (Throwable throwable) {
+            log.error("定时任务触发异常", throwable);
         }
     }
 }
