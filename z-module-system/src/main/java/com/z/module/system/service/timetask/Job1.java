@@ -1,7 +1,10 @@
 package com.z.module.system.service.timetask;
 
+import com.z.framework.job.annotation.JobDescription;
+import com.z.framework.job.service.CustomJobInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.util.Random;
 
@@ -14,7 +17,9 @@ import java.util.Random;
  * @date 2022/7/27 下午4:39
  * @version V1.0
  */
-public class Job1 {
+@Service
+@JobDescription("测试定时任务1")
+public class Job1 implements CustomJobInterface {
 
     private static final Logger log = LoggerFactory.getLogger(Job1.class);
 

@@ -1,13 +1,17 @@
 package com.z.framework.job.web.rest;
 
 import com.z.framework.common.web.rest.errors.BadRequestAlertException;
+import com.z.framework.job.annotation.JobDescription;
 import com.z.framework.job.domain.TaskParam;
 import com.z.framework.job.repository.TaskParamRepository;
+import com.z.framework.job.service.CustomJobInterface;
 import com.z.framework.job.service.QuartzJobExecuteService;
 import com.z.framework.job.service.QuartzJobManagerService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,9 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * REST controller for managing {@link TaskParam}.
@@ -155,5 +157,27 @@ public class TaskParamResource {
 //        利用Hibernate 自动更新
 //        taskParamRepository.saveAll(executeList);
         return "success";
+    }
+
+    // 所有的job实现
+    @Autowired
+    private Map<String, CustomJobInterface> jobs;
+
+    @Operation(description = "获取定时任务树")
+    @GetMapping("/task-params/select")
+    public List<Map<String, Object>> getJobSelect() {
+        log.debug("REST request to get Position Select");
+        List<Map<String, Object>> result = new ArrayList<>();
+        // 获取所有实现bean名, 同时根据注解获取描述信息
+        for (Map.Entry<String, CustomJobInterface> entry : jobs.entrySet()) {
+            String key = entry.getKey();
+            CustomJobInterface value = entry.getValue();
+            Map<String, Object> map = new HashMap<>();
+            map.put("value", key);
+            map.put("id", key);
+            map.put("label", value.getClass().getAnnotation(JobDescription.class).value());
+            result.add(map);
+        }
+        return result;
     }
 }

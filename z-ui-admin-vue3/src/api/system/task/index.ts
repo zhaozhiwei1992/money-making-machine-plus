@@ -1,6 +1,7 @@
 import request from '@/config/axios'
 import type { TableData } from './types'
 import { TableResponse } from '@/types/table'
+import { ComponentOptions } from '@/types/components'
 
 export const getTableListApi = (params: any): Promise<TableResponse<TableData>> => {
   // 转换, 适配jpa PageRequest
@@ -33,4 +34,9 @@ export const startApi = (ids: string[] | number[]): Promise<string> => {
 // 停用
 export const stopApi = (ids: string[] | number[]): Promise<string> => {
   return request.post({ url: '/task-params/stop', data: ids })
+}
+
+// 获取定时任务实现树
+export const getJobSelect = async (): Promise<ComponentOptions[]> => {
+  return await request.get({ url: '/task-params/select' })
 }

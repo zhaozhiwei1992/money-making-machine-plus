@@ -3,21 +3,23 @@ import { ContentWrap } from '@/components/ContentWrap'
 import { Search } from '@/components/Search'
 import { Dialog } from '@/components/Dialog'
 import { useI18n } from '@/hooks/web/useI18n'
-import { ElButton, ElMessage } from 'element-plus'
+import { ElButton, ElMessage, ElTag } from 'element-plus'
 import { Table } from '@/components/Table'
 import {
   getTableListApi,
   saveTableApi,
   delTableListApi,
   startApi,
-  stopApi
+  stopApi,
+  getJobSelect
 } from '@/api/system/task'
 import { useTable } from '@/hooks/web/useTable'
 import { TableData } from '@/api/system/task/types'
-import { ref, unref, reactive } from 'vue'
+import { ref, unref, reactive, h, onMounted } from 'vue'
 import AddOrUpdate from './components/AddOrUpdate.vue'
 import Detail from './components/Detail.vue'
 import { CrudSchema, useCrudSchemas } from '@/hooks/web/useCrudSchemas'
+import { ComponentOptions } from '@/types/components'
 
 const { register, tableObject, methods } = useTable<TableData>({
   getListApi: getTableListApi,
@@ -37,6 +39,12 @@ getList()
 
 const { t } = useI18n()
 
+const jobOptions = ref<ComponentOptions[] | any>([])
+
+onMounted(async () => {
+  jobOptions.value = await getJobSelect()
+})
+
 const crudSchemas = reactive<CrudSchema[]>([
   {
     field: 'id',
@@ -54,46 +62,43 @@ const crudSchemas = reactive<CrudSchema[]>([
     label: '任务名称',
     search: {
       show: true
-    },
-    form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
     }
   },
   {
     field: 'cronExpression',
-    label: '表达式',
-    form: {
-      colProps: {
-        span: 24
-      }
-    },
-    detail: {
-      span: 24
-    }
+    label: '表达式'
   },
   {
     field: 'startClass',
     label: '任务入口',
     form: {
-      colProps: {
-        span: 24
+      component: 'Select',
+      componentProps: {
+        style: {
+          width: '100%'
+        },
+        options: jobOptions
       }
-    },
-    detail: {
-      span: 24
     }
   },
   {
     field: 'enable',
     label: '是否启用',
+    formatter: (_: Recordable, __: TableColumn, cellValue: boolean) => {
+      return h(
+        ElTag,
+        {
+          type: 'success'
+        },
+        () => (cellValue === true ? '启用' : '停用')
+      )
+    },
     form: {
-      colProps: {
-        span: 24
+      component: 'Switch',
+      componentProps: {
+        style: {
+          width: '100%'
+        }
       }
     },
     detail: {
