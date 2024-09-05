@@ -17,7 +17,6 @@ import {
 } from '@/api/framework/monitor/cacheinfo'
 import { CacheContentVO, CacheKeyVO, CacheVO } from '@/api/framework/monitor/cacheinfo/types'
 import { reactive, onMounted, ref } from 'vue'
-import { ca } from 'element-plus/es/locale'
 
 const cacheInfos = reactive<CacheVO[]>([])
 
