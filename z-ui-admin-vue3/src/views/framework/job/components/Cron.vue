@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { Form } from '@/components/Form'
-import { useForm } from '@/hooks/web/useForm'
-import { PropType, provide, reactive, watch } from 'vue'
+import { provide, reactive } from 'vue'
 import { ElTabs, ElTabPane, ElCard, ElInput, ElRow, ElCol } from 'element-plus'
 import CrontabSecond from './Second.vue'
 import CrontabMin from './Min.vue'
@@ -24,8 +22,7 @@ const checkNumber = (value, minLimit, maxLimit) => {
 }
 
 // 将公式传递给子孙组件
-provide("checkNumber", checkNumber)
-
+provide('checkNumber', checkNumber)
 </script>
 
 <template>
@@ -96,7 +93,7 @@ provide("checkNumber", checkNumber)
     </ElTabs>
   </ElCard>
   <ElCard class="box-card">
-    <div slot="header" class="clearfix">
+    <div class="clearfix">
       <span>表达式</span>
     </div>
     <ElRow :gutter="40">
@@ -105,17 +102,17 @@ provide("checkNumber", checkNumber)
     </ElRow>
     <ElRow :gutter="10">
       <ElCol v-for="(value, key) in crontabValueObj" :span="2" :key="key">
-        <ElInput v-model="crontabValueObj[key]" :disabled="true"></ElInput>
+        <ElInput v-model="crontabValueObj[key]" :disabled="true" />
       </ElCol>
       <ElCol :span="10">
-        <ElInput v-model="crontabValueString" :disabled="true"></ElInput>
+        <ElInput v-model="crontabValueString" :disabled="true" />
       </ElCol>
     </ElRow>
   </ElCard>
 
   <ElCard class="box-card">
-    <div slot="header" class="clearfix">
-      <CrontabResult :ex="crontabValueString"></CrontabResult>
+    <div class="clearfix">
+      <CrontabResult :ex="crontabValueString" />
     </div>
   </ElCard>
 </template>

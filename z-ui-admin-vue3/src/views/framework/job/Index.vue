@@ -65,10 +65,6 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'cronExpression',
-    label: '表达式'
-  },
-  {
     field: 'startClass',
     label: '任务入口',
     form: {
@@ -80,6 +76,10 @@ const crudSchemas = reactive<CrudSchema[]>([
         options: jobOptions
       }
     }
+  },
+  {
+    field: 'cronExpression',
+    label: '表达式'
   },
   {
     field: 'enable',

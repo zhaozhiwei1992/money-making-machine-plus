@@ -17,7 +17,7 @@ const checkNum = inject('checkNumber') as Function
 const cycleTotal = computed(() => {
   // 根据 cycle01 和 cycle02 的值计算周期
   const a = checkNum(cycle01.value, fullYear.value, 2098)
-  const b = checkNum(cycle02.value, cycle01 ? cycle01.value + 1 : fullYear.value + 1, 2099)
+  const b = checkNum(cycle02.value, cycle01.value ? cycle01.value + 1 : fullYear.value + 1, 2099)
   return a + '-' + b
 })
 

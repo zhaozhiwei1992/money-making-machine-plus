@@ -71,7 +71,7 @@ const cycleTotal = computed(() => {
 })
 const averageTotal = computed(() => {
   const a = checkNum(average01, 0, 58)
-  const b = checkNum(average02, 1, 59 - average01 || 0)
+  const b = checkNum(average02, 1, 59 - average01.value || 0)
   return a + '/' + b
 })
 const checkboxString = computed(() => checkboxList.value.join('') || '*')
