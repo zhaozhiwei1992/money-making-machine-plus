@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.z</groupId>
+    <artifactId>money-making-machine-plus</artifactId>
+    <version>${revision}</version>
+  </parent>
+  <artifactId>z-module-samples</artifactId>
+  <name>z-module-samples</name>
+  <url>http://maven.apache.org</url>
+  <description>
+    一些业务的模拟演示, 比如走走工作流了, 动态做一些页面了, 都在这里做示例
+  </description>
+  <dependencies>
+    <dependency>
+      <groupId>com.z</groupId>
+      <artifactId>z-common</artifactId>
+    </dependency>
+
+<!--    可能通过 security获取当前用户之类的-->
+    <dependency>
+      <groupId>com.z</groupId>
+      <artifactId>z-starter-security</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.liquibase</groupId>
+      <artifactId>liquibase-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.mysql</groupId>
+      <artifactId>mysql-connector-j</artifactId>
+    </dependency>
+
+<!--    定时任务, 需要的话搞进来, 实现一些业务的任务-->
+    <dependency>
+      <groupId>com.z</groupId>
+      <artifactId>z-starter-job</artifactId>
+    </dependency>
+  </dependencies>
+</project>

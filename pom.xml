@@ -40,6 +40,9 @@
     <module>z-module-bpm</module>
     <module>z-module-screen</module>
     <module>z-module-samples</module>
+<!--    <module>z-module-ai</module>-->
+<!--    <module>z-module-crm</module>-->
+<!--    <module>z-module-erp</module>-->
   </modules>
   <dependencyManagement>
     <dependencies>
