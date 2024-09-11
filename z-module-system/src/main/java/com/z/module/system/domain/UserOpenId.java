@@ -1,12 +1,10 @@
 package com.z.module.system.domain;
 
 import com.z.framework.common.domain.AbstractAuditingEntity;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.io.Serializable;
 
 /**
@@ -24,6 +22,12 @@ import java.io.Serializable;
 public class UserOpenId extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
 
     /**
      * 用户login

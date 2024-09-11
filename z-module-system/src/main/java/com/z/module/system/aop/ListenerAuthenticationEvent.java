@@ -1,10 +1,11 @@
 package com.z.module.system.aop;
 
-import cn.hutool.extra.servlet.ServletUtil;
+import cn.hutool.extra.servlet.JakartaServletUtil;
 import cn.hutool.http.useragent.UserAgent;
 import cn.hutool.http.useragent.UserAgentUtil;
 import com.z.module.system.service.OnLineUserService;
 import com.z.module.system.web.vo.OnLineUserVO;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
@@ -13,7 +14,6 @@ import org.springframework.security.authentication.event.AuthenticationSuccessEv
 import org.springframework.security.authentication.event.LogoutSuccessEvent;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -49,7 +49,7 @@ public class ListenerAuthenticationEvent {
 
         //      获取客户端信息, 如果获取不到则调整在 com.example.web.rest.UserJWTController.authorize写入threadLocal这里获取
         final OnLineUserVO onLineUser = new OnLineUserVO();
-        onLineUser.setIp(ServletUtil.getClientIP(request));
+        onLineUser.setIp(JakartaServletUtil.getClientIP(request));
         final UserAgent userAgentParse = UserAgentUtil.parse(request.getHeader("User-Agent"));
         onLineUser.setOs(userAgentParse.getOs().toString());
 

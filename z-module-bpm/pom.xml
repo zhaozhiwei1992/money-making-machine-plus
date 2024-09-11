@@ -7,29 +7,15 @@
 
 
     <parent>
-
-
         <groupId>com.z</groupId>
-
-
         <artifactId>money-making-machine-plus</artifactId>
-
-
         <version>${revision}</version>
-
-
     </parent>
 
-
     <artifactId>z-module-bpm</artifactId>
-
-
     <name>z-module-bpm</name>
 
-
     <packaging>pom</packaging>
-
-
     <url>http://maven.apache.org</url>
 
 
@@ -40,13 +26,8 @@
 
 
     <modules>
-
-
         <module>z-module-bpm-api</module>
-
-
         <module>z-module-bpm-biz</module>
-
     </modules>
 
 </project>

@@ -1,22 +1,27 @@
 package com.z.module.ui.domain;
 
 import com.z.framework.common.domain.AbstractAuditingEntity;
+import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.io.Serializable;
 
 /**
  * A UiComponent.
  */
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "ui_t_component")
 @Data
 public class UiComponent extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
     @Column(name = "menu_id")
     private Long menuId;

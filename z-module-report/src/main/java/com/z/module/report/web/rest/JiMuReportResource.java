@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.HandlerMapping;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -48,7 +48,7 @@ public class JiMuReportResource {
      * @method: e
      * @return: void
      * @Description: 反编译积木报表代码, 处理图片报表背景图无法加载bug (1.5.8), 注: 只处理了本地图片
-     * org.jeecg.modules.jmreport.desreport.a.a#e(javax.servlet.http.HttpServletRequest, javax.servlet.http
+     * org.jeecg.modules.jmreport.desreport.a.a#e(jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http
      * .HttpServletResponse)
      */
     @GetMapping({"/jimureport/**"})

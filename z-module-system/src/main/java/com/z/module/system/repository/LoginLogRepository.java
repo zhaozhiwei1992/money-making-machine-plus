@@ -19,7 +19,7 @@ public interface LoginLogRepository extends JpaRepository<LoginLog, Long> {
     @Query("select new com.z.module.system.repository.mapper.LoginLogCount(browser, os, count(p) ) from LoginLog p group by p.browser, p.os")
     List<LoginLogCount> getCountByBrowserAndOs();
 
-    @Query("select new com.z.module.system.repository.mapper.LoginLogMonthlyGroupCount( month(created_date), count(1) ) from LoginLog t where year(created_date) = ?1 group by month(created_date)")
+    @Query("select new com.z.module.system.repository.mapper.LoginLogMonthlyGroupCount( month(createdDate), count(1) ) from LoginLog t where year(createdDate) = ?1 group by month(createdDate)")
     List<LoginLogMonthlyGroupCount> findAllByYearGroupByMonth(Integer year);
 
     List<LoginLog> findAllByCreatedDateBetween(Instant startDayOfWeek, Instant endDayOfWeek);

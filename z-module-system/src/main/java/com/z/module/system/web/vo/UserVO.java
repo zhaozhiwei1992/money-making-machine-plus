@@ -2,7 +2,7 @@ package com.z.module.system.web.vo;
 
 import lombok.Data;
 
-import javax.persistence.Column;
+import jakarta.persistence.Column;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.List;

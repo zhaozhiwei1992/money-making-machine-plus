@@ -1,6 +1,7 @@
 package com.z.framework.common.exception.handler;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 
@@ -20,7 +21,7 @@ import java.util.Arrays;
 public class CustomResponseErrorHandler extends DefaultResponseErrorHandler {
 
     @Override
-    public void handleError(ClientHttpResponse response, HttpStatus statusCode) throws IOException {
+    protected void handleError(ClientHttpResponse response, HttpStatusCode statusCode) throws IOException {
         // 覆盖默认的实现, 防止500的异常请求日志信息丢失
         if (!Arrays.asList(HttpStatus.INTERNAL_SERVER_ERROR
                 , HttpStatus.BAD_REQUEST).contains(statusCode)) {

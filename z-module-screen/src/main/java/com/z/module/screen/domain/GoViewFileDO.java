@@ -1,11 +1,9 @@
 package com.z.module.screen.domain;
 
 import com.z.framework.common.domain.AbstractAuditingEntity;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
-
-import javax.persistence.Entity;
-import javax.persistence.Table;
 
 /**
  * <p>
@@ -26,6 +24,11 @@ import javax.persistence.Table;
 public class GoViewFileDO extends AbstractAuditingEntity {
 
     private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
     private String fileName;
 

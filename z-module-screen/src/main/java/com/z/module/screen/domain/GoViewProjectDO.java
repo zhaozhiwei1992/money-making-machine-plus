@@ -1,10 +1,9 @@
 package com.z.module.screen.domain;
 
 import com.z.framework.common.domain.AbstractAuditingEntity;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
-
-import javax.persistence.*;
 
 /**
  * GoView 项目表
@@ -21,6 +20,13 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Accessors(chain = true)
 public class GoViewProjectDO extends AbstractAuditingEntity {
+
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
     /**
      * 项目名称

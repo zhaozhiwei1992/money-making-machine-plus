@@ -4,12 +4,10 @@ import com.z.framework.common.domain.AbstractAuditingEntity;
 import com.z.module.bpm.domain.convert.JpaSetLongJsonConverter;
 import com.z.module.bpm.enums.definition.BpmTaskAssignRuleTypeEnum;
 import com.z.module.bpm.enums.definition.BpmTaskRuleScriptEnum;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.util.Set;
 
 /**
@@ -31,6 +29,13 @@ import java.util.Set;
 @AllArgsConstructor
 @Accessors(chain = true)
 public class BpmTaskAssignRuleDO extends AbstractAuditingEntity {
+
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
     /**
      * {@link #processDefinitionId} 空串，用于标识属于流程模型，而不属于流程定义

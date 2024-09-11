@@ -1,7 +1,7 @@
 --liquibase formatted sql
 --changeset zzw:00001
 
-CREATE TABLE IF NOT EXISTS ele_union (
+CREATE TABLE IF NOT EXISTS sys_ele_union (
   id bigint primary key auto_increment,
   created_by varchar(50) NULL,
   created_date timestamp NULL,
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS ele_union (
   parent_id VARCHAR(50) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB COMMENT='基础要素表';
 
-INSERT INTO ele_union
+INSERT INTO sys_ele_union
 (created_by, created_date, last_modified_by, last_modified_date, ele_cat_code, ele_cat_name, ele_code, ele_name, is_enabled, is_leaf, level_no, parent_id) VALUES
 ('system', NOW(), 'system', NOW(), 'bool', '是否', '1', '是', 1, 1, 0, '0'),
 ('system', NOW(), 'system', NOW(), 'bool', '是否', '2', '否', 1, 1, 0, '0'),

@@ -1,14 +1,16 @@
 package com.z.module.system.domain;
 
 import com.z.framework.common.domain.AbstractAuditingEntity;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.springframework.data.annotation.CreatedDate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import java.io.Serial;
 import java.io.Serializable;
+import java.time.Instant;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 用户请求日志信息\n@author zhaozhiwei
@@ -22,7 +24,14 @@ import java.io.Serializable;
 //@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class LoginLog extends AbstractAuditingEntity implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
 
     /**
      * 用户名
@@ -47,4 +56,8 @@ public class LoginLog extends AbstractAuditingEntity implements Serializable {
      */
     @Column(name = "client_ip")
     private String clientIp;
+
+    // 不加这个, hibernate6.5.x下无法处理 com.z.module.system.repository.LoginLogRepository#findAllByYearGroupByMonth
+    @Column(name = "created_date", updatable = false)
+    private Instant createdDate = Instant.now().plusMillis(TimeUnit.HOURS.toMillis(8));
 }

@@ -1,13 +1,13 @@
 package com.z.module.bpm.domain.task;
 
 import com.z.framework.common.domain.AbstractAuditingEntity;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 /**
@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
  * @author kemengkai
  * @create 2022-05-09 10:33
  */
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "bpm_activity")
 @Data
@@ -23,6 +24,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Accessors(chain = true)
 public class BpmActivityDO extends AbstractAuditingEntity {
+
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
     /**
      * 审批结果

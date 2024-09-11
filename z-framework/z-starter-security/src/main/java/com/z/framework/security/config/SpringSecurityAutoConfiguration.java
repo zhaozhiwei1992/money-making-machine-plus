@@ -1,28 +1,28 @@
 package com.z.framework.security.config;
 
-import com.z.framework.security.aop.JWTAuthenticationFilter;
 import com.z.framework.security.aop.AbstractPermissionFilterTemplate;
+import com.z.framework.security.aop.JWTAuthenticationFilter;
 import com.z.framework.security.service.TokenProviderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author zhaozhiwei
@@ -33,14 +33,15 @@ import java.util.stream.Collectors;
  * @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
  * prePostEnabled = true 开启权限注解, 从而可以使用preAuthorize注解精细控制权限
  * 规则: org.springframework.security.access.expression.SecurityExpressionRoot
+ * springboot3.x 不再使用WebSecurityConfigurerAdapter
  * @date 2024/8/13 上午11:59
  */
 @AutoConfiguration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
+@EnableMethodSecurity(securedEnabled = true)
 @ComponentScan(value = {"com.z.framework.security"})
 @EnableConfigurationProperties(CustomSecurityProperties.class)
-public class SpringSecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
+public class SpringSecurityAutoConfiguration {
 
     private final CustomSecurityProperties customSecurityProperties;
 
@@ -86,19 +87,7 @@ public class SpringSecurityAutoConfiguration extends WebSecurityConfigurerAdapte
         // 白名单赋值, 业务扩展
         final List<String> authWhiteList = this.customSecurityProperties.getAuthWhiteList();
         authWhiteList.addAll(Arrays.asList(AUTH_WHITELIST));
-        AUTH_WHITELIST = authWhiteList.stream().distinct().collect(Collectors.toList()).toArray(new String[0]);
-    }
-
-    /**
-     * 配置这个bean会在做AuthorizationServerConfigurer配置的时候使用
-     *
-     * @return
-     * @throws Exception
-     */
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+        AUTH_WHITELIST = authWhiteList.stream().distinct().toArray(String[]::new);
     }
 
     @Bean
@@ -109,12 +98,6 @@ public class SpringSecurityAutoConfiguration extends WebSecurityConfigurerAdapte
     @Autowired
     private UserDetailsService userDetailsService;
 
-    @Override
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder());
-    }
-
     @Autowired
     private TokenProviderService tokenProviderService;
 
@@ -122,29 +105,48 @@ public class SpringSecurityAutoConfiguration extends WebSecurityConfigurerAdapte
     public AbstractPermissionFilterTemplate abstractPermissionFilterTemplate;
 
     /**
-     * 配置请求拦截
+     * 配置这个bean会在做AuthorizationServerConfigurer配置的时候使用
+     *
+     * @return
+     * @throws Exception
      */
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-//        layui 的嵌套页面异常Refused to display in a frame because it set ‘X-Frame-Options‘ to ‘DENY‘
-        http.headers().frameOptions().disable();
+//    @Bean
+//    public AuthenticationManager authenticationManager(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+//
+//        return authenticationManagerBuilder.userDetailsService(userDetailsService)
+//                .passwordEncoder(passwordEncoder()).and().build();
+//    }
 
-        http.cors().and()
+    /**
+     * 配置请求拦截, 3.x推荐方式
+     */
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//        layui 的嵌套页面异常Refused to display in a frame because it set ‘X-Frame-Options‘ to ‘DENY‘
+        //2.x
+//        http.headers().frameOptions().disable();
+        // 3.x写法
+        http.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
+
+        // cors开启跨域支持
+        http.cors(Customizer.withDefaults())
                 //由于使用的是JWT，我们这里不需要csrf
-                .csrf().disable()
+                .csrf(AbstractHttpConfigurer::disable)
                 //基于token，所以不需要session
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests()
+//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and() // 以前版本写法
+                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .authorizeRequests(auth -> auth.antMatchers(AUTH_WHITELIST).permitAll()) // 以前版本写法
                 //可以匿名访问的链接
-                .antMatchers(AUTH_WHITELIST).permitAll()
+//                .dispatcherTypeMatchers(AUTH_WHITELIST).permitAll()
                 //其他所有请求需要身份认证
-                .anyRequest().authenticated()
+//                .anyRequest().authenticated()
+                .authorizeHttpRequests(auth -> auth.requestMatchers(AUTH_WHITELIST).permitAll().anyRequest().authenticated())
                 // Can't configure anyRequest after itself   5.2版本以后只能有一个anyRequest,坑
 //                .anyRequest().access("@rbacServiceImpl.hasPermission(request, authentication)")
-                .and()
-                .addFilterBefore(new JWTAuthenticationFilter(tokenProviderService, authenticationManager(), userDetailsService), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JWTAuthenticationFilter(tokenProviderService, userDetailsService), UsernamePasswordAuthenticationFilter.class);
 
         // 打开下述注释可以自定义动态权限控制
 //                .addFilterAfter(abstractPermissionFilterTemplate, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
     }
 }

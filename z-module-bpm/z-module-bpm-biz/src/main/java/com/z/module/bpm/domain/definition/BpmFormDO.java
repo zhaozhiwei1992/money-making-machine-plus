@@ -2,11 +2,9 @@ package com.z.module.bpm.domain.definition;
 
 import com.z.framework.common.domain.AbstractAuditingEntity;
 import com.z.module.bpm.domain.convert.JpaListStringJsonConverter;
+import jakarta.persistence.*;
 import lombok.*;
 
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.util.List;
 
 /**
@@ -22,6 +20,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BpmFormDO extends AbstractAuditingEntity {
+
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
     /**
      * 表单名

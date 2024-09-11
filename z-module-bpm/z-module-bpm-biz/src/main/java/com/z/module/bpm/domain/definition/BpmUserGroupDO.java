@@ -2,11 +2,9 @@ package com.z.module.bpm.domain.definition;
 
 import com.z.framework.common.domain.AbstractAuditingEntity;
 import com.z.module.bpm.domain.convert.JpaSetLongJsonConverter;
+import jakarta.persistence.*;
 import lombok.*;
 
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.util.Set;
 
 /**
@@ -24,6 +22,14 @@ import java.util.Set;
 @AllArgsConstructor
 public class BpmUserGroupDO extends AbstractAuditingEntity {
 
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
+
     /**
      * 组名
      */
@@ -34,7 +40,7 @@ public class BpmUserGroupDO extends AbstractAuditingEntity {
     private String description;
     /**
      * 状态
-     *
+     * <p>
      * 枚举 {@link CommonStatusEnum}
      */
     private Integer status;

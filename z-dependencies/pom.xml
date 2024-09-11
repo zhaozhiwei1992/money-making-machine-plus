@@ -15,11 +15,11 @@
   <properties>
     <revision>1.0-SNAPSHOT</revision>
     <!-- 统一依赖管理 -->
-    <spring.boot.version>2.7.11</spring.boot.version>
+    <spring.boot.version>3.3.3</spring.boot.version>
     <!-- Web 相关 -->
-    <springdoc.version>1.6.15</springdoc.version>
-    <knife4j.version>4.1.0</knife4j.version>
-    <servlet.versoin>2.5</servlet.versoin>
+    <springdoc.version>2.6.0</springdoc.version>
+    <knife4j.version>4.4.0</knife4j.version>
+<!--    <servlet.versoin>2.5</servlet.versoin>-->
     <!-- DB 相关 -->
     <hibernate.version>5.6.4.Final</hibernate.version>
     <!-- The liquibase version should match the one managed by
@@ -27,7 +27,7 @@
     <liquibase.version>4.6.1</liquibase.version>
     <liquibase-hibernate5.version>4.6.1</liquibase-hibernate5.version>
     <validation-api.version>2.0.1.Final</validation-api.version>
-    <druid.version>1.2.16</druid.version>
+    <druid.version>1.2.18</druid.version>
     <!-- 服务保障相关 -->
     <lock4j.version>2.2.3</lock4j.version>
     <resilience4j.version>1.7.1</resilience4j.version>
@@ -40,13 +40,13 @@
     <jedis-mock.version>1.0.7</jedis-mock.version>
     <mockito-inline.version>4.11.0</mockito-inline.version>
     <!-- Bpm 工作流相关 -->
-    <flowable.version>6.8.0</flowable.version>
+    <flowable.version>7.0.1</flowable.version>
     <!-- 工具类相关 -->
     <captcha-plus.version>1.0.2</captcha-plus.version>
     <jsoup.version>1.15.4</jsoup.version>
-    <lombok.version>1.18.26</lombok.version>
-    <mapstruct.version>1.5.3.Final</mapstruct.version>
-    <hutool.version>5.8.15</hutool.version>
+    <lombok.version>1.18.34</lombok.version>
+    <mapstruct.version>1.6.0</mapstruct.version>
+    <hutool.version>5.8.32</hutool.version>
     <easyexcel.verion>3.2.1</easyexcel.verion>
     <velocity.version>2.3</velocity.version>
     <screw.version>1.0.5</screw.version>
@@ -96,12 +96,12 @@
 <!--      接口文档-->
       <dependency>
         <groupId>com.github.xiaoymin</groupId>
-        <artifactId>knife4j-openapi3-spring-boot-starter</artifactId>
+        <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
         <version>${knife4j.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springdoc</groupId>
-        <artifactId>springdoc-openapi-ui</artifactId>
+        <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
         <version>${springdoc.version}</version>
       </dependency>
 
@@ -109,6 +109,13 @@
       <dependency>
         <groupId>com.alibaba</groupId>
         <artifactId>druid-spring-boot-starter</artifactId>
+        <version>${druid.version}</version>
+      </dependency>
+
+      <!-- SpringBoot3.x使用这个库，才能够开启Druid监控网页 -->
+      <dependency>
+        <groupId>com.alibaba</groupId>
+        <artifactId>druid-spring-boot-3-starter</artifactId>
         <version>${druid.version}</version>
       </dependency>
 
@@ -214,6 +221,7 @@
         <groupId>org.projectlombok</groupId>
         <artifactId>lombok</artifactId>
         <version>${lombok.version}</version>
+<!--        <scope>provided</scope>-->
       </dependency>
 
       <dependency>

@@ -334,7 +334,7 @@ INSERT INTO sys_menu (
 (454, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '删除', 4, 20, TRUE, 'system/params/delete', '#', '2', 'system:params:delete'),
 (455, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '批量删除', 5, 20, TRUE, 'system/params/batch-delete', '#', '2', 'system:params:batchDelete');
 
-CREATE TABLE IF NOT EXISTS ele_union (
+CREATE TABLE IF NOT EXISTS sys_ele_union (
   id bigint primary key auto_increment,
   created_by varchar(50) NULL,
   created_date timestamp NULL,
@@ -350,7 +350,7 @@ CREATE TABLE IF NOT EXISTS ele_union (
   parent_id VARCHAR(50) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB COMMENT='基础要素表';
 
-INSERT INTO ele_union
+INSERT INTO sys_ele_union
 (created_by, created_date, last_modified_by, last_modified_date, ele_cat_code, ele_cat_name, ele_code, ele_name, is_enabled, is_leaf, level_no, parent_id) VALUES
 ('system', NOW(), 'system', NOW(), 'notice_rec_type', '公告接收类型', '1', '所有人', 1, 1, 0, '0'),
 ('system', NOW(), 'system', NOW(), 'notice_rec_type', '公告接收类型', '2', '按用户', 1, 1, 0, '0'),

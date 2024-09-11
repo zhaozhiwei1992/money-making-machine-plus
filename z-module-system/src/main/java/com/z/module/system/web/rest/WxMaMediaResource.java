@@ -5,6 +5,7 @@ import cn.binarywang.wx.miniapp.constant.WxMaConstants;
 import cn.binarywang.wx.miniapp.util.WxMaConfigHolder;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.result.WxMediaUploadResult;
@@ -12,9 +13,7 @@ import me.chanjar.weixin.common.error.WxErrorException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
@@ -46,12 +45,12 @@ public class WxMaMediaResource {
             throw new IllegalArgumentException(String.format("未找到对应appid=[%s]的配置，请核实！", appid));
         }
 
-        CommonsMultipartResolver resolver = new CommonsMultipartResolver(request.getSession().getServletContext());
-
-        if (!resolver.isMultipart(request)) {
-            WxMaConfigHolder.remove();//清理ThreadLocal
-            return Lists.newArrayList();
-        }
+//        CommonsMultipartResolver resolver = new CommonsMultipartResolver(request.getSession().getServletContext());
+//
+//        if (!resolver.isMultipart(request)) {
+//            WxMaConfigHolder.remove();//清理ThreadLocal
+//            return Lists.newArrayList();
+//        }
 
         MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
         Iterator<String> it = multiRequest.getFileNames();

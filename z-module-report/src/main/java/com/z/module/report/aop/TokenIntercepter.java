@@ -1,14 +1,13 @@
 package com.z.module.report.aop;
 
 import com.z.framework.security.service.TokenProviderService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 /**
  * @author zhaozhiwei
@@ -20,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Component
 @Slf4j
-public class TokenIntercepter extends HandlerInterceptorAdapter {
+public class TokenIntercepter implements HandlerInterceptor {
 
     private final TokenProviderService tokenProviderService;
 
@@ -38,7 +37,7 @@ public class TokenIntercepter extends HandlerInterceptorAdapter {
         String token = request.getParameter("token");
         if (StringUtils.hasText(tokenProviderService.validateToken(token))) {
             log.info("验证通过, token: {}", token);
-            return super.preHandle(request, response, handler);
+            return true;
         }
         return false;
     }

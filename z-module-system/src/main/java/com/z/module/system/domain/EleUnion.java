@@ -1,11 +1,12 @@
 package com.z.module.system.domain;
 
 import com.z.framework.common.domain.AbstractAuditingEntity;
+import jakarta.persistence.*;
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import lombok.EqualsAndHashCode;
+
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -14,11 +15,18 @@ import java.io.Serializable;
  * 单独的表可以使用ele_001001类似的表名
  */
 @Entity
-@Table(name = "ele_union")
+@Table(name = "sys_ele_union")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class EleUnion extends AbstractAuditingEntity implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
     /**
      * 代码集分类编码\n如: 001001\n如果在该表不存在数据, 则通过ele_eleCatCode方式来查其它表

@@ -1,11 +1,9 @@
 package com.z.framework.operatelog.domain;
 
 import com.z.framework.common.domain.AbstractAuditingEntity;
+import jakarta.persistence.*;
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.io.Serializable;
 
 /**
@@ -17,6 +15,13 @@ import java.io.Serializable;
 public class SlowSqlLogging extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
 
     /**
      * 请求唯一id, 方便问题定位

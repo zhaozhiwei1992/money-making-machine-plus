@@ -3,12 +3,10 @@ package com.z.module.bpm.domain.definition;
 import com.z.framework.common.domain.AbstractAuditingEntity;
 import com.z.module.bpm.domain.convert.JpaListStringJsonConverter;
 import com.z.module.bpm.enums.definition.BpmModelFormTypeEnum;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.util.List;
 
 /**
@@ -28,16 +26,23 @@ import java.util.List;
 @Accessors(chain = true)
 public class BpmProcessDefinitionExtDO extends AbstractAuditingEntity {
 
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
     /**
      * 流程定义的编号
-     *
+     * <p>
      * 关联 ProcessDefinition 的 id 属性
      */
     private String processDefinitionId;
 
     /**
      * 流程模型的编号
-     *
+     * <p>
      * 关联 Model 的 id 属性
      */
     private String modelId;
@@ -48,28 +53,28 @@ public class BpmProcessDefinitionExtDO extends AbstractAuditingEntity {
 
     /**
      * 表单类型
-     *
+     * <p>
      * 关联 {@link BpmModelFormTypeEnum}
      */
     private Integer formType;
     /**
      * 动态表单编号
      * 在表单类型为 {@link BpmModelFormTypeEnum#NORMAL} 时
-     *
+     * <p>
      * 关联 {@link BpmFormDO#getId()}
      */
     private Long formId;
     /**
      * 表单的配置
      * 在表单类型为 {@link BpmModelFormTypeEnum#NORMAL} 时
-     *
+     * <p>
      * 冗余 {@link BpmFormDO#getConf()}
      */
     private String formConf;
     /**
      * 表单项的数组
      * 在表单类型为 {@link BpmModelFormTypeEnum#NORMAL} 时
-     *
+     * <p>
      * 冗余 {@link BpmFormDO#getFields()} ()}
      */
     @Convert(converter = JpaListStringJsonConverter.class)

@@ -7,16 +7,19 @@ import com.z.framework.security.util.SecurityUtils;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,11 +31,6 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -44,13 +42,11 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     
     private final TokenProviderService tokenProviderService;
 
-    private final AuthenticationManager authenticationManager;
 
     private final UserDetailsService userDetailsService;
 
-    public JWTAuthenticationFilter(TokenProviderService tokenProviderService, AuthenticationManager authenticationManager, UserDetailsService userDetailsService) {
+    public JWTAuthenticationFilter(TokenProviderService tokenProviderService, UserDetailsService userDetailsService) {
         this.tokenProviderService = tokenProviderService;
-        this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
     }
 

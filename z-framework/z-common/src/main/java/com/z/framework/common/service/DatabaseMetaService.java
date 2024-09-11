@@ -1,9 +1,9 @@
 package com.z.framework.common.service;
 
 import cn.hutool.db.meta.MetaUtil;
+import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.util.Arrays;
 import java.util.HashMap;

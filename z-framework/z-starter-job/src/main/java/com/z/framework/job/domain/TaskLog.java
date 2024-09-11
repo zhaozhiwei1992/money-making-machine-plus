@@ -1,23 +1,21 @@
 package com.z.framework.job.domain;
 
 import com.z.framework.common.domain.AbstractAuditingEntity;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.Instant;
 
 /**
+ * @author zhaozhiwei
+ * @version V1.0
  * @Title: TaskLog
  * @Package com/longtu/domain/TaskLog.java
  * @Description: 定时任务日志
- * @author zhaozhiwei
  * @date 2022/7/28 上午10:24
- * @version V1.0
  */
 @Entity
 @Table(name = "sys_task_log")
@@ -27,6 +25,12 @@ import java.time.Instant;
 public class TaskLog extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
 
     /**
      * 定时任务名称

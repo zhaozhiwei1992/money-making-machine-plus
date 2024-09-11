@@ -1,5 +1,6 @@
 package com.z.framework.operatelog.aop;
 
+import cn.hutool.extra.servlet.JakartaServletUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONUtil;
@@ -14,8 +15,8 @@ import org.springframework.core.MethodParameter;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.*;
 
 /**
@@ -52,7 +53,7 @@ public class RequestLoggingInterceptor implements HandlerInterceptor {
             log.info("handler method : {} \n", handler);
 
             // 记录客户端ip
-            final String clientIP = ServletUtil.getClientIP(request);
+            final String clientIP = JakartaServletUtil.getClientIP(request);
             // 请求的地址
             final String requestURI = request.getRequestURI();
             // 生成traceId

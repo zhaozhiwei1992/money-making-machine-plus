@@ -5,16 +5,17 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
+
 import java.io.Serializable;
 
 /**
+ * @author zhaozhiwei
+ * @version V1.0
  * @Title: SysPosition
  * @Package com/z/module/system/domain/SysPosition.java
  * @Description: 岗位
- * @author zhaozhiwei
  * @date 2024/7/21 上午2:03
- * @version V1.0
  */
 @Data
 @Entity
@@ -24,6 +25,12 @@ import java.io.Serializable;
 public class Position extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
 
     @Column(name = "code", nullable = false, length = 64)
     private String code;
