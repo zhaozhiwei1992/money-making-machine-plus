@@ -106,18 +106,18 @@
       </dependency>
 
       <!-- DB 相关 -->
-      <dependency>
-        <groupId>com.alibaba</groupId>
-        <artifactId>druid-spring-boot-starter</artifactId>
-        <version>${druid.version}</version>
-      </dependency>
+<!--      <dependency>-->
+<!--        <groupId>com.alibaba</groupId>-->
+<!--        <artifactId>druid-spring-boot-starter</artifactId>-->
+<!--        <version>${druid.version}</version>-->
+<!--      </dependency>-->
 
       <!-- SpringBoot3.x使用这个库，才能够开启Druid监控网页 -->
-      <dependency>
-        <groupId>com.alibaba</groupId>
-        <artifactId>druid-spring-boot-3-starter</artifactId>
-        <version>${druid.version}</version>
-      </dependency>
+<!--      <dependency>-->
+<!--        <groupId>com.alibaba</groupId>-->
+<!--        <artifactId>druid-spring-boot-3-starter</artifactId>-->
+<!--        <version>${druid.version}</version>-->
+<!--      </dependency>-->
 
       <dependency>
         <groupId>org.springframework.boot</groupId>

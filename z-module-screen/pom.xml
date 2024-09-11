@@ -20,19 +20,10 @@
     </dependency>
 
     <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>com.z</groupId>
       <artifactId>z-starter-security</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>cn.hutool</groupId>
-      <artifactId>hutool-all</artifactId>
-    </dependency>
     <!-- 积木报表-->
     <dependency>
       <groupId>org.jeecgframework.jimureport</groupId>

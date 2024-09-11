@@ -80,13 +80,6 @@
 
         <!-- 服务保障相关 -->
 
-        <!--    spring2.x 升级springboot3.x-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-properties-migrator</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
     </dependencies>
 
     <profiles>
