@@ -2,7 +2,7 @@
 
 一个基础性单体项目, 提供一些常用的功能, 主要是为了减少后续开发项目一些基础性工作(cv操作), 面向开发人员。
 
-前端使用vue-element-plus-admin, 后端springboot2.7.6, 使用jpa进行持久化。
+前端使用vue-element-plus-admin, 后端jdk21 + springboot3.3.3, 使用jpa进行持久化。
 
 项目参考了jhipster的优秀代码设计, ruoyi项目的目录接口, 分模块开发。
 
@@ -100,7 +100,13 @@ http://43.143.194.245:8091/index.html
 
 
 # 安装要求
+1. java 21+
+2. springboot 3.3.3.RELEASE
+3. mysql 8+
+5. npm 8+
+6. node 20+
 
+## tag1.0.0
 1. java 8+
 2. springboot 2.6.3.RELEASE
 3. mysql 5.7.5+
@@ -116,6 +122,13 @@ http://43.143.194.245:8091/index.html
 6. 访问http://localhost:4000, 登录查看我们的成果, 用户/密码:admin/admin
 
 # 部署
+
+## 前后端分离部署
+
+## 前后端集中部署
+```sh
+mvn clean package -Psingle
+```
 
 # 版本控制
 
