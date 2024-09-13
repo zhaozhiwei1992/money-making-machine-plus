@@ -1,4 +1,4 @@
-package com.z.module.system.web.vo;
+package com.z.framework.common.web.vo;
 
 import lombok.Data;
 

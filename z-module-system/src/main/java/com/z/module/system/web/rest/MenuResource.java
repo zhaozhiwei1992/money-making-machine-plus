@@ -19,7 +19,7 @@ import com.z.module.system.repository.UserRepository;
 import com.z.module.system.service.MenuService;
 import com.z.module.system.web.mapper.MenuSelectMapper;
 import com.z.module.system.web.vo.MenuVO;
-import com.z.module.system.web.vo.SelectOptionVO;
+import com.z.framework.common.web.vo.SelectOptionVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;

@@ -8,7 +8,7 @@ import com.z.module.system.domain.Department;
 import com.z.module.system.repository.DepartmentRepository;
 import com.z.module.system.web.mapper.DepartmentSelectMapper;
 import com.z.module.system.web.vo.DepartmentVO;
-import com.z.module.system.web.vo.SelectOptionVO;
+import com.z.framework.common.web.vo.SelectOptionVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;

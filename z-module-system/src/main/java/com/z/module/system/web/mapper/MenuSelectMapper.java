@@ -1,7 +1,7 @@
 package com.z.module.system.web.mapper;
 
 import com.z.module.system.domain.Menu;
-import com.z.module.system.web.vo.SelectOptionVO;
+import com.z.framework.common.web.vo.SelectOptionVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

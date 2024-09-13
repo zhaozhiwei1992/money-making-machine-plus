@@ -7,12 +7,11 @@
     <artifactId>money-making-machine-plus</artifactId>
     <version>${revision}</version>
   </parent>
-  <artifactId>z-module-report</artifactId>
-  <name>z-module-report</name>
+  <artifactId>z-module-ai</artifactId>
+  <name>z-module-ai</name>
   <url>http://maven.apache.org</url>
   <description>
-    基于「积木报表」实现打印设计、报表设计、图形设计、大屏设计等。
-    也可以引入其它组件模块统一封装
+    ai相关模块,支持多个训练模型处理
   </description>
   <dependencies>
     <dependency>

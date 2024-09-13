@@ -171,7 +171,7 @@ public class EleUnionResource {
      * @User: zhaozhiwei
      * @method: getElementInfoByCatCode
       * @param eleCatCode :
-     * @return: org.springframework.http.java.util.List<com.z.module.system.web.vo.SelectOptionVO>
+     * @return: org.springframework.http.java.util.List<com.z.framework.common.web.vo.SelectOptionVO>
      * @Description: 获取基础要素select/cascade树形展现
      */
     @GetMapping("/ele-unions/element-info/select/{eleCatCode}")

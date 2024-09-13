@@ -65,6 +65,12 @@
             <version>${revision}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.z</groupId>
+            <artifactId>z-module-ai</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
         <!--    模块部分 结束 -->
 
         <!-- spring boot 配置所需依赖 -->

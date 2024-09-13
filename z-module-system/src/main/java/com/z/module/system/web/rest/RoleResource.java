@@ -6,7 +6,7 @@ import com.z.module.system.repository.AuthorityRepository;
 import com.z.module.system.repository.RoleMenuRepository;
 import com.z.module.system.web.mapper.RoleSelectMapper;
 import com.z.module.system.web.vo.RoleVO;
-import com.z.module.system.web.vo.SelectOptionVO;
+import com.z.framework.common.web.vo.SelectOptionVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;

@@ -3,7 +3,7 @@ package com.z.module.system.web.rest;
 import com.z.module.system.domain.Position;
 import com.z.module.system.repository.PositionRepository;
 import com.z.module.system.web.mapper.PositionSelectMapper;
-import com.z.module.system.web.vo.SelectOptionVO;
+import com.z.framework.common.web.vo.SelectOptionVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
