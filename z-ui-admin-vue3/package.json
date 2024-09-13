@@ -46,7 +46,7 @@
     "diagram-js": "^11.6.0",
     "echarts": "^5.4.2",
     "echarts-wordcloud": "^2.1.0",
-    "element-plus": "2.3.3",
+    "element-plus": "2.8.2",
     "intro.js": "^7.0.1",
     "jsencrypt": "^3.3.2",
     "lodash-es": "^4.17.21",

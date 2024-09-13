@@ -75,6 +75,10 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <version>${maven-compiler-plugin.version}</version>
           <configuration>
+<!--             Name for argument of type [java.lang.Long] not specified, and parameter name information not available via reflection-->
+            <compilerArgs>
+              <arg>-parameters</arg>
+            </compilerArgs>
             <annotationProcessorPaths>
               <path>
                 <groupId>org.springframework.boot</groupId>

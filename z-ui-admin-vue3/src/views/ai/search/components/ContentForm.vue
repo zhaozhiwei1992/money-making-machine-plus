@@ -1,17 +1,31 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { reactive, ref, toRefs } from 'vue'
+import { DocumentCopy } from '@element-plus/icons-vue'
 import { ElCard, ElRow, ElCol, ElButton } from 'element-plus'
 import NormalForm from './NormalForm.vue'
+import { onMounted } from 'vue'
+import { getHistoryDetail } from '@/api/ai/historydetail'
+import { HistoryDetailVO } from '@/api/ai/historydetail/types'
 
 // 获取历史记录
-const historyContentList = ref([
-  { id: 1, direct: '0', content: 'Tom committed 2018/4/12 20:46' },
-  { id: 2, direct: '1', content: 'Tom committed 2018/4/12 20:46' },
-  { id: 3, direct: '0', content: 'Tom committed 2018/4/12 20:46' },
-  { id: 4, direct: '1', content: 'Tom committed 2018/4/12 20:46' },
-  { id: 5, direct: '0', content: 'Tom committed 2018/4/12 20:46' },
-  { id: 6, direct: '1', content: 'Tom committed 2018/4/12 20:46' }
-])
+const historyContentList: HistoryDetailVO[] = reactive([])
+
+const props = defineProps({
+  historyId: {
+    type: Number,
+    default: 0
+  }
+})
+
+const { historyId } = toRefs(props)
+
+const hisId = ref(historyId.value)
+
+onMounted(async () => {
+  // 查询所有历史信息
+  const res = await getHistoryDetail(historyId.value)
+  historyContentList.push(...res)
+})
 
 const copy = () => {
   // 复制
@@ -38,8 +52,7 @@ const copy = () => {
               <ElCard class="content-card-1">
                 <p>{{ historyContent.content }}</p>
                 <template #footer>
-                  <!-- <ElButton size="small" icon="Edit" @click="copy"> 复制 </ElButton> -->
-                  hh
+                  <ElButton :icon="DocumentCopy" @click="copy"> 复制 </ElButton>
                 </template>
               </ElCard>
             </ElCol>
@@ -48,7 +61,7 @@ const copy = () => {
       </ul>
     </ElRow>
     <ElRow>
-      <NormalForm />
+      <NormalForm :historyId="hisId" :fromContent="true" />
     </ElRow>
   </div>
 </template>

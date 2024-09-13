@@ -1,6 +1,6 @@
 import request from '@/config/axios'
 import { SearchVO } from './types'
 
-export const saveTableApi = (data: Partial<SearchVO>): Promise<IResponse> => {
+export const searchApi = (data: Partial<SearchVO>): Promise<SearchVO> => {
   return request.post({ url: '/search', data })
 }

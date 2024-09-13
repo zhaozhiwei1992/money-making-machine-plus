@@ -35,8 +35,12 @@ onMounted(() => {
   // })
 })
 
+const hisId: any = ref(0)
+
 const showContent = (historyId: number) => {
   console.log(historyId)
+  hisId.value = historyId
+  console.log('hisID:', hisId.value)
   showIndex.value = 3
 }
 </script>
@@ -66,9 +70,9 @@ const showContent = (historyId: number) => {
           </ElMenu>
         </ElCol>
         <ElCol :span="16" class="content">
-          <NormalForm v-if="showIndex == 1" />
+          <NormalForm v-if="showIndex == 1" :historyId="0" />
           <HistoryForm v-if="showIndex == 2" @history-click="showContent" />
-          <ContentForm v-if="showIndex == 3" />
+          <ContentForm v-if="showIndex == 3" :historyId="hisId" />
         </ElCol>
         <ElCol :span="4" />
       </ElRow>

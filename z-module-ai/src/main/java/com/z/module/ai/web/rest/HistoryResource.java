@@ -41,7 +41,7 @@ public class HistoryResource {
      */
     @Operation(description = "新增历史")
     @PostMapping("/histories")
-    @PreAuthorize("hasAuthority('ai:history:add')")
+//    @PreAuthorize("hasAuthority('ai:history:add')")
     public History createHistory(@RequestBody History history) throws URISyntaxException {
         log.debug("REST request to save History : {}", history);
 
@@ -60,7 +60,7 @@ public class HistoryResource {
 
     @Operation(description = "获取历史")
     @GetMapping("/histories")
-    @PreAuthorize("hasAuthority('ai:history:view')")
+//    @PreAuthorize("hasAuthority('ai:history:view')")
     public HashMap<String, Object> getAllHistorys(Pageable pageable, History role) {
         log.debug("REST request to get all History for an admin");
 
@@ -95,7 +95,7 @@ public class HistoryResource {
 
     @Operation(description = "删除历史")
     @DeleteMapping("/histories")
-    @PreAuthorize("hasAuthority('ai:history:delete')")
+//    @PreAuthorize("hasAuthority('ai:history:delete')")
     public String deleteHistory(@RequestBody List<Long> idList) {
         log.debug("REST request to delete Examples, ids: {}", idList);
         this.historyRepository.deleteAllByIdIn(idList);
@@ -104,7 +104,7 @@ public class HistoryResource {
 
     @Operation(description = "获取历史列表信息")
     @GetMapping("/histories/list")
-    @PreAuthorize("hasAuthority('ai:history:view')")
+//    @PreAuthorize("hasAuthority('ai:history:view')")
     public List<History> getAllHistoryList() {
         return historyRepository.findAll();
     }

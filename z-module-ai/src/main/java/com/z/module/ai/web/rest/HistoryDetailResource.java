@@ -21,10 +21,10 @@ import java.util.List;
 @Transactional(rollbackFor = Exception.class)
 public class HistoryDetailResource {
 
-    private final HistoryDetailRepository historyRepository;
+    private final HistoryDetailRepository historyDetailRepository;
 
-    public HistoryDetailResource(HistoryDetailRepository roleRepository) {
-        this.historyRepository = roleRepository;
+    public HistoryDetailResource(HistoryDetailRepository historyDetailRepository) {
+        this.historyDetailRepository = historyDetailRepository;
     }
 
     /**
@@ -41,11 +41,11 @@ public class HistoryDetailResource {
      */
     @Operation(description = "新增历史明细")
     @PostMapping("/history/detail")
-    @PreAuthorize("hasAuthority('ai:history:detail:add')")
+//    @PreAuthorize("hasAuthority('ai:history:detail:add')")
     public HistoryDetail createHistoryDetail(@RequestBody HistoryDetail history) throws URISyntaxException {
         log.debug("REST request to save HistoryDetail : {}", history);
 
-        return historyRepository.save(history);
+        return historyDetailRepository.save(history);
     }
 
     /**
@@ -58,7 +58,7 @@ public class HistoryDetailResource {
 
     @Operation(description = "获取历史明细")
     @GetMapping("/history/detail")
-    @PreAuthorize("hasAuthority('ai:history:detail:view')")
+//    @PreAuthorize("hasAuthority('ai:history:detail:view')")
     public HashMap<String, Object> getAllHistoryDetails(Pageable pageable, HistoryDetail role) {
         log.debug("REST request to get all HistoryDetail for an admin");
 
@@ -83,7 +83,7 @@ public class HistoryDetailResource {
 
         //创建实例
         Example<HistoryDetail> ex = Example.of(role, matcher);
-        rolePage = historyRepository.findAll(ex, pageable);
+        rolePage = historyDetailRepository.findAll(ex, pageable);
 
         return new HashMap<String, Object>() {{
             put("list", rolePage.getContent());
@@ -93,18 +93,17 @@ public class HistoryDetailResource {
 
     @Operation(description = "删除历史明细")
     @DeleteMapping("/history/detail")
-    @PreAuthorize("hasAuthority('ai:history:detail:delete')")
+//    @PreAuthorize("hasAuthority('ai:history:detail:delete')")
     public String deleteHistoryDetail(@RequestBody List<Long> idList) {
         log.debug("REST request to delete Examples, ids: {}", idList);
-        this.historyRepository.deleteAllByIdIn(idList);
+        this.historyDetailRepository.deleteAllByIdIn(idList);
         return "success";
     }
 
     @Operation(description = "获取历史明细列表信息")
     @GetMapping("/history/detail/list")
-    @PreAuthorize("hasAuthority('ai:history:detail:view')")
-    public List<HistoryDetail> getAllDictList() {
-        return historyRepository.findAll();
+//    @PreAuthorize("hasAuthority('ai:history:detail:view')")
+    public List<HistoryDetail> getHistoryDetailByHistoryId(@RequestParam Long historyId) {
+        return historyDetailRepository.findAllByHistoryIdOrderByIdAsc(historyId);
     }
-
 }

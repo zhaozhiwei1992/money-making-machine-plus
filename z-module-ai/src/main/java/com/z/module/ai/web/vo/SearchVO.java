@@ -8,4 +8,6 @@ public class SearchVO {
     private String content;
 
     private Long historyId;
+
+    private Long engineId;
 }

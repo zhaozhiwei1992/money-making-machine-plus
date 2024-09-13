@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { reactive, ref, toRefs } from 'vue'
 import { Edit, Search, Star } from '@element-plus/icons-vue'
 import {
   ElRow,
@@ -11,41 +11,54 @@ import {
   ElOption,
   ElSelect
 } from 'element-plus'
+import { onMounted } from 'vue'
+import { getEngineSelect } from '@/api/ai/engine'
+import { ComponentOptions } from '@/types/components'
+import { searchApi } from '@/api/ai/search'
+import { SearchVO } from '@/api/ai/search/types'
+import ContentForm from './ContentForm.vue'
 
 const textarea = ref('')
 const delivery = ref('')
-const engine = ref('')
+const engine = ref(0)
 
-const searchResult = () => {
-  // 1. 将录入内容发送后台
-  // 2. 每组数据存在一个id
-}
-const options = [
-  {
-    value: 'Option1',
-    label: 'Option1'
+const props = defineProps({
+  historyId: {
+    type: Number,
+    default: 0
   },
-  {
-    value: 'Option2',
-    label: 'Option2'
-  },
-  {
-    value: 'Option3',
-    label: 'Option3'
-  },
-  {
-    value: 'Option4',
-    label: 'Option4'
-  },
-  {
-    value: 'Option5',
-    label: 'Option5'
+  fromContent: {
+    type: Boolean,
+    default: false
   }
-]
+})
+
+const { historyId, fromContent } = toRefs(props)
+
+const hisId: any = ref(historyId.value)
+
+const searchResult = async () => {
+  // 1. 将录入内容发送后台
+  const data: SearchVO = {
+    content: textarea.value,
+    historyId: hisId.value,
+    engineId: engine.value
+  }
+  const res = await searchApi(data)
+  // 2. 切换到ContentForm上, 并给出historyId每组数据存在一个id
+  hisId.value = res.historyId
+}
+const options: ComponentOptions[] = reactive([])
+
+onMounted(async () => {
+  // 初始化引擎数据
+  const res = await getEngineSelect()
+  options.push(...res)
+})
 </script>
 
 <template>
-  <div class="main">
+  <div class="main" v-if="hisId == 0">
     <ElRow>
       <ElInput
         class="inputDeep"
@@ -94,6 +107,9 @@ const options = [
         <ElButton v-if="textarea != ''" :icon="Search" @click="searchResult" circle />
       </ElCol>
     </ElRow>
+  </div>
+  <div class="main" v-if="hisId != 0 && fromContent == false">
+    <ContentForm :historyId="hisId" />
   </div>
 </template>
 

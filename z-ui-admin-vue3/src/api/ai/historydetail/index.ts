@@ -1,6 +1,5 @@
 import request from '@/config/axios'
 import { HistoryDetailVO } from './types'
-import { ComponentOptions } from '@/types/components'
 
 export const getTableListApi = (params: any): Promise<IResponse> => {
   params = { ...params, page: params.pageIndex, size: params.pageSize }
@@ -22,6 +21,6 @@ export const delTableListApi = (ids: string[] | number[]): Promise<IResponse> =>
 }
 
 // 查询引擎树
-export const getHistorydetailSelect = async (): Promise<ComponentOptions[]> => {
-  return await request.get({ url: '/history/detail/list' })
+export const getHistoryDetail = async (historyId: number): Promise<HistoryDetailVO[]> => {
+  return await request.get({ url: '/history/detail/list', params: { historyId } })
 }
