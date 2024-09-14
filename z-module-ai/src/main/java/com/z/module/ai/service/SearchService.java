@@ -9,9 +9,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class SearchService {
+
+//    @Autowired
+//    @Qualifier("tongYiSimpleServiceImpl")
+    private TongYiService tongYiService;
 
     private final HistoryRepository historyRepository;
 
@@ -44,10 +49,15 @@ public class SearchService {
 
         List<HistoryDetail> allByHistoryIdOrderByIdAsc = historyDetailRepository.findAllByHistoryIdOrderByIdAsc(historyId);
 //        3. 基于历史的提问，每次调用接口需要将历史提问及回复提供给引擎，方便保持上下文。
+        String collect = allByHistoryIdOrderByIdAsc.stream().map(HistoryDetail::getContent).collect(Collectors.joining("\n"));
+//        String completion = tongYiService.completion(collect);
+//        String s = QianWenChatClient.callWithMessage(collect);
+
         // 4. 引擎返回结果，将结果保存到历史记录中。
         HistoryDetail historyDetailBack = new HistoryDetail();
         historyDetailBack.setHistoryId(searchVO.getHistoryId());
         historyDetailBack.setDirect(1);
+//        historyDetailBack.setContent(completion);
         historyDetailBack.setContent("回复: " + searchVO.getContent());
         historyDetailRepository.save(historyDetailBack);
 
