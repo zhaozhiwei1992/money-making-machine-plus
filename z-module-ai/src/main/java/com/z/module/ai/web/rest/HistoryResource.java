@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Tag(name = "历史API")
 @RestController
@@ -44,8 +46,16 @@ public class HistoryResource {
 //    @PreAuthorize("hasAuthority('ai:history:add')")
     public History createHistory(@RequestBody History history) throws URISyntaxException {
         log.debug("REST request to save History : {}", history);
+        History newHistory;
 
-        History newHistory = historyRepository.save(history);
+        if(Objects.isNull(history.getId())){
+            newHistory = historyRepository.save(history);
+        }else{
+            Optional<History> byId = historyRepository.findById(history.getId());
+            newHistory = byId.orElse(new History());
+            newHistory.setRemark(history.getRemark());
+            historyRepository.save(newHistory);
+        }
 
         return newHistory;
     }

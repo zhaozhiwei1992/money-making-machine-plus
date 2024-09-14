@@ -48,6 +48,7 @@
     "echarts-wordcloud": "^2.1.0",
     "element-plus": "2.8.2",
     "intro.js": "^7.0.1",
+    "js-tool-big-box": "^1.0.62",
     "jsencrypt": "^3.3.2",
     "lodash-es": "^4.17.21",
     "min-dash": "^4.1.1",

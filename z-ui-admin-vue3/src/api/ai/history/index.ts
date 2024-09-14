@@ -16,7 +16,7 @@ export const getTableDetApi = (id: string): Promise<IResponse<HistoryVO>> => {
 }
 
 // 批量删除
-export const delTableListApi = (ids: string[] | number[]): Promise<IResponse> => {
+export const delHistoryApi = (ids: string[] | number[]): Promise<IResponse> => {
   return request.delete({ url: '/histories', data: ids })
 }
 

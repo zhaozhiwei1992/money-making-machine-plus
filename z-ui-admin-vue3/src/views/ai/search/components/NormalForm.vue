@@ -26,16 +26,12 @@ const props = defineProps({
   historyId: {
     type: Number,
     default: 0
-  },
-  fromContent: {
-    type: Boolean,
-    default: false
   }
 })
 
-const { historyId, fromContent } = toRefs(props)
-
+const { historyId } = toRefs(props)
 const hisId: any = ref(historyId.value)
+const searchFlag = ref(false)
 
 const searchResult = async () => {
   // 1. 将录入内容发送后台
@@ -47,6 +43,7 @@ const searchResult = async () => {
   const res = await searchApi(data)
   // 2. 切换到ContentForm上, 并给出historyId每组数据存在一个id
   hisId.value = res.historyId
+  searchFlag.value = true
 }
 const options: ComponentOptions[] = reactive([])
 
@@ -58,7 +55,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="main" v-if="hisId == 0">
+  <div class="main" v-if="searchFlag == false">
     <ElRow>
       <ElInput
         class="inputDeep"
@@ -108,7 +105,8 @@ onMounted(async () => {
       </ElCol>
     </ElRow>
   </div>
-  <div class="main" v-if="hisId != 0 && fromContent == false">
+  <div class="main" v-if="searchFlag == true">
+    <!-- 只有保存才应该触发这个标签，显示 -->
     <ContentForm :historyId="hisId" />
   </div>
 </template>
