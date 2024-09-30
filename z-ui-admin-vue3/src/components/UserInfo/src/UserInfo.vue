@@ -10,6 +10,7 @@ import { useDesign } from '@/hooks/web/useDesign'
 import { useTagsViewStore } from '@/store/modules/tagsView'
 import { useAppStore } from '@/store/modules/app'
 import ResetPassword from '@/views/system/User/components/ResetPassword.vue'
+import ModPersonalInfoVue from '@/views/system/User/components/ModPersonalInfo.vue'
 import { ref, unref } from 'vue'
 
 const tagsViewStore = useTagsViewStore()
@@ -61,6 +62,20 @@ const save = () => {
   write?.save()
   dialogVisible.value = false
 }
+
+const personalDialogVisible = ref(false)
+const personalDialogTitle = ref('个人信息修改')
+const toModPersonalInfo = () => {
+  // 跳转个人中心页面
+  personalDialogVisible.value = true
+}
+
+const personalWriteRef = ref<ComponentRef<typeof ModPersonalInfoVue>>()
+const savePersonal = () => {
+  const write = unref(personalWriteRef)
+  write?.save()
+  personalDialogVisible.value = false
+}
 </script>
 
 <template>
@@ -78,6 +93,9 @@ const save = () => {
     <template #dropdown>
       <ElDropdownMenu>
         <ElDropdownItem>
+          <div @click="toModPersonalInfo">{{ t('common.modPersonalInfo') }}</div>
+        </ElDropdownItem>
+        <ElDropdownItem>
           <div @click="toResetPassword">{{ t('common.resetPassword') }}</div>
         </ElDropdownItem>
         <ElDropdownItem divided>
@@ -86,6 +104,17 @@ const save = () => {
       </ElDropdownMenu>
     </template>
   </ElDropdown>
+
+  <Dialog v-model="personalDialogVisible" :title="personalDialogTitle">
+    <ModPersonalInfoVue ref="personalWriteRef" />
+
+    <template #footer>
+      <ElButton type="primary" @click="savePersonal">
+        {{ t('exampleDemo.save') }}
+      </ElButton>
+      <ElButton @click="dialogPersonalVisible = false">{{ t('dialogDemo.close') }}</ElButton>
+    </template>
+  </Dialog>
 
   <Dialog v-model="dialogVisible" :title="dialogTitle">
     <ResetPassword ref="writeRef" />

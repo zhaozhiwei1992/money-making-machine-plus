@@ -53,9 +53,8 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(nullable = false)
     private boolean activated = true;
 
-    @Size(max = 256)
-    @Column(name = "image_url", length = 256)
-    private String imageUrl;
+    // 去附件中读取头像信息
+    private Long avatar;
 
     private String email;
 

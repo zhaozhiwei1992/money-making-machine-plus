@@ -72,7 +72,7 @@ public class TaskParamResource {
         // 分页
         pageable = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize(), sort);
         Page<TaskParam> page = taskParamRepository.findAll(pageable);
-        return new HashMap<String, Object>(){{
+        return new HashMap<>() {{
             put("list", page.getContent());
             put("total", Long.valueOf(page.getTotalElements()).intValue());
         }};

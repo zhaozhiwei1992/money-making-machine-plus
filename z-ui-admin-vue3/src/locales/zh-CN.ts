@@ -9,6 +9,7 @@ export default {
     loginOut: '退出系统',
     document: '项目文档',
     resetPassword: '密码重置',
+    modPersonalInfo: '修改个人信息',
     reminder: '温馨提示',
     loginOutMessage: '是否退出本系统？',
     back: '返回',

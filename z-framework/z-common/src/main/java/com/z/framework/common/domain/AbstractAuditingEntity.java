@@ -24,8 +24,8 @@ import java.util.concurrent.TimeUnit;
  * 3. 在Xxx Application 启动类上添加 @EnableJpaAuditing
  */
 // hibernate 5.2+版本不能同时使用mappedSuperclass和Inheritance注解了,坑爹
-//@MappedSuperclass
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@MappedSuperclass
+//@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Data
 @EntityListeners(AuditingEntityListener.class) // 使用审计必须有这个注解
 public abstract class AbstractAuditingEntity implements Serializable {

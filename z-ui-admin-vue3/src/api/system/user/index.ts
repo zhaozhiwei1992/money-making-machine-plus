@@ -18,6 +18,11 @@ export const resetPasswordApi = (data: Partial<PasswordResetVO>): Promise<UserVO
   return request.post({ url: '/users/resetpass', data })
 }
 
+// 个人信息修改接口
+export const personalInfoModApi = (data: Partial<UserVO>): Promise<UserVO> => {
+  return request.post({ url: '/users/personal/mod', data })
+}
+
 // 获取指定数据详情
 export const getTableDetApi = (id: string): Promise<IResponse<UserVO>> => {
   // url?id=xx
