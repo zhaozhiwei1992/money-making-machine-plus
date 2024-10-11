@@ -3,7 +3,9 @@ package com.z.module.system.web.rest;
 import com.google.code.kaptcha.Constants;
 import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.framework.security.service.TokenProviderService;
+import com.z.module.system.domain.Upload;
 import com.z.module.system.domain.User;
+import com.z.module.system.repository.UploadRepository;
 import com.z.module.system.repository.UserRepository;
 import com.z.module.system.service.LoginLogService;
 import com.z.module.system.service.LoginService;
@@ -27,7 +29,9 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.Base64;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -57,13 +61,16 @@ public class LoginResource {
 
     private final UserDetailsService userDetailsService;
 
-    public LoginResource(UserRepository userRepository, PasswordEncoder passwordEncoder, LoginLogService loginLogService, TokenProviderService tokenProviderService, LoginService loginService, UserDetailsService userDetailsService) {
+    private final UploadRepository uploadRepository;
+
+    public LoginResource(UserRepository userRepository, PasswordEncoder passwordEncoder, LoginLogService loginLogService, TokenProviderService tokenProviderService, LoginService loginService, UserDetailsService userDetailsService, UploadRepository uploadRepository) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = passwordEncoder;
         this.loginLogService = loginLogService;
         this.tokenProviderService = tokenProviderService;
         this.loginService = loginService;
         this.userDetailsService = userDetailsService;
+        this.uploadRepository = uploadRepository;
     }
 
     /**
@@ -108,14 +115,15 @@ public class LoginResource {
                 authedRespVO.setPermissions(authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
                 authedRespVO.setToken(token);
 
+                // 获取用户头像
+                Optional<Upload> byCreatedBy = uploadRepository.findByCreatedBy(username);
+                if(byCreatedBy.isPresent()){
+                    String base64Image = Base64.getEncoder().encodeToString(byCreatedBy.get().getValue());
+                    authedRespVO.setAvatar(base64Image);
+                }
+
                 // 记录token白名单, 注: 如果cache使用 redis之类的, 可以跟token同步增加失效时间
                 loginService.addTokenWriteList(token);
-
-                // 登录成功后设置全局用户信息，方便后续使用, 前后端分离项目这一步其实也没啥用
-                // com.z.framework.security.aop.JWTAuthenticationFilter.doFilterInternal
-//                final UsernamePasswordAuthenticationToken authenticationToken =
-//                        new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>());
-//                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
                 // 登录成功记录日志
                 loginLogService.save(loginVM, request);

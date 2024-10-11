@@ -11,7 +11,7 @@ import { useTagsViewStore } from '@/store/modules/tagsView'
 import { useAppStore } from '@/store/modules/app'
 import ResetPassword from '@/views/system/User/components/ResetPassword.vue'
 import ModPersonalInfoVue from '@/views/system/User/components/ModPersonalInfo.vue'
-import { ref, unref } from 'vue'
+import { onMounted, ref, unref } from 'vue'
 
 const tagsViewStore = useTagsViewStore()
 
@@ -76,16 +76,20 @@ const savePersonal = () => {
   write?.save()
   personalDialogVisible.value = false
 }
+
+// 头像
+const avatarImageUrl = ref('@/assets/imgs/avatar.jpg')
+
+onMounted(() => {
+  // captchaImageUrl.value = 'data:image/png;base64,' + response.data
+  avatarImageUrl.value = 'data:image/png;base64,' + wsCache.get(appStore.getUserInfo).avatar
+})
 </script>
 
 <template>
   <ElDropdown :class="prefixCls" trigger="click">
     <div class="flex items-center">
-      <img
-        src="@/assets/imgs/avatar.jpg"
-        alt=""
-        class="w-[calc(var(--logo-height)-25px)] rounded-[50%]"
-      />
+      <img :src="avatarImageUrl" alt="" class="w-[calc(var(--logo-height)-25px)] rounded-[50%]" />
       <span class="<lg:hidden text-14px pl-[5px] text-[var(--top-header-text-color)]">
         {{ userName }}
       </span>

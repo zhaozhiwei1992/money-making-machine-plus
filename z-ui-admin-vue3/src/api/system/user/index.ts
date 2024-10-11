@@ -1,6 +1,6 @@
 import request from '@/config/axios'
-import type { UserVO, PasswordResetVO } from './types'
 import type { TableResponse } from '@/types/table'
+import type { PasswordResetVO, UserVO } from './types'
 
 export const getTableListApi = (params: any): Promise<TableResponse> => {
   // 转换, 适配jpa PageRequest
@@ -38,4 +38,11 @@ export const delTableListApi = (ids: string[] | number[]): Promise<string> => {
 // 获取用户精简信息列表
 export const getTableListAllApi = (): Promise<IResponse<UserVO[]>> => {
   return request.get({ url: '/users/all' })
+}
+
+// 获取头像
+export const getAvatarImgApi = (): Promise<any> => {
+  // const options = { responseType: 'arraybuffer' }
+  const options = { responseType: 'text' }
+  return request.get({ url: '/users/avatar', ...options })
 }

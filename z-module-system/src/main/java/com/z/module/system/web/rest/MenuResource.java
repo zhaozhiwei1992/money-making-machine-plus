@@ -271,7 +271,8 @@ public class MenuResource {
             final User user = oneByLogin.get();
             final List<UserAuthority> allByUserId = userAuthorityRepository.findAllByUserId(user.getId());
             final List<RoleMenu> roleMenuList = roleMenuRepository.findByRoleIdIn(allByUserId.stream().map(UserAuthority::getRoleId).collect(Collectors.toList()));
-            allMenusOrderByOrdernumAsc = menuRepository.findAllByIdInOrderByOrderNumAsc(roleMenuList.stream().map(RoleMenu::getMenuId).collect(Collectors.toList()));
+            allMenusOrderByOrdernumAsc = menuRepository.findAllByIdInAndMenuTypeInOrderByOrderNumAsc(roleMenuList.stream().map(RoleMenu::getMenuId).collect(Collectors.toList()), Arrays.asList(MenuTypeEnum.DICT.getCode(),
+                    MenuTypeEnum.MENU.getCode()));
         }
 
         //树形结构一些特殊配置

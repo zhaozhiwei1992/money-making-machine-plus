@@ -27,4 +27,6 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
     List<Menu> findAllByMenuTypeInOrderByOrderNumAsc(List<Integer> list);
 
     Optional<Menu> findOneByUrl(String requestURI);
+
+    List<Menu> findAllByIdInAndMenuTypeInOrderByOrderNumAsc(List<Long> menuIdList, List<Integer> list);
 }

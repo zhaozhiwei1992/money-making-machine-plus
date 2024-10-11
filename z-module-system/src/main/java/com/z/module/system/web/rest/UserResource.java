@@ -346,4 +346,20 @@ public class UserResource {
 
         throw new RuntimeException("找不到用户: " + login);
     }
+
+    @Operation(description = "个人信息修改")
+    @PostMapping("/users/personal/mod")
+    @Transactional(rollbackFor = Exception.class)
+    public User modUser(@RequestBody UserVO userVO) throws URISyntaxException {
+        log.debug("REST request to mod User : {}", userVO);
+
+        final Optional<User> oneByLogin = userRepository.findOneByLogin(SecurityUtils.getCurrentLoginName());
+        final User user = oneByLogin.get();
+        user.setName(userVO.getName());
+        user.setEmail(userVO.getEmail());
+        user.setPhoneNumber(userVO.getPhoneNumber());
+        return userRepository.save(user);
+    }
+
+
 }

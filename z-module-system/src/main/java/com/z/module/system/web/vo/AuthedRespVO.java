@@ -37,4 +37,5 @@ public class AuthedRespVO {
     private String roleId;
     private List<String> permissions;
     private String token;
+    private String avatar;
 }
