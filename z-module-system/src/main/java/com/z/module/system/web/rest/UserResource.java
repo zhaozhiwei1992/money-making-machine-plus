@@ -355,6 +355,7 @@ public class UserResource {
 
         final Optional<User> oneByLogin = userRepository.findOneByLogin(SecurityUtils.getCurrentLoginName());
         final User user = oneByLogin.get();
+        user.setAvatar(userVO.getAvatar());
         user.setName(userVO.getName());
         user.setEmail(userVO.getEmail());
         user.setPhoneNumber(userVO.getPhoneNumber());

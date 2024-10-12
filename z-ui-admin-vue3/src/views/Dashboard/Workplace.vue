@@ -2,7 +2,8 @@
 import { useTimeAgo } from '@/hooks/web/useTimeAgo'
 import { ElRow, ElCol, ElSkeleton, ElCard, ElDivider, ElLink } from 'element-plus'
 import { useI18n } from '@/hooks/web/useI18n'
-import { ref, reactive } from 'vue'
+import { useAppStore } from '@/store/modules/app'
+import { ref, reactive, onMounted } from 'vue'
 import { CountTo } from '@/components/CountTo'
 import { formatTime } from '@/utils'
 import { Echart } from '@/components/Echart'
@@ -18,6 +19,7 @@ import {
 } from '@/api/dashboard/workplace'
 import type { WorkplaceTotal, Project, Dynamic, Team } from '@/api/dashboard/workplace/types'
 import { set } from 'lodash-es'
+import { useCache } from '@/hooks/web/useCache'
 
 const loading = ref(true)
 
@@ -31,7 +33,7 @@ let totalSate = reactive<WorkplaceTotal>({
 const getCount = async () => {
   const res = await getCountApi().catch(() => {})
   if (res) {
-    totalSate = Object.assign(totalSate, res.data)
+    totalSate = Object.assign(totalSate, res)
   }
 }
 
@@ -41,7 +43,7 @@ let projects = reactive<Project[]>([])
 const getProject = async () => {
   const res = await getProjectApi().catch(() => {})
   if (res) {
-    projects = Object.assign(projects, res.data)
+    projects = Object.assign(projects, res)
   }
 }
 
@@ -51,7 +53,7 @@ let dynamics = reactive<Dynamic[]>([])
 const getDynamic = async () => {
   const res = await getDynamicApi().catch(() => {})
   if (res) {
-    dynamics = Object.assign(dynamics, res.data)
+    dynamics = Object.assign(dynamics, res)
   }
 }
 
@@ -61,7 +63,7 @@ let team = reactive<Team[]>([])
 const getTeam = async () => {
   const res = await getTeamApi().catch(() => {})
   if (res) {
-    team = Object.assign(team, res.data)
+    team = Object.assign(team, res)
   }
 }
 
@@ -74,7 +76,7 @@ const getRadar = async () => {
     set(
       radarOptionData,
       'radar.indicator',
-      res.data.map((v) => {
+      res.map((v) => {
         return {
           name: t(v.name),
           max: v.max
@@ -87,11 +89,11 @@ const getRadar = async () => {
         type: 'radar',
         data: [
           {
-            value: res.data.map((v) => v.personal),
+            value: res.map((v) => v.personal),
             name: t('workplace.personal')
           },
           {
-            value: res.data.map((v) => v.team),
+            value: res.map((v) => v.team),
             name: t('workplace.team')
           }
         ]
@@ -108,6 +110,22 @@ const getAllApi = async () => {
 getAllApi()
 
 const { t } = useI18n()
+
+const { wsCache } = useCache()
+
+const appStore = useAppStore()
+
+// 头像
+const avatarImageUrl = ref('@/assets/imgs/avatar.jpg')
+
+// 用户名
+const username = ref('Archer')
+
+onMounted(() => {
+  // captchaImageUrl.value = 'data:image/png;base64,' + response.data
+  avatarImageUrl.value = 'data:image/png;base64,' + wsCache.get(appStore.getUserInfo).avatar
+  username.value = wsCache.get(appStore.getUserInfo).username
+})
 </script>
 
 <template>
@@ -117,17 +135,13 @@ const { t } = useI18n()
         <ElRow :gutter="20" justify="space-between">
           <ElCol :xl="12" :lg="12" :md="12" :sm="24" :xs="24">
             <div class="flex items-center">
-              <img
-                src="@/assets/imgs/avatar.jpg"
-                alt=""
-                class="w-70px h-70px rounded-[50%] mr-20px"
-              />
+              <img :src="avatarImageUrl" alt="" class="w-70px h-70px rounded-[50%] mr-20px" />
               <div>
                 <div class="text-20px text-700">
-                  {{ t('workplace.goodMorning') }}，Archer，{{ t('workplace.happyDay') }}
+                  {{ t('workplace.goodMorning') }}，{{ username }}，{{ t('workplace.happyDay') }}
                 </div>
                 <div class="mt-10px text-14px text-gray-500">
-                  {{ t('workplace.toady') }}，20℃ - 32℃！
+                  {{ t('workplace.toady') }}，0℃ - 100℃！
                 </div>
               </div>
             </div>
@@ -216,19 +230,17 @@ const { t } = useI18n()
         <ElSkeleton :loading="loading" animated>
           <div v-for="(item, index) in dynamics" :key="`dynamics-${index}`">
             <div class="flex items-center">
-              <img
+              <!-- <img
                 src="@/assets/imgs/avatar.jpg"
                 alt=""
                 class="w-35px h-35px rounded-[50%] mr-20px"
-              />
+              /> -->
               <div>
                 <div class="text-14px">
-                  <Highlight :keys="item.keys.map((v) => t(v))">
+                  <!-- <Highlight :keys="item.keys.map((v) => t(v))">
                     {{ t('workplace.pushCode') }}
-                  </Highlight>
-                </div>
-                <div class="mt-15px text-12px text-gray-400">
-                  {{ useTimeAgo(item.time) }}
+                  </Highlight> -->
+                  {{ item.msg }} {{ useTimeAgo(item.time) }}
                 </div>
               </div>
             </div>

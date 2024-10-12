@@ -12,5 +12,5 @@ import java.util.Optional;
 @Repository
 public interface UploadRepository extends JpaRepository<Upload, Long> {
 
-    Optional<Upload> findByCreatedBy(String username);
+    Optional<Upload> findOneByCreatedBy(String username);
 }

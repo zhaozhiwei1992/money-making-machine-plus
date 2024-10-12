@@ -13,7 +13,7 @@ export type Project = {
 }
 
 export type Dynamic = {
-  keys: string[]
+  msg: string
   time: Date | number | string
 }
 

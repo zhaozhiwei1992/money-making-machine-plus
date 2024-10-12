@@ -13,21 +13,19 @@ const save = async () => {
 
 const formData = ref({
   name: '',
-  avatar: '',
+  avatar: 0,
   email: '',
   phoneNumber: ''
 })
 const form = ref(null)
 
 const handleUpload = async (request) => {
-  const formData = new FormData()
-  formData.append('f', request.file)
-  await uploadAvatarApi(formData)
-    .catch(() => {})
-    .finally((res) => {
-      formData.value.avatar = res.avatar
-      ElMessage.success('头像上传成功！')
-    })
+  const form = new FormData()
+  form.append('f', request.file)
+  const res = await uploadAvatarApi(form)
+  console.log('头像上传', res)
+  formData.value.avatar = res.id
+  ElMessage.success('头像上传成功！')
 }
 
 const beforeUpload = (file) => {

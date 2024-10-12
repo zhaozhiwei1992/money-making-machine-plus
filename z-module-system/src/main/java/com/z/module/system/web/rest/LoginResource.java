@@ -1,7 +1,6 @@
 package com.z.module.system.web.rest;
 
 import com.google.code.kaptcha.Constants;
-import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.framework.security.service.TokenProviderService;
 import com.z.module.system.domain.Upload;
 import com.z.module.system.domain.User;
@@ -16,8 +15,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,6 +28,7 @@ import jakarta.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.Base64;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -116,7 +114,11 @@ public class LoginResource {
                 authedRespVO.setToken(token);
 
                 // 获取用户头像
-                Optional<Upload> byCreatedBy = uploadRepository.findByCreatedBy(username);
+                Long avatar = dbUser.getAvatar();
+                if(Objects.isNull(avatar)){
+                    avatar = 0L;
+                }
+                Optional<Upload> byCreatedBy = uploadRepository.findById(avatar);
                 if(byCreatedBy.isPresent()){
                     String base64Image = Base64.getEncoder().encodeToString(byCreatedBy.get().getValue());
                     authedRespVO.setAvatar(base64Image);

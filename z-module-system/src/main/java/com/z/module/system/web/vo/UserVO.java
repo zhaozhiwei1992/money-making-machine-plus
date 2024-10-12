@@ -54,4 +54,6 @@ public class UserVO implements Serializable {
     private String email;
 
     private String phoneNumber;
+
+    private Long avatar;
 }

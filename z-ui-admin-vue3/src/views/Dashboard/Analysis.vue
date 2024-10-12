@@ -26,9 +26,9 @@ const getUserAccessSource = async () => {
     set(
       pieOptionsData,
       'legend.data',
-      res.data.map((v) => t(v.name))
+      res.map((v) => t(v.name))
     )
-    pieOptionsData!.series![0].data = res.data.map((v) => {
+    pieOptionsData!.series![0].data = res.map((v) => {
       return {
         name: t(v.name),
         value: v.value
@@ -46,12 +46,12 @@ const getWeeklyUserActivity = async () => {
     set(
       barOptionsData,
       'xAxis.data',
-      res.data.map((v) => t(v.name))
+      res.map((v) => t(v.name))
     )
     set(barOptionsData, 'series', [
       {
         name: t('analysis.activeQuantity'),
-        data: res.data.map((v) => v.value),
+        data: res.map((v) => v.value),
         type: 'bar'
       }
     ])
@@ -67,14 +67,14 @@ const getMonthlySales = async () => {
     set(
       lineOptionsData,
       'xAxis.data',
-      res.data.map((v) => t(v.name))
+      res.map((v) => t(v.name))
     )
     set(lineOptionsData, 'series', [
       {
         name: t('analysis.estimate'),
         smooth: true,
         type: 'line',
-        data: res.data.map((v) => v.estimate),
+        data: res.map((v) => v.estimate),
         animationDuration: 2800,
         animationEasing: 'cubicInOut'
       },
@@ -83,7 +83,7 @@ const getMonthlySales = async () => {
         smooth: true,
         type: 'line',
         itemStyle: {},
-        data: res.data.map((v) => v.actual),
+        data: res.map((v) => v.actual),
         animationDuration: 2800,
         animationEasing: 'quadraticOut'
       }

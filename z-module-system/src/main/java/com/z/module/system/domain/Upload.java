@@ -32,6 +32,9 @@ public class Upload extends AbstractAuditingEntity implements Serializable {
     @Column(columnDefinition = "MediumBlob")
     private byte[] value;
 
-    // 文件类型, jpg, txt等
-    private String type;
+    // 文件名
+    private String name;
+
+    // 扩展名, jpg, txt等
+    private String ext;
 }

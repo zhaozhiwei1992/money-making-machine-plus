@@ -72,23 +72,18 @@ service.interceptors.response.use(
       response.headers.responsetype === 'text'
     ) {
       // 如果是文件流，直接返回response
-      console.log(1)
       return response
     } else if (response.status === result_code) {
-      console.log(2)
-      console.log(response)
-      console.log(response.data)
       return response.data
     } else {
       // ElMessage.error(response.data.msg)
-      console.log(3)
       ElMessage.error('获取数据异常')
     }
   },
   (error: AxiosError) => {
-    console.log('err' + error.response) // for debug
-    if (error.response?.data?.msg) {
-      ElMessage.error(error.response?.data?.msg)
+    console.log('err' + error.message) // for debug
+    if (error.response?.data) {
+      ElMessage.error(error.response?.data)
     } else {
       ElMessage.error(error.message)
     }
