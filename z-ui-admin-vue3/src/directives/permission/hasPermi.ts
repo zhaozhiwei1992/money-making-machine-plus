@@ -22,8 +22,6 @@ const hasPermission = (value: string | string[]): boolean => {
   if (all_permission[0] === permissions[0]) {
     return true
   }
-  console.log('permissionsx', permissions)
-  console.log('value', value, intersection(value, permissions))
   return (intersection(value, permissions) as string[]).length > 0
 }
 function hasPermi(el: Element, binding: DirectiveBinding) {
