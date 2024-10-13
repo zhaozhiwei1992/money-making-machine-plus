@@ -272,8 +272,15 @@ const save = async () => {
     />
 
     <div class="mb-10px">
-      <ElButton type="primary" @click="AddAction">{{ t('exampleDemo.add') }}</ElButton>
-      <ElButton :loading="delLoading" type="danger" @click="delData(null, true)">
+      <ElButton type="primary" v-hasPermi="['system:user:add']" @click="AddAction">{{
+        t('exampleDemo.add')
+      }}</ElButton>
+      <ElButton
+        :loading="delLoading"
+        v-hasPermi="['system:user:delete']"
+        type="danger"
+        @click="delData(null, true)"
+      >
         {{ t('exampleDemo.del') }}
       </ElButton>
     </div>

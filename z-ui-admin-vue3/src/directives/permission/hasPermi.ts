@@ -1,9 +1,9 @@
-import type { App, Directive, DirectiveBinding } from 'vue'
-import { useI18n } from '@/hooks/web/useI18n'
 import { useCache } from '@/hooks/web/useCache'
-import { intersection } from 'lodash-es'
-import { isArray } from '@/utils/is'
+import { useI18n } from '@/hooks/web/useI18n'
 import { useAppStoreWithOut } from '@/store/modules/app'
+import { isArray } from '@/utils/is'
+import { intersection } from 'lodash-es'
+import type { App, Directive, DirectiveBinding } from 'vue'
 
 const { t } = useI18n()
 const { wsCache } = useCache()
@@ -22,6 +22,8 @@ const hasPermission = (value: string | string[]): boolean => {
   if (all_permission[0] === permissions[0]) {
     return true
   }
+  console.log('permissionsx', permissions)
+  console.log('value', value, intersection(value, permissions))
   return (intersection(value, permissions) as string[]).length > 0
 }
 function hasPermi(el: Element, binding: DirectiveBinding) {
