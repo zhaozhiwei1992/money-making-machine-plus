@@ -47,31 +47,23 @@ const SERVER_URL = import.meta.env.VITE_SERVER_URL
 const captchaImageUrl = ref(SERVER_URL + '/captcha/numCode')
 
 // 获取图形验证码, 二进制
-const genCode = () => {
-  getImgCodeApi()
-    .then((response) => {
-      console.log('验证码', response.data)
-      // 将获取到的验证码图片数据转换成Base64字符串
-      // const base64 = btoa(
-      //   new Uint8Array(response.data).reduce((data, byte) => data + String.fromCharCode(byte), '')
-      // )
-      // 在前端显示验证码图片
-      // const blob = new Blob([response.data], { type: 'image/jpeg' })
-      // captchaImageUrl = URL.createObjectURL(blob)
-      // base64方式, 后端返回base64格式图片字符串
-      captchaImageUrl.value = 'data:image/png;base64,' + response.data
-    })
-    .catch((error) => {
-      console.error('获取验证码失败', error)
-    })
+const genCode = async () => {
+  const res = await getImgCodeApi()
+  // console.log('验证码', response.data)
+  // 将获取到的验证码图片数据转换成Base64字符串
+  // const base64 = btoa(
+  //   new Uint8Array(response.data).reduce((data, byte) => data + String.fromCharCode(byte), '')
+  // )
+  // 在前端显示验证码图片
+  // const blob = new Blob([response.data], { type: 'image/jpeg' })
+  // captchaImageUrl = URL.createObjectURL(blob)
+  // base64方式, 后端返回base64格式图片字符串
+  captchaImageUrl.value = 'data:image/png;base64,' + res.data
 }
 
 // 通过axios异步加载时候使用
-onMounted(() => {
-  // 获取验证码, 服务器上不得行。。
-  // setTimeout(() => {
-  //   genCode()
-  // }, 100)
+onMounted(async () => {
+  await genCode()
 })
 </script>
 

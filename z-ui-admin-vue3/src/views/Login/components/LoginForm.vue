@@ -2,7 +2,7 @@
 import { reactive, ref, unref, watch } from 'vue'
 import { Form } from '@/components/Form'
 import { useI18n } from '@/hooks/web/useI18n'
-import { ElButton } from 'element-plus'
+import { ElButton, ElCheckbox, ElLink } from 'element-plus'
 import { useForm } from '@/hooks/web/useForm'
 import { loginApi, getMenuRouteListApi } from '@/api/login'
 import { useCache } from '@/hooks/web/useCache'

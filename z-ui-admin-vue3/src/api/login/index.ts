@@ -43,5 +43,5 @@ export const getMenuRouteListApi = (params: RoleParams): Promise<AppCustomRouteR
 export const getImgCodeApi = (): Promise<any> => {
   // const options = { responseType: 'arraybuffer' }
   const options = { responseType: 'text' }
-  return request.get({ url: '/system/captcha/numCode', ...options })
+  return request.get({ url: '/captcha/numCode', ...options })
 }
