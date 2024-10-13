@@ -17,7 +17,7 @@ import java.util.Objects;
  */
 @RestController
 @AllArgsConstructor
-@RequestMapping("/wx/portal/{appid}")
+@RequestMapping("/system/wx/portal/{appid}")
 @Slf4j
 public class WxPortalResource {
     private final WxMaService wxMaService;

@@ -17,6 +17,7 @@ import java.util.List;
 
 @Tag(name = "系统参数API")
 @RestController
+@RequestMapping("/system")
 @Slf4j
 @Transactional(rollbackFor = Exception.class)
 public class SysParamResource {

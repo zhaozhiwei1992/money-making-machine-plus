@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 @Tag(name = "工作台API")
 @RestController
-@RequestMapping(value = "/workplace")
+@RequestMapping(value = "/system/workplace")
 @Slf4j
 public class WorkspaceResource {
 

@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 @Tag(name = "岗位API")
 @RestController
+@RequestMapping("/system")
 @Slf4j
 @Transactional(rollbackFor = Exception.class)
 public class PositionResource {

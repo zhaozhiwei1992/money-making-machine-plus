@@ -303,9 +303,9 @@ z:
       - /lay-config.js
       - /echarts/**
       # url 白名单
-      - /login
-      - /api/login
-      - /api/mobile/login/**
+      - /system/login
+      - /api/system/login
+      - /api/system/mobile/login/**
       - /actuator/**
       # 验证码
       - /captcha/numCode

@@ -21,6 +21,7 @@ import java.util.Optional;
 @RestController
 @Slf4j
 @Transactional(rollbackFor = Exception.class)
+@RequestMapping("/ai")
 public class HistoryResource {
 
     private final HistoryRepository historyRepository;

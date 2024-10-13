@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 
 @Tag(name = "用户API")
 @RestController
+@RequestMapping("/system")
 @Slf4j
 public class UserResource {
 

@@ -31,7 +31,7 @@ import java.util.Optional;
  */
 @RestController
 @Slf4j
-@RequestMapping("/mobile/wx")
+@RequestMapping("/system/mobile/wx")
 public class WxMaUserLoginResource {
 	private final WxMaService wxMaService;
 

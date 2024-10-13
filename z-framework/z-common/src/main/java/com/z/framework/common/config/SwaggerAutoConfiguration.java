@@ -130,6 +130,7 @@ public class SwaggerAutoConfiguration {
         return GroupedOpenApi.builder()
                 .group(group)
                 // 这里的path一定要写对，否则ui页面出现后边错误: No operations defined in spec! 看不到接口
+                // 每个模块一定要有模块路径, 如 /ai, /system等
                 .pathsToMatch("/api/" + path + "/**", "/admin-api/" + path + "/**", "/app-api/" + path + "/**")
                 // 下述addOperationCustomizer可在每个请求参数下扩展自定义参数
 //                .addOperationCustomizer((operation, handlerMethod) -> operation

@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 @Tag(name = "分析页API")
 @RestController
-@RequestMapping("/analysis")
+@RequestMapping("/system/analysis")
 @Slf4j
 public class AnalysisResource {
 

@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
  * 基础信息, 数据源信息
  */
 @RestController
+@RequestMapping("/system")
 @Transactional
 public class EleUnionResource {
 

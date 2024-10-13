@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 @RestController
 @Slf4j
 @Transactional(rollbackFor = Exception.class)
+@RequestMapping("/ai")
 public class EngineResource {
 
     private final EngineRepository engineRepository;

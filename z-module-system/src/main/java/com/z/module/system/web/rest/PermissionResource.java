@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 @Tag(name = "权限API")
 @RestController
+@RequestMapping("/system")
 @Slf4j
 @Transactional(rollbackFor = Exception.class)
 public class PermissionResource {

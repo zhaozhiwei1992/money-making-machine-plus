@@ -30,7 +30,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @Slf4j
-@RequestMapping("/wx/media/{appid}")
+@RequestMapping("/system/wx/media/{appid}")
 public class WxMaMediaResource {
     private final WxMaService wxMaService;
 

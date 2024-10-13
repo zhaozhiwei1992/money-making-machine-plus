@@ -16,6 +16,7 @@ import java.util.List;
 
 @Tag(name = "通知公告API")
 @RestController
+@RequestMapping("/system")
 @Slf4j
 @Transactional(rollbackFor = Exception.class)
 public class NoticeResource {

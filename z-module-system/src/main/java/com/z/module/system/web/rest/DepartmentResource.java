@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 
 @Tag(name = "部门维护API")
 @RestController
+@RequestMapping("/system")
 @Transactional(rollbackFor = Exception.class)
 public class DepartmentResource {
 

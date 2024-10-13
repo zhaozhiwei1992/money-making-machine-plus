@@ -31,7 +31,7 @@ import java.util.*;
  */
 @Tag(name = "登录API")
 @RestController
-@RequestMapping(value = {"/mobile"})
+@RequestMapping(value = {"/system/mobile"})
 @Slf4j
 public class MobileLoginResource {
 

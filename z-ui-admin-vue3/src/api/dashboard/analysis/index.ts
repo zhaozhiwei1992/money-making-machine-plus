@@ -1,23 +1,23 @@
 import request from '@/config/axios'
 import type {
   AnalysisTotalTypes,
+  MonthlyUserActivity,
   UserAccessSource,
-  WeeklyUserActivity,
-  MonthlyUserActivity
+  WeeklyUserActivity
 } from './types'
 
 export const getCountApi = (): Promise<IResponse<AnalysisTotalTypes[]>> => {
-  return request.get({ url: '/analysis/total' })
+  return request.get({ url: '/system/analysis/total' })
 }
 
 export const getUserAccessSourceApi = (): Promise<IResponse<UserAccessSource[]>> => {
-  return request.get({ url: '/analysis/userAccessSource' })
+  return request.get({ url: '/system/analysis/userAccessSource' })
 }
 
 export const getWeeklyUserActivityApi = (): Promise<IResponse<WeeklyUserActivity[]>> => {
-  return request.get({ url: '/analysis/weeklyUserActivity' })
+  return request.get({ url: '/system/analysis/weeklyUserActivity' })
 }
 
 export const getMonthlyUserActivityApi = (): Promise<IResponse<MonthlyUserActivity[]>> => {
-  return request.get({ url: '/analysis/monthlyUserActivity' })
+  return request.get({ url: '/system/analysis/monthlyUserActivity' })
 }
