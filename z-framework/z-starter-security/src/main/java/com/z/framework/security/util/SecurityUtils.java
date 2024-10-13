@@ -52,7 +52,7 @@ public final class SecurityUtils {
             }
             return String.valueOf(principal);
         }else{
-            return null;
+            return "system";
         }
     }
 

@@ -28,7 +28,7 @@ public class TaskLogResource {
     }
 
     @GetMapping("/task/logs")
-    public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllTaskLog(Pageable pageable, TaskLog taskLog) {
+    public HashMap<String, Object> getAllTaskLog(Pageable pageable, TaskLog taskLog) {
         log.debug("REST request to get all TaskLogging for an admin");
 
         // 根据id, 升序
@@ -54,10 +54,10 @@ public class TaskLogResource {
         //创建实例
         Example<TaskLog> ex = Example.of(taskLog, matcher);
         taskLogPage = taskLogRepository.findAll(ex, pageable);
-        return ResponseData.ok(new HashMap<String, Object>() {{
+        return new HashMap<String, Object>() {{
             put("list", taskLogPage.getContent());
             put("total", Long.valueOf(taskLogPage.getTotalElements()).intValue());
-        }});
+        }};
     }
 
 }

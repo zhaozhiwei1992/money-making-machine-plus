@@ -1,7 +1,9 @@
 package com.z.framework.job.listener;
 
 import cn.hutool.extra.spring.SpringUtil;
+import com.z.framework.job.domain.TaskLog;
 import com.z.framework.job.domain.TaskParam;
+import com.z.framework.job.repository.TaskLogRepository;
 import com.z.framework.job.repository.TaskParamRepository;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -10,8 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Title: QuartJobListener
@@ -27,7 +31,7 @@ public class QuartJobListener implements JobListener {
 
     public static final String LISTENER_NAME = "QuartSchedulerListener";
 
-    private static final ThreadLocal<Map<String, Object>> taskThreadLocal = new ThreadLocal<>();
+    private static final ThreadLocal<TaskLog> taskThreadLocal = new ThreadLocal<>();
 
     private TaskParamRepository taskParamRepository;
 
@@ -36,6 +40,15 @@ public class QuartJobListener implements JobListener {
             taskParamRepository = SpringUtil.getBean(TaskParamRepository.class);
         }
         return taskParamRepository;
+    }
+
+    private TaskLogRepository taskLogRepository;
+
+    public TaskLogRepository getTaskLogRepository() {
+        if (Objects.isNull(taskLogRepository)) {
+            taskLogRepository = SpringUtil.getBean(TaskLogRepository.class);
+        }
+        return taskLogRepository;
     }
 
     @Override
@@ -51,11 +64,9 @@ public class QuartJobListener implements JobListener {
         final String traceId = UUID.randomUUID().toString();
         // *.log中使用
         MDC.put("traceId", traceId);
-        final Map<String, Object> taskLog = new HashMap<>();
-        //        taskLog.setTraceId(traceId);
-        //        taskLog.setStartTime(Instant.now());
-        taskLog.put("TraceId", traceId);
-        taskLog.put("StartTime", Instant.now());
+        final TaskLog taskLog = new TaskLog();
+        taskLog.setTraceId(traceId);
+        taskLog.setStartTime(Instant.now().plusMillis(TimeUnit.HOURS.toMillis(8)));
         taskThreadLocal.set(taskLog);
 
         log.info("jobToBeExecuted");
@@ -66,7 +77,25 @@ public class QuartJobListener implements JobListener {
     public void jobExecutionVetoed(JobExecutionContext context) {
         //任务调度被拒了
         log.info("jobExecutionVetoed");
+        String jobName = context.getJobDetail().getKey().toString();
         //可以做一些日志记录原因
+
+        final TaskLog taskLog = taskThreadLocal.get();
+        final String startClass = jobName.substring(jobName.indexOf(".") + 1);
+        Optional<TaskParam> taskParamOptional = this.getTaskParamRepository().findOneByStartClass(startClass);
+        if (taskParamOptional.isPresent()) {
+            taskLog.setTaskName(taskParamOptional.get().getName());
+        } else {
+            taskLog.setTaskName(startClass);
+        }
+        taskLog.setSuccess("否");
+        final Instant endTime = Instant.now().plusMillis(TimeUnit.HOURS.toMillis(8));
+        taskLog.setEndTime(endTime);
+        taskLog.setTotalTime(Integer.valueOf(String.valueOf(Duration.between(taskLog.getStartTime(),
+                taskLog.getEndTime()).getSeconds())));
+        taskLog.setDetail("jobExecutionVetoed");
+        this.getTaskLogRepository().save(taskLog);
+        taskThreadLocal.remove();
 
     }
 
@@ -77,25 +106,25 @@ public class QuartJobListener implements JobListener {
         String jobName = context.getJobDetail().getKey().toString();
         log.info("Job : {} is finished...", jobName);
 
-        //        final TaskLog taskLog = taskThreadLocal.get();
-        final Map<String, Object> taskLog = taskThreadLocal.get();
+        final TaskLog taskLog = taskThreadLocal.get();
         final String startClass = jobName.substring(jobName.indexOf(".") + 1);
         Optional<TaskParam> taskParamOptional = this.getTaskParamRepository().findOneByStartClass(startClass);
         if (taskParamOptional.isPresent()) {
-            taskLog.put("TaskName", taskParamOptional.get().getName());
+            taskLog.setTaskName(taskParamOptional.get().getName());
         } else {
-            taskLog.put("TaskName", startClass);
+            taskLog.setTaskName(startClass);
         }
-        taskLog.put("Success", "是");
+        taskLog.setSuccess("是");
         if (jobException != null && !"".equals(jobException.getMessage())) {
-            log.error("Exception thrown by: " + jobName + " Exception: ", jobException);
-            taskLog.put("Success", "否");
+            log.error("Exception thrown by: {} Exception: ", jobName, jobException);
+            taskLog.setSuccess("否");
         }
-        final Instant endTime = Instant.now();
-        taskLog.put("EndTime", endTime);
-        //        taskLog.put("TotalTime", Integer.valueOf(String.valueOf(Duration.between(taskLog.getStartTime(), taskLog.getEndTime()).getSeconds())));
+        final Instant endTime = Instant.now().plusMillis(TimeUnit.HOURS.toMillis(8));
+        taskLog.setEndTime(endTime);
+        taskLog.setTotalTime(Integer.valueOf(String.valueOf(Duration.between(taskLog.getStartTime(),
+                taskLog.getEndTime()).getSeconds())));
 
-        // 持久化， 这里是简化taskLog为map, 实际为bean
+        this.getTaskLogRepository().save(taskLog);
         taskThreadLocal.remove();
     }
 }
