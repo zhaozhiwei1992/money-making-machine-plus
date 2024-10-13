@@ -301,7 +301,7 @@ const save = async () => {
           {{ t('exampleDemo.detail') }}
         </ElButton>
         <ElButton
-          v-if="row.createdBy === 'system'"
+          v-if="row.createdBy != 'system'"
           type="danger"
           v-hasPermi="['system:user:delete']"
           @click="delData(row, false)"

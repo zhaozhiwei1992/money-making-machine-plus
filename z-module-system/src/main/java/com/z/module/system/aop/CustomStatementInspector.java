@@ -12,6 +12,7 @@ import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.Statements;
+import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.select.FromItem;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
@@ -20,6 +21,7 @@ import org.hibernate.resource.jdbc.spi.StatementInspector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.PreparedStatement;
 import java.util.Map;
 import java.util.Objects;
 
@@ -82,8 +84,23 @@ public class CustomStatementInspector implements StatementInspector {
     private String doSqlParser(Statement statement) {
         if (statement instanceof Select) {
             this.doSelectParser(((Select) statement).getSelectBody());
+        }else if (statement instanceof Delete){
+            this.doDeleteParser((Delete) statement);
         }
         return statement.toString();
+    }
+
+    /**
+     * @Description: 删除时做一些操作，控制误删除
+     * @author: zhaozhiwei
+     * @data: 2024/10/13-16:10
+     * @param delete :
+     * @return: void
+    */
+
+    private void doDeleteParser(Delete delete) {
+        // 如何根据id判断数据是否能删除
+        System.out.println("delete");
     }
 
     public void doSelectParser(SelectBody selectBody) {

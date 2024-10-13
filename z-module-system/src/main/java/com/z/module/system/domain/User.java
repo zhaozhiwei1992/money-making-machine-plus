@@ -3,6 +3,7 @@ package com.z.module.system.domain;
 import com.z.framework.common.config.Constants;
 import com.z.framework.common.domain.AbstractAuditingEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.z.module.system.domain.listener.UserListener;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.BatchSize;
@@ -23,6 +24,7 @@ import java.util.Set;
 @Table(name = "sys_user")
 @Data
 @EqualsAndHashCode(callSuper = true)
+@EntityListeners(UserListener.class)
 public class User extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

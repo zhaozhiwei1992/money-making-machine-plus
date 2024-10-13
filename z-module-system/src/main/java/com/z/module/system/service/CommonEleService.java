@@ -146,7 +146,7 @@ public class CommonEleService {
             // 换完以后清理
             CustomStatementInspector.replaceTable.remove();
 
-            if (all1.size() > 0) {
+            if (!all1.isEmpty()) {
                 maps.add(BeanUtil.beanToMap(all1.get(0)));
             }
         }

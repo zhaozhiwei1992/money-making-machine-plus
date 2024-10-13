@@ -169,8 +169,8 @@ delete from sys_user;
 INSERT INTO sys_user
 (id, created_by, created_date, last_modified_by, last_modified_date, activated, image_url, login, name, password_hash)
 VALUES
-(1, 'admin', '2022-07-14 11:25:56.594', NULL, '2022-07-27 09:05:07.221', true, NULL, 'admin', '系统管理员', '$2a$10$Uaq/uIj3D5VZ4Y5.I7MTB.pMXka6FKuCNy4A.ZnnRk9GshwYxBQZG'),
-(2, 'admin', '2022-07-14 11:27:02.515', NULL, '2022-08-18 15:42:42.015', true, NULL, 'user', '普通用户', '$2a$10$aQ9NOy/S2.UiNAmxOwNcjueSrRbwnYnUBbED.LE/DePeAeddPGCA.');
+(1, 'system', '2022-07-14 11:25:56.594', 'system', '2022-07-27 09:05:07.221', true, NULL, 'admin', '系统管理员', '$2a$10$Uaq/uIj3D5VZ4Y5.I7MTB.pMXka6FKuCNy4A.ZnnRk9GshwYxBQZG'),
+(2, 'system', '2022-07-14 11:27:02.515', 'system', '2022-08-18 15:42:42.015', true, NULL, 'user', '普通用户', '$2a$10$aQ9NOy/S2.UiNAmxOwNcjueSrRbwnYnUBbED.LE/DePeAeddPGCA.');
 
 -- 初始化序列
 alter table sys_user auto_increment=4;
@@ -232,7 +232,7 @@ INSERT INTO sys_menu (
 (72, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '接口测试doc',3, 3, TRUE, 'knife4j-doc', 'views/system/Knife4jDoc/Index', '1', 'tool:knife4j-doc:view'),
 (90, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '在线用户',1, 4, TRUE, 'online/users', 'views/system/OnLine/Index', '1', 'monitor:online:user:view'),
 (91, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '服务监控',2, 4, TRUE, 'server', 'views/framework/monitor/ServerInfoIndex', '1', 'monitor:server:view'),
-(92, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '缓存监控',3, 4, TRUE, 'cache', '#', '1', 'monitor:cache:view'),
+(92, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '缓存监控',3, 4, TRUE, 'cache', 'views/framework/monitor/CacheListIndex', '1', 'monitor:cache:view'),
 (63, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, '积木报表配置', 1, 5, TRUE, 'jimu', 'views/report/JMReport/view', '1', 'report:jimu:view'),
 (64, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, 'xx报表', 1, 5, TRUE, 'jimu', 'views/report/JMReport/view', '1', 'report:jimu:view'),
 (80, 'system', NOW(), 'system', NOW(), NULL, TRUE, NULL, TRUE, 'ExamplePage', 1, 8, TRUE, 'example', 'views/Example/Page/ExamplePage', '1', 'demo:example:view'),
