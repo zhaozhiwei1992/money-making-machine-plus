@@ -11,9 +11,9 @@ delete from sys_menu where id in ('501', '521', '541');
 INSERT INTO sys_menu (
   id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component, menu_type, permission_code
 ) VALUES
-(501, 'system', NOW(), 'system', NOW(), NULL, TRUE, '', TRUE, '搜索',2, 500, TRUE, 'search', 'views/ai/search/Index', '1', 'ai:search'),
-(521, 'system', NOW(), 'system', NOW(), NULL, TRUE, '', TRUE, '唠嗑',2, 500, TRUE, 'chat', 'views/ai/chat/Index', '1', 'ai:chat'),
-(541, 'system', NOW(), 'system', NOW(), NULL, TRUE, '', TRUE, '引擎维护',2, 500, TRUE, 'engine', 'views/ai/engine/Index', '1', 'ai:engine');
+(501, 'system', NOW(), 'system', NOW(), NULL, TRUE, '', TRUE, '搜索',2, 500, TRUE, 'search', 'views/ai/search/Index', '1', 'ai:search:view'),
+(521, 'system', NOW(), 'system', NOW(), NULL, TRUE, '', TRUE, '唠嗑',2, 500, TRUE, 'chat', 'views/ai/chat/Index', '1', 'ai:chat:view'),
+(541, 'system', NOW(), 'system', NOW(), NULL, TRUE, '', TRUE, '引擎维护',2, 500, TRUE, 'engine', 'views/ai/engine/Index', '1', 'ai:engine:view');
 
 delete from sys_menu where id in ('542', '543', '544', '545', '546');
 INSERT INTO sys_menu (

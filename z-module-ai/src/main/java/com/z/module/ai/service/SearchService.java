@@ -7,6 +7,9 @@ import com.z.module.ai.repository.HistoryRepository;
 import com.z.module.ai.web.vo.SearchVO;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -51,14 +54,21 @@ public class SearchService {
 //        3. 基于历史的提问，每次调用接口需要将历史提问及回复提供给引擎，方便保持上下文。
         String collect = allByHistoryIdOrderByIdAsc.stream().map(HistoryDetail::getContent).collect(Collectors.joining("\n"));
 //        String completion = tongYiService.completion(collect);
-//        String s = QianWenChatClient.callWithMessage(collect);
+//        String completion = QianWenChatClient.callWithMessage(collect);
+        String encodedQuery = null;
+        try {
+            encodedQuery = URLEncoder.encode(collect, StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+        String completion = new LocalChatClient().callWithMessage(encodedQuery);
 
         // 4. 引擎返回结果，将结果保存到历史记录中。
         HistoryDetail historyDetailBack = new HistoryDetail();
         historyDetailBack.setHistoryId(searchVO.getHistoryId());
         historyDetailBack.setDirect(1);
-//        historyDetailBack.setContent(completion);
-        historyDetailBack.setContent("回复: " + searchVO.getContent());
+        historyDetailBack.setContent(completion);
+//        historyDetailBack.setContent("回复: " + searchVO.getContent());
         historyDetailRepository.save(historyDetailBack);
 
         return searchVO;
