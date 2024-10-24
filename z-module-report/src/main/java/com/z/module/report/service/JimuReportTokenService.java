@@ -10,7 +10,7 @@ import org.springframework.util.StringUtils;
  * @Package com/z/module/report/service/JimuReportTokenService.java
  * @Description: 对积木报表进行授权认证
  * https://help.jeecg.com/jimureport/config/token.html
- * @author zhaozhiwei
+ * @author zhao
  * @date 2023/5/20 下午9:58
  * @version V1.0
  */

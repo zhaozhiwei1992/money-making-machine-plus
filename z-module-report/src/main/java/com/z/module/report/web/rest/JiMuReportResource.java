@@ -10,6 +10,7 @@ import org.springframework.web.servlet.HandlerMapping;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 /**
- * @author zhaozhiwei
+ * @author zhao
  * @version V1.0
  * @Title: JiMuReportResource
  * @Package com/z/module/report/web/resource/JiMuReportResource.java
@@ -44,7 +45,7 @@ public class JiMuReportResource {
      * @param var1 :
      * @param var2 :
      * @data: 2023/5/29-下午11:35
-     * @User: zhaozhiwei
+     * @User: zhao
      * @method: e
      * @return: void
      * @Description: 反编译积木报表代码, 处理图片报表背景图无法加载bug (1.5.8), 注: 只处理了本地图片
@@ -95,7 +96,6 @@ public class JiMuReportResource {
                     log.error(var23.getMessage(), var23);
                 }
             }
-
             if (var5 != null) {
                 try {
                     var5.close();
@@ -103,9 +103,6 @@ public class JiMuReportResource {
                     log.error(var22.getMessage(), var22);
                 }
             }
-
         }
-
     }
-
 }

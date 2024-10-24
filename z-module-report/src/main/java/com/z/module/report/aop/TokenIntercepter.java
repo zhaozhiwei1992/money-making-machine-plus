@@ -10,7 +10,7 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 /**
- * @author zhaozhiwei
+ * @author zhao
  * @version V1.0
  * @Title: TokenIntercepter
  * @Package com/z/module/report/aop/TokenIntercepter.java
