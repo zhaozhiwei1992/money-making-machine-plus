@@ -16,3 +16,9 @@ export interface SmsCodeVO {
   mobile: string
   scene: number
 }
+
+export interface RegisterVO {
+  login: string
+  password: string
+  check_password: string
+}

@@ -1,15 +1,19 @@
 package com.z.module.system.web.rest;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.google.code.kaptcha.Constants;
 import com.z.framework.security.service.TokenProviderService;
 import com.z.module.system.domain.Upload;
 import com.z.module.system.domain.User;
+import com.z.module.system.domain.UserAuthority;
 import com.z.module.system.repository.UploadRepository;
+import com.z.module.system.repository.UserAuthorityRepository;
 import com.z.module.system.repository.UserRepository;
 import com.z.module.system.service.LoginLogService;
 import com.z.module.system.service.LoginService;
 import com.z.module.system.web.vo.AuthedRespVO;
 import com.z.module.system.web.vo.LoginVO;
+import com.z.module.system.web.vo.UserVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -18,15 +22,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.Base64;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Optional;
+import java.net.URISyntaxException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -47,7 +50,7 @@ public class LoginResource {
 
     private final UserRepository userRepository;
 
-    private final PasswordEncoder bCryptPasswordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     private final LoginLogService loginLogService;
 
@@ -59,14 +62,17 @@ public class LoginResource {
 
     private final UploadRepository uploadRepository;
 
-    public LoginResource(UserRepository userRepository, PasswordEncoder passwordEncoder, LoginLogService loginLogService, TokenProviderService tokenProviderService, LoginService loginService, UserDetailsService userDetailsService, UploadRepository uploadRepository) {
+    private final UserAuthorityRepository userAuthorityRepository;
+
+    public LoginResource(UserRepository userRepository, PasswordEncoder passwordEncoder, LoginLogService loginLogService, TokenProviderService tokenProviderService, LoginService loginService, UserDetailsService userDetailsService, UploadRepository uploadRepository, UserAuthorityRepository userAuthorityRepository) {
         this.userRepository = userRepository;
-        this.bCryptPasswordEncoder = passwordEncoder;
+        this.passwordEncoder = passwordEncoder;
         this.loginLogService = loginLogService;
         this.tokenProviderService = tokenProviderService;
         this.loginService = loginService;
         this.userDetailsService = userDetailsService;
         this.uploadRepository = uploadRepository;
+        this.userAuthorityRepository = userAuthorityRepository;
     }
 
     /**
@@ -102,7 +108,7 @@ public class LoginResource {
             logger.info("查询用户信息 {}", dbUser);
             String dbPassWord = dbUser.getPassword();
             logger.info("数据库密码: {}", dbPassWord);
-            if (bCryptPasswordEncoder.matches(password, dbPassWord)) {
+            if (passwordEncoder.matches(password, dbPassWord)) {
                 String token = tokenProviderService.generateToken(username, loginVM.isRememberMe());
                 // 如果不需要前台动态控制按钮显示,可以返回***
                 // authedRespVO.setPermissions(Collections.singletonList("*.*.*"));
@@ -146,5 +152,43 @@ public class LoginResource {
         loginService.removeTokenWriteList();
 
         return "success";
+    }
+
+    @Operation(description = "新增用户")
+    @PostMapping("/register")
+    @Transactional(rollbackFor = Exception.class)
+    public User register(@RequestBody UserVO userVO) throws URISyntaxException {
+        log.debug("REST request to save User : {}", userVO);
+
+        if (Objects.isNull(userVO.getPassword())) {
+            userVO.setPassword("1");
+        }
+        userVO.setName(userVO.getLogin());
+
+        // 密码加密
+        String encryptedPassword = passwordEncoder.encode(userVO.getPassword());
+        userVO.setPassword(encryptedPassword);
+
+        if (Objects.isNull(userVO.getId())) {
+            userVO.setActivated(true);
+        }
+
+        final User user = new User();
+        BeanUtil.copyProperties(userVO, user);
+
+        User newUser = userRepository.save(user);
+
+        // 保存用户角色信息, 4:用户
+        final String roleIdListStr = "4";
+        final List<Long> roleIdList = Arrays.stream(roleIdListStr.split(",")).map(Long::valueOf).toList();
+        final List<UserAuthority> userAuthorities = roleIdList.stream().map(roleId -> {
+            final UserAuthority userAuthority = new UserAuthority();
+            userAuthority.setRoleId(roleId);
+            userAuthority.setUserId(newUser.getId());
+            return userAuthority;
+        }).collect(Collectors.toList());
+        userAuthorityRepository.saveAll(userAuthorities);
+
+        return newUser;
     }
 }

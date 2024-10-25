@@ -6,10 +6,12 @@ import { useForm } from '@/hooks/web/useForm'
 import { ElButton, ElInput, FormRules } from 'element-plus'
 import { useValidator } from '@/hooks/web/useValidator'
 import { FormSchema } from '@/types/form'
+import { RegisterVO } from '@/api/login/types'
+import { registerApi } from '@/api/login'
 
 const emit = defineEmits(['to-login'])
 
-const { register, elFormRef } = useForm()
+const { register, elFormRef, methods } = useForm()
 
 const { t } = useI18n()
 
@@ -23,7 +25,7 @@ const schema = reactive<FormSchema[]>([
     }
   },
   {
-    field: 'username',
+    field: 'login',
     label: t('login.username'),
     value: '',
     component: 'Input',
@@ -100,7 +102,13 @@ const loginRegister = async () => {
     if (valid) {
       try {
         loading.value = true
-        toLogin()
+        // 后台注册用户
+        const { getFormData } = methods
+        const formData = await getFormData<RegisterVO>()
+        const res = await registerApi(formData)
+        if (res) {
+          toLogin()
+        }
       } finally {
         loading.value = false
       }

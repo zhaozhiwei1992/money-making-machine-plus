@@ -1,5 +1,5 @@
 import request from '@/config/axios'
-import type { UserType } from './types'
+import type { RegisterVO, UserType } from './types'
 
 interface RoleParams {
   roleName: string
@@ -44,4 +44,8 @@ export const getImgCodeApi = (): Promise<any> => {
   // const options = { responseType: 'arraybuffer' }
   const options = { responseType: 'text' }
   return request.get({ url: '/captcha/numCode', ...options })
+}
+
+export const registerApi = (data: RegisterVO): Promise<RegisterVO> => {
+  return request.post({ url: '/system/register', data })
 }
