@@ -8,6 +8,7 @@ import { Screenfull } from '@/components/Screenfull'
 import { Breadcrumb } from '@/components/Breadcrumb'
 import { useAppStore } from '@/store/modules/app'
 import { useDesign } from '@/hooks/web/useDesign'
+import { Dify } from '@/components/Dify'
 
 const { getPrefixCls, variables } = useDesign()
 
@@ -54,6 +55,9 @@ export default defineComponent({
           </div>
         ) : undefined}
         <div class="h-full flex items-center">
+          {screenfull.value ? (
+            <Dify class="hover-trigger" color="var(--top-header-text-color)"></Dify>
+          ) : undefined}
           {screenfull.value ? (
             <Screenfull class="hover-trigger" color="var(--top-header-text-color)"></Screenfull>
           ) : undefined}
