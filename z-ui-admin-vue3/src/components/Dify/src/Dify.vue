@@ -17,7 +17,7 @@ const handleChange = () => {
 
 const show = ref(false)
 
-const iframeSrc = ref('http://localhost/chatbot/e06rvPIo3wSZLQ4A')
+const iframeSrc = ref('http://localhost/chatbot/KvV4PIKmpaqPPEV7')
 const isFullscreen = ref(false)
 </script>
 

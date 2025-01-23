@@ -94,4 +94,10 @@ public class ExampleResource {
         final String tokenId = SecurityUtils.getTokenId();
         return tokenId;
     }
+
+    @GetMapping("/examples/echo2")
+    public String echo(String msg) {
+        // 如果用于大模型可以自己根据msg判断做处理, 最好用json形式提供
+        return "我是服务器返回: 你输入的信息" + msg;
+    }
 }
