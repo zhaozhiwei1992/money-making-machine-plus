@@ -1,5 +1,6 @@
 package com.z.module.ai.service;
 
+import com.alibaba.fastjson.JSON;
 import com.z.module.ai.domain.History;
 import com.z.module.ai.domain.HistoryDetail;
 import com.z.module.ai.repository.HistoryDetailRepository;
@@ -11,6 +12,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -55,19 +57,22 @@ public class SearchService {
         String collect = allByHistoryIdOrderByIdAsc.stream().map(HistoryDetail::getContent).collect(Collectors.joining("\n"));
 //        String completion = tongYiService.completion(collect);
 //        String completion = QianWenChatClient.callWithMessage(collect);
-        String encodedQuery = null;
-        try {
-            encodedQuery = URLEncoder.encode(collect, StandardCharsets.UTF_8.toString());
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-        String completion = new LocalChatClient().callWithMessage(encodedQuery);
+        DifyChatClient difyChatClient = new DifyChatClient();
+        String completion = difyChatClient.callWithMessage(searchVO.getContent());
+//        String encodedQuery = null;
+//        try {
+//            encodedQuery = URLEncoder.encode(collect, StandardCharsets.UTF_8.toString());
+//        } catch (UnsupportedEncodingException e) {
+//            throw new RuntimeException(e);
+//        }
+//        String completion = new LocalChatClient().callWithMessage(encodedQuery);
 
         // 4. 引擎返回结果，将结果保存到历史记录中。
         HistoryDetail historyDetailBack = new HistoryDetail();
         historyDetailBack.setHistoryId(searchVO.getHistoryId());
         historyDetailBack.setDirect(1);
-        historyDetailBack.setContent(completion);
+        Map map = JSON.parseObject(completion, Map.class);
+        historyDetailBack.setContent(String.valueOf(map.get("answer")));
 //        historyDetailBack.setContent("回复: " + searchVO.getContent());
         historyDetailRepository.save(historyDetailBack);
 
