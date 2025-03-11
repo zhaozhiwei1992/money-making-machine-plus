@@ -2,6 +2,7 @@ package com.z.module.system.domain;
 
 import com.z.framework.common.domain.AbstractAuditingEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import lombok.EqualsAndHashCode;
@@ -18,6 +19,7 @@ import java.io.Serializable;
 @Table(name = "sys_ele_union")
 @Data
 @EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor
 public class EleUnion extends AbstractAuditingEntity implements Serializable {
 
     @Serial
