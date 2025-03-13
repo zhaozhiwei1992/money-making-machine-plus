@@ -1,16 +1,6 @@
 <script name="UserIndex" setup lang="ts">
-import { ContentWrap } from '@/components/ContentWrap'
-import {
-  ElButton,
-  ElTable,
-  ElTableColumn,
-  ElRow,
-  ElCol,
-  ElInput,
-  ElSelect,
-  ElOption
-} from 'element-plus'
 import { generateCodeApi } from '@/api/code-generator'
+import { ContentWrap } from '@/components/ContentWrap'
 import { getCurrentInstance, reactive } from 'vue'
 
 const currentInstance: any = getCurrentInstance()
@@ -261,6 +251,9 @@ const generatorCode = () => {
           </el-table-column>
         </el-table>
       </el-col>
+    </el-row>
+    <el-row>
+      <span style="color: red">注: 每次只能生成一个表的代码，以界面显示字段为准</span>
     </el-row>
   </ContentWrap>
 </template>

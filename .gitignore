@@ -164,3 +164,6 @@ Desktop.ini
 /.nyc_output/
 
 *.attach_*
+auto-imports.d.ts
+.eslintrc-auto-import.json
+components.d.ts

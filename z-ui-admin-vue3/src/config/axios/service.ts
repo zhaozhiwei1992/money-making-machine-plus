@@ -1,9 +1,9 @@
 import axios, {
+  AxiosError,
   AxiosInstance,
-  InternalAxiosRequestConfig,
   AxiosRequestHeaders,
   AxiosResponse,
-  AxiosError
+  InternalAxiosRequestConfig
 } from 'axios'
 
 import qs from 'qs'
@@ -14,9 +14,10 @@ import { ElMessage } from 'element-plus'
 
 import { getAccessToken } from '@/utils/auth'
 
-const { result_code, base_url } = config
+const { result_code } = config
 
-export const PATH_URL = base_url[import.meta.env.VITE_API_BASEPATH]
+const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL
+export const PATH_URL = VITE_SERVER_URL + '/api'
 
 //带着cookie, 验证码放在了session里, 不加这个每次session都是新的
 axios.defaults.withCredentials = true
@@ -66,14 +67,12 @@ service.interceptors.request.use(
 // response 拦截器
 service.interceptors.response.use(
   (response: AxiosResponse<any>) => {
-    if (
-      response.config.responseType === 'blob' ||
-      response.config.responseType === 'arraybuffer' ||
-      response.headers.responsetype === 'text'
-    ) {
+    if (response.config.responseType === 'blob' || response.config.responseType === 'arraybuffer') {
       // 如果是文件流，直接返回response
+      console.log('文件流', response)
       return response
     } else if (response.status === result_code) {
+      console.log('response.data', response)
       return response.data
     } else {
       // ElMessage.error(response.data.msg)

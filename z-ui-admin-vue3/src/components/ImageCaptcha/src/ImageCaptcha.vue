@@ -1,10 +1,10 @@
 <script name="ImageCaptcha" setup lang="ts">
-import { ref, unref, watch, onMounted } from 'vue'
-import { ElInput } from 'element-plus'
-import { propTypes } from '@/utils/propTypes'
+import { getImgCodeApi } from '@/api/login'
 import { useConfigGlobal } from '@/hooks/web/useConfigGlobal'
 import { useDesign } from '@/hooks/web/useDesign'
-import { getImgCodeApi } from '@/api/login'
+import { propTypes } from '@/utils/propTypes'
+import { ElInput } from 'element-plus'
+import { onMounted, ref, unref, watch } from 'vue'
 
 const { getPrefixCls } = useDesign()
 
@@ -58,7 +58,7 @@ const genCode = async () => {
   // const blob = new Blob([response.data], { type: 'image/jpeg' })
   // captchaImageUrl = URL.createObjectURL(blob)
   // base64方式, 后端返回base64格式图片字符串
-  captchaImageUrl.value = 'data:image/png;base64,' + res.data
+  captchaImageUrl.value = 'data:image/png;base64,' + res
 }
 
 // 通过axios异步加载时候使用

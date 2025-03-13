@@ -61,6 +61,8 @@
     "sass": "^1.62.1",
     "sass-loader": "10",
     "steady-xml": "^0.1.0",
+    "unplugin-auto-import": "^19.1.1",
+    "unplugin-vue-components": "^28.4.1",
     "url": "^0.11.0",
     "vue": "3.2.47",
     "vue-i18n": "9.2.2",

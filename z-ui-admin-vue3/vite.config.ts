@@ -1,18 +1,21 @@
-import { resolve } from 'path'
-import { loadEnv } from 'vite'
-import type { UserConfig, ConfigEnv } from 'vite'
+import VueI18nPlugin from "@intlify/unplugin-vue-i18n/vite"
 import Vue from '@vitejs/plugin-vue'
 import VueJsx from '@vitejs/plugin-vue-jsx'
-import WindiCSS from 'vite-plugin-windicss'
-import progress from 'vite-plugin-progress'
-import EslintPlugin from 'vite-plugin-eslint'
-import { ViteEjsPlugin } from "vite-plugin-ejs"
-import { viteMockServe } from 'vite-plugin-mock'
-import PurgeIcons from 'vite-plugin-purge-icons'
-import VueI18nPlugin from "@intlify/unplugin-vue-i18n/vite"
-import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
+import { resolve } from 'path'
+import AutoImport from 'unplugin-auto-import/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import Components from 'unplugin-vue-components/vite'
 import DefineOptions from "unplugin-vue-define-options/vite"
+import type { ConfigEnv, UserConfig } from 'vite'
+import { loadEnv } from 'vite'
+import { ViteEjsPlugin } from "vite-plugin-ejs"
+import EslintPlugin from 'vite-plugin-eslint'
+import { viteMockServe } from 'vite-plugin-mock'
+import progress from 'vite-plugin-progress'
+import PurgeIcons from 'vite-plugin-purge-icons'
 import { createStyleImportPlugin, ElementPlusResolve } from 'vite-plugin-style-import'
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
+import WindiCSS from 'vite-plugin-windicss'
 
 // https://vitejs.dev/config/
 const root = process.cwd()
@@ -75,7 +78,28 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
       DefineOptions(),
       ViteEjsPlugin({
         title: env.VITE_APP_TITLE
-      })
+      }),
+      AutoImport({
+        // 自动导入 Element Plus 相关函数，如：ElMessage, ElMessageBox... (带样式)
+        resolvers: [ElementPlusResolver()],
+        imports: ['vue', 'vue-router',{
+          'element-plus': ['ElMessage', 'ElMessageBox', 'ElNotification']
+        }],
+        dts: 'src/auto-imports.d.ts', // 生成自动导入的类型声明文件
+        eslintrc: {
+           enabled: true, // <-- this
+        },
+    }),
+    Components({
+      resolvers: [
+        //自动导入 Element Plus 组件
+        ElementPlusResolver(),
+      ],
+      // 生成组件类型声明文件
+      dts: 'src/components.d.ts',
+      // 自动导入自定义组件（如 src/components/ 下的组件）
+      dirs: ['src/components']
+    }),
     ],
 
     css: {

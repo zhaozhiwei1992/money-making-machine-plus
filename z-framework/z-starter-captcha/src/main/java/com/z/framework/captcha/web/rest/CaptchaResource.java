@@ -52,7 +52,7 @@ public class CaptchaResource {
         // 生成验证码文本
         String captchaText = captchaProducer.createText();
         session.setAttribute(Constants.KAPTCHA_SESSION_KEY, captchaText);
-        log.info("生成验证码文本===="+captchaText);
+        log.info("生成验证码文本==== {}", captchaText);
 
         // 创建验证码图片
         BufferedImage bi = captchaProducer.createImage(captchaText);
@@ -65,7 +65,12 @@ public class CaptchaResource {
         String base64Image = Base64.getEncoder().encodeToString(captchaBytes);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+//        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+//        arraybuffer形式
+//        return ResponseEntity
+//                .ok()
+//                .headers(headers)
+//                .body(captchaBytes);
         // 这个可以在前端通过response.headers.responsetype获取
         headers.set("responseType", "text"); // 设置自定义的responseType头部
 
@@ -75,10 +80,5 @@ public class CaptchaResource {
                 .contentType(MediaType.TEXT_PLAIN)
                 .body(base64Image);
 
-//        arraybuffer形式
-//        return ResponseEntity
-//                .ok()
-//                .headers(headers)
-//                .body(captchaBytes);
     }
 }
