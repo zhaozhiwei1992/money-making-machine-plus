@@ -175,7 +175,7 @@ public class CommonEleService {
         byEleCatCode = eleUnionRepository.findByEleCatCode(eleCatCode);
 
         //2. eleCatCode是表明的一部分如 ele_eleCatCode(约定)
-        if (byEleCatCode.size() < 1) {
+        if (byEleCatCode.isEmpty()) {
             //            如果汇总表没有则查询单表
             final List<String> allTableNamesStartWithEle = this.findAllTableNamesStartWithEle();
             //            判断表存在

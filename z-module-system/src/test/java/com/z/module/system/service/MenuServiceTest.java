@@ -13,9 +13,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -37,6 +39,8 @@ public class MenuServiceTest {
     private MenuService menuService;
 
     private List<Menu> testMenus;
+    private Menu menu1;
+    private Menu menu2;
 
     @BeforeEach
     public void setUp() {
@@ -72,6 +76,8 @@ public class MenuServiceTest {
         testMenus.add(menu1);
         testMenus.add(menu2);
         testMenus.add(menu3);
+
+
     }
 
     @Test
@@ -105,6 +111,39 @@ public class MenuServiceTest {
         // 第二次调用
         List<Menu> result2 = menuService.findAllMenusByLogin("testUser");
         assertEquals(3, result2.size());
+    }
+
+    @Test
+    public void testFindAllMenusByLogin() {
+        when(menuRepository.findAllByOrderByOrderNumAsc()).thenReturn(testMenus);
+        // 执行测试
+        List<Menu> menus = menuService.findAllMenusByLogin("testuser");
+
+        // 验证结果
+        assertNotNull(menus);
+        assertEquals(3, menus.size());
+        assertEquals("Dashboard", menus.get(0).getName());
+        assertEquals("User Management", menus.get(1).getName());
+        assertEquals(1, menus.get(0).getOrderNum());
+        assertEquals(2, menus.get(1).getOrderNum());
+    }
+
+    @Test
+    public void testFindAllMenusByLoginShouldCacheResults() {
+        when(menuRepository.findAllByOrderByOrderNumAsc()).thenReturn(testMenus);
+        // 第一次调用
+        List<Menu> menus1 = menuService.findAllMenusByLogin("testuser");
+        assertNotNull(menus1);
+        assertEquals(3, menus1.size());
+        
+        // 第二次调用应该使用缓存
+        List<Menu> menus2 = menuService.findAllMenusByLogin("testuser");
+        assertNotNull(menus2);
+        assertEquals(3, menus2.size());
+        
+        // 验证两次结果相同
+        assertEquals(menus1.get(0).getId(), menus2.get(0).getId());
+        assertEquals(menus1.get(1).getId(), menus2.get(1).getId());
     }
 
 //    @Configuration

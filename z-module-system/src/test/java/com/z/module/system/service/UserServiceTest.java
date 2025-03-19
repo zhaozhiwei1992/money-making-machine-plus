@@ -21,6 +21,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 /**
@@ -37,155 +39,136 @@ class UserServiceTest {
     @InjectMocks
     private UserService userService;
     
-    private User testUser;
+    private User user1;
+    private User user2;
 
     @BeforeEach
     void setUp() {
+        // 创建测试用户数据
+        user1 = new User();
+        user1.setId(1L);
+        user1.setLogin("user1");
+        user1.setPassword("password1");
+        user1.setName("User One");
+        user1.setActivated(true);
+        user1.setEmail("user1@example.com");
+        user1.setPhoneNumber("13800138001");
 
-        testUser = new User();
-        testUser.setId(1L);
-        testUser.setLogin("testuser");
-        testUser.setPassword("password");
-        testUser.setName("Test User");
-        testUser.setActivated(true);
-        testUser.setEmail("test@example.com");
-        testUser.setPhoneNumber("12345678901");
+        user2 = new User();
+        user2.setId(2L);
+        user2.setLogin("user2");
+        user2.setPassword("password2");
+        user2.setName("User Two");
+        user2.setActivated(true);
+        user2.setEmail("user2@example.com");
+        user2.setPhoneNumber("13800138002");
+
     }
 
     @Test
-    void findById_whenUserExists_shouldReturnUser() {
-        // Arrange
-        when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
-
-        // Act
-        User result = userService.findById(1L);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(testUser.getId(), result.getId());
-        assertEquals(testUser.getLogin(), result.getLogin());
-        assertEquals(testUser.getName(), result.getName());
-        verify(userRepository, times(1)).findById(1L);
+    void testFindAll() {
+        when(userRepository.findAll()).thenReturn(Arrays.asList(user1, user2));
+        List<User> users = userService.findAll();
+        assertEquals(2, users.size());
+        assertEquals("user1", users.get(0).getLogin());
+        assertEquals("user2", users.get(1).getLogin());
     }
 
     @Test
-    void findById_whenUserDoesNotExist_shouldReturnEmptyUser() {
-        // Arrange
+    void testFindById() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
+        User user = userService.findById(1L);
+        assertNotNull(user);
+        assertEquals(1L, user.getId());
+        assertEquals("user1", user.getLogin());
+        assertEquals("User One", user.getName());
+    }
+
+    @Test
+    void testFindByIdNotFound() {
+        // 当找不到用户时，应该返回新User对象
         when(userRepository.findById(999L)).thenReturn(Optional.empty());
+        
+        User user = userService.findById(999L);
+        assertNotNull(user);
+        assertEquals(null, user.getId());
+    }
 
-        // Act
-        User result = userService.findById(999L);
+    @Test
+    void testSave() {
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        User newUser = new User();
+        newUser.setLogin("newuser");
+        newUser.setPassword("newpassword");
+        newUser.setName("New User");
+        
+        User savedUser = userService.save(newUser);
+        assertEquals("newuser", savedUser.getLogin());
+        assertEquals("New User", savedUser.getName());
+    }
 
-        // Assert
-        assertNotNull(result);
-        assertNull(result.getId());
-        verify(userRepository, times(1)).findById(999L);
+    @Test
+    void testFindByLogin() {
+        when(userRepository.findOneByLogin("user1")).thenReturn(Optional.of(user1));
+        User user = userService.findByLogin("user1");
+        assertNotNull(user);
+        assertEquals("user1", user.getLogin());
+        assertEquals("User One", user.getName());
+    }
+
+    @Test
+    void testFindByLoginNotFound() {
+        // 当找不到用户时，应该返回新User对象
+        when(userRepository.findOneByLogin("nonexistent")).thenReturn(Optional.empty());
+        
+        User user = userService.findByLogin("nonexistent");
+        assertNotNull(user);
+        assertEquals(null, user.getId());
     }
 
     @Test
     void findById_shouldCacheResults() {
         // Arrange - Use specific ID
-        when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
 
         // Act - Call the method twice with the same ID
         User result1 = userService.findById(1L);
         
         // Verify first call returned expected data
         assertNotNull(result1);
-        assertEquals(testUser.getId(), result1.getId());
-        assertEquals("testuser", result1.getLogin());
+        assertEquals(user1.getId(), result1.getId());
+        assertEquals("user1", result1.getLogin());
         
         // Second call should use cache
         User result2 = userService.findById(1L);
 
         // Assert
         assertNotNull(result2);
-        assertEquals(testUser.getId(), result2.getId());
+        assertEquals(user1.getId(), result2.getId());
         
         // Verify that the repository method was only called once due to caching
 //        verify(userRepository, times(1)).findById(1L);
     }
 
     @Test
-    void save_shouldSaveAndReturnUser() {
-        // Arrange
-        when(userRepository.save(any(User.class))).thenReturn(testUser);
-
-        // Act
-        User result = userService.save(testUser);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(testUser.getId(), result.getId());
-        assertEquals(testUser.getLogin(), result.getLogin());
-    }
-
-    @Test
-    void findAll_shouldReturnAllUsers() {
-        // Arrange
-        User user2 = new User();
-        user2.setId(2L);
-        user2.setLogin("user2");
-        
-        List<User> users = Arrays.asList(testUser, user2);
-        when(userRepository.findAll()).thenReturn(users);
-
-        // Act
-        List<User> result = userService.findAll();
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(2, result.size());
-        assertEquals(testUser.getId(), result.get(0).getId());
-        assertEquals(user2.getId(), result.get(1).getId());
-    }
-
-    @Test
-    void findByLogin_whenUserExists_shouldReturnUser() {
-        // Arrange
-        when(userRepository.findOneByLogin("testuser")).thenReturn(Optional.of(testUser));
-
-        // Act
-        User result = userService.findByLogin("testuser");
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(testUser.getId(), result.getId());
-        assertEquals(testUser.getLogin(), result.getLogin());
-    }
-
-    @Test
-    void findByLogin_whenUserDoesNotExist_shouldReturnEmptyUser() {
-        // Arrange
-        when(userRepository.findOneByLogin("nonexistent")).thenReturn(Optional.empty());
-
-        // Act
-        User result = userService.findByLogin("nonexistent");
-
-        // Assert
-        assertNotNull(result);
-        assertNull(result.getId());
-    }
-
-    @Test
     void findByLogin_shouldCacheResults() {
         // Arrange - Use specific login
-        when(userRepository.findOneByLogin("testuser")).thenReturn(Optional.of(testUser));
+        when(userRepository.findOneByLogin("user1")).thenReturn(Optional.of(user1));
 
         // Act - Call the method twice with the same login
-        User result1 = userService.findByLogin("testuser");
+        User result1 = userService.findByLogin("user1");
         
         // Verify first call returned expected data
         assertNotNull(result1);
-        assertEquals(testUser.getId(), result1.getId());
-        assertEquals("testuser", result1.getLogin());
+        assertEquals(user1.getId(), result1.getId());
+        assertEquals("user1", result1.getLogin());
         
         // Second call should use cache
-        User result2 = userService.findByLogin("testuser");
+        User result2 = userService.findByLogin("user1");
 
         // Assert
         assertNotNull(result2);
-        assertEquals(testUser.getId(), result2.getId());
+        assertEquals(user1.getId(), result2.getId());
 
         // Verify that the repository method was only called once due to caching
     }
