@@ -16,8 +16,7 @@ import { getAccessToken } from '@/utils/auth'
 
 const { result_code } = config
 
-const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL
-export const PATH_URL = VITE_SERVER_URL + '/api'
+export const PATH_URL = '/api'
 
 //带着cookie, 验证码放在了session里, 不加这个每次session都是新的
 axios.defaults.withCredentials = true
@@ -72,7 +71,6 @@ service.interceptors.response.use(
       console.log('文件流', response)
       return response
     } else if (response.status === result_code) {
-      console.log('response.data', response)
       return response.data
     } else {
       // ElMessage.error(response.data.msg)
