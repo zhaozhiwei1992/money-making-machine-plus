@@ -144,4 +144,6 @@ https://github.com/YunaiV/ruoyi-vue-pro.git
 
 https://github.com/kailong321200875/vue-element-plus-admin.git
 
+https://github.com/imfangs/dify-java-client (ai部分参考)
+
 # 版权说明

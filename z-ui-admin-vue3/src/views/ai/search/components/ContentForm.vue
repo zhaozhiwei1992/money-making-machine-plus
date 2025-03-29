@@ -10,6 +10,8 @@ import { HistoryDetailVO } from '@/api/ai/historydetail/types'
 import { searchApi } from '@/api/ai/search'
 import { SearchVO } from '@/api/ai/search/types'
 import { dataBox } from 'js-tool-big-box'
+import { fetchEventSource } from '@microsoft/fetch-event-source'
+import { getAccessToken } from '@/utils/auth'
 
 const textarea = ref('')
 const delivery = ref('')
@@ -22,16 +24,16 @@ const props = defineProps({
   historyId: {
     type: Number,
     default: 0
+  },
+  searchVo: {
+    type: Object,
+    default: () => {
+      return {}
+    }
   }
 })
 
-const { historyId } = toRefs(props)
-
-onMounted(async () => {
-  // 查询所有历史信息
-  const res = await getHistoryDetail(historyId.value)
-  historyContentList.push(...res)
-})
+const { historyId, searchVo } = toRefs(props)
 
 const copy = (copyText) => {
   // 复制
@@ -64,6 +66,61 @@ const searchResult = async () => {
   historyContentList.length = 0
   historyContentList.push(...res)
 }
+
+const searchResultStream = async () => {
+  const res = await getHistoryDetail(historyId.value)
+  historyContentList.length = 0
+  historyContentList.push(...res)
+  historyContentList.push({
+    content: '1231',
+    direct: 1,
+    createdBy: '',
+    createTime: new Date(),
+    historyId: historyId.value
+  })
+  console.log(historyContentList)
+  const ctrl = new AbortController()
+  fetchEventSource('/api/ai/chat-stream', {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: getAccessToken(),
+      accept: 'application/json, text/plain, */*'
+    },
+    body: JSON.stringify({
+      query: searchVo.value.content,
+      user: 'admin',
+      apiKey: 'app-iJ3yoDPmUm9TEzpkwIl1drfD'
+    }),
+    openWhenHidden: true,
+    signal: ctrl.signal, // 绑定终止信号
+    onmessage(evt) {
+      if (evt.data) {
+        let orderData = JSON.parse(evt.data)
+        console.log(orderData)
+        historyContentList[historyContentList.length - 1].content +=
+          typeof orderData.answer === undefined ? '' : orderData.answer
+      }
+    },
+    onerror(err) {
+      throw err
+    },
+    onclose() {
+      //如果是新对话,发送消息成功,历史对话记录默认新增一条并高亮
+      // if (self.isHistoryIndex == -1) {
+      //   self.getHistoryList('new')
+      // }
+      return
+    }
+  })
+}
+
+onMounted(async () => {
+  // 查询所有历史信息
+  const res = await getHistoryDetail(historyId.value)
+  historyContentList.push(...res)
+  searchResultStream()
+})
 </script>
 
 <template>
@@ -144,7 +201,8 @@ const searchResult = async () => {
             >
               <ElButton :icon="Search" circle />
             </ElTooltip>
-            <ElButton v-if="textarea != ''" :icon="Search" @click="searchResult" circle />
+            <!-- <ElButton v-if="textarea != ''" :icon="Search" @click="searchResult" circle /> -->
+            <ElButton v-if="textarea != ''" :icon="Search" @click="searchResultStream" circle />
           </ElCol>
         </ElRow>
       </div>

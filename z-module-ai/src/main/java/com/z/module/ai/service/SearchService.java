@@ -8,9 +8,6 @@ import com.z.module.ai.repository.HistoryRepository;
 import com.z.module.ai.web.vo.SearchVO;
 import org.springframework.stereotype.Service;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -21,7 +18,7 @@ public class SearchService {
 
 //    @Autowired
 //    @Qualifier("tongYiSimpleServiceImpl")
-    private TongYiService tongYiService;
+    private AIService tongYiService;
 
     private final HistoryRepository historyRepository;
 

@@ -23,7 +23,6 @@ public class DifyChatClient {
     }
 
     public String callWithMessage(String content) {
-
         String url = AIModuleConfiguration.DIFY_BASE_URL + "/chat-messages";
         // 设置请求头
         HttpHeaders headers = new HttpHeaders();

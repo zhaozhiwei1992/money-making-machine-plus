@@ -517,6 +517,12 @@
       </dependency>
 
       <dependency>
+        <groupId>com.z</groupId>
+        <artifactId>z-starter-ai</artifactId>
+        <version>${revision}</version>
+      </dependency>
+
+      <dependency>
         <groupId>com.alibaba.cloud</groupId>
         <artifactId>spring-cloud-alibaba-dependencies</artifactId>
         <version>${spring.cloud.alibaba.version}</version>

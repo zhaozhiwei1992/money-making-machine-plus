@@ -2,7 +2,7 @@ package com.z.module.ai.service;
 
 import org.springframework.ai.image.ImageResponse;
 
-public class AbstractTongYiServiceImpl implements TongYiService{
+public class AbstractTongYiServiceImpl implements AIService {
     @Override
     public String completion(String message) {
         return "";

@@ -499,8 +499,8 @@ wx:
         msgDataFormat: JSON
 ---
 # ai 模块
-spring:
-  cloud:
+z:
+  module:
     ai:
-      tongyi:
-        api-key: ${DASHSCOPE_API_KEY}
+      type: dify
+      base-url: http://10.10.115.10:9081/v1

@@ -28,6 +28,7 @@
         <module>z-starter-security</module>
         <module>z-starter-data-permission</module>
         <module>z-starter-screw</module>
+        <module>z-starter-ai</module>
     </modules>
 
 </project>

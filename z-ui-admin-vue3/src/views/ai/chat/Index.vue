@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Check, Delete, Edit, Message, Search, Star } from '@element-plus/icons-vue'
+import { Edit, Search, Star } from '@element-plus/icons-vue'
 import { ElMenu, ElMenuItem, ElIcon, ElRow, ElCol, ElInput, ElSwitch } from 'element-plus'
 
 const textarea = ref('')

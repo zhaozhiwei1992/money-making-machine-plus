@@ -14,9 +14,8 @@ import {
 import { onMounted } from 'vue'
 import { getEngineSelect } from '@/api/ai/engine'
 import { ComponentOptions } from '@/types/components'
-import { searchApi } from '@/api/ai/search'
-import { SearchVO } from '@/api/ai/search/types'
 import ContentForm from './ContentForm.vue'
+import { SearchVO } from '@/api/ai/search/types'
 
 const textarea = ref('')
 const delivery = ref('')
@@ -32,19 +31,19 @@ const props = defineProps({
 const { historyId } = toRefs(props)
 const hisId: any = ref(historyId.value)
 const searchFlag = ref(false)
+const searchVO = ref<SearchVO>()
 
 const searchResult = async () => {
   // 1. 将录入内容发送后台
-  const data: SearchVO = {
+  searchVO.value = {
     content: textarea.value,
     historyId: hisId.value,
     engineId: engine.value
   }
-  const res = await searchApi(data)
   // 2. 切换到ContentForm上, 并给出historyId每组数据存在一个id
-  hisId.value = res.historyId
   searchFlag.value = true
 }
+
 const options: ComponentOptions[] = reactive([])
 
 onMounted(async () => {
@@ -107,7 +106,7 @@ onMounted(async () => {
   </div>
   <div class="main" v-if="searchFlag == true">
     <!-- 只有保存才应该触发这个标签，显示 -->
-    <ContentForm :historyId="hisId" />
+    <ContentForm :historyId="hisId" :search-vo="searchVO" />
   </div>
 </template>
 
