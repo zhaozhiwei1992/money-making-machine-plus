@@ -15,7 +15,7 @@ import java.util.Map;
  * @date 2025/3/29 11:05
  * @version V1.0
  */
-public interface WorkflowServiceAdapter {
+public interface WorkflowService {
 
     /**
      * 执行工作流（阻塞模式）

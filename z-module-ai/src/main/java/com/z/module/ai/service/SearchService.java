@@ -16,10 +16,6 @@ import java.util.stream.Collectors;
 @Service
 public class SearchService {
 
-//    @Autowired
-//    @Qualifier("tongYiSimpleServiceImpl")
-    private AIService tongYiService;
-
     private final HistoryRepository historyRepository;
 
     private final HistoryDetailRepository historyDetailRepository;

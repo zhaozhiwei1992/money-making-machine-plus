@@ -17,7 +17,7 @@ import java.util.Map;
  * 一般来说平台分了三种类型接口, chat, flow, 智能体
  * @date 2025/3/29 11:05
  */
-public interface ChatServiceAdapter {
+public interface ChatService {
 
     /**
      * 发送对话消息（阻塞模式）

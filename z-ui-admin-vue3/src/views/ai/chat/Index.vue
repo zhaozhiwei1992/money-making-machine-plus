@@ -1,54 +1,33 @@
 <script setup lang="ts">
+import { propTypes } from '@/utils/propTypes'
+import { ChatRound } from '@element-plus/icons-vue'
 import { ref } from 'vue'
-import { Edit, Search, Star } from '@element-plus/icons-vue'
-import { ElMenu, ElMenuItem, ElIcon, ElRow, ElCol, ElInput, ElSwitch } from 'element-plus'
 
-const textarea = ref('')
-const delivery = ref('')
+defineProps({
+  color: propTypes.string.def('')
+})
+
+const showAI = () => {
+  show.value = !show.value
+}
+
+const show = ref(false)
 </script>
 
 <template>
-  <ElRow>
-    <ElCol :span="6">
-      <ElMenu default-active="1" class="ElMenu-vertical-demo" :collapse="true">
-        <ElMenuItem index="1">
-          <ElIcon><icon-menu /></ElIcon>
-          <template #title>回到首页</template>
-        </ElMenuItem>
-        <ElMenuItem index="2">
-          <ElIcon><icon-menu /></ElIcon>
-          <template #title>新会话</template>
-        </ElMenuItem>
-        <ElMenuItem index="3" disabled>
-          <ElIcon><document /></ElIcon>
-          <template #title>历史会话</template>
-        </ElMenuItem>
-        <ElMenuItem index="4">
-          <ElIcon><setting /></ElIcon>
-          <template #title>设置</template>
-        </ElMenuItem>
-      </ElMenu>
-    </ElCol>
-    <ElCol :span="18">
-      <ElRow>
-        <ElInput
-          v-model="textarea"
-          type="textarea"
-          placeholder="想干啥就干啥,只有想不到没有干不了"
-        />
-      </ElRow>
-      <ElRow>
-        <ElCol :span="4">
-          <ElSwitch v-model="delivery" />
-        </ElCol>
-        <ElCol :span="20">
-          <el-button type="primary" :icon="Edit" circle />
-          <el-button type="warning" :icon="Star" circle />
-          <el-button :icon="Search" circle />
-        </ElCol>
-      </ElRow>
-    </ElCol>
-  </ElRow>
+  <div @click="showAI()">
+    <el-icon><ChatRound /></el-icon>
+  </div>
+  <!-- 默认显示到右下角 -->
+  <el-dialog v-model="show" title="AI助手" width="20%" draggable class="right-bottom-dialog">
+    <h1>hello </h1>
+  </el-dialog>
 </template>
 
-<style lang="less" scoped></style>
+<style scoped>
+.right-bottom-dialog {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+</style>

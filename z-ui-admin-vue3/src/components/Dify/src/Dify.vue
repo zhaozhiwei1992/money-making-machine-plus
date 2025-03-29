@@ -1,9 +1,8 @@
 <script setup lang="ts">
+import IframeComponent from '@/components/Iframe/IframeComponent.vue'
 import { propTypes } from '@/utils/propTypes'
 import { ChatRound } from '@element-plus/icons-vue'
-import { ElIcon, ElDialog } from 'element-plus'
 import { ref } from 'vue'
-import IframeComponent from '@/components/Iframe/IframeComponent.vue'
 
 defineProps({
   color: propTypes.string.def('')
@@ -25,7 +24,7 @@ const isFullscreen = ref(false)
   <div @click="handleChange()">
     <el-icon><ChatRound /></el-icon>
   </div>
-  <el-dialog v-model="show" title="财政部规范专家" width="650">
+  <el-dialog v-model="show" title="AI助手" width="650">
     <IframeComponent :src="iframeSrc" :fullscreen="isFullscreen" />
   </el-dialog>
 </template>

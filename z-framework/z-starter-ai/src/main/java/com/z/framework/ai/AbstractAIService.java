@@ -1,10 +1,7 @@
 package com.z.framework.ai;
 
-import com.z.framework.ai.model.AppConfig;
 import com.z.framework.ai.model.chat.*;
 import com.z.framework.ai.model.workflow.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import reactor.core.publisher.Flux;
 
 import java.io.File;
@@ -12,7 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
-public abstract class AbstractChatService implements ChatServiceAdapter, WorkflowServiceAdapter{
+public abstract class AbstractAIService implements ChatService, WorkflowService {
 //    protected static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 //    protected static final MediaType OCTET_STREAM = MediaType.parse("application/octet-stream");
 //    protected static final MediaType AUDIO = MediaType.parse("audio/*");

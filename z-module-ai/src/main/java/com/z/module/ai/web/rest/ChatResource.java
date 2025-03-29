@@ -1,6 +1,6 @@
 package com.z.module.ai.web.rest;
 
-import com.z.framework.ai.AbstractChatService;
+import com.z.framework.ai.AbstractAIService;
 import com.z.framework.ai.model.chat.ChatMessage;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ import java.util.*;
 public class ChatResource {
 
     @Autowired
-    private AbstractChatService abstractChatService;
+    private AbstractAIService abstractChatService;
 
     @RequestMapping(value = "/chat-stream", method = RequestMethod.POST, produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<Map> chatStream(@RequestBody ChatMessage chatMessage) throws Exception {

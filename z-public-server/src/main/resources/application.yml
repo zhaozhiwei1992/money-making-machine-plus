@@ -503,4 +503,4 @@ z:
   module:
     ai:
       type: dify
-      base-url: http://10.10.115.10:9081/v1
+      base-url: https://api.dify.ai/v1

@@ -1,7 +1,7 @@
 package com.z.framework.ai.adapter.dify.service;
 
 import com.alibaba.fastjson.JSON;
-import com.z.framework.ai.AbstractChatService;
+import com.z.framework.ai.AbstractAIService;
 import com.z.framework.ai.enums.ResponseMode;
 import com.z.framework.ai.model.AppConfig;
 import com.z.framework.ai.model.chat.ChatMessage;
@@ -28,7 +28,7 @@ import java.util.Map;
 @ConditionalOnProperty(name = "z.module.ai.type", havingValue = "dify")
 @Slf4j
 @Data
-public class DifyServiceAdapter extends AbstractChatService {
+public class DifyServiceAdapter extends AbstractAIService {
 
     @Autowired
     private AppConfig appConfig;

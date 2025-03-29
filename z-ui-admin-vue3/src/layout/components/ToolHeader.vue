@@ -1,14 +1,14 @@
 <script lang="tsx">
-import { defineComponent, computed } from 'vue'
+import { AIBot } from '@/components/AI'
+import { Breadcrumb } from '@/components/Breadcrumb'
 import { Collapse } from '@/components/Collapse'
 import { LocaleDropdown } from '@/components/LocaleDropdown'
+import { Screenfull } from '@/components/Screenfull'
 import { SizeDropdown } from '@/components/SizeDropdown'
 import { UserInfo } from '@/components/UserInfo'
-import { Screenfull } from '@/components/Screenfull'
-import { Breadcrumb } from '@/components/Breadcrumb'
-import { useAppStore } from '@/store/modules/app'
 import { useDesign } from '@/hooks/web/useDesign'
-import { Dify } from '@/components/Dify'
+import { useAppStore } from '@/store/modules/app'
+import { computed, defineComponent } from 'vue'
 
 const { getPrefixCls, variables } = useDesign()
 
@@ -56,7 +56,7 @@ export default defineComponent({
         ) : undefined}
         <div class="h-full flex items-center">
           {screenfull.value ? (
-            <Dify class="hover-trigger" color="var(--top-header-text-color)"></Dify>
+            <AIBot class="hover-trigger" color="var(--top-header-text-color)"></AIBot>
           ) : undefined}
           {screenfull.value ? (
             <Screenfull class="hover-trigger" color="var(--top-header-text-color)"></Screenfull>
