@@ -20,42 +20,37 @@ type listType = BubbleListItemProps & {
   key: number
   role: 'user' | 'ai'
 }
-const list = ref<BubbleListProps<listType>['list']>(generateFakeItems(3))
+const list = ref<BubbleListProps<listType>['list']>(initChatItem())
 
-function generateFakeItems(count: number): listType[] {
+function initChatItem(): listType[] {
   const messages: listType[] = []
-  for (let i = 0; i < count; i++) {
-    const role = i % 2 === 0 ? 'ai' : 'user'
-    const placement = role === 'ai' ? 'start' : 'end'
-    const key = i + 1
-    const content =
-      role === 'ai'
-        ? '💖 感谢使用 Element Plus X ! 你的支持，是我们开源的最强动力 ~'
-        : `哈哈哈，让我试试`
-    const loading = false
-    const shape = 'corner'
-    const variant = role === 'ai' ? 'filled' : 'outlined'
-    const isMarkdown = false
-    const typing = role === 'ai' ? i === count - 1 : false
-    const avatar =
-      role === 'ai'
-        ? 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
-        : 'https://avatars.githubusercontent.com/u/76239030?v=4'
+  const role = 'ai'
+  const placement = 'start'
+  const key = 1
+  const content = '你好，我是你的AI助理，请问有啥可以帮到你?'
+  const loading = false
+  const shape = 'corner'
+  const variant = role === 'ai' ? 'filled' : 'outlined'
+  const isMarkdown = false
+  const typing = false
+  const avatar =
+    role === 'ai'
+      ? 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
+      : 'https://avatars.githubusercontent.com/u/76239030?v=4'
 
-    messages.push({
-      key,
-      role,
-      placement,
-      content,
-      loading,
-      shape,
-      variant,
-      isMarkdown,
-      typing,
-      avatar,
-      avatarSize: '24px'
-    })
-  }
+  messages.push({
+    key,
+    role,
+    placement,
+    content,
+    loading,
+    shape,
+    variant,
+    isMarkdown,
+    typing,
+    avatar,
+    avatarSize: '24px'
+  })
   return messages
 }
 
@@ -108,7 +103,9 @@ const chatStream = async () => {
     body: JSON.stringify({
       query: senderValue.value,
       user: 'admin',
-      apiKey: 'app-o5hYkQv6wDfzFVuhb9gYKJnc'
+      apiKey: 'app-ZzwOVY1dCDyM2V05yhGuqx9D'
+      // apiKey: 'sk-81ff6c0404aa4918b7c867cb9f536d73',
+      // appId: '8bff07f9a30a4a3e934ee98341e66cfe'
     }),
     openWhenHidden: true,
     signal: ctrl.signal, // 绑定终止信号
@@ -120,7 +117,7 @@ const chatStream = async () => {
           list.value[list.value.length - 1].content = ''
         }
         list.value[list.value.length - 1].content +=
-          typeof orderData.answer === undefined ? '' : orderData.answer
+          orderData.event === 'message' ? orderData.answer : ''
       }
     },
     onerror(err) {

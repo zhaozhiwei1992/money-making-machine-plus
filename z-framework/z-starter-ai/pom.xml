@@ -27,5 +27,24 @@
       <artifactId>spring-boot-starter-webflux</artifactId>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/com.alibaba/dashscope-sdk-java -->
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>dashscope-sdk-java</artifactId>
+<!--      坑爹玩意儿，会冲突-->
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-simple</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>io.github.imfangs</groupId>
+      <artifactId>dify-java-client</artifactId>
+      <version>1.0.4</version>
+    </dependency>
+
   </dependencies>
 </project>

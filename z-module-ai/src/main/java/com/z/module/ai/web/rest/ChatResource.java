@@ -27,7 +27,7 @@ public class ChatResource {
 
     @RequestMapping(value = "/chat-stream", method = RequestMethod.POST, produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<Map> chatStream(@RequestBody ChatMessage chatMessage) throws Exception {
-        Flux<Map<String, Object>> mapFlux = abstractChatService.sendChatMessageStream(chatMessage);
+        Flux<Map<String, Object>> mapFlux = abstractChatService.sendChatFlowMessageStream(chatMessage);
         List<Map> metadataList = new ArrayList<>();
         Flux<Map> rMap = mapFlux.map(event -> {
             Map r = new HashMap(event);
@@ -37,8 +37,7 @@ public class ChatResource {
                         r.put("answer_type", "测试回写");
                         r.put("metadata", metadataList);
                     }
-                }
-                if ("node_finished".equals(event.get("event"))) {
+                }else if ("node_finished".equals(event.get("event"))) {
                     // 节点结束
                     Map data = (Map) event.get("data");
                     if ("knowledge-retrieval".equals(data.get("node_type"))) {
@@ -58,8 +57,7 @@ public class ChatResource {
                             metadataList.add(docMap);
                         }
                     }
-                }
-                if ("message_end".equals(event.get("event"))) {
+                }else if ("message_end".equals(event.get("event"))) {
                     r.put("message_end_1", "1");
                 }
             }

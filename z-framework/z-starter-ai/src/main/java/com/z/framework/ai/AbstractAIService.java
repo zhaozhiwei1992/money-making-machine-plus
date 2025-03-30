@@ -9,11 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
-public abstract class AbstractAIService implements ChatService, WorkflowService {
-//    protected static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-//    protected static final MediaType OCTET_STREAM = MediaType.parse("application/octet-stream");
-//    protected static final MediaType AUDIO = MediaType.parse("audio/*");
-
+public abstract class AbstractAIService implements ChatService, WorkflowService, ChatFlowService {
     @Override
     public ChatMessageResponse sendChatMessage(ChatMessage message) throws IOException {
         return null;
@@ -129,6 +125,11 @@ public abstract class AbstractAIService implements ChatService, WorkflowService 
 
     @Override
     public WorkflowLogsResponse getWorkflowLogs(String keyword, String status, Integer page, Integer limit) throws IOException {
+        return null;
+    }
+
+    @Override
+    public Flux<Map<String, Object>> sendChatFlowMessageStream(ChatMessage message) throws IOException {
         return null;
     }
 }

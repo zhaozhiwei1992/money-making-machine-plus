@@ -1,7 +1,7 @@
 package com.z.framework.ai.model.chat;
 
-import com.z.framework.ai.enums.ResponseMode;
 import com.z.framework.ai.model.file.FileInfo;
+import io.github.imfangs.dify.client.enums.ResponseMode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -58,5 +58,10 @@ public class ChatMessage {
      * API密钥
      */
     private String apiKey;
+
+    /**
+     * 应用ID, 阿里百炼使用
+     */
+    private String appId;
 
 }

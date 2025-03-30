@@ -50,7 +50,6 @@
             <artifactId>mysql-connector-j</artifactId>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.alibaba/dashscope-sdk-java -->
         <dependency>
             <groupId>com.z</groupId>
             <artifactId>z-starter-ai</artifactId>

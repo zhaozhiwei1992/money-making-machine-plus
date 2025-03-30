@@ -1,7 +1,7 @@
 package com.z.framework.ai.model.file;
 
-import com.z.framework.ai.enums.FileTransferMethod;
-import com.z.framework.ai.enums.FileType;
+import io.github.imfangs.dify.client.enums.FileTransferMethod;
+import io.github.imfangs.dify.client.enums.FileType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

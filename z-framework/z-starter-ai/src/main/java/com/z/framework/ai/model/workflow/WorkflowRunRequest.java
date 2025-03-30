@@ -1,7 +1,7 @@
 package com.z.framework.ai.model.workflow;
 
-import com.z.framework.ai.enums.ResponseMode;
-import com.z.framework.ai.model.file.FileInfo;
+import io.github.imfangs.dify.client.enums.ResponseMode;
+import io.github.imfangs.dify.client.model.file.FileInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

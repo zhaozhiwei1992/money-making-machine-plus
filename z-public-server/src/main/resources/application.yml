@@ -503,4 +503,5 @@ z:
   module:
     ai:
       type: dify
+#      type: bailian
       base-url: https://api.dify.ai/v1

@@ -1,27 +1,32 @@
 package com.z.framework.ai.adapter.dify.service;
 
-import com.alibaba.fastjson.JSON;
 import com.z.framework.ai.AbstractAIService;
-import com.z.framework.ai.enums.ResponseMode;
 import com.z.framework.ai.model.AppConfig;
 import com.z.framework.ai.model.chat.ChatMessage;
 import com.z.framework.ai.model.chat.MessageListResponse;
 import com.z.framework.ai.util.JsonUtils;
+import io.github.imfangs.dify.client.DifyChatClient;
+import io.github.imfangs.dify.client.DifyChatflowClient;
+import io.github.imfangs.dify.client.DifyClientFactory;
+import io.github.imfangs.dify.client.callback.ChatStreamCallback;
+import io.github.imfangs.dify.client.callback.ChatflowStreamCallback;
+import io.github.imfangs.dify.client.event.ErrorEvent;
+import io.github.imfangs.dify.client.event.MessageEndEvent;
+import io.github.imfangs.dify.client.event.MessageEvent;
+import io.github.imfangs.dify.client.event.NodeFinishedEvent;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.FluxSink;
+import reactor.core.scheduler.Schedulers;
 
-import java.util.Collections;
-import java.util.List;
+import java.io.IOException;
+import java.time.Duration;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Component
@@ -33,99 +38,157 @@ public class DifyServiceAdapter extends AbstractAIService {
     @Autowired
     private AppConfig appConfig;
 
-    // 流式响应相关常量
-    private static final String DONE_MARKER = "[DONE]";
-    private static final String DATA_PREFIX = "data:";
+    @Override
+    public Flux<Map<String, Object>> sendChatFlowMessageStream(ChatMessage msg) {
+        // 创建聊天消息
+        io.github.imfangs.dify.client.model.chat.ChatMessage message = io.github.imfangs.dify.client.model.chat.ChatMessage.builder()
+                .query(msg.getQuery())
+                .user(msg.getUser())
+                .responseMode(io.github.imfangs.dify.client.enums.ResponseMode.STREAMING)
+                .build();
+        return Flux.create((FluxSink<Map<String, Object>> emitter) -> {
+                    // 创建客户端实例
+                    DifyChatflowClient chatClient = DifyClientFactory.createChatWorkflowClient(getAppConfig().getBaseUrl(), msg.getApiKey());
 
-    // API 路径常量
-    // 对话型应用相关路径
-    private static final String CHAT_MESSAGES_PATH = "/chat-messages";
-    private static final String MESSAGES_PATH = "/messages";
-    private static final String CONVERSATIONS_PATH = "/conversations";
-    private static final String AUDIO_TO_TEXT_PATH = "/audio-to-text";
-    private static final String TEXT_TO_AUDIO_PATH = "/text-to-audio";
-    private static final String META_PATH = "/meta";
-    private static final String STOP_PATH = "/stop";
-    private static final String FEEDBACKS_PATH = "/feedbacks";
-    private static final String SUGGESTED_QUESTIONS_PATH = "/suggested";
-    private static final String NAME_PATH = "/name";
+                    // 注册回调
+                    ChatflowStreamCallback callback = new ChatflowStreamCallback() {
+                        @Override
+                        public void onMessage(MessageEvent event) {
+                            log.debug("收到消息片段: {}", event);
+                            emitter.next(JsonUtils.jsonToMap(JsonUtils.toJson(event)));
+                        }
 
-    // 文本生成型应用相关路径
-    private static final String COMPLETION_MESSAGES_PATH = "/completion-messages";
+                        @Override
+                        public void onNodeFinished(NodeFinishedEvent event) {
+                            log.debug("收到node结束片段: {}", event);
+                            emitter.next(JsonUtils.jsonToMap(JsonUtils.toJson(event)));
+                        }
 
-    // 工作流应用相关路径
-    private static final String WORKFLOWS_PATH = "/workflows";
-    private static final String WORKFLOWS_RUN_PATH = "/workflows/run";
-    private static final String WORKFLOWS_TASKS_PATH = "/workflows/tasks";
-    private static final String WORKFLOWS_LOGS_PATH = "/workflows/logs";
+                        @Override
+                        public void onMessageEnd(MessageEndEvent event) {
+                            log.debug("消息结束: {}", event);
+                            emitter.next(JsonUtils.jsonToMap(JsonUtils.toJson(event)));
+                            emitter.complete();
+                        }
 
-    @Autowired
-    private WebClient webClient;
+                        @Override
+                        public void onError(ErrorEvent event) {
+                            log.error("错误: {}", event.getMessage());
+                            emitter.next(JsonUtils.jsonToMap(JsonUtils.toJson(event)));
+                            emitter.complete();
+                        }
 
-    @Autowired
-    private RestTemplate restTemplate;
+                        @Override
+                        public void onException(Throwable throwable) {
+                            log.error("异常: ", throwable);
+                            emitter.error(throwable);
+                        }
+                    };
 
-    private Flux<Map<String, Object>> parseServerSentEvent(String data) {
-        try {
-            return Flux.just(JSON.parseObject(data, Map.class));
-        } catch (Exception e) {
-            return Flux.error(new RuntimeException("解析错误: " + data, e));
-        }
+                    // 发起流式请求
+                    try {
+                        chatClient.sendChatMessageStream(message, callback);
+                    } catch (IOException e) {
+                        emitter.error(new RuntimeException("连接失败", e));
+                    }
+
+                    // 取消订阅时清理资源
+                    emitter.onCancel(() -> closeClient(chatClient));
+                    emitter.onDispose(() -> closeClient(chatClient));
+                })
+                .subscribeOn(Schedulers.boundedElastic()) // 指定异步线程
+                .timeout(Duration.ofSeconds(30))         // 超时控制
+                .onErrorResume(this::handleError);
     }
 
     @Override
-    public Flux<Map<String, Object>> sendChatMessageStream(ChatMessage message) {
-        message.setResponseMode(ResponseMode.STREAMING);
-//        Map<String, Object> requestBody = new HashMap<>();
-//        requestBody.put("query", message.getQuery());
-//        requestBody.put("response_mode", "streaming");
-//        requestBody.put("conversation_id", message.getConversationId());
-//        requestBody.put("user", "abc-123");
-//        requestBody.put("inputs", new HashMap<>());
-        String json = JsonUtils.toJson(message);
-        String apiKey = message.getApiKey();
-        String baseUrl = getAppConfig().getBaseUrl();
-        return webClient.post().uri(baseUrl + CHAT_MESSAGES_PATH)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey).bodyValue(json).retrieve()
-                .bodyToFlux(String.class).flatMap(this::parseServerSentEvent);
+    public Flux<Map<String, Object>> sendChatMessageStream(ChatMessage msg) {
+        // 创建聊天消息
+        io.github.imfangs.dify.client.model.chat.ChatMessage message = io.github.imfangs.dify.client.model.chat.ChatMessage.builder()
+                .query(msg.getQuery())
+                .user(msg.getUser())
+                .responseMode(io.github.imfangs.dify.client.enums.ResponseMode.STREAMING)
+                .build();
+        return Flux.create((FluxSink<Map<String, Object>> emitter) -> {
+                    // 创建客户端实例
+                    DifyChatClient chatClient = DifyClientFactory.createChatClient(getAppConfig().getBaseUrl(), msg.getApiKey());
 
-        // 测试输出
-//        mapFlux.doOnSubscribe(sub -> System.out.println("Stream started"))
-//                .doOnNext(event -> {
-//                    System.out.println("--- Event Received ---");
-//                    System.out.println("Event Type: " + event.get("event"));
-//                    System.out.println("Answer: " + event.get("answer"));
-//                    System.out.println("Metadata: " + event.get("metadata"));
-//                })
-//                .doOnComplete(() -> System.out.println("Stream ended successfully"))
-//                .doOnError(e -> System.err.println("Error: " + e.getMessage()))
-//                .subscribe();
-//
-//        // 5. 防止主线程退出（测试用）
-//        try {
-//            Thread.sleep(30_000); // 根据流持续时间调整
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+                    // 注册回调
+                    ChatStreamCallback callback = new ChatStreamCallback() {
+                        @Override
+                        public void onMessage(MessageEvent event) {
+                            log.debug("收到消息片段: {}", event);
+                            emitter.next(JsonUtils.jsonToMap(JsonUtils.toJson(event)));
+                        }
+
+                        @Override
+                        public void onMessageEnd(MessageEndEvent event) {
+                            System.out.println("消息结束，完整消息ID: " + event);
+                            emitter.next(JsonUtils.jsonToMap(JsonUtils.toJson(event)));
+                            emitter.complete();
+                        }
+
+                        @Override
+                        public void onError(ErrorEvent event) {
+                            System.err.println("错误: " + event.getMessage());
+                            emitter.next(JsonUtils.jsonToMap(JsonUtils.toJson(event)));
+                            emitter.complete();
+                        }
+
+                        @Override
+                        public void onException(Throwable throwable) {
+                            System.err.println("异常: " + throwable.getMessage());
+                            emitter.error(throwable);
+                        }
+                    };
+
+                    // 发起流式请求
+                    try {
+                        chatClient.sendChatMessageStream(message, callback);
+                    } catch (IOException e) {
+                        emitter.error(new RuntimeException("连接失败", e));
+                    }
+
+                    // 取消订阅时清理资源
+                    emitter.onCancel(() -> closeClient(chatClient));
+                    emitter.onDispose(() -> closeClient(chatClient));
+                })
+                .subscribeOn(Schedulers.boundedElastic()) // 指定异步线程
+                .timeout(Duration.ofSeconds(30))         // 超时控制
+                .onErrorResume(this::handleError);
+    }
+
+    // 资源清理方法
+    private void closeClient(DifyChatClient client) {
+        try {
+            if (client != null) {
+                client.close();
+            }
+        } catch (Exception e) {
+            log.error("关闭客户端失败", e);
+        }
+    }
+
+    // 错误统一处理
+    private Flux<Map<String, Object>> handleError(Throwable throwable) {
+        return Flux.just(Map.of(
+                "type", "system_error",
+                "message", throwable.getMessage(),
+                "is_end", true
+        ));
     }
 
     @Override
     public MessageListResponse getMessages(String conversationId, String user, String firstId, Integer limit, String apiKey) {
-        // curl -X GET
-        // 'http://10.10.115.9/v1/conversations?user=abc-123&last_id=&limit=20'\
-        // --header 'Authorization: Bearer {api_key}'
-        String baseUrl = getAppConfig().getBaseUrl();
-        String url = baseUrl + CONVERSATIONS_PATH;
-        // 这里参数需要按照认证提供用户给出
-        url += String.format("?user=%s&last_id=%s&limit=%s", user, firstId, limit);
-        // 设置请求头
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        headers.set("Authorization", "Bearer " + apiKey);
 
-        final HttpEntity<List<Map<String, Object>>> httpEntity = new HttpEntity<>(headers);
-        ResponseEntity<MessageListResponse> exchange = restTemplate.getForEntity(url, MessageListResponse.class, httpEntity);
-        return exchange.getBody();
+        DifyChatClient chatClient = DifyClientFactory.createChatClient(getAppConfig().getBaseUrl(), apiKey);
+        try {
+            io.github.imfangs.dify.client.model.chat.MessageListResponse messages = chatClient.getMessages(conversationId, user, firstId, limit);
+            MessageListResponse messageListResponse = new MessageListResponse();
+            BeanUtils.copyProperties(messages, messageListResponse);
+            return messageListResponse;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
