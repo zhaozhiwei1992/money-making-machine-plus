@@ -72,6 +72,8 @@
     <xercesImpl.version>2.12.2</xercesImpl.version>
     <wx-java-mp.version>4.3.0</wx-java-mp.version>
     <spring.cloud.alibaba.version>2023.0.1.0</spring.cloud.alibaba.version>
+    <rocketmq.starter.version>2.3.1</rocketmq.starter.version>
+    <rocketmq.version>5.2.0</rocketmq.version>
   </properties>
 
   <dependencyManagement>
@@ -155,7 +157,7 @@
       <dependency>
         <groupId>org.hibernate.validator</groupId>
         <artifactId>hibernate-validator</artifactId>
-        <version>${hibernate.version}</version>
+        <version>6.2.5.Final</version>
       </dependency>
 
       <!-- Job 定时任务相关 -->
@@ -543,6 +545,19 @@
         <version>${spring.cloud.alibaba.version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+
+      <!-- https://mvnrepository.com/artifact/org.apache.rocketmq/rocketmq-spring-boot-starter -->
+      <dependency>
+        <groupId>org.apache.rocketmq</groupId>
+        <artifactId>rocketmq-spring-boot-starter</artifactId>
+        <version>${rocketmq.starter.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.rocketmq</groupId>
+        <artifactId>rocketmq-client</artifactId>
+        <version>${rocketmq.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

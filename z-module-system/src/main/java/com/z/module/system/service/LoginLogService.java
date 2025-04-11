@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional(rollbackFor = Exception.class)
-public class LoginLogService {
+public class LoginLogService{
 
     private final LoginLogRepository loginLogRepository;
 
@@ -38,5 +38,16 @@ public class LoginLogService {
         loginLog.setBrowser(userAgentParse.getBrowser().toString());
 
         return loginLogRepository.save(loginLog);
+    }
+
+    public LoginLog genLogInfo(LoginVO loginVM, HttpServletRequest request){
+        final LoginLog loginLog = new LoginLog();
+        loginLog.setClientIp(JakartaServletUtil.getClientIP(request));
+        final UserAgent userAgentParse = UserAgentUtil.parse(request.getHeader("User-Agent"));
+        loginLog.setOs(userAgentParse.getOs().toString());
+        final String username = loginVM.getUsername();
+        loginLog.setLoginName(username);
+        loginLog.setBrowser(userAgentParse.getBrowser().toString());
+        return loginLog;
     }
 }

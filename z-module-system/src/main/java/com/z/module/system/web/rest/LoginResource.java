@@ -3,6 +3,7 @@ package com.z.module.system.web.rest;
 import cn.hutool.core.bean.BeanUtil;
 import com.google.code.kaptcha.Constants;
 import com.z.framework.security.service.TokenProviderService;
+import com.z.module.system.domain.LoginLog;
 import com.z.module.system.domain.Upload;
 import com.z.module.system.domain.User;
 import com.z.module.system.domain.UserAuthority;
@@ -11,14 +12,20 @@ import com.z.module.system.repository.UserAuthorityRepository;
 import com.z.module.system.repository.UserRepository;
 import com.z.module.system.service.LoginLogService;
 import com.z.module.system.service.LoginService;
+import com.z.module.system.service.consumer.EmailRegisterConsumer;
+import com.z.module.system.service.consumer.LoginLogConsumer;
+import com.z.module.system.service.consumer.SmsRegisterConsumer;
 import com.z.module.system.web.vo.AuthedRespVO;
 import com.z.module.system.web.vo.LoginVO;
 import com.z.module.system.web.vo.UserVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -64,7 +71,9 @@ public class LoginResource {
 
     private final UserAuthorityRepository userAuthorityRepository;
 
-    public LoginResource(UserRepository userRepository, PasswordEncoder passwordEncoder, LoginLogService loginLogService, TokenProviderService tokenProviderService, LoginService loginService, UserDetailsService userDetailsService, UploadRepository uploadRepository, UserAuthorityRepository userAuthorityRepository) {
+    private final RocketMQTemplate rocketMQTemplate;
+
+    public LoginResource(UserRepository userRepository, PasswordEncoder passwordEncoder, LoginLogService loginLogService, TokenProviderService tokenProviderService, LoginService loginService, UserDetailsService userDetailsService, UploadRepository uploadRepository, UserAuthorityRepository userAuthorityRepository, RocketMQTemplate rocketMQTemplate) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.loginLogService = loginLogService;
@@ -73,6 +82,7 @@ public class LoginResource {
         this.userDetailsService = userDetailsService;
         this.uploadRepository = uploadRepository;
         this.userAuthorityRepository = userAuthorityRepository;
+        this.rocketMQTemplate = rocketMQTemplate;
     }
 
     /**
@@ -132,7 +142,9 @@ public class LoginResource {
                 loginService.addTokenWriteList(token);
 
                 // 登录成功记录日志
-                loginLogService.save(loginVM, request);
+                LoginLog loginLog = loginLogService.genLogInfo(loginVM, request);
+                Message<LoginLog> loginLogMsg = MessageBuilder.withPayload(loginLog).build();
+                rocketMQTemplate.send(LoginLogConsumer.TOPIC, loginLogMsg);
                 return authedRespVO;
             }else{
                 log.error(String.format("登录失败, 用户: %s, 密码: %s, 数据库密码: %s", username, password, dbPassWord));
@@ -188,6 +200,10 @@ public class LoginResource {
             return userAuthority;
         }).collect(Collectors.toList());
         userAuthorityRepository.saveAll(userAuthorities);
+
+        // 发送邮件或者短信通知用户注册成功
+        rocketMQTemplate.send(EmailRegisterConsumer.TOPIC, MessageBuilder.withPayload(userVO).build());
+        rocketMQTemplate.send(SmsRegisterConsumer.TOPIC, MessageBuilder.withPayload(userVO).build());
 
         return newUser;
     }

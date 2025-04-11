@@ -2,22 +2,27 @@ package com.z.module.system.web.rest;
 
 import com.z.framework.security.service.TokenProviderService;
 import com.z.framework.security.util.SecurityUtils;
+import com.z.module.system.domain.LoginLog;
 import com.z.module.system.domain.User;
 import com.z.module.system.repository.UserRepository;
 import com.z.module.system.service.LoginLogService;
+import com.z.module.system.service.consumer.LoginLogConsumer;
 import com.z.module.system.web.vo.AuthedRespVO;
 import com.z.module.system.web.vo.LoginVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.*;
 
@@ -47,12 +52,15 @@ public class MobileLoginResource {
 
     private final TokenProviderService tokenProviderService;
 
-    public MobileLoginResource(UserRepository userRepository, PasswordEncoder passwordEncoder, CacheManager cacheManager, LoginLogService loginLogService, TokenProviderService tokenProviderService) {
+    private final RocketMQTemplate rocketMQTemplate;
+
+    public MobileLoginResource(UserRepository userRepository, PasswordEncoder passwordEncoder, CacheManager cacheManager, LoginLogService loginLogService, TokenProviderService tokenProviderService, RocketMQTemplate rocketMQTemplate) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = passwordEncoder;
         this.cacheManager = cacheManager;
         this.loginLogService = loginLogService;
         this.tokenProviderService = tokenProviderService;
+        this.rocketMQTemplate = rocketMQTemplate;
     }
 
     /**
@@ -83,7 +91,9 @@ public class MobileLoginResource {
                 authedRespVO.setToken(token);
 
                 // 登录成功记录日志
-                loginLogService.save(loginVM, request);
+                LoginLog loginLog = loginLogService.genLogInfo(loginVM, request);
+                Message<LoginLog> loginLogMsg = MessageBuilder.withPayload(loginLog).build();
+                rocketMQTemplate.send(LoginLogConsumer.TOPIC, loginLogMsg);
                 return authedRespVO;
             }else{
                 log.error(String.format("登录失败, 用户: %s, 密码: %s, 数据库密码: %s", username, password, dbPassWord));
@@ -133,7 +143,9 @@ public class MobileLoginResource {
                 authedRespVO.setToken(token);
 
                 // 登录成功记录日志
-                loginLogService.save(loginVM, request);
+                LoginLog loginLog = loginLogService.genLogInfo(loginVM, request);
+                Message<LoginLog> loginLogMsg = MessageBuilder.withPayload(loginLog).build();
+                rocketMQTemplate.send(LoginLogConsumer.TOPIC, loginLogMsg);
                 return authedRespVO;
             }else{
                 log.error(String.format("登录失败, 用户: %s, 密码: %s, 数据库密码: %s", username, password, dbPassWord));
