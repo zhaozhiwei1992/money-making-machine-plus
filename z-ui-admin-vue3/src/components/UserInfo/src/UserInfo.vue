@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { ElDropdown, ElDropdownMenu, ElDropdownItem, ElMessageBox, ElButton } from 'element-plus'
-import { Dialog } from '@/components/Dialog'
-import { useI18n } from '@/hooks/web/useI18n'
-import { useCache } from '@/hooks/web/useCache'
-import { resetRouter } from '@/router'
-import { useRouter } from 'vue-router'
 import { loginOutApi } from '@/api/login'
+import { Dialog } from '@/components/Dialog'
+import { useCache } from '@/hooks/web/useCache'
 import { useDesign } from '@/hooks/web/useDesign'
-import { useTagsViewStore } from '@/store/modules/tagsView'
+import { useI18n } from '@/hooks/web/useI18n'
+import { resetRouter } from '@/router'
 import { useAppStore } from '@/store/modules/app'
-import ResetPassword from '@/views/system/User/components/ResetPassword.vue'
+import { useTagsViewStore } from '@/store/modules/tagsView'
 import ModPersonalInfoVue from '@/views/system/User/components/ModPersonalInfo.vue'
+import ResetPassword from '@/views/system/User/components/ResetPassword.vue'
+import { ElButton, ElDropdown, ElDropdownItem, ElDropdownMenu } from 'element-plus'
 import { onMounted, ref, unref } from 'vue'
+import { useRouter } from 'vue-router'
 
 const tagsViewStore = useTagsViewStore()
 
@@ -28,22 +28,29 @@ const userName = wsCache.get(appStore.getUserInfo).username
 
 const { replace } = useRouter()
 
-const loginOut = () => {
-  ElMessageBox.confirm(t('common.loginOutMessage'), t('common.reminder'), {
-    confirmButtonText: t('common.ok'),
-    cancelButtonText: t('common.cancel'),
-    type: 'warning'
-  })
-    .then(async () => {
-      const res = await loginOutApi().catch(() => {})
-      if (res) {
-        wsCache.clear()
-        tagsViewStore.delAllViews()
-        resetRouter() // 重置静态路由表
-        replace('/login')
-      }
-    })
-    .catch(() => {})
+const loginOut = async () => {
+  const res = await loginOutApi().catch(() => {})
+  if (res) {
+    wsCache.clear()
+    tagsViewStore.delAllViews()
+    resetRouter() // 重置静态路由表
+    replace('/login')
+  }
+  // ElMessageBox.confirm(t('common.loginOutMessage'), t('common.reminder'), {
+  //   confirmButtonText: t('common.ok'),
+  //   cancelButtonText: t('common.cancel'),
+  //   type: 'warning'
+  // })
+  //   .then(async () => {
+  //     const res = await loginOutApi().catch(() => {})
+  //     if (res) {
+  //       wsCache.clear()
+  //       tagsViewStore.delAllViews()
+  //       resetRouter() // 重置静态路由表
+  //       replace('/login')
+  //     }
+  //   })
+  //   .catch(() => {})
 }
 
 const writeRef = ref<ComponentRef<typeof ResetPassword>>()

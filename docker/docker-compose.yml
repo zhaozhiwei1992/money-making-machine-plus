@@ -20,19 +20,19 @@ services:
       '--collation-server=utf8mb4_unicode_ci',    #设置数据库表的数据集
       '--default-time-zone=+8:00'                    #设置mysql数据库的 时区问题！！！！ 而不是设置容器的时区问题！！！！
     ]
-#  z-redis:
-#    image: redis
-#    hostname: z-redis
-#    networks:
-#      - z-net
-#    ports:
-#      - "6379:6379"
-#      #    restart: always
-#    volumes:
-#      - "${HOME}/docker/redis/redis.conf:/etc/redis/redis.conf"
-#      - "${HOME}/docker/redis/data:/data"
-#    command:
-#      redis-server /etc/redis/redis.conf --appendonly yes
+  z-redis:
+    image: redis
+    hostname: z-redis
+    networks:
+      - z-net
+    ports:
+      - "6379:6379"
+    restart: on-failure
+    volumes:
+      - "${HOME}/docker/redis/redis.conf:/etc/redis/redis.conf"
+      - "${HOME}/docker/redis/data:/data"
+    command:
+      redis-server /etc/redis/redis.conf --appendonly yes
   z-rmqnamesrv:
     image: apache/rocketmq:5.3.2
     container_name: z-rmqnamesrv

@@ -8,16 +8,13 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -32,6 +29,8 @@ import java.util.stream.Collectors;
  * @Package com/longtu/config/SimpleCacheAutoConfiguration.java
  * @Description: 缓存配置, 尽量简化, 直接使用本地服务缓存
  * 条件化配置, 需要在application.yaml中配置z.cache==simple
+ *
+ * 配置单一缓存使用
  * @author zhaozhiwei
  * @date 2022/7/12 下午9:49
  * @version V1.0
@@ -39,16 +38,15 @@ import java.util.stream.Collectors;
 @AutoConfiguration
 @EnableCaching
 @EnableScheduling
-//@ConditionalOnProperty(prefix = "z", name = "cache", havingValue = "simple")
-@ConfigurationProperties("z.cache-config")
 @Slf4j
-@Data
 @ComponentScan(value = {"com.z.framework.cache"})
+@ConditionalOnProperty(prefix = "z", name = "cache", havingValue = "simple")
 public class SimpleCacheAutoConfiguration {
 
     /**
      * 自定义方式会覆盖原有实现cachemanager接口的管理器，可用缓存容器中必须包含{@see PersonRepository}
      * 中cacheable#names中要使用的容器
+     * 该方式缓存清理需要配合定时器，不够灵活
      * {@see https://stackoverflow.com/questions/27968157/expiry-time-cacheable-spring-boot}
      *
      * @return
@@ -85,18 +83,18 @@ public class SimpleCacheAutoConfiguration {
         log.info("Flush Cache at : {}", new SimpleDateFormat().format(new Date()));
     }
 
-    private Map<String, CacheSpec> specs;
-
-    @Data
-    public static class CacheSpec {
-        private Integer expireTime;
-        private Integer maxSize;
-        private String remark;
-    }
-
     @Bean
     public Ticker ticker() {
         return Ticker.systemTicker();
+    }
+
+    private Map<String, CacheProperties.CacheSpec> specs;
+
+    private CacheProperties cacheProperties;
+
+    public SimpleCacheAutoConfiguration(CacheProperties cacheProperties) {
+        this.cacheProperties = cacheProperties;
+        specs = cacheProperties.getSpecs();
     }
 
     /**
@@ -121,7 +119,7 @@ public class SimpleCacheAutoConfiguration {
         return simpleCacheManager;
     }
 
-    private CaffeineCache buildCache(String name, SimpleCacheAutoConfiguration.CacheSpec cacheSpec, Ticker ticker) {
+    private CaffeineCache buildCache(String name, CacheProperties.CacheSpec cacheSpec, Ticker ticker) {
         final Caffeine<Object, Object> caffeineBuilder
                 = Caffeine.newBuilder()
                 .expireAfterWrite(cacheSpec.getExpireTime(), TimeUnit.SECONDS)

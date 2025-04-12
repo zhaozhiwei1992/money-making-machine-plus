@@ -559,6 +559,12 @@
         <artifactId>rocketmq-client</artifactId>
         <version>${rocketmq.version}</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.redisson</groupId>
+        <artifactId>redisson-spring-boot-starter</artifactId>
+        <version>3.21.1</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 </project>

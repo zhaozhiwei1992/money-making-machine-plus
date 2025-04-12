@@ -1,11 +1,14 @@
 package com.z.module.system.service;
 
 import com.z.module.system.web.vo.OnLineUserVO;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author zhaozhiwei
@@ -21,18 +24,45 @@ import java.util.Map;
 @Service
 public class OnLineUserService {
 
-    private List<OnLineUserVO> onlineUserList = new ArrayList<>();
+    private final CacheManager cacheManager;
+
+    private Cache onlineUserCache;
+
+    public OnLineUserService(CacheManager cacheManager) {
+        this.cacheManager = cacheManager;
+        onlineUserCache = cacheManager.getCache("onlineUserCache");
+    }
 
     public void add(OnLineUserVO onLineUserVO) {
-        onlineUserList.removeIf(next -> onLineUserVO.getUserName().equals(next.getUserName()));
-        onlineUserList.add(onLineUserVO);
+        List<OnLineUserVO> onLineUserList ;
+        if(Objects.isNull(onlineUserCache.get("onLineUserList"))){
+            onLineUserList = new ArrayList<>();
+        }else{
+            onLineUserList = (List<OnLineUserVO>) onlineUserCache.get("onLineUserList").get();
+        }
+        onLineUserList.removeIf(next -> onLineUserVO.getUserName().equals(next.getUserName()));
+        onLineUserList.add(onLineUserVO);
+        onlineUserCache.put("onLineUserList", onLineUserList);
     }
 
     public void delete(String loginName) {
-        onlineUserList.removeIf(next -> loginName.equals(next.getUserName()));
+        List<OnLineUserVO> onLineUserList ;
+        if(Objects.isNull(onlineUserCache.get("onLineUserList"))){
+            onLineUserList = new ArrayList<>();
+        }else{
+            onLineUserList = (List<OnLineUserVO>) onlineUserCache.get("onLineUserList").get();
+        }
+        onLineUserList.removeIf(next -> loginName.equals(next.getUserName()));
+        onlineUserCache.put("onLineUserList", onLineUserList);
     }
 
     public List<OnLineUserVO> findAll() {
-        return onlineUserList;
+        List<OnLineUserVO> onLineUserList ;
+        if(Objects.isNull(onlineUserCache.get("onLineUserList"))){
+            onLineUserList = new ArrayList<>();
+        }else{
+            onLineUserList = (List<OnLineUserVO>) onlineUserCache.get("onLineUserList").get();
+        }
+        return onLineUserList;
     }
 }

@@ -1,6 +1,7 @@
 package com.z.framework.operatelog.service;
 
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.Getter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.WebApplicationContext;
@@ -33,31 +34,21 @@ public class UrlMappingService {
         this.applicationContext = applicationContext;
     }
 
+    @Getter
     private final List<Map<String, String>> urlMappingList = new ArrayList<>();
 
-    public List<Map<String, String>> getUrlMappingList(){
-        return urlMappingList;
-    }
-
-    private final Map<String, String> urlMap = new HashMap<>();
-
     /**
-     * @data: 2022/7/21-上午9:16
-     * @User: zhaozhiwei
-     * @method: getUrlMap
-
-     * @return: java.util.Map<java.lang.String,java.lang.String>
-     * @Description: 返回url和中文对照信息
+     * -- GETTER --
+     *
      */
-    public Map<String, String> getUrlMap(){
-        return urlMap;
-    }
+    @Getter
+    private final Map<String, String> urlMap = new HashMap<>();
 
 
     @PostConstruct
     public void init() {
 
-        RequestMappingHandlerMapping requestMappingHandlerMapping = applicationContext.getBean(RequestMappingHandlerMapping.class);
+        RequestMappingHandlerMapping requestMappingHandlerMapping = applicationContext.getBean("requestMappingHandlerMapping", RequestMappingHandlerMapping.class);
         // 获取url与类和方法的对应信息
         Map<RequestMappingInfo, HandlerMethod> map = requestMappingHandlerMapping.getHandlerMethods();
 

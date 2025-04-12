@@ -139,7 +139,7 @@ public class LoginResource {
                 }
 
                 // 记录token白名单, 注: 如果cache使用 redis之类的, 可以跟token同步增加失效时间
-                loginService.addTokenWriteList(token);
+//                loginService.addTokenWriteList(token);
 
                 // 登录成功记录日志
                 LoginLog loginLog = loginLogService.genLogInfo(loginVM, request);

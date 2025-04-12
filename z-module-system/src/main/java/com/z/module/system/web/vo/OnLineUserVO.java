@@ -10,4 +10,5 @@ public class OnLineUserVO {
     private String ip;
     private String userName;
     private String browser;
+    private String tokenId;
 }

@@ -232,6 +232,17 @@ spring:
       console-available: true
   liquibase:
     enabled: true
+  redis:
+    database: 0
+    host: localhost
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        max-wait: -1
+        min-idle: 0
+    password: ''
+    port: 6379
 
 server:
   servlet:
@@ -400,7 +411,8 @@ z:
 #   替换为实际使用的可用计划额度id
     planCtrlId: D8FB0545181AFD71C12B69E09346E5DE
   # 默认使用simpleCache
-  cache: 'simple'
+#  cache: 'simple'
+  cache: 'multi'
   # 缓存配置
   #spring:
   #  cache:
@@ -433,6 +445,10 @@ z:
         expire-time: 86400
         max-size: 200
         remark: 'token白名单缓存'
+      onlineUserCache:
+        expire-time: 86400
+        max-size: 10000
+        remark: '在线用户缓存'
 
 # 验证码
 kaptcha:

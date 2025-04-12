@@ -43,7 +43,8 @@ public class ListenerAuthenticationEvent {
         this.request = request;
     }
 
-    @EventListener(classes = AuthenticationSuccessEvent.class)
+//    @EventListener(classes = AuthenticationSuccessEvent.class)
+    @EventListener
     public void onSuccess(AuthenticationSuccessEvent successEvent) {
         log.info("{} 认证成功", successEvent.getAuthentication().getName());
 
@@ -60,6 +61,7 @@ public class ListenerAuthenticationEvent {
             LocalDateTime.ofInstant(Instant.ofEpochMilli(successEvent.getTimestamp()), ZoneId.of("Asia/Shanghai"))
         );
         onLineUser.setNowTime(format);
+        onLineUser.setTokenId(successEvent.getAuthentication().getCredentials().toString());
         onLineUserService.add(onLineUser);
     }
 

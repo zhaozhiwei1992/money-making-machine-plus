@@ -2,8 +2,6 @@ package com.z.module.system.service.consumer;
 
 import com.z.module.system.domain.LoginLog;
 import com.z.module.system.repository.LoginLogRepository;
-import com.z.module.system.service.LoginLogService;
-import com.z.module.system.web.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;

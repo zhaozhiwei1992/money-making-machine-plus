@@ -1,21 +1,17 @@
 package com.z.framework.cache.service;
 
-import com.z.framework.cache.config.SimpleCacheAutoConfiguration;
+import com.z.framework.cache.config.CacheProperties;
 import com.z.framework.cache.service.dto.CacheContentDTO;
 import com.z.framework.cache.service.dto.CacheDTO;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.redisson.spring.cache.RedissonCache;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.caffeine.CaffeineCache;
+import org.springframework.cache.support.CompositeCacheManager;
 import org.springframework.stereotype.Service;
 
-import java.beans.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,16 +30,16 @@ import java.util.stream.Collectors;
 public class CacheService {
 
     private final CacheManager cacheManager;
-    private final SimpleCacheAutoConfiguration simpleCacheAutoConfiguration;
+    private final CacheProperties cacheProperties;
 
-    public CacheService(CacheManager cacheManager, SimpleCacheAutoConfiguration simpleCacheAutoConfiguration) {
+    public CacheService(CacheManager cacheManager, CacheProperties cacheProperties) {
         this.cacheManager = cacheManager;
-        this.simpleCacheAutoConfiguration = simpleCacheAutoConfiguration;
+        this.cacheProperties = cacheProperties;
     }
 
     public List<CacheDTO> allCacheList(){
 
-        Map<String, SimpleCacheAutoConfiguration.CacheSpec> specs = simpleCacheAutoConfiguration.getSpecs();
+        Map<String, CacheProperties.CacheSpec> specs = cacheProperties.getSpecs();
 
         return cacheManager.getCacheNames().stream().map(s -> {
             CacheDTO cacheDTO = new CacheDTO();
@@ -58,8 +54,11 @@ public class CacheService {
         if(cache instanceof CaffeineCache){
             final CaffeineCache caffeineCache = (CaffeineCache) cache;
             return caffeineCache.getNativeCache().asMap().keySet().stream().map(String::valueOf).collect(Collectors.toSet());
+        }else if(cache instanceof RedissonCache){
+            final RedissonCache redissonCache = (RedissonCache) cache;
+            return redissonCache.getNativeCache().keySet().stream().map(String::valueOf).collect(Collectors.toSet());
         }else{
-            log.error("不是caffeineCache类型");
+            log.error("不支持的缓存类型");
         }
         return null;
     }
