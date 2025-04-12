@@ -11,19 +11,19 @@ import java.util.List;
  * @Description: 登录成功后返回信息, 适配vue3-element-admin
  * 参考mock数据
  * const List: {
- *   username: string
- *   password: string
- *   role: string
- *   roleId: string
- *   permissions: string | string[]
+ * username: string
+ * password: string
+ * role: string
+ * roleId: string
+ * permissions: string | string[]
  * }[] = [
- *   {
- *     username: 'admin',
- *     password: 'admin',
- *     role: 'admin',
- *     roleId: '1',
- *     permissions: ['*.*.*']
- *   },
+ * {
+ * username: 'admin',
+ * password: 'admin',
+ * role: 'admin',
+ * roleId: '1',
+ * permissions: ['*.*.*']
+ * },
  * @author: zhaozhiwei
  * @date: 2023/4/21 下午1:51
  * @version: V1.0

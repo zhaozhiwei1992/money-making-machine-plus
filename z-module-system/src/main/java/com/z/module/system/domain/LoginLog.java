@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.springframework.data.annotation.CreatedDate;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -60,4 +59,14 @@ public class LoginLog extends AbstractAuditingEntity implements Serializable {
     // 不加这个, hibernate6.5.x下无法处理 com.z.module.system.repository.LoginLogRepository#findAllByYearGroupByMonth
     @Column(name = "created_date", updatable = false)
     private Instant createdDate = Instant.now().plusMillis(TimeUnit.HOURS.toMillis(8));
+
+    /**
+     * 登录成功失败: SUCCESS/FAILURE
+     */
+    private String result;
+
+    /**
+     * 登录失败要备注下原因
+     */
+    private String remark;
 }

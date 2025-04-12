@@ -3,25 +3,30 @@ package com.z.framework.security.config;
 import com.z.framework.security.aop.AbstractPermissionFilterTemplate;
 import com.z.framework.security.aop.JWTAuthenticationFilter;
 import com.z.framework.security.service.TokenProviderService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.security.authentication.AuthenticationEventPublisher;
-import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.event.LogoutSuccessEvent;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 
 import java.util.Arrays;
 import java.util.List;
@@ -119,6 +124,9 @@ public class SpringSecurityAutoConfiguration {
 //                .passwordEncoder(passwordEncoder()).and().build();
 //    }
 
+    @Autowired
+    private ApplicationContext applicationContext;
+
     /**
      * 配置请求拦截, 3.x推荐方式
      */
@@ -146,6 +154,26 @@ public class SpringSecurityAutoConfiguration {
                 // Can't configure anyRequest after itself   5.2版本以后只能有一个anyRequest,坑
 //                .anyRequest().access("@rbacServiceImpl.hasPermission(request, authentication)")
                 .addFilterBefore(new JWTAuthenticationFilter(tokenProviderService, userDetailsService), UsernamePasswordAuthenticationFilter.class);
+//        退出逻辑, 理想情况下退出逻辑走这里， 但是现在抛出事件前东西都被清空了，玩个蛋
+        http.logout(logout -> logout
+                // 必须与前端调用路径一致
+                .logoutUrl("/api/loginOut")
+                // 兼容有状态场景
+                .invalidateHttpSession(true)
+                // 若使用Cookie需清理
+                .deleteCookies("JSESSIONID")
+                .logoutSuccessHandler((request, response, authentication) -> {
+                    // 从请求属性中获取保存的Authentication
+                    if (authentication != null) {
+                        LogoutSuccessEvent event = new LogoutSuccessEvent(authentication);
+                        applicationContext.publishEvent(event);
+                    }
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    response.setContentType("application/json;charset=UTF-8");
+                    response.getWriter().write("{\"code\":200,\"msg\":\"退出成功\"}");
+                })
+        );
+
 
         // 打开下述注释可以自定义动态权限控制
 //                .addFilterAfter(abstractPermissionFilterTemplate, UsernamePasswordAuthenticationFilter.class);
@@ -153,7 +181,7 @@ public class SpringSecurityAutoConfiguration {
     }
 
     @Bean
-    public AuthenticationEventPublisher authenticationEventPublisher() {
-        return new DefaultAuthenticationEventPublisher();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
     }
 }

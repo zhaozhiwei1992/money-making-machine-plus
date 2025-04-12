@@ -52,6 +52,7 @@ public class CaptchaResource {
         // 生成验证码文本
         String captchaText = captchaProducer.createText();
         session.setAttribute(Constants.KAPTCHA_SESSION_KEY, captchaText);
+        session.setMaxInactiveInterval(5 * 60); // 5分钟过期
         log.info("生成验证码文本==== {}", captchaText);
 
         // 创建验证码图片

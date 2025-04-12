@@ -1,14 +1,15 @@
 <script name="MenuIndex" setup lang="ts">
+// import { delTableListApi, getTableListApi } from '@/api/system/login-log'
+import { delTableListApi, getTableListApi } from '@/api/system/request-log'
+import { TableData } from '@/api/table/types'
 import { ContentWrap } from '@/components/ContentWrap'
 import { Search } from '@/components/Search'
-import { useI18n } from '@/hooks/web/useI18n'
-import { ElButton } from 'element-plus'
 import { Table } from '@/components/Table'
-import { getTableListApi, delTableListApi } from '@/api/system/request-log'
-import { useTable } from '@/hooks/web/useTable'
-import { TableData } from '@/api/table/types'
-import { ref, reactive } from 'vue'
 import { CrudSchema, useCrudSchemas } from '@/hooks/web/useCrudSchemas'
+import { useI18n } from '@/hooks/web/useI18n'
+import { useTable } from '@/hooks/web/useTable'
+import { ElButton } from 'element-plus'
+import { reactive, ref } from 'vue'
 
 const { register, tableObject, methods } = useTable<TableData>({
   getListApi: getTableListApi,

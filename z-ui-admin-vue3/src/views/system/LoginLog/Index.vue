@@ -1,14 +1,14 @@
 <script name="MenuIndex" setup lang="ts">
+import { delTableListApi, getTableListApi } from '@/api/system/login-log'
+import { TableData } from '@/api/table/types'
 import { ContentWrap } from '@/components/ContentWrap'
 import { Search } from '@/components/Search'
-import { useI18n } from '@/hooks/web/useI18n'
-import { ElButton } from 'element-plus'
 import { Table } from '@/components/Table'
-import { getTableListApi, delTableListApi } from '@/api/system/login-log'
-import { useTable } from '@/hooks/web/useTable'
-import { TableData } from '@/api/table/types'
-import { ref, reactive } from 'vue'
 import { CrudSchema, useCrudSchemas } from '@/hooks/web/useCrudSchemas'
+import { useI18n } from '@/hooks/web/useI18n'
+import { useTable } from '@/hooks/web/useTable'
+import { ElButton } from 'element-plus'
+import { reactive, ref } from 'vue'
 
 const { register, tableObject, methods } = useTable<TableData>({
   getListApi: getTableListApi,
@@ -62,6 +62,14 @@ const crudSchemas = reactive<CrudSchema[]>([
   {
     field: 'createdDate',
     label: '登录日期'
+  },
+  {
+    field: 'result',
+    label: '登录状态'
+  },
+  {
+    field: 'remark',
+    label: '备注'
   }
 ])
 

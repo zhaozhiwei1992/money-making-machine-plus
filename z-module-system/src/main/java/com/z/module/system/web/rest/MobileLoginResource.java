@@ -20,11 +20,20 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author zhaozhiwei
@@ -54,13 +63,16 @@ public class MobileLoginResource {
 
     private final RocketMQTemplate rocketMQTemplate;
 
-    public MobileLoginResource(UserRepository userRepository, PasswordEncoder passwordEncoder, CacheManager cacheManager, LoginLogService loginLogService, TokenProviderService tokenProviderService, RocketMQTemplate rocketMQTemplate) {
+    private final AuthenticationManager authenticationManager;
+
+    public MobileLoginResource(UserRepository userRepository, PasswordEncoder passwordEncoder, CacheManager cacheManager, LoginLogService loginLogService, TokenProviderService tokenProviderService, RocketMQTemplate rocketMQTemplate, AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = passwordEncoder;
         this.cacheManager = cacheManager;
         this.loginLogService = loginLogService;
         this.tokenProviderService = tokenProviderService;
         this.rocketMQTemplate = rocketMQTemplate;
+        this.authenticationManager = authenticationManager;
     }
 
     /**
@@ -81,24 +93,23 @@ public class MobileLoginResource {
             log.info("登录用户信息 {}", loginVM);
             String username = loginVM.getUsername();
             String password = loginVM.getPassword();
-            final User dbUser = userRepository.findOneByLogin(username).orElse(new User());
-            logger.info("查询用户信息 {}", dbUser);
-            String dbPassWord = dbUser.getPassword();
-            logger.info("数据库密码: {}", dbPassWord);
-            if (bCryptPasswordEncoder.matches(password, dbPassWord)) {
-                String token = tokenProviderService.generateToken(username, loginVM.isRememberMe());
-                authedRespVO.setPermissions(Collections.singletonList("*.*.*"));
-                authedRespVO.setToken(token);
 
-                // 登录成功记录日志
-                LoginLog loginLog = loginLogService.genLogInfo(loginVM, request);
-                Message<LoginLog> loginLogMsg = MessageBuilder.withPayload(loginLog).build();
-                rocketMQTemplate.send(LoginLogConsumer.TOPIC, loginLogMsg);
-                return authedRespVO;
-            }else{
-                log.error(String.format("登录失败, 用户: %s, 密码: %s, 数据库密码: %s", username, password, dbPassWord));
-                throw new RuntimeException(String.format("用户密码不匹配, 登录用户: %s, 密码: %s", username, password));
-            }
+            // security认证核心
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    username, password));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            String token = tokenProviderService.generateToken(username, loginVM.isRememberMe());
+            // 如果不需要前台动态控制按钮显示,可以返回***
+            // authedRespVO.setPermissions(Collections.singletonList("*.*.*"));
+            authedRespVO.setPermissions(authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
+            authedRespVO.setToken(token);
+
+            // 登录成功记录日志
+            LoginLog loginLog = loginLogService.genLogInfo(loginVM, request);
+            Message<LoginLog> loginLogMsg = MessageBuilder.withPayload(loginLog).build();
+            rocketMQTemplate.send(LoginLogConsumer.TOPIC, loginLogMsg);
+            return authedRespVO;
         } catch (Exception e) {
             logger.error("登录出错", e);
             throw new RuntimeException("登录出错");
@@ -107,13 +118,13 @@ public class MobileLoginResource {
 
     @Operation(description = "退出")
     @GetMapping("loginOut")
-    public String loginOut(){
+    public String loginOut() {
         // 销毁token, 防止下次使用
         final Cache tokenBlackCache = cacheManager.getCache("tokenBlackCache");
         List<String> cacheBlockList;
-        if(Objects.isNull(tokenBlackCache.get("tokenBlock"))){
+        if (Objects.isNull(tokenBlackCache.get("tokenBlock"))) {
             cacheBlockList = new ArrayList<>();
-        }else{
+        } else {
             cacheBlockList = (List<String>) tokenBlackCache.get("tokenBlock").get();
         }
         cacheBlockList.add(SecurityUtils.getTokenId());
@@ -147,7 +158,7 @@ public class MobileLoginResource {
                 Message<LoginLog> loginLogMsg = MessageBuilder.withPayload(loginLog).build();
                 rocketMQTemplate.send(LoginLogConsumer.TOPIC, loginLogMsg);
                 return authedRespVO;
-            }else{
+            } else {
                 log.error(String.format("登录失败, 用户: %s, 密码: %s, 数据库密码: %s", username, password, dbPassWord));
                 throw new RuntimeException(String.format("用户密码不匹配, 登录用户: %s, 密码: %s", username, password));
             }

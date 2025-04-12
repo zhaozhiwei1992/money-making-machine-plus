@@ -39,7 +39,7 @@ public class RequestLogResource {
      */
     @Operation(description = "所有请求日志信息")
     @GetMapping("/request/logs")
-    public ResponseEntity<ResponseData<HashMap<String, Object>>> getAllRequestLog(Pageable pageable,
+    public HashMap<String, Object> getAllRequestLog(Pageable pageable,
                                                                                   RequestLog requestLog) {
         log.debug("REST request to get all RequestLogging for an admin");
 
@@ -65,10 +65,10 @@ public class RequestLogResource {
         //创建实例
         Example<RequestLog> ex = Example.of(requestLog, matcher);
         requestLoggingPage = requestLoggingRepository.findAll(ex, pageable);
-        return ResponseData.ok(new HashMap<String, Object>() {{
+        return new HashMap<>() {{
             put("list", requestLoggingPage.getContent());
             put("total", Long.valueOf(requestLoggingPage.getTotalElements()).intValue());
-        }});
+        }};
     }
 
 }

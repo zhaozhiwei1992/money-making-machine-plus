@@ -14,7 +14,8 @@ export const loginApi = (data: UserType): Promise<UserType> => {
 }
 
 export const loginOutApi = (): Promise<string> => {
-  return request.get({ url: '/system/loginOut' })
+  // return request.post({ url: '/system/loginOut' })
+  return request.post({ url: '/system/loginOut' })
 }
 
 export const getUserListApi = ({ params }: AxiosConfig) => {
