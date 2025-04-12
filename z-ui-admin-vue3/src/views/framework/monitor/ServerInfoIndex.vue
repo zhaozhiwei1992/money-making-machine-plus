@@ -1,9 +1,8 @@
 <script name="UserIndex" setup lang="ts">
-import { ContentWrap } from '@/components/ContentWrap'
 import { getServerInfo } from '@/api/framework/monitor/serverinfo'
-import { TableData, SysFiles } from '@/api/framework/monitor/serverinfo/types'
-import { reactive, onMounted } from 'vue'
-import { ElRow, ElCard, ElCol, ElTable, ElTableColumn } from 'element-plus'
+import { SysFiles, TableData } from '@/api/framework/monitor/serverinfo/types'
+import { ContentWrap } from '@/components/ContentWrap'
+import { onMounted, reactive } from 'vue'
 
 const cpuInfos = reactive<TableData[]>([])
 const memInfos = reactive<TableData[]>([])

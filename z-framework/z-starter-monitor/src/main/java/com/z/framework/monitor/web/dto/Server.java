@@ -4,6 +4,9 @@ import com.z.framework.monitor.web.util.NumberUtil;
 import com.z.framework.monitor.web.vo.FieldVO;
 import com.z.framework.monitor.web.vo.ServerVO;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.CentralProcessor.TickType;
@@ -15,7 +18,6 @@ import oshi.software.os.OperatingSystem;
 import oshi.util.Util;
 
 import java.lang.management.ManagementFactory;
-import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -25,6 +27,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -35,9 +39,8 @@ import java.util.stream.Collectors;
  * @Description: 服务器信息
  * @date 2022/6/30 下午10:20
  */
+@Slf4j
 public class Server {
-
-    private static final int OSHI_WAIT_SECOND = 1000;
 
     /**
      * CPU相关信息
@@ -59,26 +62,6 @@ public class Server {
      */
     private final Sys sys = new Sys();
 
-    public Cpu getCpu() {
-        return cpu;
-    }
-
-    public Mem getMem() {
-        return mem;
-    }
-
-    public Jvm getJvm() {
-        return jvm;
-    }
-
-    public Sys getSys() {
-        return sys;
-    }
-
-    public List<SysFile> getSysFiles() {
-        return sysFiles;
-    }
-
     /**
      * 磁盘相关信息
      */
@@ -98,34 +81,66 @@ public class Server {
      * 设置CPU信息
      */
     private void setCpuInfo(CentralProcessor processor) {
-        // CPU信息
-        long[] prevTicks = processor.getSystemCpuLoadTicks();
-        Util.sleep(OSHI_WAIT_SECOND);
-        long[] ticks = processor.getSystemCpuLoadTicks();
-        long nice = ticks[TickType.NICE.getIndex()] - prevTicks[TickType.NICE.getIndex()];
-        long irq = ticks[TickType.IRQ.getIndex()] - prevTicks[TickType.IRQ.getIndex()];
-        long softirq = ticks[TickType.SOFTIRQ.getIndex()] - prevTicks[TickType.SOFTIRQ.getIndex()];
-        long steal = ticks[TickType.STEAL.getIndex()] - prevTicks[TickType.STEAL.getIndex()];
-        long cSys = ticks[TickType.SYSTEM.getIndex()] - prevTicks[TickType.SYSTEM.getIndex()];
-        long user = ticks[TickType.USER.getIndex()] - prevTicks[TickType.USER.getIndex()];
-        long iowait = ticks[TickType.IOWAIT.getIndex()] - prevTicks[TickType.IOWAIT.getIndex()];
-        long idle = ticks[TickType.IDLE.getIndex()] - prevTicks[TickType.IDLE.getIndex()];
-        long totalCpu = user + nice + cSys + idle + iowait + irq + softirq + steal;
-        cpu.setCpuNum(processor.getLogicalProcessorCount());
-        cpu.setTotal(totalCpu);
-        cpu.setSys(cSys);
-        cpu.setUsed(user);
-        cpu.setWait(iowait);
-        cpu.setFree(idle);
+        // 常量声明提升可读性
+        final int WAIT_SECONDS = 1; // 采样间隔时间
+
+        try {
+            // 第一次采样CPU时间片计数
+            long[] prevTicks = processor.getSystemCpuLoadTicks();
+
+            // 等待采样间隔（增加中断处理）
+            TimeUnit.SECONDS.sleep(WAIT_SECONDS);
+
+            // 第二次采样CPU时间片计数
+            long[] ticks = processor.getSystemCpuLoadTicks();
+
+            // 设置逻辑核心数
+            cpu.setCpuNum(processor.getLogicalProcessorCount());
+            long totalCpuTicks = 0;
+            Map<TickType, Long> tickDeltas = new EnumMap<>(TickType.class);
+
+            // 遍历所有CPU状态类型[1](@ref)
+            for (TickType tickType : TickType.values()) {
+                // 计算两次采样的时间片差值
+                long delta = ticks[tickType.getIndex()] - prevTicks[tickType.getIndex()];
+                tickDeltas.put(tickType, delta);
+                totalCpuTicks += delta;
+            }
+
+            // 有效性校验（避免除零错误）
+            if (totalCpuTicks <= 0) {
+                throw new IllegalStateException("无效的CPU时间片数据");
+            }
+
+            // 计算各状态占比（统一格式化处理）
+            Long finalTotalCpuTicks = totalCpuTicks;
+            Function<Long, String> formatPercentage = delta ->
+                    NumberUtil.round(NumberUtil.mul(NumberUtil.div(delta, finalTotalCpuTicks), 100), 2).toString();
+
+            // 设置各状态百分比[2,8](@ref)
+            cpu.setTotal(formatPercentage.apply(totalCpuTicks)); // 总利用率
+            cpu.setSys(formatPercentage.apply(tickDeltas.get(TickType.SYSTEM)));
+            cpu.setUsed(formatPercentage.apply(tickDeltas.get(TickType.USER)));
+            cpu.setWait(formatPercentage.apply(tickDeltas.get(TickType.IOWAIT)));
+            cpu.setFree(formatPercentage.apply(tickDeltas.get(TickType.IDLE)));
+            cpu.setIrq(formatPercentage.apply(tickDeltas.get(TickType.IRQ)));
+
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            log.error("CPU信息采集被中断", e);
+        } catch (Exception e) {
+            log.error("获取CPU信息异常", e);
+        }
     }
+
 
     /**
      * 设置内存信息
      */
     private void setMemInfo(GlobalMemory memory) {
-        mem.setTotal(memory.getTotal());
-        mem.setUsed(memory.getTotal() - memory.getAvailable());
-        mem.setFree(memory.getAvailable());
+        mem.setTotal(convertSize(memory.getTotal()));
+        mem.setUsed(convertSize(memory.getTotal() - memory.getAvailable()));
+        mem.setFree(convertSize(memory.getAvailable()));
     }
 
     /**
@@ -150,9 +165,9 @@ public class Server {
      */
     private void setJvmInfo() {
         Properties props = System.getProperties();
-        jvm.setTotal(Runtime.getRuntime().totalMemory());
-        jvm.setMax(Runtime.getRuntime().maxMemory());
-        jvm.setFree(Runtime.getRuntime().freeMemory());
+        jvm.setTotal(convertSize(Runtime.getRuntime().totalMemory()));
+        jvm.setMax(convertSize(Runtime.getRuntime().maxMemory()));
+        jvm.setFree(convertSize(Runtime.getRuntime().freeMemory()));
         jvm.setVersion(props.getProperty("java.version"));
         jvm.setHome(props.getProperty("java.home"));
     }
@@ -166,39 +181,45 @@ public class Server {
         for (OSFileStore fs : fsArray) {
             long free = fs.getUsableSpace();
             long total = fs.getTotalSpace();
+            if(total == 0){
+                continue;
+            }
             long used = total - free;
             SysFile sysFile = new SysFile();
             sysFile.setDirName(fs.getMount());
             sysFile.setSysTypeName(fs.getType());
             sysFile.setTypeName(fs.getName());
-            sysFile.setTotal(convertFileSize(total));
-            sysFile.setFree(convertFileSize(free));
-            sysFile.setUsed(convertFileSize(used));
+            sysFile.setTotal(convertSize(total));
+            sysFile.setFree(convertSize(free));
+            sysFile.setUsed(convertSize(used));
             sysFile.setUsage(NumberUtil.mul(NumberUtil.div(used, total, 4), 100));
             sysFiles.add(sysFile);
         }
     }
 
+    private static final long KB = 1024;
+    private static final long MB = KB * 1024;
+    private static final long GB = MB * 1024;
+    private static final int FORMAT_THRESHOLD = 100;
     /**
      * 字节转换
      *
      * @param size 字节大小
      * @return 转换后值
      */
-    public String convertFileSize(long size) {
-        long kb = 1024;
-        long mb = kb * 1024;
-        long gb = mb * 1024;
-        if (size >= gb) {
-            return String.format("%.1f GB", (float) size / gb);
-        } else if (size >= mb) {
-            float f = (float) size / mb;
-            return String.format(f > 100 ? "%.0f MB" : "%.1f MB", f);
-        } else if (size >= kb) {
-            float f = (float) size / kb;
-            return String.format(f > 100 ? "%.0f KB" : "%.1f KB", f);
-        } else {
-            return String.format("%d B", size);
+    public String convertSize(long size) {
+        if (size < 0) throw new IllegalArgumentException("Size cannot be negative");
+
+        if (size >= GB) {
+            return String.format("%.1f GB", (double) size / GB);
+        } else if (size >= MB) {
+            double value = (double) size / MB;
+            return String.format(value > FORMAT_THRESHOLD ? "%.0f MB ":"%.1f MB", value);
+        } else if (size >= KB) {
+            double value = (double) size / KB;
+            return String.format(value > FORMAT_THRESHOLD ? "%.0f KB" : "%.1f KB", value);
+        }else{
+            return size + " B";
         }
     }
 
@@ -269,68 +290,43 @@ public class Server {
         private String osArch;
     }
 
+    @Setter
     static class Mem {
 
         /**
          * 内存总量
          */
-        private double total;
+        private String total;
 
         /**
          * 已用内存
          */
-        private double used;
+        private String used;
 
         /**
          * 剩余内存
          */
-        private double free;
+        private String free;
 
-        public double getTotal() {
-            return NumberUtil.div(total, (1024 * 1024 * 1024), 2);
-        }
-
-        public void setTotal(long total) {
-            this.total = total;
-        }
-
-        public double getUsed() {
-            return NumberUtil.div(used, (1024 * 1024 * 1024), 2);
-        }
-
-        public void setUsed(long used) {
-            this.used = used;
-        }
-
-        public double getFree() {
-            return NumberUtil.div(free, (1024 * 1024 * 1024), 2);
-        }
-
-        public void setFree(long free) {
-            this.free = free;
-        }
-
-        public double getUsage() {
-            return NumberUtil.mul(NumberUtil.div(used, total, 4), 100);
-        }
     }
 
+    @Setter
     static class Jvm {
 
         /**
          * 当前JVM占用的内存总数(M)
          */
-        private double total;
+        private String total;
 
         /**
          * JVM最大可用内存总数(M)
          */
-        private double max;
+        private String max;
 
         /**
          * JVM空闲内存(M)
          */
-        private double free;
+        private String free;
 
         /**
          * JDK版本
@@ -342,59 +338,11 @@ public class Server {
          */
         private String home;
 
-        public double getTotal() {
-            return NumberUtil.div(total, (1024 * 1024), 2);
-        }
-
-        public void setTotal(double total) {
-            this.total = total;
-        }
-
-        public double getMax() {
-            return NumberUtil.div(max, (1024 * 1024), 2);
-        }
-
-        public void setMax(double max) {
-            this.max = max;
-        }
-
-        public double getFree() {
-            return NumberUtil.div(free, (1024 * 1024), 2);
-        }
-
-        public void setFree(double free) {
-            this.free = free;
-        }
-
-        public double getUsed() {
-            return NumberUtil.div(total - free, (1024 * 1024), 2);
-        }
-
-        public double getUsage() {
-            return NumberUtil.mul(NumberUtil.div(total - free, total, 4), 100);
-        }
-
         /**
          * 获取JDK名称
          */
         public String getName() {
             return ManagementFactory.getRuntimeMXBean().getVmName();
-        }
-
-        public String getVersion() {
-            return version;
-        }
-
-        public void setVersion(String version) {
-            this.version = version;
-        }
-
-        public String getHome() {
-            return home;
-        }
-
-        public void setHome(String home) {
-            this.home = home;
         }
 
         /**
@@ -438,6 +386,7 @@ public class Server {
         }
     }
 
+    @Setter
     static class Cpu {
 
         /**
@@ -448,75 +397,32 @@ public class Server {
         /**
          * CPU总的使用率
          */
-        private double total;
+        private String total;
 
         /**
          * CPU系统使用率
          */
-        private double sys;
+        private String sys;
 
         /**
          * CPU用户使用率
          */
-        private double used;
+        private String used;
 
         /**
          * CPU当前等待率
          */
-        private double wait;
+        private String wait;
 
         /**
          * CPU当前空闲率
          */
-        private double free;
+        private String free;
 
-        public int getCpuNum() {
-            return cpuNum;
-        }
+        private String nice;
 
-        public void setCpuNum(int cpuNum) {
-            this.cpuNum = cpuNum;
-        }
+        private String irq;
 
-        public BigDecimal getTotal() {
-            return NumberUtil.round(NumberUtil.mul(total, 100), 2);
-        }
-
-        public void setTotal(double total) {
-            this.total = total;
-        }
-
-        public BigDecimal getSys() {
-            return NumberUtil.round(NumberUtil.mul(sys / total, 100), 2);
-        }
-
-        public void setSys(double sys) {
-            this.sys = sys;
-        }
-
-        public BigDecimal getUsed() {
-            return NumberUtil.round(NumberUtil.mul(used / total, 100), 2);
-        }
-
-        public void setUsed(double used) {
-            this.used = used;
-        }
-
-        public BigDecimal getWait() {
-            return NumberUtil.round(NumberUtil.mul(wait / total, 100), 2);
-        }
-
-        public void setWait(double wait) {
-            this.wait = wait;
-        }
-
-        public BigDecimal getFree() {
-            return NumberUtil.round(NumberUtil.mul(free / total, 100), 2);
-        }
-
-        public void setFree(double free) {
-            this.free = free;
-        }
     }
 
     public static class SysFile {
