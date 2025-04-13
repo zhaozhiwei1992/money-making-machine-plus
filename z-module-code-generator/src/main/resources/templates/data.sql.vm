@@ -1,0 +1,5 @@
+-- 生成数据
+$deleteSql
+#foreach ($insertSql in $insertSqlList)
+    $insertSql
+#end

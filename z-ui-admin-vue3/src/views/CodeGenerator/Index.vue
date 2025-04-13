@@ -1,5 +1,6 @@
 <script name="UserIndex" setup lang="ts">
-import { generateCodeApi } from '@/api/code-generator'
+import { generateCodeApi, getColListApi, getTableListApi } from '@/api/code-generator'
+import { TableData } from '@/api/code-generator/types'
 import { ContentWrap } from '@/components/ContentWrap'
 import { getCurrentInstance, reactive } from 'vue'
 
@@ -12,44 +13,50 @@ const tableConfig = {
 }
 
 // vue3中必须使用代理相应对象才会监听变化
-let tableData: any = reactive([])
-let tableCurrentSelectRow: any = tableData
+const tableData = reactive<TableData[]>([])
+const tableCurrentSelectRow = ref<TableData>(tableData[0])
 
 let colData: any = reactive([])
 const trueFalse = [
-  { value: true, code: true, name: '是' },
-  { value: false, code: false, name: '否' }
+  { value: 'true', code: 'true', name: '是' },
+  { value: 'false', code: 'false', name: '否' }
 ]
 
 const columnTypeMapping = [
   { value: 'varchar', code: 'varchar', name: 'varchar类型' },
-  { value: 'bigint', code: 'bigint', name: 'int类型' },
-  { value: 'date', code: 'date', name: '日期类型' }
+  { value: 'bigint', code: 'bigint', name: 'bigint类型' },
+  { value: 'int', code: 'int', name: 'int类型' },
+  { value: 'date', code: 'date', name: '日期类型' },
+  { value: 'datetime', code: 'datetime', name: '日期时间类型' },
+  { value: 'bit', code: 'bit', name: 'bit类型' }
 ]
 
-const handleTableSelectionChange = (row) => {
+const handleTableSelectionChange = async (row) => {
   // 明细表数据过滤
-  tableData.forEach((item: any) => {
-    // 排他,每次选择时把其他选项都清除
-    if (item.tableName !== row.tableName) {
-      item.checked = false
-    }
-  })
+  // tableData.forEach((item: any) => {
+  //   // 排他,每次选择时把其他选项都清除
+  //   if (item.tableName !== row.tableName) {
+  //     item.checked = false
+  //   }
+  // })
   // 如果使用单选框,这里可以把当前选中的这一项先保存起来
-  tableCurrentSelectRow = row
-  currentInstance.ctx.$refs.table.clearSelection()
-  currentInstance.ctx.$refs.table.toggleRowSelection(tableCurrentSelectRow)
+  tableCurrentSelectRow.value = row
+  // currentInstance.ctx.$refs.table.clearSelection()
+  // currentInstance.ctx.$refs.table.toggleRowSelection(tableCurrentSelectRow)
+  fetchColData(currentTableName())
 }
-const currentTableName = () => {
+const currentTableName = (): string => {
   // 当前选中行的表名, 用来前端展现filter中过滤数据
   if (tableCurrentSelectRow != null) {
-    return tableCurrentSelectRow.tableName
+    return tableCurrentSelectRow.value.tableName
+  } else {
+    return ''
   }
 }
 const tableAddRow = () => {
-  tableData.push({ tableName: '' })
+  tableData.push({ tableName: '', tableType: 'TABLE', remarks: 'x' })
   const newTableRow = tableData[tableData.length - 1]
-  tableCurrentSelectRow = newTableRow
+  tableCurrentSelectRow.value = newTableRow
   currentInstance.ctx.$refs.table.clearSelection()
   currentInstance.ctx.$refs.table.toggleRowSelection(newTableRow)
 }
@@ -64,7 +71,7 @@ const tableDelRow = () => {
       return item.tableName != selected.tableName
     })
     const newTableRow = tableData[tableData.length - 1]
-    tableCurrentSelectRow = newTableRow
+    tableCurrentSelectRow.value = newTableRow
     currentInstance.ctx.$refs.table.clearSelection()
     currentInstance.ctx.$refs.table.toggleRowSelection(newTableRow)
 
@@ -74,7 +81,7 @@ const tableDelRow = () => {
 }
 const colAddRow = () => {
   // 增加列信息, 表为当前选中表
-  colData.push({ tableName: tableCurrentSelectRow.tableName })
+  colData.push({ tableName: tableCurrentSelectRow.value.tableName })
   console.log(colData)
 }
 
@@ -93,7 +100,7 @@ const colDelRow = () => {
 const generatorCode = () => {
   // 根据列表数据生成代码
   const data: any = {}
-  data.tableData = tableData
+  data.tableData = [tableCurrentSelectRow.value]
   data.colData = colData
   generateCodeApi(data)
     .then((res) => {
@@ -130,6 +137,56 @@ const generatorCode = () => {
       console.log(err)
     })
 }
+
+// 响应式数据
+const loading = ref(false)
+// 获取数据方法
+const fetchTableData = async () => {
+  try {
+    loading.value = true
+    const params = {
+      tableName: searchKey.value
+    }
+    const res = await getTableListApi(params)
+    tableData.length = 0
+    tableData.push(...res)
+  } catch (error) {
+    console.error('获取表数据失败:', error)
+    ElMessage.error('数据加载失败')
+  } finally {
+    loading.value = false
+  }
+}
+
+const fetchColData = async (tableName: string) => {
+  try {
+    loading.value = true
+    const params = {
+      tableName: tableName
+    }
+    const res = await getColListApi(params)
+    colData.length = 0
+    colData.push(...res)
+    // 界面新增列处理
+    // colData.filter((v) => v.tableName == currentTableName())
+  } catch (error) {
+    console.error('获取表列数据失败:', error)
+    ElMessage.error('数据加载失败')
+  } finally {
+    loading.value = false
+  }
+}
+
+const searchKey = ref('')
+
+const handleSearch = () => {
+  fetchTableData()
+}
+
+onMounted(async () => {
+  // 初始化数据
+  fetchTableData()
+})
 </script>
 
 <template>
@@ -139,6 +196,16 @@ const generatorCode = () => {
         <div class="mb-10px">
           <ElButton type="primary" size="small" @click="tableAddRow">增加行</ElButton>
           <ElButton type="danger" size="small" @click="tableDelRow">删除行</ElButton>
+          <el-input
+            v-model="searchKey"
+            placeholder="输入表名搜索"
+            style="width: 300px; padding: 0px 10px"
+            @keyup.enter="handleSearch"
+          >
+            <template #append>
+              <el-button size="small" :icon="Search" @click="handleSearch">搜</el-button>
+            </template>
+          </el-input>
         </div>
 
         <el-table
@@ -149,7 +216,7 @@ const generatorCode = () => {
           highlight-current-row
           @current-change="handleTableSelectionChange"
         >
-          <el-table-column type="selection" width="50" />
+          <!-- <el-table-column type="selection" width="50" /> -->
           <el-table-column prop="tableComments" label="表中文名" width="150">
             <template #default="scope">
               <el-input
@@ -178,7 +245,7 @@ const generatorCode = () => {
         </div>
 
         <el-table
-          :data="colData.filter((v) => v.tableName == currentTableName())"
+          :data="colData"
           style="width: 100%"
           ref="colTable"
           :height="tableConfig.height"
