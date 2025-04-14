@@ -57,7 +57,7 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'requestUri',
+    field: 'requestURI',
     label: '请求地址'
   },
   {

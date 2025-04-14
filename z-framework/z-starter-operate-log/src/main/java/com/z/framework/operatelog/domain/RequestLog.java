@@ -2,6 +2,7 @@ package com.z.framework.operatelog.domain;
 
 import com.z.framework.common.domain.AbstractAuditingEntity;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

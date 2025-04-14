@@ -1,5 +1,4 @@
 <script lang="tsx">
-import { AIBot } from '@/components/AI'
 import { Breadcrumb } from '@/components/Breadcrumb'
 import { Collapse } from '@/components/Collapse'
 import { LocaleDropdown } from '@/components/LocaleDropdown'
@@ -55,9 +54,9 @@ export default defineComponent({
           </div>
         ) : undefined}
         <div class="h-full flex items-center">
-          {screenfull.value ? (
+          {/* {screenfull.value ? (
             <AIBot class="hover-trigger" color="var(--top-header-text-color)"></AIBot>
-          ) : undefined}
+          ) : undefined} */}
           {screenfull.value ? (
             <Screenfull class="hover-trigger" color="var(--top-header-text-color)"></Screenfull>
           ) : undefined}
