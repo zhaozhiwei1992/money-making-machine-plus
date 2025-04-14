@@ -27,7 +27,7 @@ services:
       - z-net
     ports:
       - "6379:6379"
-    restart: on-failure
+#    restart: on-failure
     volumes:
       - "${HOME}/docker/redis/redis.conf:/etc/redis/redis.conf"
       - "${HOME}/docker/redis/data:/data"
@@ -65,7 +65,7 @@ services:
       - z-rmqnamesrv
     ports:
       - 8080:8080
-    restart: on-failure
+#    restart: on-failure
     environment:
       - NAMESRV_ADDR=z-rmqnamesrv:9876
     command: sh mqproxy
@@ -74,7 +74,7 @@ services:
     container_name: z-rmqdashboard
     ports:
       - 8091:8080
-    restart: on-failure
+#    restart: on-failure
     privileged: true
     depends_on:
       - z-rmqnamesrv
