@@ -7,3 +7,4 @@ dist-ssr
 *-lock.*
 pnpm-debug
 auto-imports.d.ts
+.vscode/*

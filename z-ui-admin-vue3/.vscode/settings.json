@@ -1,5 +1,7 @@
 {
   "i18n-ally.localesPaths": [
     "src/locales"
-  ]
+  ],
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs":"active"
 }
