@@ -1,22 +1,22 @@
 package com.z.framework.operatelog.aop;
 
 import cn.hutool.extra.servlet.JakartaServletUtil;
-import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONUtil;
 import com.z.framework.operatelog.domain.RequestLog;
 import com.z.framework.operatelog.repository.RequestLogRepository;
 import com.z.framework.operatelog.service.UrlMappingService;
 import com.z.framework.security.util.SecurityUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.util.*;
 
 /**
@@ -31,6 +31,9 @@ import java.util.*;
 @Slf4j
 public class RequestLoggingInterceptor implements HandlerInterceptor {
     private static final ThreadLocal<String> traceIdThreadLocal = new ThreadLocal<>();
+
+    // 敏感字段集合
+    private static final List<String> SENSITIVE_KEYS = Arrays.asList("password", "token");
 
     public static String getCurrentTraceId() {
         return traceIdThreadLocal.get();
@@ -52,10 +55,13 @@ public class RequestLoggingInterceptor implements HandlerInterceptor {
             }
             log.info("handler method : {} \n", handler);
 
+            // 包装请求以缓存body内容
+            ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(request);
+
             // 记录客户端ip
-            final String clientIP = JakartaServletUtil.getClientIP(request);
+            final String clientIP = JakartaServletUtil.getClientIP(wrappedRequest);
             // 请求的地址
-            final String requestURI = request.getRequestURI();
+            final String requestURI = wrappedRequest.getRequestURI();
             // 生成traceId
             final String traceId = UUID.randomUUID().toString();
             // *.log中使用
@@ -69,7 +75,7 @@ public class RequestLoggingInterceptor implements HandlerInterceptor {
             requestLogging.setTraceId(traceId);
             requestLogging.setLoginName(loginName);
             requestLogging.setRequestURI(requestURI);
-            final String method = request.getMethod();
+            final String method = wrappedRequest.getMethod();
             requestLogging.setRequestMethod(method);
             requestLogging.setClientIp(clientIP);
 
@@ -81,31 +87,41 @@ public class RequestLoggingInterceptor implements HandlerInterceptor {
             if(requestURI.startsWith("/api")){
                 String s = urlMappingService.getUrlMap().get(requestURI + "_" + method);
                 requestLogging.setRequestName(s);
-                final Map<String, Object> parameterMap = this.getParameterMap(request);
-                final String jsonStr = JSONUtil.toJsonStr(parameterMap);
-                if(jsonStr.length() < 1000){
-                    requestLogging.setParams(jsonStr);
-                    requestLogging.setSuccess("是");
-                    requestLoggingRepository.save(requestLogging);
-                }
+                requestLogging.setParams(parseParameters(wrappedRequest));
+                requestLogging.setSuccess("是");
+                requestLoggingRepository.save(requestLogging);
             }
         }
 
         return true;
     }
 
-    public Map<String, Object> getParameterMap(HttpServletRequest request) {
-        Map<String, Object> param = new HashMap<>();
-        try {
-            Enumeration<String> em = request.getParameterNames();
-            while (em.hasMoreElements()) {
-                String key = em.nextElement();
-                param.put(key, request.getParameter(key));
+    private String parseParameters(HttpServletRequest request) {
+        Map<String, Object> params = new HashMap<>();
+
+        // 处理URL参数
+        request.getParameterMap().forEach((key, values) -> {
+            if (values.length > 1) {
+                params.put(key, values);
+            } else {
+                params.put(key, values[0]);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        });
+
+        // 处理JSON body（需要ContentCachingRequestWrapper）
+        if (request instanceof ContentCachingRequestWrapper) {
+            byte[] content = ((ContentCachingRequestWrapper) request).getContentAsByteArray();
+            if (content.length > 0) {
+                // 实际项目需根据Content-Type解析
+                String body = new String(content);
+                params.put("requestBody", body);
+            }
         }
-        return param;
+
+        // 敏感信息脱敏
+        params.replaceAll((k, v) -> SENSITIVE_KEYS.contains(k) ? "******" : v);
+
+        return JSONUtil.toJsonStr(params);
     }
 
     @Override
