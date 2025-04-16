@@ -1,8 +1,11 @@
 package com.z.framework.security.config;
 
+import cn.hutool.core.collection.CollUtil;
 import com.z.framework.security.aop.AbstractPermissionFilterTemplate;
 import com.z.framework.security.aop.JWTAuthenticationFilter;
 import com.z.framework.security.service.TokenProviderService;
+import jakarta.annotation.security.PermitAll;
+import jakarta.servlet.DispatcherType;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -10,6 +13,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.event.LogoutSuccessEvent;
 import org.springframework.security.config.Customizer;
@@ -27,9 +31,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import org.springframework.web.util.pattern.PathPattern;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author zhaozhiwei
@@ -150,7 +158,15 @@ public class SpringSecurityAutoConfiguration {
 //                .dispatcherTypeMatchers(AUTH_WHITELIST).permitAll()
                 //其他所有请求需要身份认证
 //                .anyRequest().authenticated()
-                .authorizeHttpRequests(auth -> auth.requestMatchers(AUTH_WHITELIST).permitAll().anyRequest().authenticated())
+                .authorizeHttpRequests(auth -> auth
+                        // 静态资源，可匿名访问
+                        .requestMatchers(HttpMethod.GET, "/*.html", "/*.css", "/*.js").permitAll()
+                        // 白名单， 可匿名访问
+                        .requestMatchers(AUTH_WHITELIST).permitAll()
+                        // WebFlux 异步请求，无需认证，目的：SSE 场景
+                        .dispatcherTypeMatchers(DispatcherType.ASYNC).permitAll()
+                        // 兜底部分 都要认证
+                        .anyRequest().authenticated())
                 // Can't configure anyRequest after itself   5.2版本以后只能有一个anyRequest,坑
 //                .anyRequest().access("@rbacServiceImpl.hasPermission(request, authentication)")
                 .addFilterBefore(new JWTAuthenticationFilter(tokenProviderService, userDetailsService), UsernamePasswordAuthenticationFilter.class);
