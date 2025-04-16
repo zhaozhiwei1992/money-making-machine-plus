@@ -13,8 +13,10 @@ services:
       - "${HOME}/docker/mysql/data:/var/lib/mysql"
       - "${HOME}/docker/mysql/config:/etc/mysql"
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=root
+#      - MYSQL_ROOT_PASSWORD=root
+#      - MYSQL_DATABASE=root
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-money_making_machine_plus}
+      - MYSQL_ROOT_PASSWORD= ${MYSQL_ROOT_PASSWORD:-root}
     command: [                        #使用 command 可以覆盖容器启动后默认执行的命令
       '--character-set-server=utf8mb4',            #设置数据库表的数据集
       '--collation-server=utf8mb4_unicode_ci',    #设置数据库表的数据集
