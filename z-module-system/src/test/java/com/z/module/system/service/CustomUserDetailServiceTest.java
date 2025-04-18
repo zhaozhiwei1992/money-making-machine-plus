@@ -1,13 +1,7 @@
 package com.z.module.system.service;
 
-import com.z.module.system.domain.Menu;
-import com.z.module.system.domain.RoleMenu;
-import com.z.module.system.domain.User;
-import com.z.module.system.domain.UserAuthority;
-import com.z.module.system.repository.MenuRepository;
-import com.z.module.system.repository.RoleMenuRepository;
-import com.z.module.system.repository.UserAuthorityRepository;
-import com.z.module.system.repository.UserRepository;
+import com.z.module.system.domain.*;
+import com.z.module.system.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,10 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,6 +33,9 @@ public class CustomUserDetailServiceTest {
     @Mock
     private RoleMenuRepository roleMenuRepository;
 
+    @Mock
+    private AuthorityRepository authorityRepository;
+
     @InjectMocks
     private CustomUserDetailService customUserDetailService;
 
@@ -50,6 +44,7 @@ public class CustomUserDetailServiceTest {
     private List<Menu> allMenus;
     private List<UserAuthority> userAuthorities;
     private List<RoleMenu> roleMenus;
+    private List<Authority> roleList;
 
     @BeforeEach
     public void setUp() {
@@ -102,6 +97,11 @@ public class CustomUserDetailServiceTest {
 
         roleMenus = Arrays.asList(roleMenu1);
 
+        Authority authority = new Authority();
+        authority.setId(1L);
+        authority.setCode("ROLE_ADMIN");
+        roleList = Arrays.asList(authority);
+
         // 模拟repository行为
 
     }
@@ -138,6 +138,8 @@ public class CustomUserDetailServiceTest {
         when(roleMenuRepository.findByRoleIdIn(Collections.singletonList(2L))).thenReturn(roleMenus);
         // 测试普通用户登录
         UserDetails userDetails = customUserDetailService.loadUserByUsername("user");
+//        when(authorityRepository.findAllById(userAuthorities.stream().map(UserAuthority::getRoleId).toList())).thenReturn(roleList);
+
         
         assertNotNull(userDetails);
         assertEquals("user", userDetails.getUsername());

@@ -304,6 +304,10 @@ z:
     content-security-policy: "default-src 'self'; frame-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://storage.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:"
     auth-white-list:
       # 静态资源白名单
+      - /index.html
+      - /assets/**
+      - /favicon.ico
+      - /logo.png
       - /static/**
       - /images/**
       - /css/**
@@ -315,6 +319,9 @@ z:
       - /lay-config.js
       - /echarts/**
       # url 白名单
+      - /login
+      - /api/login
+      - /api/mobile/login/**
       - /system/login
       - /api/system/login
       - /api/system/mobile/login/**
@@ -335,8 +342,9 @@ z:
       - /v3/api-docs/**
       # goView
       - /api/goview/sys/**
-      # 临时放开, 目前这个goview不稳定
       - /api/goview/**
+      # 临时测试
+#      - /dashboard/analysis
 
   #  分模块配置
   module:

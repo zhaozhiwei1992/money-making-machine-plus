@@ -13,7 +13,7 @@ const tableConfig = {
 }
 
 // vue3中必须使用代理相应对象才会监听变化
-const tableData = reactive<TableData[]>([])
+let tableData = reactive<TableData[]>([])
 const tableCurrentSelectRow = ref<TableData>(tableData[0])
 
 let colData: any = reactive([])

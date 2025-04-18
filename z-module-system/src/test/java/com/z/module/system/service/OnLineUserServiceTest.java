@@ -5,12 +5,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class OnLineUserServiceTest {
@@ -20,6 +25,12 @@ public class OnLineUserServiceTest {
 
     private OnLineUserVO user1;
     private OnLineUserVO user2;
+
+    @Mock
+    private CacheManager cacheManager;
+
+    @Mock
+    private Cache onlineUserCache;
 
     @BeforeEach
     public void setUp() {
@@ -53,6 +64,7 @@ public class OnLineUserServiceTest {
         onLineUserService.add(user2);
 
         // 验证结果
+        when(onLineUserService.findAll()).thenReturn(Arrays.asList(user1, user2));
         List<OnLineUserVO> users = onLineUserService.findAll();
         assertEquals(2, users.size());
         assertEquals("user1", users.get(0).getUserName());

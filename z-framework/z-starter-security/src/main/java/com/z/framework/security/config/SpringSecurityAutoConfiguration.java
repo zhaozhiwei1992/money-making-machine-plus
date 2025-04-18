@@ -13,6 +13,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.event.LogoutSuccessEvent;
@@ -31,6 +32,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
@@ -67,41 +69,27 @@ public class SpringSecurityAutoConfiguration {
 //            静态资源白名单
             "/index.html",
             "/assets/**",
-            "/favicon.ico",
-            "/logo.png",
-            "/static/**",
-            "/images/**",
-            "/css/**",
-            "/js/**",
-            "/layui/**",
-            "/bootstrap-5.0.2-dist/**",
-            "/font-awesome-4.7.0/**",
-            "/druid/**",
-            "/lay-config.js",
-            "/echarts/**",
-//            url 白名单
-            "/login",
-            "/api/login",
-            "/api/mobile/login/**",
-            "/actuator/**",
-//           验证码
-            "/captcha/numCode",
-            "/api/captcha/numCode",
-            "/dashboard/analysis"
-            // 临时测试
-//            "/",
-//            "/index",
-//            "/api/**",
-//            "/user/**"
             // other public endpoints of your API may be appended to this array
     };
 
-    public SpringSecurityAutoConfiguration(CustomSecurityProperties customSecurityProperties) {
+    private final Environment env;
+
+    public SpringSecurityAutoConfiguration(CustomSecurityProperties customSecurityProperties, Environment env) {
         this.customSecurityProperties = customSecurityProperties;
+        this.env = env;
 
         // 白名单赋值, 业务扩展
         final List<String> authWhiteList = this.customSecurityProperties.getAuthWhiteList();
         authWhiteList.addAll(Arrays.asList(AUTH_WHITELIST));
+
+        // 如果项目整体增加了前缀，则权限也要调整, 如: /mmmp/**
+        String property = env.getProperty("spring.mvc.static-path-pattern");
+        if(StringUtils.hasText(property)){
+            String prefix = property.replace("/**", "");
+            List<String> list = authWhiteList.stream().map(s -> prefix + s).toList();
+            authWhiteList.addAll(list);
+        }
+
         AUTH_WHITELIST = authWhiteList.stream().distinct().toArray(String[]::new);
     }
 

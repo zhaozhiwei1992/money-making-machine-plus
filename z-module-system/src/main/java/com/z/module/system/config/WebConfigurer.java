@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
@@ -111,7 +112,13 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
         // 有可能会有依赖内部使用了RestController注解导致错误, 自定义注解靠谱点
 //        configurer.addPathPrefix("/api", c -> c.isAnnotationPresent(RestController.class));
         // 通过包名统一增加前缀, 更科学点, 或者每个模块自行处理
-        configurer.addPathPrefix("/api",
+        // 如果设置了静态资源前缀, 则接口前缀也要增加
+        String property = env.getProperty("spring.mvc.static-path-pattern");
+        String prefix = commonProperties.RESOURCE_PRE;
+        if(StringUtils.hasText(property)){
+            prefix = property.replace("/**", "") + prefix;
+        }
+        configurer.addPathPrefix(prefix,
                 // 所有在web.rest包下, 并且使用RestController注解的都要增加 /api
                 c -> c.isAnnotationPresent(RestController.class)
                         && c.getPackage().getName().contains("web.rest")

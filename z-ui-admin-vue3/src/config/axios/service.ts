@@ -16,7 +16,7 @@ import { getAccessToken } from '@/utils/auth'
 
 const { result_code } = config
 
-export const PATH_URL = '/api'
+export const PATH_URL = import.meta.env.VITE_API_BASEPATH || '/api'
 
 //带着cookie, 验证码放在了session里, 不加这个每次session都是新的
 axios.defaults.withCredentials = true
