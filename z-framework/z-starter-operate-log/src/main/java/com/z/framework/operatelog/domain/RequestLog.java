@@ -66,7 +66,7 @@ public class RequestLog extends AbstractAuditingEntity implements Serializable {
     /**
      * 存储请求参数信息
      */
-    @Column(name = "params", length = 1000)
+    @Column(name = "params", length = 2000)
     private String params;
 
     /**

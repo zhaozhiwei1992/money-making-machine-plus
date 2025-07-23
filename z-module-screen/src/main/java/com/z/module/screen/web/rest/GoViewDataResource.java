@@ -2,13 +2,11 @@ package com.z.module.screen.web.rest;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.RandomUtil;
-import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.module.screen.service.GoViewDataService;
 import com.z.module.screen.web.vo.GoViewDataGetBySqlReqVO;
 import com.z.module.screen.web.vo.GoViewDataRespVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,8 +30,8 @@ public class GoViewDataResource {
 
     @RequestMapping("/get-by-sql")
     @Operation(summary = "使用 SQL 查询数据")
-    public ResponseEntity<ResponseData<GoViewDataRespVO>> getDataBySQL(@Valid @RequestBody GoViewDataGetBySqlReqVO reqVO) {
-        return ResponseData.ok(goViewDataService.getDataBySQL(reqVO.getSql()));
+    public GoViewDataRespVO getDataBySQL(@Valid @RequestBody GoViewDataGetBySqlReqVO reqVO) {
+        return goViewDataService.getDataBySQL(reqVO.getSql());
     }
 
     /**
@@ -47,7 +45,7 @@ public class GoViewDataResource {
      */
     @RequestMapping("/get-by-http")
     @Operation(summary = "使用 HTTP 查询数据", description = "这个只是示例接口，实际应该每个查询，都要写一个接口")
-    public ResponseEntity<ResponseData<GoViewDataRespVO>> getDataByHttp(
+    public GoViewDataRespVO getDataByHttp(
             @RequestParam(required = false) Map<String, String> params,
             @RequestBody(required = false) String body) {
         GoViewDataRespVO respVO = new GoViewDataRespVO();
@@ -63,7 +61,7 @@ public class GoViewDataResource {
             respVO.getSource().add(MapUtil.<String, Object>builder().put("日期", date)
                     .put("PV", pv).put("UV", uv).build());
         }
-        return ResponseData.ok(respVO);
+        return respVO;
     }
 
 }

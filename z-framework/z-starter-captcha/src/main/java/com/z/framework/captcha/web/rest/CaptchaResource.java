@@ -4,11 +4,7 @@ import com.google.code.kaptcha.Constants;
 import com.google.code.kaptcha.Producer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.imageio.ImageIO;
@@ -47,7 +43,7 @@ public class CaptchaResource {
      * @Description: 数字验证码 返回byte数组形式, 前端请求类型arraybuffer
      */
     @GetMapping("/captcha/numCode")
-    public ResponseEntity<String> getCaptchaCode(HttpServletRequest request) throws IOException {
+    public String getCaptchaCode(HttpServletRequest request) throws IOException {
         HttpSession session = request.getSession();
         // 生成验证码文本
         String captchaText = captchaProducer.createText();
@@ -75,11 +71,12 @@ public class CaptchaResource {
         // 这个可以在前端通过response.headers.responsetype获取
         headers.set("responseType", "text"); // 设置自定义的responseType头部
 
-        return ResponseEntity
-                .ok()
-                .headers(headers)
-                .contentType(MediaType.TEXT_PLAIN)
-                .body(base64Image);
+//        return ResponseEntity
+//                .ok()
+//                .headers(headers)
+//                .contentType(MediaType.TEXT_PLAIN)
+//                .body(base64Image);
+        return base64Image;
 
     }
 }

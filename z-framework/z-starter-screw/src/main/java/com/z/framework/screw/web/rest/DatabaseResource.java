@@ -1,8 +1,6 @@
 package com.z.framework.screw.web.rest;
 
 import com.z.framework.common.service.DatabaseMetaService;
-import com.z.framework.common.web.rest.vm.ResponseData;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,8 +35,8 @@ public class DatabaseResource {
      * @Description: 获取所有表信息
      */
     @GetMapping("/tables")
-    public ResponseEntity<ResponseData<List<String>>> getAllTables(){
-        return ResponseData.ok(databaseMetaService.getTables());
+    public List<String> getAllTables(){
+        return databaseMetaService.getTables();
     }
 
     /**
@@ -50,9 +48,8 @@ public class DatabaseResource {
      * @Description: 获取表对应的列信息
      */
     @GetMapping("/columns")
-    public ResponseEntity<ResponseData<List<String>>> getAllColumnsByTableName(String tableName){
+    public List<String> getAllColumnsByTableName(String tableName){
         final Map<String, List> tableColumnsMap = databaseMetaService.getTableColumnsMap();
-        final List<String> list = tableColumnsMap.get(tableName);
-        return ResponseData.ok(list);
+        return (List<String>) tableColumnsMap.get(tableName);
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,6 +29,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import jakarta.servlet.ServletContext;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Configuration of web application with Servlet 3.0 APIs.
@@ -54,6 +56,17 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
         }
 
         log.info("Web application fully configured");
+    }
+
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        // 确保Jackson转换器优先于String转换器
+        // 注意 这玩意儿会导致有些不需要"号的情况前端解析有问题，比如base64的验证码图片, 除非前端统一处理json, 慎用
+        // 伪代码展示Jackson行为,
+        //String original = "hello";
+        //String jsonEncoded = objectMapper.writeValueAsString(original);
+        // 输出: ""hello""（外层引号是JSON规范，内层是字符串内容）
+//        converters.addFirst(new MappingJackson2HttpMessageConverter());
     }
 
     /**

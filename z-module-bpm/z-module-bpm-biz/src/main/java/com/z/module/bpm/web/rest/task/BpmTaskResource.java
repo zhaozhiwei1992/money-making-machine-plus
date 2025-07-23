@@ -1,14 +1,12 @@
 package com.z.module.bpm.web.rest.task;
 
 import com.z.framework.common.web.rest.vm.PageResult;
-import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.framework.security.util.SecurityUtils;
 import com.z.module.bpm.service.task.BpmTaskService;
 import com.z.module.bpm.web.vo.task.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,43 +25,43 @@ public class BpmTaskResource {
 
     @GetMapping("todo-page")
     @Operation(summary = "获取 Todo 待办任务分页")
-    public ResponseEntity<ResponseData<PageResult<BpmTaskTodoPageItemRespVO>>> getTodoTaskPage(@Valid BpmTaskTodoPageReqVO pageVO) {
-        return ResponseData.ok(taskService.getTodoTaskPage(SecurityUtils.getUserId(), pageVO));
+    public PageResult<BpmTaskTodoPageItemRespVO> getTodoTaskPage(@Valid BpmTaskTodoPageReqVO pageVO) {
+        return taskService.getTodoTaskPage(SecurityUtils.getUserId(), pageVO);
     }
 
     @GetMapping("done-page")
     @Operation(summary = "获取 Done 已办任务分页")
-    public ResponseEntity<ResponseData<PageResult<BpmTaskDonePageItemRespVO>>> getDoneTaskPage(@Valid BpmTaskDonePageReqVO pageVO) {
-        return ResponseData.ok(taskService.getDoneTaskPage(SecurityUtils.getUserId(), pageVO));
+    public PageResult<BpmTaskDonePageItemRespVO> getDoneTaskPage(@Valid BpmTaskDonePageReqVO pageVO) {
+        return taskService.getDoneTaskPage(SecurityUtils.getUserId(), pageVO);
     }
 
     @GetMapping("/list-by-process-instance-id")
     @Operation(summary = "获得指定流程实例的任务列表", description = "包括完成的、未完成的")
     @Parameter(name = "processInstanceId", description = "流程实例的编号", required = true)
-    public ResponseEntity<ResponseData<List<BpmTaskRespVO>>> getTaskListByProcessInstanceId(
+    public List<BpmTaskRespVO> getTaskListByProcessInstanceId(
         @RequestParam("processInstanceId") String processInstanceId) {
-        return ResponseData.ok(taskService.getTaskListByProcessInstanceId(processInstanceId));
+        return taskService.getTaskListByProcessInstanceId(processInstanceId);
     }
 
     @PutMapping("/approve")
     @Operation(summary = "通过任务")
-    public ResponseEntity<ResponseData<Boolean>> approveTask(@Valid @RequestBody BpmTaskApproveReqVO reqVO) {
+    public boolean approveTask(@Valid @RequestBody BpmTaskApproveReqVO reqVO) {
         taskService.approveTask(SecurityUtils.getUserId(), reqVO);
-        return ResponseData.ok(true);
+        return true;
     }
 
     @PutMapping("/reject")
     @Operation(summary = "不通过任务")
-    public ResponseEntity<ResponseData<Boolean>> rejectTask(@Valid @RequestBody BpmTaskRejectReqVO reqVO) {
+    public boolean rejectTask(@Valid @RequestBody BpmTaskRejectReqVO reqVO) {
         taskService.rejectTask(SecurityUtils.getUserId(), reqVO);
-        return ResponseData.ok(true);
+        return true;
     }
 
     @PutMapping("/update-assignee")
     @Operation(summary = "更新任务的负责人", description = "用于【流程详情】的【转派】按钮")
-    public ResponseEntity<ResponseData<Boolean>> updateTaskAssignee(@Valid @RequestBody BpmTaskUpdateAssigneeReqVO reqVO) {
+    public boolean updateTaskAssignee(@Valid @RequestBody BpmTaskUpdateAssigneeReqVO reqVO) {
         taskService.updateTaskAssignee(SecurityUtils.getUserId(), reqVO);
-        return ResponseData.ok(true);
+        return true;
     }
 
 }

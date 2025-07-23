@@ -58,12 +58,10 @@ public class CaptchaController {
         //利用生成的字符串构建图片
         BufferedImage bi = captchaProducer.createImage(capText);
         ServletOutputStream out = response.getOutputStream();
-        ImageIO.write(bi, "jpg", out);
 
-        try {
+        try (out) {
+            ImageIO.write(bi, "jpg", out);
             out.flush();
-        } finally {
-            out.close();
         }
     }
 }

@@ -16,7 +16,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
+
 import javax.validation.Valid;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -65,40 +64,40 @@ public class GoViewProjectResource {
 
     @PostMapping("/create")
     @Operation(summary = "创建项目")
-    public ResponseEntity<ResponseData<Long>> createProject(@Valid @RequestBody GoViewProjectCreateReqVO createReqVO) {
-        return ResponseData.ok(goViewProjectService.createProject(createReqVO));
+    public Long createProject(@Valid @RequestBody GoViewProjectCreateReqVO createReqVO) {
+        return goViewProjectService.createProject(createReqVO);
     }
 
     @PostMapping("/edit")
     @Operation(summary = "更新项目")
-    public ResponseEntity<ResponseData<Boolean>> updateProject(@Valid @RequestBody GoViewProjectUpdateReqVO updateReqVO) {
+    public boolean updateProject(@Valid @RequestBody GoViewProjectUpdateReqVO updateReqVO) {
         goViewProjectService.updateProject(updateReqVO);
-        return ResponseData.ok(true);
+        return true;
     }
 
     @DeleteMapping("/delete")
     @Operation(summary = "删除 GoView 项目")
     @Parameter(name = "ids", description = "编号", required = true, example = "1024")
-    public ResponseEntity<ResponseData<Boolean>> deleteProject(@RequestParam("ids") Long id) {
+    public boolean deleteProject(@RequestParam("ids") Long id) {
         goViewProjectService.deleteProject(id);
-        return ResponseData.ok(true);
+        return true;
     }
 
     @Operation(summary = "项目重命名")
     @PostMapping("/rename")
-    public ResponseEntity<ResponseData<Object>> rename(@RequestBody GoViewProjectUpdateReqVO goViewProjectUpdateReqVO) {
+    public boolean rename(@RequestBody GoViewProjectUpdateReqVO goViewProjectUpdateReqVO) {
         final Optional<GoViewProjectDO> byId = goViewProjectRepository.findById(goViewProjectUpdateReqVO.getId());
         if (byId.isPresent()) {
             final GoViewProjectDO goViewProjectDO = byId.get();
             goViewProjectDO.setName(goViewProjectUpdateReqVO.getProjectName());
-            return ResponseData.ok(true);
+            return true;
         }
         throw new RuntimeException("没有找到该项目");
     }
 
     //发布/取消项目状态
     @PutMapping("/publish")
-    public ResponseEntity<ResponseData<Object>> updateVisible(@RequestBody GoViewProjectUpdateReqVO goViewProjectUpdateReqVO) {
+    public boolean updateVisible(@RequestBody GoViewProjectUpdateReqVO goViewProjectUpdateReqVO) {
 
         if (goViewProjectUpdateReqVO.getState() == -1 || goViewProjectUpdateReqVO.getState() == 1) {
 
@@ -106,7 +105,7 @@ public class GoViewProjectResource {
             if (byId.isPresent()) {
                 final GoViewProjectDO goViewProjectDO = byId.get();
                 goViewProjectDO.setStatus(goViewProjectUpdateReqVO.getState());
-                return ResponseData.ok(true);
+                return true;
             }
             throw new RuntimeException("没有找到该项目");
         }
@@ -123,7 +122,7 @@ public class GoViewProjectResource {
      */
     @Operation(summary = "保存项目数据")
     @PostMapping("/save/data")
-    public ResponseEntity<ResponseData<Object>> saveData(GoViewProjectUpdateReqVO data) {
+    public String saveData(GoViewProjectUpdateReqVO data) {
 
         final Optional<GoViewProjectDO> byId = goViewProjectRepository.findById(data.getProjectId());
         if (!byId.isPresent()) {
@@ -132,20 +131,20 @@ public class GoViewProjectResource {
         // 查询项目读应的数据
         final GoViewProjectDO goViewProjectDO = byId.get();
         goViewProjectDO.setContent(data.getContent());
-        return ResponseData.ok("保存成功");
+        return "保存成功";
     }
 
     @GetMapping("/getData")
     @Operation(summary = "获得项目")
     @Parameter(name = "projectId", description = "编号", required = true, example = "1024")
-    public ResponseEntity<ResponseData<GoViewProjectRespVO>> getProject(@RequestParam("projectId") Long id) {
+    public GoViewProjectRespVO getProject(@RequestParam("projectId") Long id) {
         GoViewProjectDO project = goViewProjectService.getProject(id);
-        return ResponseData.ok(goViewProjectConvert.convert(project));
+        return goViewProjectConvert.convert(project);
     }
 
     @GetMapping("/list")
     @Operation(summary = "获得我的项目分页")
-    public ResponseEntity<ResponseData<List<GoViewProjectRespVO>>> getMyProjectPage(@Valid PageParam pageVO) {
+    public ResponseData<List<GoViewProjectRespVO>> getMyProjectPage(@Valid PageParam pageVO) {
         final Page<GoViewProjectDO> myProjectPage = goViewProjectService.getMyProjectPage(pageVO);
         return ResponseData.ok(goViewProjectConvert.convert(myProjectPage.getContent()),
                 myProjectPage.getNumberOfElements());
@@ -159,7 +158,7 @@ public class GoViewProjectResource {
      * @throws Exception
      */
     @PostMapping("/upload")
-    public ResponseEntity<ResponseData<GoViewFileVO>> upload(@RequestBody MultipartFile object) throws IOException {
+    public GoViewFileVO upload(@RequestBody MultipartFile object) throws IOException {
         String fileName = object.getOriginalFilename();
         //默认文件格式
         String mediaKey = UUID.randomUUID().toString().replace("-", "");
@@ -187,7 +186,7 @@ public class GoViewProjectResource {
             object.transferTo(desc);
             goViewFileVO.setFileurl(screenProperties.getGoView().getHttpUrl() + "/api/goview/project/" + viewFileDO.getVirtualKey() + "/" + viewFileDO.getRelativePath() + "/" + viewFileDO.getFileName());
         }
-        return ResponseData.ok(goViewFileVO);
+        return goViewFileVO;
     }
 
     /**

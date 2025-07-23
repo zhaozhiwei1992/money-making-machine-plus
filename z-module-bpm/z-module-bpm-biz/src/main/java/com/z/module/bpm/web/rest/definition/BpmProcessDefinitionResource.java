@@ -1,7 +1,6 @@
 package com.z.module.bpm.web.rest.definition;
 
 import com.z.framework.common.web.rest.vm.PageResult;
-import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.module.bpm.service.definition.BpmProcessDefinitionService;
 import com.z.module.bpm.web.vo.definition.process.BpmProcessDefinitionListReqVO;
 import com.z.module.bpm.web.vo.definition.process.BpmProcessDefinitionPageItemRespVO;
@@ -10,7 +9,6 @@ import com.z.module.bpm.web.vo.definition.process.BpmProcessDefinitionRespVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,25 +33,24 @@ public class BpmProcessDefinitionResource {
     @GetMapping("/page")
     @Operation(summary = "获得流程定义分页")
     
-    public ResponseEntity<ResponseData<PageResult<BpmProcessDefinitionPageItemRespVO>>> getProcessDefinitionPage(
+    public PageResult<BpmProcessDefinitionPageItemRespVO> getProcessDefinitionPage(
             BpmProcessDefinitionPageReqVO pageReqVO) {
-        return ResponseData.ok(bpmDefinitionService.getProcessDefinitionPage(pageReqVO));
+        return bpmDefinitionService.getProcessDefinitionPage(pageReqVO);
     }
 
     @GetMapping ("/list")
     @Operation(summary = "获得流程定义列表")
     
-    public ResponseEntity<ResponseData<List<BpmProcessDefinitionRespVO>>> getProcessDefinitionList(
+    public List<BpmProcessDefinitionRespVO> getProcessDefinitionList(
             BpmProcessDefinitionListReqVO listReqVO) {
-        return ResponseData.ok(bpmDefinitionService.getProcessDefinitionList(listReqVO));
+        return bpmDefinitionService.getProcessDefinitionList(listReqVO);
     }
 
     @GetMapping ("/get-bpmn-xml")
     @Operation(summary = "获得流程定义的 BPMN XML")
     @Parameter(name = "id", description = "编号", required = true, example = "1024")
     
-    public ResponseEntity<ResponseData<String>> getProcessDefinitionBpmnXML(@RequestParam("id") String id) {
-        String bpmnXML = bpmDefinitionService.getProcessDefinitionBpmnXML(id);
-        return ResponseData.ok(bpmnXML);
+    public String getProcessDefinitionBpmnXML(@RequestParam("id") String id) {
+        return bpmDefinitionService.getProcessDefinitionBpmnXML(id);
     }
 }

@@ -1,6 +1,5 @@
 package com.z.module.bpm.web.rest.definition;
 
-import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.module.bpm.service.definition.BpmTaskAssignRuleService;
 import com.z.module.bpm.web.vo.definition.rule.BpmTaskAssignRuleCreateReqVO;
 import com.z.module.bpm.web.vo.definition.rule.BpmTaskAssignRuleRespVO;
@@ -9,7 +8,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,25 +31,24 @@ public class BpmTaskAssignRuleResource {
             @Parameter(name = "processDefinitionId", description = "流程定义的编号", example = "2048")
     })
     
-    public ResponseEntity<ResponseData<List<BpmTaskAssignRuleRespVO>>> getTaskAssignRuleList(
+    public List<BpmTaskAssignRuleRespVO> getTaskAssignRuleList(
             @RequestParam(value = "modelId", required = false) String modelId,
             @RequestParam(value = "processDefinitionId", required = false) String processDefinitionId) {
-        final List<BpmTaskAssignRuleRespVO> taskAssignRuleList = taskAssignRuleService.getTaskAssignRuleList(modelId, processDefinitionId);
-        return ResponseData.ok(taskAssignRuleList);
+        return taskAssignRuleService.getTaskAssignRuleList(modelId, processDefinitionId);
     }
 
     @PostMapping("/create")
     @Operation(summary = "创建任务分配规则")
     
-    public ResponseEntity<ResponseData<Long>> createTaskAssignRule(@Valid @RequestBody BpmTaskAssignRuleCreateReqVO reqVO) {
-        return ResponseData.ok(taskAssignRuleService.createTaskAssignRule(reqVO));
+    public Long createTaskAssignRule(@Valid @RequestBody BpmTaskAssignRuleCreateReqVO reqVO) {
+        return taskAssignRuleService.createTaskAssignRule(reqVO);
     }
 
     @PutMapping("/update")
     @Operation(summary = "更新任务分配规则")
     
-    public ResponseEntity<ResponseData<Boolean>> updateTaskAssignRule(@Valid @RequestBody BpmTaskAssignRuleUpdateReqVO reqVO) {
+    public boolean updateTaskAssignRule(@Valid @RequestBody BpmTaskAssignRuleUpdateReqVO reqVO) {
         taskAssignRuleService.updateTaskAssignRule(reqVO);
-        return ResponseData.ok(true);
+        return true;
     }
 }
