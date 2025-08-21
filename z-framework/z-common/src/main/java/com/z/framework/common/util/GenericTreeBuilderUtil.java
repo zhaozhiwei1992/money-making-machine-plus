@@ -28,7 +28,7 @@ public class GenericTreeBuilderUtil<T extends Serializable> {
         }
 
         // 将list转换为map形式, 方便提取数据
-        Map<Serializable, T> map = new HashMap<>();
+        Map<Serializable, T> map = new LinkedHashMap<>();
         for (T item : list) {
             try {
                 Field idField = clazz.getDeclaredField("id");

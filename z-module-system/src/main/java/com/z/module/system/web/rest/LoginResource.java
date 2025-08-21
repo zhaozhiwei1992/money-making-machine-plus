@@ -139,7 +139,7 @@ public class LoginResource {
             return authedRespVO;
         } catch (Exception e) {
             logger.error("登录出错", e);
-            throw new RuntimeException("登录出错");
+            throw new RuntimeException("登录出错" + e.getMessage());
         }
     }
 

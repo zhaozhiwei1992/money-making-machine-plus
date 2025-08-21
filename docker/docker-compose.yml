@@ -1,7 +1,7 @@
 services:
   z-mysql:
     #image: mysql:5.7.15
-    image: mysql:8.0.27
+    image: mysql:8
     hostname: z-mysql
     networks:
       - z-net
@@ -9,10 +9,7 @@ services:
       - "3306:3306"
       #    restart: always
     volumes:
-      - "${HOME}/docker/mysql/data:/var/lib/mysql"
-      - "${HOME}/docker/mysql/config:/etc/mysql"
-      - "/tmp/mysqld:/tmp"
-      - "/tmp/mysqld:/var/run/mysqld"
+      - "./volume/mysql:/var/lib/mysql"
     environment:
       #- MYSQL_DATABASE=${MYSQL_DATABASE:-money_making_machine_plus}
       - MYSQL_ROOT_PASSWORD=root
