@@ -1,7 +1,11 @@
 package com.z.module.generator.web.rest;
 
+import com.z.module.generator.config.SpringUtil;
 import com.z.module.generator.service.GeneratorService;
+import com.z.module.generator.service.gen.Generator;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
+import org.apache.velocity.app.Velocity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -12,11 +16,9 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
 
 /**
  * @Title: GeneratorController
@@ -113,29 +115,12 @@ public class GeneratorResource {
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to fetch tables", e);
 		}
-
-		// 处理分页
-//		int pageSize = pageable.getPageSize();
-//		int currentPage = pageable.getPageNumber() - 1; // 前端页码通常从1开始，后端从0开始
-//		int start = currentPage * pageSize;
-//		int end = Math.min(start + pageSize, tables.size());
-//
-//		Page<HashMap<String, String>> page = new PageImpl<>(
-//				tables.subList(start, end),
-//				PageRequest.of(currentPage, pageSize),
-//				tables.size()
-//		);
-//
-//		return new HashMap<>() {{
-//            put("list", page.getContent());
-//            put("total", page.getTotalElements());
-//        }};
 		return tables;
 	}
 
 	@GetMapping("/cols")
-	public List<HashMap<String, String>> getAllCols(String tableName) {
-		List<HashMap<String, String>> columns = new ArrayList<>();
+	public List<Map<String, Object>> getAllCols(String tableName) {
+		List<Map<String, Object>> columns = new ArrayList<>();
 
 		try (Connection connection = dataSource.getConnection()) {
 			DatabaseMetaData metaData = connection.getMetaData();
@@ -146,7 +131,7 @@ public class GeneratorResource {
 					if(tableName.equals(rs.getString("TABLE_NAME"))){
 						try (ResultSet columnRs = metaData.getColumns(null, null, tableName, "%")) {
 							while (columnRs.next()) {
-								HashMap<String, String> columnInfo = new HashMap<>();
+								Map<String, Object> columnInfo = new HashMap<>();
 								columnInfo.put("tableName", rs.getString("TABLE_NAME"));
 								columnInfo.put("columnName", columnRs.getString("COLUMN_NAME"));
 								columnInfo.put("columnType", columnRs.getString("TYPE_NAME").toLowerCase());
@@ -166,4 +151,45 @@ public class GeneratorResource {
 
 		return columns;
 	}
+
+    @GetMapping("/code/view")
+    public List<Map<String, Object>> previewCode(@RequestParam String tableName) {
+        // 1. 获取表信息
+        Map<String, Object> table = new HashMap<>();
+        try (Connection connection = dataSource.getConnection()) {
+            DatabaseMetaData metaData = connection.getMetaData();
+            // 获取所有表信息（参数说明：catalog, schema, tableNamePattern, types）
+            try (ResultSet rs = metaData.getTables(null, null, "%", new String[]{"TABLE", "VIEW"})) {
+                while (rs.next()) {
+                    String tableName1 = rs.getString("TABLE_NAME");
+                    if(tableName1.startsWith(tableName)){
+                        table.put("tableName", rs.getString("TABLE_NAME"));
+                        table.put("tableType", rs.getString("TABLE_TYPE"));
+                        table.put("comments", rs.getString("REMARKS")); // 表注释
+                        table.put("pKey", "id");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to fetch tables", e);
+        }
+        // 2. 获取列信息
+        List<Map<String, Object>> columnList = this.getAllCols(tableName);
+
+        List<Map<String, Object>> result = new ArrayList<>();
+        Properties prop = new Properties();
+        prop.put("file.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+        Velocity.init(prop);
+        // 2. 遍历接口下所有bean生成代码
+        final Map<String, Generator> beansOfType =
+                SpringUtil.getApplicationContext().getBeansOfType(Generator.class);
+        for (Map.Entry<String, Generator> generatorBeanEntry : beansOfType.entrySet()) {
+            final Generator generatorService = generatorBeanEntry.getValue();
+            Map<String, Object> m = new HashMap<>();
+            m.put("code", generatorService.generatorCode(table, columnList));
+            m.put("filePath", generatorService.getFileName(table));
+            result.add(m);
+        }
+        return result;
+    }
 }
