@@ -124,13 +124,17 @@ public class RequestLoggingInterceptor implements AsyncHandlerInterceptor {
         // 处理JSON body（需要ContentCachingRequestWrapper）
         if (request instanceof CachedBodyRequestWrapper) {
             String body = ((CachedBodyRequestWrapper) request).getBody();
-            JSONObject json = JSON.parseObject(body);
-            if(!Objects.isNull(json)){
-                SENSITIVE_KEYS.forEach(key -> {
-                    if (json.containsKey(key)) {
-                        json.put(key, "******");
-                    }
-                });
+            try {
+                JSONObject json = JSON.parseObject(body);
+                if(!Objects.isNull(json)){
+                    SENSITIVE_KEYS.forEach(key -> {
+                        if (json.containsKey(key)) {
+                            json.put(key, "******");
+                        }
+                    });
+                }
+            }catch (Exception e){
+                log.error("parseParameters error", e);
             }
             params.put("requestBody", body);
         }
