@@ -2,6 +2,7 @@ package com.z.framework.banner.core;
 
 import cn.hutool.core.thread.ThreadUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.util.ClassUtils;
@@ -19,6 +20,9 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class BannerApplicationRunner implements ApplicationRunner {
 
+    @Value("${spring.application.name}")
+    private String appName;
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
         ThreadUtil.execute(() -> {
@@ -29,8 +33,8 @@ public class BannerApplicationRunner implements ApplicationRunner {
                             "接口文档: \t{} \n\t" +
                             "开发文档: \t{} \n" +
                             "----------------------------------------------------------",
-                    "https://github.com/zhaozhiwei1992/money-making-machine-plus",
-                    "https://github.com/zhaozhiwei1992/money-making-machine-plus");
+                    "https://github.com/zhaozhiwei1992/" + appName,
+                    "https://github.com/zhaozhiwei1992/" + appName);
 
             // 工作流
             if (isNotPresent("com.z.module.framework.flowable.config.FlowableConfiguration")) {
