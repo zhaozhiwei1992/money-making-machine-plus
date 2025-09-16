@@ -1,0 +1,4 @@
+-- 菜单SQL, 根据实际情况调整, 可以放到脚本目录自动执行
+INSERT INTO sys_menu
+(id, created_by, created_date, last_modified_by, last_modified_date, config, enabled, icon_cls, keep_alive, name, order_num, parent_id, require_auth, url, component)
+VALUES(1, NULL, now(), NULL, now(), NULL, 1, NULL, NULL, '${comments}', 5, 0, NULL, '${module}/${pathName}/list', 'views/${module}/${pathName}/Index');

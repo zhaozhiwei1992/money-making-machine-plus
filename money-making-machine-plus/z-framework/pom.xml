@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.z</groupId>
+        <artifactId>money-making-machine-plus</artifactId>
+        <version>${revision}</version>
+    </parent>
+    <artifactId>z-framework</artifactId>
+    <name>z-framework</name>
+    <url>http://maven.apache.org</url>
+    <packaging>pom</packaging>
+    <description>
+        本系统一些核心技术模块, 按照starter的方式被引入即可激活, 业务模块通过z-module去扩展
+        z-common
+        z-starter-xx业务
+    </description>
+    <modules>
+        <module>z-common</module>
+        <module>z-starter-cache</module>
+        <module>z-starter-mq</module>
+        <module>z-starter-job</module>
+        <module>z-starter-monitor</module>
+        <module>z-starter-banner</module>
+        <module>z-starter-captcha</module>
+        <module>z-starter-operate-log</module>
+        <module>z-starter-security</module>
+        <module>z-starter-data-permission</module>
+        <module>z-starter-screw</module>
+        <module>z-starter-ai</module>
+    </modules>
+
+</project>

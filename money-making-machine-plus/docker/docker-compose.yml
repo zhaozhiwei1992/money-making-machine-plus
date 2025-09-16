@@ -1,0 +1,86 @@
+services:
+  z-mysql:
+    #image: mysql:5.7.15
+    image: mysql:8
+    hostname: z-mysql
+    networks:
+      - z-net
+    ports:
+      - "3306:3306"
+      #    restart: always
+    volumes:
+      - "./volume/mysql:/var/lib/mysql"
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-money_making_machine_plus}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root}
+    command: [                        #使用 command 可以覆盖容器启动后默认执行的命令
+      '--character-set-server=utf8mb4',            #设置数据库表的数据集
+      '--collation-server=utf8mb4_unicode_ci',    #设置数据库表的数据集
+      '--default-time-zone=+8:00'                    #设置mysql数据库的 时区问题！！！！ 而不是设置容器的时区问题！！！！
+    ]
+  z-redis:
+    image: redis
+    hostname: z-redis
+    networks:
+      - z-net
+    ports:
+      - "6379:6379"
+#    restart: on-failure
+    volumes:
+      - "./volume/redis/redis.conf:/etc/redis/redis.conf"
+      - "./volume/redis/data:/data"
+    command:
+      redis-server /etc/redis/redis.conf --appendonly yes
+  namesrv:
+    image: apache/rocketmq:5.3.2
+    container_name: rmqnamesrv
+    ports:
+      - 9876:9876
+    networks:
+      - z-net
+    command: sh mqnamesrv
+  broker:
+    image: apache/rocketmq:5.3.2
+    container_name: rmqbroker
+    ports:
+      - 10909:10909
+      - 10911:10911
+      - 10912:10912
+    environment:
+      - NAMESRV_ADDR=rmqnamesrv:9876
+    depends_on:
+      - namesrv
+    networks:
+      - z-net
+    command: sh mqbroker
+  proxy:
+    image: apache/rocketmq:5.3.2
+    container_name: rmqproxy
+    networks:
+      - z-net
+    depends_on:
+      - broker
+      - namesrv
+    ports:
+      - 8080:8080
+      - 8081:8081
+    restart: on-failure
+    environment:
+      - NAMESRV_ADDR=rmqnamesrv:9876
+    command: sh mqproxy
+  z-rmqdashboard:
+    image: apacherocketmq/rocketmq-dashboard:latest
+    container_name: z-rmqdashboard
+    ports:
+      - 8091:8080
+#    restart: on-failure
+    privileged: true
+    depends_on:
+      - namesrv
+    environment:
+      - JAVA_OPTS=-Xmx256M -Xms256M -Xmn128M -Drocketmq.namesrv.addr=z-rmqnamesrv:9876
+    networks:
+      - z-net
+networks:
+  z-net:
+    driver: bridge

@@ -1,0 +1,336 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.z</groupId>
+        <artifactId>money-making-machine-plus</artifactId>
+        <version>${revision}</version>
+    </parent>
+    <artifactId>z-public-server</artifactId>
+    <name>z-public-server</name>
+    <url>http://maven.apache.org</url>
+    <description>
+        后端项目入口, 一个空壳聚合项目, 需要引入z-module-xx才会有血有肉
+    </description>
+
+    <properties>
+        <frontend-dir>${project.parent.basedir}/z-ui-admin-vue3</frontend-dir>
+        <frontend-dist-dir>${frontend-dir}/dist-pro</frontend-dist-dir>
+    </properties>
+
+    <dependencies>
+
+        <!--    模块部分 开始    注:除system外其他module可以按需使用, 可以干掉 -->
+        <!--    基础性的系统功能-->
+        <dependency>
+            <groupId>com.z</groupId>
+            <artifactId>z-module-system</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <!--    代码生成模块 -->
+        <dependency>
+            <groupId>com.z</groupId>
+            <artifactId>z-module-code-generator</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <!--    报表模块-->
+        <dependency>
+            <groupId>com.z</groupId>
+            <artifactId>z-module-report</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <!--    工作流模块-->
+<!--        <dependency>-->
+<!--            <groupId>com.z</groupId>-->
+<!--            <artifactId>z-module-bpm-biz</artifactId>-->
+<!--            <version>${revision}</version>-->
+<!--        </dependency>-->
+
+        <!--    大屏模块-->
+        <dependency>
+            <groupId>com.z</groupId>
+            <artifactId>z-module-screen</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <!--    动态ui模块-->
+        <dependency>
+            <groupId>com.z</groupId>
+            <artifactId>z-module-dynamic-ui</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.z</groupId>
+            <artifactId>z-module-ai</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <!--    模块部分 结束 -->
+
+        <!-- spring boot 配置所需依赖 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.z</groupId>
+            <artifactId>z-starter-banner</artifactId>
+        </dependency>
+
+        <!-- 服务保障相关 -->
+
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <profiles.active>dev</profiles.active>
+                <app.version>${revision}</app.version>
+                <skipTest>false</skipTest>
+                <skipITest>true</skipITest>
+            </properties>
+            <build>
+                <!--        spring.profiles.active替换-->
+                <resources>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                        <excludes>
+                            <exclude>application-test.yml</exclude>
+                            <exclude>application-prod.yml</exclude>
+                        </excludes>
+                        <filtering>true</filtering>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+
+        <profile>
+            <id>test</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <profiles.active>test</profiles.active>
+                <app.version>${revision}</app.version>
+                <skipTest>false</skipTest>
+                <skipITest>false</skipITest>
+            </properties>
+            <build>
+                <!--        spring.profiles.active替换-->
+                <resources>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                        <excludes>
+                            <exclude>application-dev.yml</exclude>
+                            <exclude>application-prod.yml</exclude>
+                        </excludes>
+                        <filtering>true</filtering>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <profiles.active>prod</profiles.active>
+                <app.version>${revision}</app.version>
+                <skipTest>false</skipTest>
+                <skipITest>false</skipITest>
+            </properties>
+            <build>
+                <!--        spring.profiles.active替换-->
+                <resources>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                        <excludes>
+                            <exclude>application-dev.yml</exclude>
+                            <exclude>application-test.yml</exclude>
+                        </excludes>
+                        <filtering>true</filtering>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+
+        <profile>
+            <!--      前后端分离项目打成一个包-->
+            <id>single</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <profiles.active>dev</profiles.active>
+                <app.version>${revision}</app.version>
+                <skipTest>true</skipTest>
+                <skipITest>true</skipITest>
+            </properties>
+            <build>
+                <!--        spring.profiles.active替换-->
+                <resources>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                        <excludes>
+                            <exclude>application-test.yml</exclude>
+                            <exclude>application-prod.yml</exclude>
+                        </excludes>
+                        <filtering>true</filtering>
+                    </resource>
+                </resources>
+
+                <plugins>
+                    <!-- 打包 -->
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <version>${spring.boot.version}</version> <!-- 如果 spring.boot.version 版本修改，则这里也要跟着修改 -->
+                        <!--            <configuration>-->
+                        <!--              <fork>true</fork>-->
+                        <!--            </configuration>-->
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>repackage</goal> <!-- 将引入的 jar 打入其中 -->
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!--      异常：Invalid keystore format，spring boot配置ssl证书格式不合法解决
+                    https://blog.csdn.net/chen15369337607/article/details/119883054
+                    -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+
+                        <executions>
+                            <execution>
+                                <id>copy static</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- 复制前端打包文件到这里, idea中启动需要有这一步, 如果只打jar包使用可以删掉这个execution -->
+                                    <outputDirectory>src/main/resources/static</outputDirectory>
+                                    <overwrite>true</overwrite>
+                                    <resources>
+                                        <resource>
+                                            <!-- 从前端打包的目录dist进行指定文件、文件夹内容的复制-->
+                                            <directory>${frontend-dist-dir}</directory>
+                                            <includes>
+                                                <include>assets/</include>
+                                                <include>logo.png</include>
+                                                <include>favicon.ico</include>
+                                                <include>index.html</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>copy static package</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- 复制前端打包文件到编译后目录, 没有这一步编译目录和打包后的jar没有静态资源文件 -->
+                                    <outputDirectory>${project.build.outputDirectory}/static</outputDirectory>
+                                    <overwrite>true</overwrite>
+                                    <resources>
+                                        <resource>
+                                            <directory>${frontend-dist-dir}</directory>
+                                            <includes>
+                                                <include>assets/</include>
+                                                <include>logo.png</include>
+                                                <include>favicon.ico</include>
+                                                <include>index.html</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- 插件maven-clean-plugin，用于在编译前，清除之前编译的文件、文件夹等，避免残留之前的内容 -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-clean-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <configuration>
+                            <filesets>
+                                <fileset>
+                                    <!-- 前端资源目录，即：存放前端包目录-->
+                                    <directory>src/main/resources/static</directory>
+                                </fileset>
+                            </filesets>
+                        </configuration>
+                    </plugin>
+
+                    <!--      使用maven命令, 将前端ui跟后端打成一个包, 不想用frontend插件,只想用本地命令-->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>exec-npm-install</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>pnpm</executable>
+                                    <arguments>
+                                        <argument>install</argument>
+                                    </arguments>
+                                    <workingDirectory>${frontend-dir}</workingDirectory>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>exec-npm-run-build</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>pnpm</executable>
+                                    <arguments>
+                                        <argument>build:single</argument>
+                                    </arguments>
+                                    <workingDirectory>${frontend-dir}</workingDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+    <build>
+
+        <plugins>
+            <!-- 打包 -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

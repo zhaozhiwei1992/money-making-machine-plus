@@ -1,0 +1,103 @@
+package ${package}.web.rest;
+
+import java.util.Arrays;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
+import ${package}.domain.${className};
+import ${package}.repository.${className}Repository;
+
+/**
+ * ${comments}
+ *
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+@Tag(name = "${comments}API")
+@RestController
+@RequestMapping("/api")
+@Slf4j
+public class ${className}Resource {
+
+    @Autowired
+    private ${className}Repository ${classNameLowerFirstWord}Repository;
+
+    @PostMapping("/${pathName}")
+    @Operation(description = "新增${comments}")
+    public ${className} create${className}(@RequestBody ${className} example) {
+        log.debug("REST request to save ${className} : {}", example);
+        ${className} new${classNameLowerFirstWord} = this.${classNameLowerFirstWord}Repository.save(example);
+
+        return new${classNameLowerFirstWord};
+    }
+
+    /**
+     * @Description: 所有数据获取
+     */
+    @GetMapping("/${pathName}/all")
+    @Operation(description = "查询所有${comments}")
+    public List<${className}> getAll${className}s() {
+        log.debug("REST request to get all ${className}");
+
+        final List<${className}> all = ${classNameLowerFirstWord}Repository.findAll();
+
+        return all;
+    }
+
+    /**
+     * @Description: 分页数据获取
+     */
+    @GetMapping("/${pathName}")
+    @Operation(description = "分页查询${comments}")
+    public HashMap<String, Object> getAll${className}s(Pageable pageable, ${className} ${classNameLowerFirstWord}) {
+        log.debug("REST request to get all ${className}");
+        // 默认根据id, 升序
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        // 分页
+        pageable = PageRequest.of(pageable.getPageNumber()-1, pageable.getPageSize(), sort);
+
+        Page<${className}> ${classNameLowerFirstWord}Page;
+        //创建匹配器，即如何使用查询条件
+        //构建对象
+        ExampleMatcher matcher = ExampleMatcher
+                .matchingAll()
+                //改变默认字符串匹配方式：模糊查询
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)
+                //改变默认大小写忽略方式：忽略大小写
+                .withIgnoreCase(true)
+                //名字采用“开始匹配”的方式查询
+                .withMatcher("name", ExampleMatcher.GenericPropertyMatchers.startsWith())
+                //忽略属性：是否关注。因为是基本类型，需要忽略掉
+                .withIgnorePaths("id", "createdDate", "lastModifiedDate");
+
+        //创建实例
+        Example<${className}> ex = Example.of(${classNameLowerFirstWord}, matcher);
+        ${classNameLowerFirstWord}Page = ${classNameLowerFirstWord}Repository.findAll(ex, pageable);
+
+        return new HashMap<String, Object>(){{
+            put("list", ${classNameLowerFirstWord}Page.getContent());
+            put("total", Long.valueOf(${classNameLowerFirstWord}Page.getTotalElements()).intValue());
+        }};
+    }
+
+    /**
+     * @Description: 批量删除
+     */
+    @DeleteMapping("/${pathName}")
+    @Operation(description = "批量删除${comments}")
+    public String delete${className}(@RequestBody List<Long> idList) {
+        log.debug("REST request to delete ${className}s, ids: {}", idList);
+        this.${classNameLowerFirstWord}Repository.deleteAllByIdIn(idList);
+        return "success";
+    }
+}

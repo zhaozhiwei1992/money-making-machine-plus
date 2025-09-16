@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.z</groupId>
+  <artifactId>money-making-machine-plus</artifactId>
+  <packaging>pom</packaging>
+  <version>${revision}</version>
+  <name>money-making-machine-plus</name>
+  <url>http://maven.apache.org</url>
+  <properties>
+    <revision>1.0-SNAPSHOT</revision>
+    <java.version>21</java.version>
+    <maven.compiler.source>${java.version}</maven.compiler.source>
+    <maven.compiler.target>${java.version}</maven.compiler.target>
+    <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
+    <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+    <lombok.version>1.18.34</lombok.version>
+    <spring.boot.version>3.3.3</spring.boot.version>
+    <mapstruct.version>1.5.3.Final</mapstruct.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  <modules>
+    <!--        依赖管理-->
+    <module>z-dependencies</module>
+    <!--        一些核心框架代码-->
+    <module>z-framework</module>
+    <!-- 公共后台项目, 后台服务启动入口 -->
+    <module>z-public-server</module>
+    <!--   vue3做的后台管理界面-->
+    <!--    <module>z-ui-admin-vue3</module>-->
+    <!--        uniapp做的后台管理移动端-->
+    <!--    <module>z-ui-admin-uniapp</module>-->
+    <!--        给用户的前端ui项目-->
+    <!--   <module>z-ui-uniapp</module> -->
+    <!--    业务模块-->
+    <module>z-module-system</module>
+    <module>z-module-code-generator</module>
+    <module>z-module-dynamic-ui</module>
+    <module>z-module-report</module>
+    <module>z-module-bpm</module>
+    <module>z-module-screen</module>
+    <module>z-module-samples</module>
+    <module>z-module-ai</module>
+<!--    <module>z-module-crm</module>-->
+<!--    <module>z-module-erp</module>-->
+  </modules>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.z</groupId>
+        <artifactId>z-dependencies</artifactId>
+        <version>${revision}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <build>
+    <!-- 设置构建的 jar 包名 -->
+    <finalName>${project.artifactId}</finalName>
+
+    <pluginManagement>
+      <plugins>
+        <!-- maven-surefire-plugin 插件，用于运行单元测试。 -->
+        <!-- 注意，需要使用 3.0.X+，因为要支持 Junit 5 版本 -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${maven-surefire-plugin.version}</version>
+        </plugin>
+        <!-- maven-compiler-plugin 插件，解决 spring-boot-configuration-processor + Lombok + MapStruct 组合 -->
+        <!-- https://stackoverflow.com/questions/33483697/re-run-spring-boot-configuration-annotation-processor-to-update-generated-metada -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${maven-compiler-plugin.version}</version>
+          <configuration>
+<!--             Name for argument of type [java.lang.Long] not specified, and parameter name information not available via reflection-->
+            <compilerArgs>
+              <arg>-parameters</arg>
+            </compilerArgs>
+            <annotationProcessorPaths>
+              <path>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-configuration-processor</artifactId>
+                <version>${spring.boot.version}</version>
+              </path>
+              <path>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+              </path>
+              <path>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok-mapstruct-binding</artifactId>
+                <version>0.2.0</version>
+              </path>
+              <!-- MapStruct 在编译时会通过这个插件生成代码, 去掉以后class下没有实现类 -->
+              <path>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>${mapstruct.version}</version>
+              </path>
+            </annotationProcessorPaths>
+          </configuration>
+        </plugin>
+
+        <!--      异常：Invalid keystore format，spring boot配置ssl证书格式不合法解决
+        https://blog.csdn.net/chen15369337607/article/details/119883054
+        -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <configuration>
+            <nonFilteredFileExtensions>
+              <nonFilteredFileExtension>jks</nonFilteredFileExtension>
+              <nonFilteredFileExtension>otf</nonFilteredFileExtension>
+              <nonFilteredFileExtension>eot</nonFilteredFileExtension>
+              <nonFilteredFileExtension>svg</nonFilteredFileExtension>
+              <nonFilteredFileExtension>ttf</nonFilteredFileExtension>
+              <nonFilteredFileExtension>woff</nonFilteredFileExtension>
+              <nonFilteredFileExtension>woff.bak</nonFilteredFileExtension>
+              <nonFilteredFileExtension>woff2</nonFilteredFileExtension>
+              <nonFilteredFileExtension>ico</nonFilteredFileExtension>
+            </nonFilteredFileExtensions>
+          </configuration>
+        </plugin>
+
+        <!-- 打包 -->
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+          <configuration>
+            <!--          <fork>true</fork>-->
+            <!--          <classifier>bak</classifier>-->
+          </configuration>
+          <executions>
+            <execution>
+              <goals>
+                <goal>repackage</goal> <!-- 将引入的 jar 打入其中 -->
+              </goals>
+            </execution>
+          </executions>
+
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <!--      异常：Invalid keystore format，spring boot配置ssl证书格式不合法解决
+      https://blog.csdn.net/chen15369337607/article/details/119883054
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+  <!-- 使用 aliyun 的 Maven 源，提升下载速度 -->
+  <repositories>
+    <repository>
+      <id>aliyunmaven</id>
+      <name>aliyun</name>
+      <url>https://maven.aliyun.com/repository/public</url>
+    </repository>
+
+    <repository>
+      <id>spring-milestones</id>
+      <name>Spring Milestones</name>
+      <url>https://repo.spring.io/milestone</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+
+    <repository>
+      <id>spring-snapshots</id>
+      <name>Spring Snapshots</name>
+      <url>https://repo.spring.io/snapshot</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </repository>
+
+    <repository>
+      <id>central</id>
+      <url>http://central.maven.org/maven2/</url>
+    </repository>
+  </repositories>
+</project>

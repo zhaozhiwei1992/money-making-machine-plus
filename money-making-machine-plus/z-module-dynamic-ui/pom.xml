@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.z</groupId>
+        <artifactId>money-making-machine-plus</artifactId>
+        <version>${revision}</version>
+    </parent>
+    <artifactId>z-module-dynamic-ui</artifactId>
+    <name>z-module-dynamic-ui</name>
+    <url>http://maven.apache.org</url>
+    <description>
+        动态ui设计, 根据配置动态加载构建界面
+    </description>
+    <dependencies>
+
+        <dependency>
+            <groupId>com.z</groupId>
+            <artifactId>z-common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.z</groupId>
+            <artifactId>z-module-system</artifactId>
+            <version>${revision}</version>
+        </dependency>
+    </dependencies>
+</project>

@@ -1,0 +1,2 @@
+#com.z.framework.cache.config.SimpleCacheAutoConfiguration
+com.z.framework.cache.config.MultiCacheAutoConfiguration

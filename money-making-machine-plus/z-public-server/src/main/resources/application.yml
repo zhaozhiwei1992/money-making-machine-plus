@@ -1,0 +1,554 @@
+# ===================================================================
+# Spring Boot configuration.
+#
+# This configuration will be overridden by the Spring profile you use,
+# for example application-dev.yml if you use the "dev" profile.
+#
+# More information on profiles: https://www.jhipster.tech/profiles/
+# More information on configuration properties: https://www.jhipster.tech/common-application-properties/
+# ===================================================================
+
+# ===================================================================
+# Standard Spring Boot properties.
+# Full reference is available at:
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+# ===================================================================
+
+# 默认端口给个8090
+server:
+  port: 8090
+
+# 默认前缀, 这个方式感觉有点x
+#servlet:
+#  context-path: /api
+
+---
+springdoc:
+  show-actuator: true
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui
+
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+---
+management:
+  endpoints:
+    web:
+      base-path: /management
+      exposure:
+        include:
+          [
+            'configprops',
+            'env',
+            'health',
+            'info',
+            'logfile',
+            'loggers',
+            'prometheus',
+            'threaddump',
+            'caches',
+            'liquibase',
+          ]
+  endpoint:
+    health:
+      show-details: when_authorized
+      roles: 'ROLE_ADMIN'
+      probes:
+        enabled: true
+      group:
+        liveness:
+          include: livenessState
+        readiness:
+          include: readinessState,db
+  info:
+    git:
+      mode: full
+  health:
+    mail:
+      enabled: false # When using the MailService, configure an SMTP server and set this to true
+
+spring:
+  application:
+    name: money-making-machine-plus
+  profiles:
+    # The commented value for `active` can be replaced with valid Spring profiles to load.
+    # Otherwise, it will be filled in by maven when building the JAR file
+    # Either way, it can be overridden by `--spring.profiles.active` value passed in the commandline or `-Dspring.profiles.active` set in `JAVA_OPTS`
+#    active: dev
+    active: '@profiles.active@'
+    group:
+      dev:
+        - dev
+        - api-docs
+        # Uncomment to activate TLS for the dev profile
+        #- tls
+  jmx:
+    enabled: false
+  data:
+    jpa:
+      repositories:
+        bootstrap-mode: deferred
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate.jdbc.time_zone: UTC
+      hibernate.id.new_generator_mappings: true
+      hibernate.connection.provider_disables_autocommit: true
+      hibernate.cache.use_second_level_cache: false
+      hibernate.cache.use_query_cache: false
+      # hibernate统计信息, 关闭
+      hibernate.generate_statistics: false
+      # modify batch size as necessary
+      hibernate.jdbc.batch_size: 25
+      hibernate.order_inserts: true
+      hibernate.order_updates: true
+      hibernate.query.fail_on_pagination_over_collection_fetch: true
+      hibernate.query.in_clause_parameter_padding: true
+      hibernate.session_factory.statement_inspector: com.z.module.system.aop.CustomStatementInspector
+    hibernate:
+      ddl-auto: none
+#      naming:
+#        使用默认转换方式, 或者通过@Table, @Column显示处理
+#        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+#        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+  datasource:
+    init:
+      platform: mysql # 数据库类型
+    # 指定为HikariDataSource
+    type: com.zaxxer.hikari.HikariDataSource
+    # hikari连接池配置
+    hikari:
+      #连接池名
+      pool-name: HikariCP
+      #最小空闲连接数
+      minimum-idle: 5
+      # 空闲连接存活最大时间，默认10分钟
+      idle-timeout: 600000
+      # 连接池最大连接数，默认是10
+      maximum-pool-size: 10
+      # 此属性控制从池返回的连接的默认自动提交行为,默认值：true
+      auto-commit: false
+      # 此属性控制池中连接的最长生命周期，值0表示无限生命周期，默认30分钟
+      max-lifetime: 1800000
+      # 数据库连接超时时间,默认30秒
+      connection-timeout: 30000
+      # 连接测试query
+      connection-test-query: SELECT 1
+
+    # druid配置
+    #spring:
+    #  datasource:
+    ########## 配置数据源 （Druid）##########
+#    platform: mysql # 数据库类型
+#    type: com.alibaba.druid.pool.DruidDataSource # 指定数据源类型
+    ########## 连接池 配置 ##########
+#    druid:
+      #      通过api方式初始化需要把url, username, password搞进来, 方便通过com.example.config.DruidConfiguration.druid初始化
+#      url: ${spring.datasource.url}
+#      username: ${spring.datasource.username}
+#      password: ${spring.datasource.password}
+#      defaultAutoCommit: false
+#      # 配置初始化大小、最小、最大
+#      initial-size: 5
+#      minIdle: 10
+#      max-active: 20
+#      # 配置获取连接等待超时的时间(单位：毫秒)
+#      max-wait: 60000
+#      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+#      time-between-eviction-runs-millis: 2000
+#      # 配置一个连接在池中最小生存的时间，单位是毫秒
+#      min-evictable-idle-time-millis: 600000
+#      #      max-evictable-idle-time-millis: 900000
+#
+#      #      useGlobalDtaSourceStat要设置为false。（不然会提示不支持）
+#      #      useGlobalDataSourceStat: false
+#      #30s输出一次log, 自定义 com.example.aop.logging.PersistentStatLogger
+#      timeBetweenLogStatsMillis: 30000
+#      # 用来测试连接是否可用的SQL语句,默认值每种数据库都不相同,这是mysql
+#      validationQuery: select 1
+#      # 应用向连接池申请连接，并且testOnBorrow为false时，连接池将会判断连接是否处于空闲状态，如果是，则验证这条连接是否可用
+#      testWhileIdle: true
+#      # 如果为true，默认是false，应用向连接池申请连接时，连接池会判断这条连接是否是可用的
+#      testOnBorrow: false
+#      # 如果为true（默认false），当应用使用完连接，连接池回收连接的时候会判断该连接是否还可用
+#      testOnReturn: false
+#      # 是否缓存preparedStatement，也就是PSCache。PSCache对支持游标的数据库性能提升巨大，比如说oracle
+#      poolPreparedStatements: true
+#      # 要启用PSCache，必须配置大于0，当大于0时， poolPreparedStatements自动触发修改为true，
+#      # 在Druid中，不会存在Oracle下PSCache占用内存过多的问题，
+#      # 可以把这个数值配置大一些，比如说100
+#      maxOpenPreparedStatements: 20
+#      # 连接池中的minIdle数量以内的连接，空闲时间超过minEvictableIdleTimeMillis，则会执行keepAlive操作
+#      keepAlive: true
+#      # Spring 监控，利用aop 对指定接口的执行时间，jdbc数进行记录
+#      aop-patterns: 'com.example.repository.*'
+#      ########### 启用内置过滤器（第一个 stat必须，否则监控不到SQL）##########
+#      #      filters: stat,wall,log4j2
+#      #      todo 去掉wall 防止数据权限1=1被当作sql注入拦截
+#      filters: stat,log4j2
+#      # 自己配置监控统计拦截的filter
+#      filter:
+#        # 开启druiddatasource的状态监控
+#        stat:
+#          enabled: true
+#          db-type: mysql
+#          # 开启慢sql监控，超过1s 就认为是慢sql，记录到日志中
+#          log-slow-sql: true
+#          slow-sql-millis: 1000
+#        # 日志监控，使用slf4j 进行日志输出
+#        slf4j:
+#          enabled: true
+#          statement-log-error-enabled: true
+#          statement-create-after-log-enabled: false
+#          statement-close-after-log-enabled: false
+#          result-set-open-after-log-enabled: false
+#          result-set-close-after-log-enabled: false
+#      ########## 配置WebStatFilter，用于采集web关联监控的数据 ##########
+#      web-stat-filter:
+#        enabled: true # 启动 StatFilter
+#        url-pattern: /* # 过滤所有url
+#        exclusions: '*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*' # 排除一些不必要的url
+#        session-stat-enable: true # 开启session统计功能
+#        session-stat-max-count: 1000 # session的最大个数,默认100
+#      ########## 配置StatViewServlet（监控页面），用于展示Druid的统计信息 ##########
+#      stat-view-servlet:
+#        enabled: true # 启用StatViewServlet
+#        url-pattern: /druid/* # 访问内置监控页面的路径，内置监控页面的首页是/druid/index.html
+#        reset-enable: false # 不允许清空统计数据,重新计算
+#        login-username: admin # 配置监控页面访问密码
+#        login-password: admin
+#        allow: 127.0.0.1 # 允许访问的地址，如果allow没有配置或者为空，则允许所有访问
+#        deny: # 拒绝访问的地址，deny优先于allow，如果在deny列表中，就算在allow列表中，也会被拒绝
+  thymeleaf:
+    mode: HTML
+  output:
+    ansi:
+      console-available: true
+  liquibase:
+    enabled: true
+  redis:
+    database: 0
+    host: localhost
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        max-wait: -1
+        min-idle: 0
+    password: ''
+    port: 6379
+
+server:
+  servlet:
+    session:
+      cookie:
+        http-only: true
+#  java.io.EOFException: null异常处理
+  ssl:
+    enabled: false
+
+# Properties to be exposed on the /info management endpoint
+info:
+  # Comma separated list of profiles that will trigger the ribbon to show
+  display-ribbon-on-profiles: 'dev'
+
+# 工作流 Flowable 配置
+flowable:
+  # 1. false: 默认值，Flowable 启动时，对比数据库表中保存的版本，如果不匹配。将抛出异常
+  # 2. true: 启动时会对数据库中所有表进行更新操作，如果表存在，不做处理，反之，自动创建表
+  # 3. create_drop: 启动时自动创建表，关闭时自动删除表
+  # 4. drop_create: 启动时，删除旧表，再创建新表
+  database-schema-update: true # 设置为 false，可通过 https://github.com/flowable/flowable-sql 初始化
+  db-history-used: true # flowable6 默认 true 生成信息表，无需手动设置
+  check-process-definitions: false # 设置为 false，禁用 /resources/processes 自动部署 BPMN XML 流程
+  history-level: full # full：保存历史数据的最高级别，可保存全部流程相关细节，包括流程流转各节点参数
+
+# ===================================================================
+# app specific properties
+#
+# Full reference is available at: https://www.jhipster.tech/common-application-properties/
+# ===================================================================
+
+z:
+  app:
+    name: 'MoneyMakingMachine'
+    version: '@app.version@'
+    basePackage: 'com.z'
+  api-docs:
+    default-include-pattern: ${server.servlet.context-path:}/api/**
+    management-include-pattern: ${server.servlet.context-path:}/management/**
+    title: ${z.app.name} API
+    description: ${z.app.name} API documentation
+    version: '@app.version@'
+    terms-of-service-url:
+    contact-name:
+    contact-url:
+    contact-email:
+    license: unlicensed
+    license-url:
+  swagger:
+    title: 赚钱机器
+    description: 提供本系统引入所有模块的接口调试
+    version: ${z.app.version}
+    url: x
+    email: zhaozhiweishanxi@gmail.com
+    license: MIT
+    license-url: https://gitee.com/zhijiantianya/ruoyi-vue-pro/blob/master/LICENSE
+  security:
+    content-security-policy: "default-src 'self'; frame-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://storage.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:"
+    auth-white-list:
+      # 静态资源白名单
+      - /index.html
+      - /assets/**
+      - /favicon.ico
+      - /logo.png
+      - /static/**
+      - /images/**
+      - /css/**
+      - /js/**
+      - /layui/**
+      - /bootstrap-5.0.2-dist/**
+      - /font-awesome-4.7.0/**
+      - /druid/**
+      - /lay-config.js
+      - /echarts/**
+      # url 白名单
+      - /login
+      - /api/login
+      - /api/mobile/login/**
+      - /system/login
+      - /api/system/login
+      - /api/system/mobile/login/**
+      - /api/system/register
+      - /actuator/**
+      # 验证码
+      - /captcha/numCode
+      - /api/captcha/numCode
+      # 积木报表
+      - /jmreport/**
+      - /jimureport/**
+      # swagger3
+      - /swagger-ui/**
+      - /doc.html
+      - /webjars/**
+      - /img.icons/**
+      - /swagger-resources/**
+      - /v3/api-docs/**
+      # goView
+      - /api/goview/sys/**
+      - /api/goview/**
+      # 临时测试
+#      - /dashboard/analysis
+
+  #  分模块配置
+  module:
+    system:
+      test: true
+    generator:
+      # 数据库类型
+      jdbcType: jpa
+      # ui类型: vue+elementui
+      uiType: vue
+      module: system
+      basePackage: com.z.module.${z.module.generator.module}
+      author: zhaozhiwei
+      email: zhaozhiweishanxi@gmail.com
+      tablePrefix: t_
+      #    数据库字段到java映射
+      mapping:
+        BINARY_DOUBLE: Double
+        BINARY_FLOAT: Float
+        BINARY_INTEGER: Integer
+        BLOB: String
+        CHAR: String
+        CLOB: String
+        DATE: Date
+        DATETIME: Date
+        DECIMAL: BigDecimal
+        DOUBLE: Double
+        FLOAT: Float
+        INT: Integer
+        INT16: Short
+        INT32: Integer
+        INT64: Long
+        INTEGER: Integer
+        LONG: String
+        NUMBER: Integer
+        NVARCHAR: String
+        NVARCHAR2: String
+        TIMESTAMP: Date
+        TIMESTAMP(6): Date
+        VARCHAR: String
+        VARCHAR2: String
+        bigint: Long
+        bit: Boolean
+        bool: Boolean
+        char: String
+        date: Date
+        datetime: Date
+        decimal: BigDecimal
+        double: Double
+        float: Float
+        int: Integer
+        int2: Integer
+        int4: Integer
+        int8: Long
+        integer: Integer
+        longtext: String
+        mediumint: Integer
+        mediumtext: String
+        numeric: BigDecimal
+        smallint: Integer
+        text: String
+        timestamp: Date
+        tinyint: Integer
+        tinytext: String
+        varchar: String
+
+#  集成测试参数配置
+  itest:
+    serverIpPort: http://127.0.0.1:8090
+    serverUserName: 3400_001001A3
+    serverPassword: 1
+#   替换为实际使用的可用计划额度id
+    planCtrlId: D8FB0545181AFD71C12B69E09346E5DE
+  # 默认使用simpleCache
+#  cache: 'simple'
+  cache: 'multi'
+  # 缓存配置
+  #spring:
+  #  cache:
+  #    jcache:
+  #      # 使用ehcache
+  #      config: classpath:ehcache.xml
+  cache-config:
+    specs:
+      loginMenuCache:
+        # 当前用户菜单有效期 1分钟
+        # 过期时间: 秒
+        expire-time: 10
+        # 缓存最大数量
+        max-size: 200
+        remark: '用户菜单缓存'
+      usersByLogin:
+        expire-time: 60
+        max-size: 200
+        remark: '用户信息缓存'
+      loadByUserNameCache:
+        expire-time: 60
+        max-size: 200
+        remark: '用户信息缓存'
+      sysParamCache:
+        expire-time: 60
+        max-size: 200
+        remark: '系统参数缓存'
+      tokenWriteListCache:
+        # 代理服务里token默认有效期为24小时, 除非主动退出
+        expire-time: 86400
+        max-size: 200
+        remark: 'token白名单缓存'
+      onlineUserCache:
+        expire-time: 86400
+        max-size: 10000
+        remark: '在线用户缓存'
+
+# 验证码
+kaptcha:
+  background:
+    clear:
+      from: 92,189,170
+      to: 255,255,255
+  border: 'no'
+  height: 42
+  textproducer:
+    char:
+#      验证码文本字符长度  默认为5
+      length: 4
+      space: 10
+      string: 1234567890
+    font:
+#      验证码文本字体样式  默认为new Font("Arial", 1, fontSize), new Font("Courier", 1, fontSize)
+      names: 仿宋,微软雅黑
+      size: 40
+  width: 150
+rocketmq:
+  consumer:
+    # 一次拉取消息最大值，注意是拉取消息的最大值而非消费最大值
+    pull-batch-size: 10
+    # 格式: Topic~Tag
+    topics: "LoginLog~*,InventoryTopic~*,PaymentTopic~TagB"
+  name-server: localhost:9876
+  producer:
+    # 这个group不写启动报错
+    group: producer_group
+    # 发送消息超时时间，默认3000
+    sendMessageTimeout: 10000
+    # 发送消息失败重试次数，默认2
+    retryTimesWhenSendFailed: 2
+    # 异步消息重试此处，默认2
+    retryTimesWhenSendAsyncFailed: 2
+    # 消息最大长度，默认1024 * 1024 * 4(默认4M)
+    maxMessageSize: 4096
+    # 压缩消息阈值，默认4k(1024 * 4)
+    compressMessageBodyThreshold: 4096
+    # 是否在内部发送失败时重试另一个broker，默认false
+    retryNextServer: false
+---
+#积木报表配置
+jeecg :
+  # local|minio|alioss
+  uploadType: local
+  # local
+  path :
+    #文件路径
+    upload: /tmp/upload/
+  # alioss
+  oss:
+    endpoint: oss-cn-beijing.aliyuncs.com
+    accessKey: ??
+    secretKey: ??
+    bucketName: jeecgos
+    staticDomain: ??
+---
+# 大屏模块属性配置
+z:
+  module:
+    screen:
+      go-view:
+        httpUrl: http://localhost:8090
+        uploadType: local
+        # 本地存储
+        path:
+          upload: /tmp/upload/go-view
+        # oss存储
+        oss:
+          endpoint: oss-cn-beijing.aliyuncs.com
+          accessKey: ??
+          secretKey: ??
+          bucketName: goview
+          staticDomain: ??
+---
+#微信小程序
+wx:
+  miniapp:
+    defaultappid: wxd46fa7c6e2fa9577 #微信小程序的appid
+    configs:
+      - appid: wxd46fa7c6e2fa9577 #微信小程序的appid
+        secret: 034aa321f2aceab47ad0f953ad65213c #微信小程序的Secret
+        token: #微信小程序消息服务器配置的token
+        aesKey: #微信小程序消息服务器配置的EncodingAESKey
+        msgDataFormat: JSON
+---
+# ai 模块
+z:
+  module:
+    ai:
+      type: dify
+#      type: bailian
+      base-url: https://api.dify.ai/v1

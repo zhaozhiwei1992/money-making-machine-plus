@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.z</groupId>
+    <artifactId>z-framework</artifactId>
+    <version>${revision}</version>
+  </parent>
+  <artifactId>z-starter-ai</artifactId>
+  <name>z-starter-ai</name>
+  <url>http://maven.apache.org</url>
+  <dependencies>
+
+    <dependency>
+      <groupId>com.z</groupId>
+      <artifactId>z-common</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.projectreactor</groupId>
+      <artifactId>reactor-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-webflux</artifactId>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/com.alibaba/dashscope-sdk-java -->
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>dashscope-sdk-java</artifactId>
+<!--      坑爹玩意儿，会冲突-->
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-simple</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>io.github.imfangs</groupId>
+      <artifactId>dify-java-client</artifactId>
+      <version>1.0.4</version>
+    </dependency>
+
+  </dependencies>
+</project>

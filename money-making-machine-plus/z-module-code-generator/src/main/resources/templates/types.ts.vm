@@ -1,0 +1,10 @@
+export type TableData = {
+  // mofDivCode: string
+  // appid: number
+  // 类型attrType要转换为前端类型
+
+#foreach ($column in $columns)
+    // $column.comments
+    ${column.attr_name}: $column.attrType;
+#end
+}

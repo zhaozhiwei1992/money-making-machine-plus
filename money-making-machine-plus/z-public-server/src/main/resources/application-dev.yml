@@ -1,0 +1,72 @@
+logging:
+  level:
+    ROOT: DEBUG
+    tech.jhipster: DEBUG
+    org.hibernate.SQL: DEBUG
+    com.example: DEBUG
+    org.springframework.web: trace
+
+spring:
+  jpa:
+    hibernate:
+#      ddl-auto: create-drop
+      ddl-auto: update
+  generateDdl: true
+  devtools:
+    restart:
+      enabled: true
+      additional-exclude: static/**
+    livereload:
+      enabled: false # we use Webpack dev server + BrowserSync for livereload
+  jackson:
+    serialization:
+      indent-output: true
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/money_making_machine_plus?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true&createDatabaseIfNotExist=true # MySQL Connector/J 8.X 连接的示例
+    username: root
+    password: root
+  #  原文链接：https://blog.csdn.net/xupeiyan/article/details/123017184
+  liquibase:
+    # Remove 'faker' if you do not want the sample data to be loaded automatically
+    contexts: dev
+  thymeleaf:
+    cache: false
+
+# ===================================================================
+# Ifmis specific properties
+#
+# ===================================================================
+
+z:
+  module:
+    system:
+  cors:
+    # Allow Ionic for JHipster by default (* no longer allowed in Spring Boot 2.4+)
+    # 注意: 前端必须是localhost访问, 如果用127.0.0.1还是会拦截
+    # 4000是admin-vue3, 8080: z-ui-app
+    # 配置origin地址, 即前端地址即可
+    allowed-origins:
+      - http://localhost:8090
+      - https://localhost:8090
+      - http://localhost:4000
+      - https://localhost:4000
+      - http://localhost:8080
+      - https://localhost:8080
+      - http://localhost:3000
+      - https://localhost:3000
+      - http://localhost:5173
+      - https://localhost:5173
+    allowed-methods: '*'
+    allowed-headers: '*'
+    exposed-headers: 'Authorization,Link,X-Total-Count,X-${z.app.name}-alert,X-${z.app.name}-error,X-${z.app.name}-params'
+    allow-credentials: true
+    max-age: 1800
+  security:
+    authentication:
+      jwt:
+        # This token must be encoded using Base64 and be at least 256 bits long (you can type `openssl rand -base64 64` on your command line to generate a 512 bits one)
+        base64-secret: OTYwZmRhYWZiOWY1NzJlYTMxOTkwMDI4NGQ2NzZiODU3ZDcxM2I5OGE1OTViZjQyZDZhNzBlNDcwMzM4MTQ1MWRkMjNmYTUyMjYyN2FhZWJlZGYxZjgzNWFmNTBhM2RlOGM1OWZhYTNhYTMwNDk2NzM1NGU0ZjYwOTM1Mzg5YTk=
+        # 秒 Token is valid 24 hours
+        token-validity-in-seconds: 86400
+        token-validity-in-seconds-for-remember-me: 2592000

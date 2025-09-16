@@ -1,0 +1,85 @@
+logging:
+  level:
+    ROOT: INFO
+    tech.jhipster: INFO
+    com.example: INFO
+
+knife4j:
+  enable: true
+  # 开启生产环境屏蔽
+  production: true
+
+management:
+  metrics:
+    export:
+      prometheus:
+        enabled: false
+
+spring:
+  devtools:
+    restart:
+      enabled: false
+    livereload:
+      enabled: false
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/money_making_machine_plus?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true&createDatabaseIfNotExist=true # MySQL Connector/J 8.X 连接的示例
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      #      ddl-auto: create-drop
+      ddl-auto: update
+    generateDdl: false
+  # Replace by 'prod, faker' to add the faker context and have sample data loaded in production
+  liquibase:
+    contexts: prod
+  mail:
+    host: localhost
+    port: 25
+    username:
+    password:
+  thymeleaf:
+    cache: true
+server:
+  port: 8443
+  ssl:
+    key-store: classpath:dev.com.jks
+    #证书的密码（在生成证书的时候会指定一个密码）
+    key-store-password: 123456
+    #执行证书的类型
+    key-store-type: jks
+    # 别名
+    key-alias: dev.com
+    enabled: true
+# ===================================================================
+# Ifmis specific properties
+#
+# ===================================================================
+z:
+  module:
+    system:
+  cors:
+    # Allow Ionic for JHipster by default (* no longer allowed in Spring Boot 2.4+)
+    # 注意: 前端必须是localhost访问, 如果用127.0.0.1还是会拦截, 这里修改为实际域名
+    # 4000是admin-vue3, 8080: z-ui-app
+#    allowed-origins: 'http://dev.com:8090,https://dev.com:8090,http://dev.com,https://dev.com'
+    allowed-origins:
+      - http://localhost:8443
+      - https://localhost:8443
+      - http://localhost:4173
+      - https://localhost:4173
+      - http://localhost:3000
+      - https://localhost:3000
+    allowed-methods: '*'
+    allowed-headers: '*'
+    exposed-headers: 'Authorization,Link,X-Total-Count,X-${z.app.name}-alert,X-${z.app.name}-error,X-${z.app.name}-params'
+    allow-credentials: true
+    max-age: 1800
+  security:
+    authentication:
+      jwt:
+        base64-secret: OTYwZmRhYWZiOWY1NzJlYTMxOTkwMDI4NGQ2NzZiODU3ZDcxM2I5OGE1OTViZjQyZDZhNzBlNDcwMzM4MTQ1MWRkMjNmYTUyMjYyN2FhZWJlZGYxZjgzNWFmNTBhM2RlOGM1OWZhYTNhYTMwNDk2NzM1NGU0ZjYwOTM1Mzg5YTk=
+        # Token is valid 24 hours
+        token-validity-in-seconds: 86400
+        token-validity-in-seconds-for-remember-me: 2592000

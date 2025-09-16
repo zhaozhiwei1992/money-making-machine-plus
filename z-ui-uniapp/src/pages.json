@@ -1,0 +1,104 @@
+{
+  // 符合components/组件名称/组件名称.vue目录结构, 就可以不用引用、注册，直接在页面中使用
+  "easycom": {
+    // uview-ui
+    "^u-(.*)": "uview-ui/components/u-$1/u-$1.vue",
+    "^c-(.*)": "@/components/c-$1/c-$1.vue",
+    // uni-ui 规则如下配置
+    "^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue"
+  },
+  "pages": [
+    {
+      "path": "pages/Login/Index",
+      "style": {
+        "navigationBarTitleText": "登录"
+      }
+    },
+    {
+      "path": "pages/System/User/Index",
+      "style": {
+        "navigationBarTitleText": "用户管理"
+      }
+    },
+    {
+      "path": "pages/System/Param/Index",
+      "style": {
+        "navigationBarTitleText": "系统参数"
+      }
+    },
+    {
+      "path": "pages/System/Task/Index",
+      "style": {
+        "navigationBarTitleText": "定时任务"
+      }
+    },
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "首页"
+      }
+    },
+    {
+      "path": "pages/Workspace/Index",
+      "style": {
+        "navigationBarTitleText": "工作台"
+      }
+    },
+    {
+      "path": "pages/Mine/Index",
+      "style": {
+        "navigationBarTitleText": "我的"
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "演示",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8",
+    "renderingMode": "seperated", // 仅微信小程序，webrtc 无法正常时尝试强制关闭同层渲染
+    "pageOrientation": "portrait", //横屏配置，全局屏幕旋转设置(仅 APP/微信/QQ小程序)，支持 auto / portrait / landscape
+    "rpxCalcMaxDeviceWidth": 960,
+    "rpxCalcBaseDeviceWidth": 375,
+    "rpxCalcIncludeWidth": 750
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#3cc51f",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "height": "50px",
+    "fontSize": "10px",
+    "iconWidth": "24px",
+    "spacing": "3px",
+    "iconfontSrc": "static/iconfont.ttf", // app tabbar 字体.ttf文件路径 app 3.4.4+
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "https://cdn.uviewui.com/uview/example/grid.png",
+        "selectedIconPath": "https://cdn.uviewui.com/uview/example/grid.png",
+        "text": "首页",
+        "iconfont": {
+          // 优先级高于 iconPath，该属性依赖 tabbar 根节点的 iconfontSrc
+          "text": "\ue102",
+          "selectedText": "\ue103",
+          "fontSize": "17px",
+          "color": "#000000",
+          "selectedColor": "#0000ff"
+        }
+      },
+      {
+        "pagePath": "pages/Workspace/Index",
+        "iconPath": "https://cdn.uviewui.com/uview/example/grid.png",
+        "selectedIconPath": "https://cdn.uviewui.com/uview/example/grid.png",
+        "text": "工作台"
+      },
+      {
+        "pagePath": "pages/Mine/Index",
+        "iconPath": "https://cdn.uviewui.com/uview/example/grid.png",
+        "selectedIconPath": "https://cdn.uviewui.com/uview/example/grid.png",
+        "text": "我的"
+      }
+    ]
+  }
+}
