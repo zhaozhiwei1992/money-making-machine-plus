@@ -243,6 +243,9 @@ spring:
         min-idle: 0
     password: ''
     port: 6379
+  jackson:
+    # 前端使用snake_case，后端使用camelCase
+    property-naming-strategy: SNAKE_CASE
 
 server:
   servlet:
@@ -550,5 +553,7 @@ z:
   module:
     ai:
       type: dify
-#      type: bailian
       base-url: https://api.dify.ai/v1
+      dataset-api-key: dataset-NlxPe9y1lNa9Zl7arN8WLn9j
+#      type: bailian
+#      base-url: https://dashscope.aliyuncs.com/api/v1

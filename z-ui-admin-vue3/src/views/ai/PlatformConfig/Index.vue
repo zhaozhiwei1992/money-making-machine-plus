@@ -8,6 +8,7 @@ import { Table } from '@/components/Table'
 import { CrudSchema, useCrudSchemas } from '@/hooks/web/useCrudSchemas'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useTable } from '@/hooks/web/useTable'
+import { TableColumn } from '@/types/table'
 import { ElButton } from 'element-plus'
 import { reactive, ref, unref } from 'vue'
 import AddOrUpdate from './components/AddOrUpdate.vue'
@@ -32,206 +33,214 @@ getList()
 const { t } = useI18n()
 
 const crudSchemas = reactive<CrudSchema[]>([
-
-      {
-        field: 'id',
-        label: '主键',
-        search: {
-          show: false
+  {
+    field: 'id',
+    label: '主键',
+    search: {
+      show: false
+    },
+    form: {
+      show: false
+    },
+    detail: {
+      show: false
+    }
+  },
+  {
+    field: 'created_by',
+    label: '',
+    search: {
+      show: false
+    },
+    form: {
+      show: false
+    },
+    detail: {
+      show: false
+    }
+  },
+  {
+    field: 'created_date',
+    label: '',
+    search: {
+      show: false
+    },
+    form: {
+      show: false
+    },
+    detail: {
+      show: false
+    }
+  },
+  {
+    field: 'last_modified_by',
+    label: '',
+    search: {
+      show: false
+    },
+    form: {
+      show: false
+    },
+    detail: {
+      show: false
+    }
+  },
+  {
+    field: 'last_modified_date',
+    label: '',
+    search: {
+      show: false
+    },
+    form: {
+      show: false
+    },
+    detail: {
+      show: false
+    }
+  },
+  {
+    field: 'api_key',
+    label: 'API Key',
+    search: {
+      show: true
+    },
+    form: {
+      show: true
+    },
+    detail: {
+      show: true
+    }
+  },
+  {
+    field: 'app_id',
+    label: '应用ID',
+    search: {
+      show: true
+    },
+    form: {
+      show: true
+    },
+    detail: {
+      show: true
+    }
+  },
+  {
+    field: 'base_url',
+    label: '应用所属平台地址',
+    search: {
+      show: false
+    },
+    form: {
+      show: false
+    },
+    detail: {
+      show: false
+    }
+  },
+  {
+    field: 'bus_type',
+    label: '业务类型',
+    search: {
+      show: true
+    },
+    form: {
+      show: true
+    },
+    detail: {
+      show: true
+    }
+  },
+  {
+    field: 'code',
+    label: '应用凭据',
+    search: {
+      show: true
+    },
+    form: {
+      show: true
+    },
+    detail: {
+      show: true
+    }
+  },
+  {
+    field: 'name',
+    label: '应用名称',
+    search: {
+      show: true
+    },
+    form: {
+      show: true
+    },
+    detail: {
+      show: true
+    }
+  },
+  {
+    field: 'picture',
+    label: '应用图标',
+    search: {
+      show: true
+    },
+    form: {
+      show: true
+    },
+    detail: {
+      show: true
+    }
+  },
+  {
+    field: 'remark',
+    label: '应用摘要',
+    search: {
+      show: true
+    },
+    form: {
+      show: true
+    },
+    detail: {
+      show: true
+    }
+  },
+  {
+    field: 'status',
+    label: '是否启用',
+    formatter: (_: Recordable, __: TableColumn, cellValue: boolean) => {
+      return h(
+        ElTag,
+        {
+          type: 'success'
         },
-        form: {
-          show: false
-        },
-        detail: {
-          show: false
+        () => (cellValue === true ? '启用' : '停用')
+      )
+    },
+    form: {
+      component: 'Switch',
+      componentProps: {
+        style: {
+          width: '100%'
         }
-      },
-      {
-        field: 'created_by',
-        label: '',
-        search: {
-          show: false
-        },
-        form: {
-          show: false
-        },
-        detail: {
-          show: false
-        }
-      },
-      {
-        field: 'created_date',
-        label: '',
-        search: {
-          show: false
-        },
-        form: {
-          show: false
-        },
-        detail: {
-          show: false
-        }
-      },
-      {
-        field: 'last_modified_by',
-        label: '',
-        search: {
-          show: false
-        },
-        form: {
-          show: false
-        },
-        detail: {
-          show: false
-        }
-      },
-      {
-        field: 'last_modified_date',
-        label: '',
-        search: {
-          show: false
-        },
-        form: {
-          show: false
-        },
-        detail: {
-          show: false
-        }
-      },
-      {
-        field: 'api_key',
-        label: 'API Key',
-        search: {
-          show: false
-        },
-        form: {
-          show: false
-        },
-        detail: {
-          show: false
-        }
-      },
-      {
-        field: 'app_id',
-        label: '应用ID',
-        search: {
-          show: false
-        },
-        form: {
-          show: false
-        },
-        detail: {
-          show: false
-        }
-      },
-      {
-        field: 'base_url',
-        label: '应用所属平台地址',
-        search: {
-          show: false
-        },
-        form: {
-          show: false
-        },
-        detail: {
-          show: false
-        }
-      },
-      {
-        field: 'bus_type',
-        label: '业务类型',
-        search: {
-          show: false
-        },
-        form: {
-          show: false
-        },
-        detail: {
-          show: false
-        }
-      },
-      {
-        field: 'code',
-        label: '应用凭据',
-        search: {
-          show: false
-        },
-        form: {
-          show: false
-        },
-        detail: {
-          show: false
-        }
-      },
-      {
-        field: 'name',
-        label: '应用名称',
-        search: {
-          show: false
-        },
-        form: {
-          show: false
-        },
-        detail: {
-          show: false
-        }
-      },
-      {
-        field: 'picture',
-        label: '应用图标',
-        search: {
-          show: false
-        },
-        form: {
-          show: false
-        },
-        detail: {
-          show: false
-        }
-      },
-      {
-        field: 'remark',
-        label: '应用摘要',
-        search: {
-          show: false
-        },
-        form: {
-          show: false
-        },
-        detail: {
-          show: false
-        }
-      },
-      {
-        field: 'status',
-        label: '是否启用',
-        search: {
-          show: false
-        },
-        form: {
-          show: false
-        },
-        detail: {
-          show: false
-        }
-      },
-      {
-        field: 'type',
-        label: '平台类型',
-        search: {
-          show: false
-        },
-        form: {
-          show: false
-        },
-        detail: {
-          show: false
-        }
-      },
-
+      }
+    }
+  },
+  {
+    field: 'type',
+    label: '平台类型',
+    search: {
+      show: false
+    },
+    form: {
+      show: true
+    },
+    detail: {
+      show: true
+    }
+  }
 ])
 
 const { allSchemas } = useCrudSchemas(crudSchemas)
+
+console.log(allSchemas, 'allSchemas')
 
 const dialogVisible = ref(false)
 
