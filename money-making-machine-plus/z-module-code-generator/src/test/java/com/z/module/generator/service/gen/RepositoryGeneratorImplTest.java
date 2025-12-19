@@ -24,13 +24,9 @@ public class RepositoryGeneratorImplTest {
     @Mock
     private AppConfiguration appConfiguration;
 
-    @Mock
-    private AppConfiguration.GeneratorProperties generatorProperties;
-
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        when(appConfiguration.getGenerator()).thenReturn(generatorProperties);
     }
 
     @Test
@@ -42,8 +38,6 @@ public class RepositoryGeneratorImplTest {
     public void testGetTemplateData() {
         Map<String, Object> table = new HashMap<>();
         table.put("tableName", "test_table");
-
-        when(generatorProperties.getBasePackage()).thenReturn("com.z.test");
 
         Map<String, Object> data = repositoryGenerator.getTemplateData(table, Collections.emptyList());
 

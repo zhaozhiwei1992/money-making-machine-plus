@@ -24,13 +24,10 @@ public class DomainGeneratorImplTest {
     @Mock
     private AppConfiguration appConfiguration;
 
-    @Mock
-    private AppConfiguration.GeneratorProperties generatorProperties;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        when(appConfiguration.getGenerator()).thenReturn(generatorProperties);
     }
 
     @Test
@@ -42,9 +39,6 @@ public class DomainGeneratorImplTest {
     public void testGetTemplateData() {
         Map<String, Object> table = new HashMap<>();
         table.put("tableName", "test_table");
-
-        when(generatorProperties.getBasePackage()).thenReturn("com.z.test");
-        when(generatorProperties.getMapping()).thenReturn(Collections.emptyMap());
 
         Map<String, Object> data = domainGenerator.getTemplateData(table, Collections.emptyList());
 
