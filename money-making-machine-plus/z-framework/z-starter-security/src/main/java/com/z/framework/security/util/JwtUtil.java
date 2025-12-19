@@ -33,14 +33,19 @@ public class JwtUtil {
     public static final String AUTHORIZATION = "Authorization";
 
     static {
+        // 方式1:
         byte[] keyBytes;
         String secret = "XX#$%()(#*!()!KL<><MQLMNQNQJQK sdfkjsdrow32234545fdf>?N<:{LWPW";
         if (!StringUtils.hasText(secret)) {
             keyBytes = secret.getBytes(StandardCharsets.UTF_8);
         } else {
-            keyBytes = Decoders.BASE64.decode("f3973b64918e4324ad85acea1b6cbec5");
+//            keyBytes = Decoders.BASE64.decode("f3973b64918e4324ad85acea1b6cbec5");
+            //Caused by: io.jsonwebtoken.security.WeakKeyException: The specified key byte array is 192 bits which is not secure enough for any JWT HMAC-SHA algorithm.  The JWT JWA Specification (RFC 7518, Section 3.2) states that keys used with HMAC-SHA algorithms MUST have a size >= 256 bits (the key size must be greater than or equal to the hash output size).  Consider using the io.jsonwebtoken.security.Keys#secretKeyFor(SignatureAlgorithm) method to create a key guaranteed to be secure enough for your preferred HMAC-SHA algorithm.  See https://tools.ietf.org/html/rfc7518#section-3.2 for more information.
+            keyBytes = Decoders.BASE64.decode("f3973b64918e4324ad85acea1b6cbec5f3973b64918e4324ad85acea1b6cbec5");
         }
         key = Keys.hmacShaKeyFor(keyBytes);
+//        方式2: 使用JWT库生成安全密钥（最佳实践)
+//        key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     }
 
 
@@ -100,9 +105,7 @@ public class JwtUtil {
         System.out.println(admin);
 
         //JWT expired at 2021-01-05T09:10:09Z. Current time: 2021-06-02T02:08:12Z, a difference of 12761883519 milliseconds.
-        final String s = validateToken("Bearer eyJhbGciOiJIUzI1NiJ9" +
-                ".eyJ1c2VyTmFtZSI6ImFkbWluIiwiaWF0IjoxNjA5NzUxNDA5LCJleHAiOjE2MDk4Mzc4MDl9" +
-                ".aj1w2HHTandb4weKohJyNtDm-z64TuPXmXsFyOLcfZ4");
+        final String s = validateToken("Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyTmFtZSI6ImFkbWluIiwiaWF0IjoxNzY2MTI3MDE2LCJleHAiOjE3NjYyMTM0MTZ9.Hw5psvvWs8LBEKUW_EMIeojcG12tQc5DwVy5xr9EnIU");
         System.out.println(s);
     }
 }

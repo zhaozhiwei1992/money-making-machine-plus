@@ -55,7 +55,8 @@ public class LoginLogServiceTest {
     @Test
     public void testSave() {
         // 模拟HttpServletRequest行为
-        when(request.getHeader("User-Agent")).thenReturn("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.82 Safari/537.36");
+        when(request.getHeader("User-Agent")).thenReturn("test-user-agent");
+        when(request.getHeader("X-Forwarded-For")).thenReturn("192.168.1.1");
         // 模拟repository行为
         when(loginLogRepository.save(any(LoginLog.class))).thenReturn(loginLog);
         // 执行测试

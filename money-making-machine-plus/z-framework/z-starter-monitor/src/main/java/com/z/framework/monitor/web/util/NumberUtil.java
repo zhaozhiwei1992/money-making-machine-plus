@@ -39,7 +39,7 @@ public class NumberUtil {
     }
 
     public static BigDecimal add(Number v1, Number v2) {
-        return add(v1, v2);
+        return toBigDecimal(v1).add(toBigDecimal(v2));
     }
 
     public static BigDecimal add(Number... values) {
@@ -117,7 +117,8 @@ public class NumberUtil {
     }
 
     public static BigDecimal sub(Number v1, Number v2) {
-        return sub(v1, v2);
+//        return sub(v1, v2);
+        return toBigDecimal(v1).subtract(toBigDecimal(v2));
     }
 
     public static BigDecimal sub(Number... values) {
