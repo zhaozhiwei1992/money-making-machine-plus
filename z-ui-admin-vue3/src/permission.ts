@@ -36,7 +36,6 @@ router.beforeEach(async (to, from, next) => {
         if (res) {
           console.log('获取字典信息', res)
           // 将字典数组转换为以 dictType 为 key 的对象
-          // 假设 API 返回格式: [{ dictType: 'notice_type', label: '通知', value: '1' }, ...]
           const dictObj: Recordable = {}
           // 如果已经是对象格式，直接使用
           Object.assign(dictObj, res.data)

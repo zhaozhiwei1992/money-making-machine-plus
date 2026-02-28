@@ -56,7 +56,14 @@ public class CustomUserDetailService implements UserDetailsService {
         Set<String> permissionList;
         if ("admin".equals(username)) {
             permissionList =
-                    menuRepository.findAll().stream().map(Menu::getPermissionCode).collect(Collectors.toSet());
+                    menuRepository.findAll().stream().map(menu -> {
+                        String permissionCode = menu.getPermissionCode();
+                        if (StrUtil.isNotEmpty(permissionCode)) {
+                            return permissionCode;
+                        } else {
+                            return "empty";
+                        }
+                    }).collect(Collectors.toSet());
         } else {
             // 获取用户角色信息
             final List<UserAuthority> userAuthorities = userAuthorityRepository.findAllByUserId(user.getId());
@@ -68,7 +75,16 @@ public class CustomUserDetailService implements UserDetailsService {
                     roleMenuRepository.findByRoleIdIn(userAuthorities.stream().map(UserAuthority::getRoleId).collect(Collectors.toList()));
             // 获取权限信息
             final List<Menu> allMenuList = menuRepository.findAllById(roleMenuList.stream().map(RoleMenu::getMenuId).collect(Collectors.toList()));
-            permissionList = allMenuList.stream().map(Menu::getPermissionCode).collect(Collectors.toSet());
+            permissionList = allMenuList.stream().map(
+                    menu -> {
+                        String permissionCode = menu.getPermissionCode();
+                        if (StrUtil.isNotEmpty(permissionCode)) {
+                            return permissionCode;
+                        } else {
+                            return "empty";
+                        }
+                    }
+            ).collect(Collectors.toSet());
         }
 
         // 设置功能权限信息,方便后续校验 system:user:add之类的
