@@ -1,31 +1,35 @@
 <script name="UserIndex" setup lang="ts">
-import { ContentWrap } from '@/components/ContentWrap'
-import { Search } from '@/components/Search'
-import { Dialog } from '@/components/Dialog'
-import { useI18n } from '@/hooks/web/useI18n'
-import { ElButton, ElTag } from 'element-plus'
-import { Table } from '@/components/Table'
 import {
-  getTableListApi,
-  saveTableApi,
   delTableListApi,
   getNoticeRecTypeApi,
-  getNoticeTypeApi
+  getNoticeTypeApi,
+  getTableListApi,
+  saveTableApi
 } from '@/api/system/notice'
-import { useTable } from '@/hooks/web/useTable'
 import { TableData } from '@/api/table/types'
-import { ref, unref, reactive, h, onMounted } from 'vue'
+import { ContentWrap } from '@/components/ContentWrap'
+import { Dialog } from '@/components/Dialog'
+import { Search } from '@/components/Search'
+import { Table } from '@/components/Table'
+import { CrudSchema, useCrudSchemas } from '@/hooks/web/useCrudSchemas'
+import { useI18n } from '@/hooks/web/useI18n'
+import { useTable } from '@/hooks/web/useTable'
+import { useDictStoreWithOut } from '@/store/modules/dict'
+import { ComponentOptions } from '@/types/components'
+import { TableColumn } from '@/types/table'
+import { ElButton, ElTag } from 'element-plus'
+import { h, onMounted, reactive, ref, unref } from 'vue'
 import AddOrUpdate from './components/AddOrUpdate.vue'
 import Detail from './components/Detail.vue'
-import { CrudSchema, useCrudSchemas } from '@/hooks/web/useCrudSchemas'
-import { TableColumn } from '@/types/table'
-import { ComponentOptions } from '@/types/components'
+
+const dictStore = useDictStoreWithOut()
 
 // 初始化基础信息
 const noticeRecTypeOptions = ref<ComponentOptions[] | any>([])
 const noticeTypeOptions = ref<ComponentOptions[] | any>([])
 
 async function fetchOptions() {
+  console.log('获取缓存信息', dictStore.getDictByType('notice_rec_type'))
   try {
     // 并行发起所有请求
     const [rectypes, types] = await Promise.all([getNoticeRecTypeApi(), getNoticeTypeApi()])

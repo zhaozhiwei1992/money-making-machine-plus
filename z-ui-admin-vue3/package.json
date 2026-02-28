@@ -52,6 +52,7 @@
     "js-tool-big-box": "^1.0.62",
     "jsencrypt": "^3.3.2",
     "lodash-es": "^4.17.21",
+    "markdown-it": "^14.1.0",
     "min-dash": "^4.1.1",
     "mitt": "^3.0.0",
     "mockjs": "^1.1.0",

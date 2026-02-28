@@ -1,13 +1,13 @@
-import router from './router'
-import { useAppStoreWithOut } from '@/store/modules/app'
-import { useCache } from '@/hooks/web/useCache'
-import type { RouteRecordRaw } from 'vue-router'
-import { useTitle } from '@/hooks/web/useTitle'
-import { useNProgress } from '@/hooks/web/useNProgress'
-import { usePermissionStoreWithOut } from '@/store/modules/permission'
-import { useDictStoreWithOut } from '@/store/modules/dict'
-import { usePageLoading } from '@/hooks/web/usePageLoading'
 import { getDictApi } from '@/api/common'
+import { useCache } from '@/hooks/web/useCache'
+import { useNProgress } from '@/hooks/web/useNProgress'
+import { usePageLoading } from '@/hooks/web/usePageLoading'
+import { useTitle } from '@/hooks/web/useTitle'
+import { useAppStoreWithOut } from '@/store/modules/app'
+import { useDictStoreWithOut } from '@/store/modules/dict'
+import { usePermissionStoreWithOut } from '@/store/modules/permission'
+import type { RouteRecordRaw } from 'vue-router'
+import router from './router'
 
 const permissionStore = usePermissionStoreWithOut()
 
@@ -34,7 +34,13 @@ router.beforeEach(async (to, from, next) => {
         // 获取所有字典
         const res = await getDictApi()
         if (res) {
-          dictStore.setDictObj(res.data)
+          console.log('获取字典信息', res)
+          // 将字典数组转换为以 dictType 为 key 的对象
+          // 假设 API 返回格式: [{ dictType: 'notice_type', label: '通知', value: '1' }, ...]
+          const dictObj: Recordable = {}
+          // 如果已经是对象格式，直接使用
+          Object.assign(dictObj, res.data)
+          dictStore.setDictObj(dictObj)
           dictStore.setIsSetDict(true)
         }
       }
