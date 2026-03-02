@@ -38,7 +38,7 @@ router.beforeEach(async (to, from, next) => {
           // 将字典数组转换为以 dictType 为 key 的对象
           const dictObj: Recordable = {}
           // 如果已经是对象格式，直接使用
-          Object.assign(dictObj, res.data)
+          Object.assign(dictObj, res)
           dictStore.setDictObj(dictObj)
           dictStore.setIsSetDict(true)
         }
