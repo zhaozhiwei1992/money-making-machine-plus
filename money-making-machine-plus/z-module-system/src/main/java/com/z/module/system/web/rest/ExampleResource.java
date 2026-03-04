@@ -1,6 +1,6 @@
 package com.z.module.system.web.rest;
 
-import com.z.framework.common.web.rest.vm.ResponseData;
+import com.z.framework.common.web.rest.vm.R;
 import com.z.framework.security.util.SecurityUtils;
 import com.z.module.system.domain.Example;
 import com.z.module.system.repository.ExampleRepository;
@@ -40,11 +40,11 @@ public class ExampleResource {
      * @Description: 数据保存
      */
     @PostMapping("/examples")
-    public ResponseData<Example> createExample(@RequestBody Example example) {
+    public R<Example> createExample(@RequestBody Example example) {
         log.debug("REST request to save Example : {}", example);
         this.exampleRepository.save(example);
 
-        final ResponseData<Example> exampleResponseData = new ResponseData<>();
+        final R<Example> exampleResponseData = new R<>();
         exampleResponseData.setCode(HttpStatus.OK.value());
         exampleResponseData.setData(example);
         return exampleResponseData;
@@ -59,12 +59,12 @@ public class ExampleResource {
      * @Description: 全部数据获取
      */
     @GetMapping("/examples")
-    public ResponseData<List<Example>> getAllExamples(Pageable pageable) {
+    public R<List<Example>> getAllExamples(Pageable pageable) {
         log.debug("REST request to get all Example for an admin");
 
         final List<Example> all = exampleRepository.findAll();
 
-        final ResponseData<List<Example>> listResponseData = new ResponseData<>();
+        final R<List<Example>> listResponseData = new R<>();
         listResponseData.setData(all);
         listResponseData.setCode(200);
         listResponseData.setCount(all.size());

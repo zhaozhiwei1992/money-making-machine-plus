@@ -1,8 +1,7 @@
 package com.z.framework.common.aop;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.z.framework.common.web.rest.vm.ResponseData;
+import com.z.framework.common.web.rest.vm.R;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
@@ -10,13 +9,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 /**
  * @Title: GlobalResponseHandler
  * @Package com/z/framework/common/aop/GlobalResponseHandler.java
- * @Description: 定义统一响应处理，全部返回ResponseData，自定义业务编码
+ * @Description: 定义统一响应处理，全部返回R，自定义业务编码
  * @author zhaozhiwei
  * @date 2025/7/23 22:46
  * @version V1.0
@@ -41,7 +39,7 @@ public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
 
         // 自动封装为 ResponseData
-        if (body instanceof ResponseData) {
+        if (body instanceof R) {
             return body; // 已经是封装对象则跳过
         }
 
@@ -54,6 +52,6 @@ public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
 //            }
 //        }
 
-        return ResponseData.ok(body);
+        return R.ok(body);
     }
 }

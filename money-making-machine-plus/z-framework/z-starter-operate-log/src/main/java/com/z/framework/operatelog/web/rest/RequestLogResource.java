@@ -1,6 +1,5 @@
 package com.z.framework.operatelog.web.rest;
 
-import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.framework.operatelog.domain.RequestLog;
 import com.z.framework.operatelog.repository.RequestLogRepository;
 import io.swagger.v3.oas.annotations.Operation;

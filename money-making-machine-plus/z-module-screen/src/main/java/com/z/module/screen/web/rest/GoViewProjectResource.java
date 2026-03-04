@@ -2,7 +2,7 @@ package com.z.module.screen.web.rest;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
-import com.z.framework.common.web.rest.vm.ResponseData;
+import com.z.framework.common.web.rest.vm.R;
 import com.z.module.screen.config.ScreenProperties;
 import com.z.module.screen.domain.GoViewFileDO;
 import com.z.module.screen.domain.GoViewProjectDO;
@@ -144,9 +144,9 @@ public class GoViewProjectResource {
 
     @GetMapping("/list")
     @Operation(summary = "获得我的项目分页")
-    public ResponseData<List<GoViewProjectRespVO>> getMyProjectPage(@Valid PageParam pageVO) {
+    public R<List<GoViewProjectRespVO>> getMyProjectPage(@Valid PageParam pageVO) {
         final Page<GoViewProjectDO> myProjectPage = goViewProjectService.getMyProjectPage(pageVO);
-        return ResponseData.ok(goViewProjectConvert.convert(myProjectPage.getContent()),
+        return R.ok(goViewProjectConvert.convert(myProjectPage.getContent()),
                 myProjectPage.getNumberOfElements());
     }
 

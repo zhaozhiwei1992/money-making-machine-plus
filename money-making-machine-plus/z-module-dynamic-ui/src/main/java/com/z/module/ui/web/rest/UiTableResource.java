@@ -5,7 +5,6 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.z.framework.common.web.rest.errors.BadRequestAlertException;
-import com.z.framework.common.web.rest.vm.ResponseData;
 import com.z.module.system.service.CommonEleService;
 import com.z.module.ui.domain.UiTable;
 import com.z.module.ui.repository.UiComponentRepository;

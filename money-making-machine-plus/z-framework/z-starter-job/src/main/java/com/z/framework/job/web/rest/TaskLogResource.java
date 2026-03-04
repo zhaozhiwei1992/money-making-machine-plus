@@ -2,11 +2,9 @@ package com.z.framework.job.web.rest;
 
 import com.z.framework.job.domain.TaskLog;
 import com.z.framework.job.repository.TaskLogRepository;
-import com.z.framework.common.web.rest.vm.ResponseData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
-import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
