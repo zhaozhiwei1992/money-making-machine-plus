@@ -1,119 +1,236 @@
 package com.z.framework.ai.util;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.z.framework.ai.util.databind.TimestampLocalDateTimeDeserializer;
+import com.z.framework.ai.util.databind.TimestampLocalDateTimeSerializer;
+import lombok.Getter;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
- * JSON工具类
+ * JSON 工具类
+ *
+ * @author 芋道源码
  */
 @Slf4j
 public class JsonUtils {
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    @Getter
+    private static ObjectMapper objectMapper = new ObjectMapper();
 
     static {
-        // 配置ObjectMapper
-        OBJECT_MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        OBJECT_MAPPER.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        OBJECT_MAPPER.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
+        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL); // 忽略 null 值
+        // 解决 LocalDateTime 的序列化
+        SimpleModule simpleModule = new JavaTimeModule()
+                .addSerializer(LocalDateTime.class, TimestampLocalDateTimeSerializer.INSTANCE)
+                .addDeserializer(LocalDateTime.class, TimestampLocalDateTimeDeserializer.INSTANCE);
+        objectMapper.registerModules(simpleModule);
     }
 
     /**
-     * 判断字符串是否是合法的JSON格式
+     * 初始化 objectMapper 属性
+     * <p>
+     * 通过这样的方式，使用 Spring 创建的 ObjectMapper Bean
      *
-     * @param jsonString 要检查的字符串
-     * @return 如果是合法的JSON返回true，否则返回false
+     * @param objectMapper ObjectMapper 对象
      */
-    public static boolean isValidJson(String jsonString) {
-        if (jsonString == null || jsonString.trim().isEmpty()) {
-            return false;
-        }
-        try {
-            OBJECT_MAPPER.readTree(jsonString);
-            return true;
-        } catch (JsonProcessingException e) {
-            return false;
-        }
+    public static void init(ObjectMapper objectMapper) {
+        JsonUtils.objectMapper = objectMapper;
     }
 
-    /**
-     * 将对象转换为JSON字符串
-     *
-     * @param obj 要转换的对象
-     * @return JSON字符串
-     */
-    public static String toJson(Object obj) {
-        try {
-            return OBJECT_MAPPER.writeValueAsString(obj);
-        } catch (JsonProcessingException e) {
-            log.error("Failed to convert object to JSON", e);
-            throw new RuntimeException("Failed to convert object to JSON", e);
-        }
+    @SneakyThrows
+    public static String toJsonString(Object object) {
+        return objectMapper.writeValueAsString(object);
     }
 
-    /**
-     * 将JSON字符串转换为指定类型的对象
-     *
-     * @param json  JSON字符串
-     * @param clazz 目标类型
-     * @param <T>   泛型类型
-     * @return 转换后的对象
-     */
-    public static <T> T fromJson(String json, Class<T> clazz) {
-        try {
-            return OBJECT_MAPPER.readValue(json, clazz);
-        } catch (IOException e) {
-            log.error("Failed to convert JSON to object", e);
+    @SneakyThrows
+    public static byte[] toJsonByte(Object object) {
+        return objectMapper.writeValueAsBytes(object);
+    }
+
+    @SneakyThrows
+    public static String toJsonPrettyString(Object object) {
+        return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
+    }
+
+    public static <T> T parseObject(String text, Class<T> clazz) {
+        if (StrUtil.isEmpty(text)) {
             return null;
         }
+        try {
+            return objectMapper.readValue(text, clazz);
+        } catch (IOException e) {
+            log.error("json parse err,json:{}", text, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static <T> T parseObject(String text, String path, Class<T> clazz) {
+        if (StrUtil.isEmpty(text)) {
+            return null;
+        }
+        try {
+            JsonNode treeNode = objectMapper.readTree(text);
+            JsonNode pathNode = treeNode.path(path);
+            return objectMapper.readValue(pathNode.toString(), clazz);
+        } catch (IOException e) {
+            log.error("json parse err,json:{}", text, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static <T> T parseObject(String text, Type type) {
+        if (StrUtil.isEmpty(text)) {
+            return null;
+        }
+        try {
+            return objectMapper.readValue(text, objectMapper.getTypeFactory().constructType(type));
+        } catch (IOException e) {
+            log.error("json parse err,json:{}", text, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static <T> T parseObject(byte[] text, Type type) {
+        if (ArrayUtil.isEmpty(text)) {
+            return null;
+        }
+        try {
+            return objectMapper.readValue(text, objectMapper.getTypeFactory().constructType(type));
+        } catch (IOException e) {
+            log.error("json parse err,json:{}", text, e);
+            throw new RuntimeException(e);
+        }
     }
 
     /**
-     * 将JSON字符串转换为指定类型引用的对象
+     * 将字符串解析成指定类型的对象
+     * 使用 {@link #parseObject(String, Class)} 时，在@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS) 的场景下，
+     * 如果 text 没有 class 属性，则会报错。此时，使用这个方法，可以解决。
      *
-     * @param json          JSON字符串
+     * @param text 字符串
+     * @param clazz 类型
+     * @return 对象
+     */
+    public static <T> T parseObject2(String text, Class<T> clazz) {
+        if (StrUtil.isEmpty(text)) {
+            return null;
+        }
+        return JSONUtil.toBean(text, clazz);
+    }
+
+    public static <T> T parseObject(byte[] bytes, Class<T> clazz) {
+        if (ArrayUtil.isEmpty(bytes)) {
+            return null;
+        }
+        try {
+            return objectMapper.readValue(bytes, clazz);
+        } catch (IOException e) {
+            log.error("json parse err,json:{}", bytes, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static <T> T parseObject(String text, TypeReference<T> typeReference) {
+        try {
+            return objectMapper.readValue(text, typeReference);
+        } catch (IOException e) {
+            log.error("json parse err,json:{}", text, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 解析 JSON 字符串成指定类型的对象，如果解析失败，则返回 null
+     *
+     * @param text 字符串
      * @param typeReference 类型引用
-     * @param <T>           泛型类型
-     * @return 转换后的对象
+     * @return 指定类型的对象
      */
-    public static <T> T fromJson(String json, TypeReference<T> typeReference) {
+    public static <T> T parseObjectQuietly(String text, TypeReference<T> typeReference) {
         try {
-            return OBJECT_MAPPER.readValue(json, typeReference);
+            return objectMapper.readValue(text, typeReference);
         } catch (IOException e) {
-            log.error("Failed to convert JSON to object", e);
             return null;
         }
     }
 
-    /**
-     * 将JSON字符串转换为Map
-     *
-     * @param json JSON字符串
-     * @return Map对象
-     */
-    public static Map<String, Object> jsonToMap(String json) {
+    public static <T> List<T> parseArray(String text, Class<T> clazz) {
+        if (StrUtil.isEmpty(text)) {
+            return new ArrayList<>();
+        }
         try {
-            return OBJECT_MAPPER.readValue(json, new TypeReference<Map<String, Object>>() {
-            });
+            return objectMapper.readValue(text, objectMapper.getTypeFactory().constructCollectionType(List.class, clazz));
         } catch (IOException e) {
-            log.error("Failed to convert JSON to Map", e);
-            return null;
+            log.error("json parse err,json:{}", text, e);
+            throw new RuntimeException(e);
         }
     }
 
+    public static <T> List<T> parseArray(String text, String path, Class<T> clazz) {
+        if (StrUtil.isEmpty(text)) {
+            return null;
+        }
+        try {
+            JsonNode treeNode = objectMapper.readTree(text);
+            JsonNode pathNode = treeNode.path(path);
+            return objectMapper.readValue(pathNode.toString(), objectMapper.getTypeFactory().constructCollectionType(List.class, clazz));
+        } catch (IOException e) {
+            log.error("json parse err,json:{}", text, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static JsonNode parseTree(String text) {
+        try {
+            return objectMapper.readTree(text);
+        } catch (IOException e) {
+            log.error("json parse err,json:{}", text, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static JsonNode parseTree(byte[] text) {
+        try {
+            return objectMapper.readTree(text);
+        } catch (IOException e) {
+            log.error("json parse err,json:{}", text, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static boolean isJson(String text) {
+        return JSONUtil.isTypeJSON(text);
+    }
+
     /**
-     * 获取ObjectMapper实例
-     *
-     * @return ObjectMapper实例
+     * 判断字符串是否为 JSON 类型的字符串
+     * @param str 字符串
      */
-    public static ObjectMapper getObjectMapper() {
-        return OBJECT_MAPPER;
+    public static boolean isJsonObject(String str) {
+        return JSONUtil.isTypeJSONObject(str);
+    }
+
+    public static Map<String, Object> jsonToMap(String jsonString) {
+        return parseObject(jsonString, Map.class);
     }
 }

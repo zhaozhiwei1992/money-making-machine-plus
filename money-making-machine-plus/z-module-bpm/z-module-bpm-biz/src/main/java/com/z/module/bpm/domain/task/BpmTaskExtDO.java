@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "bpm_task_ext")
 @Data
-@EqualsAndHashCode(callSuper = true)
+
 @ToString(callSuper = true)
 @Accessors(chain = true)
 public class BpmTaskExtDO extends AbstractAuditingEntity {

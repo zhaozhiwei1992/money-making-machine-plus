@@ -14,7 +14,7 @@ import lombok.experimental.Accessors;
 @Table(name = "t_go_view_project")
 @Entity
 @Data
-@EqualsAndHashCode(callSuper = true)
+
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

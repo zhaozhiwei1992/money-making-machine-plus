@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Schema(description = "管理后台 - 流程实例的分页 Item Response VO")
 @Data
-@EqualsAndHashCode(callSuper = true)
+
 @ToString(callSuper = true)
 public class BpmProcessInstanceMyPageReqVO extends PageParam {
 

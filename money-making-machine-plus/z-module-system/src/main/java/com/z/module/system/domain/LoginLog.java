@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 @Table(name = "sys_login_log")
 @Data
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
+
 // 简单粗暴注解, 前端都是下划线, 后端都用驼峰
 //@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class LoginLog extends AbstractAuditingEntity implements Serializable {

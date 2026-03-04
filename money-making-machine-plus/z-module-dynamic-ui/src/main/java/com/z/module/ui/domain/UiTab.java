@@ -12,7 +12,7 @@ import java.io.Serializable;
  *
  * @author zhaozhiwei
  */
-@EqualsAndHashCode(callSuper = true)
+
 @Entity
 @Table(name = "ui_t_tab")
 @Data

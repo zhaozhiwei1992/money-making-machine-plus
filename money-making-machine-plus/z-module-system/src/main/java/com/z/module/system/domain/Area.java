@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Table(name = "sys_area")
 @Data
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
+
 public class Area extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

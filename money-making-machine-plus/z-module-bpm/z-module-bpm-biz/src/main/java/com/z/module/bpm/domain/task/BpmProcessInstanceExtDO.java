@@ -22,7 +22,7 @@ import java.util.Map;
 @Entity
 @Table(name = "bpm_process_instance_ext")
 @Data
-@EqualsAndHashCode(callSuper = true)
+
 @ToString(callSuper = true)
 @Accessors(chain = true)
 public class BpmProcessInstanceExtDO extends AbstractAuditingEntity {

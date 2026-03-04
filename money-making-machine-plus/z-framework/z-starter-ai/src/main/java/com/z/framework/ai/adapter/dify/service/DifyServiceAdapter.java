@@ -55,26 +55,26 @@ public class DifyServiceAdapter extends AbstractAIService {
                         @Override
                         public void onMessage(MessageEvent event) {
                             log.debug("收到消息片段: {}", event);
-                            emitter.next(JsonUtils.jsonToMap(JsonUtils.toJson(event)));
+                            emitter.next(JsonUtils.jsonToMap(JsonUtils.toJsonString(event)));
                         }
 
                         @Override
                         public void onNodeFinished(NodeFinishedEvent event) {
                             log.debug("收到node结束片段: {}", event);
-                            emitter.next(JsonUtils.jsonToMap(JsonUtils.toJson(event)));
+                            emitter.next(JsonUtils.jsonToMap(JsonUtils.toJsonString(event)));
                         }
 
                         @Override
                         public void onMessageEnd(MessageEndEvent event) {
                             log.debug("消息结束: {}", event);
-                            emitter.next(JsonUtils.jsonToMap(JsonUtils.toJson(event)));
+                            emitter.next(JsonUtils.jsonToMap(JsonUtils.toJsonString(event)));
                             emitter.complete();
                         }
 
                         @Override
                         public void onError(ErrorEvent event) {
                             log.error("错误: {}", event.getMessage());
-                            emitter.next(JsonUtils.jsonToMap(JsonUtils.toJson(event)));
+                            emitter.next(JsonUtils.jsonToMap(JsonUtils.toJsonString(event)));
                             emitter.complete();
                         }
 
@@ -118,20 +118,20 @@ public class DifyServiceAdapter extends AbstractAIService {
                         @Override
                         public void onMessage(MessageEvent event) {
                             log.debug("收到消息片段: {}", event);
-                            emitter.next(JsonUtils.jsonToMap(JsonUtils.toJson(event)));
+                            emitter.next(JsonUtils.jsonToMap(JsonUtils.toJsonString(event)));
                         }
 
                         @Override
                         public void onMessageEnd(MessageEndEvent event) {
                             System.out.println("消息结束，完整消息ID: " + event);
-                            emitter.next(JsonUtils.jsonToMap(JsonUtils.toJson(event)));
+                            emitter.next(JsonUtils.jsonToMap(JsonUtils.toJsonString(event)));
                             emitter.complete();
                         }
 
                         @Override
                         public void onError(ErrorEvent event) {
                             System.err.println("错误: " + event.getMessage());
-                            emitter.next(JsonUtils.jsonToMap(JsonUtils.toJson(event)));
+                            emitter.next(JsonUtils.jsonToMap(JsonUtils.toJsonString(event)));
                             emitter.complete();
                         }
 

@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
  * 业务逻辑异常 Exception
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
+
 public final class ServiceException extends RuntimeException {
 
     /**

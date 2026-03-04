@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Schema(description = "管理后台 - 流程模型的分页的每一项 Response VO")
 @Data
-@EqualsAndHashCode(callSuper = true)
+
 @ToString(callSuper = true)
 public class BpmModelPageItemRespVO extends BpmModelBaseVO {
 

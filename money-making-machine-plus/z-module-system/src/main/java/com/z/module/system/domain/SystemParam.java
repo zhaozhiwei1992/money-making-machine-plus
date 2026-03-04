@@ -11,7 +11,7 @@ import java.io.Serializable;
 /**
  * 系统参数信息\n\n一些需要经常性手动调整, 跟业务相关的配置放这里\n程序相关的可以方式spring配置文件\n\n@author zhaozhiwei
  */
-@EqualsAndHashCode(callSuper = true)
+
 @Entity
 @Table(name = "sys_param")
 @Data

@@ -18,7 +18,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "sys_user_login_openid")
 @Data
-@EqualsAndHashCode(callSuper = true)
+
 public class UserOpenId extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

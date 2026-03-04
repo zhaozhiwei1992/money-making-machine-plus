@@ -21,7 +21,7 @@ import java.time.Instant;
 @Table(name = "sys_task_log")
 @Data
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
+
 public class TaskLog extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Schema(description = "流程任务已完成")
 @Data
-@EqualsAndHashCode(callSuper = true)
+
 @ToString(callSuper = true)
 public class BpmTaskDonePageItemRespVO extends BpmTaskTodoPageItemRespVO {
 

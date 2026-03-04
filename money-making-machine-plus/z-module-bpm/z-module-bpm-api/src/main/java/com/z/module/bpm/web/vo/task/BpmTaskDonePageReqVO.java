@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Schema(description = "流程任务已办")
 @Data
-@EqualsAndHashCode(callSuper = true)
+
 @ToString(callSuper = true)
 public class BpmTaskDonePageReqVO extends PageParam {
 

@@ -47,7 +47,7 @@ public class EngineResource {
      */
     @Operation(description = "新增引擎")
     @PostMapping("/engines")
-    @PreAuthorize("hasAuthority('ai:engine:add')")
+    
     public Engine createEngine(@RequestBody Engine engine) throws URISyntaxException {
         log.debug("REST request to save Engine : {}", engine);
 
@@ -66,7 +66,7 @@ public class EngineResource {
 
     @Operation(description = "获取引擎")
     @GetMapping("/engines")
-    @PreAuthorize("hasAuthority('ai:engine:view')")
+    
     public HashMap<String, Object> getAllEngines(Pageable pageable, Engine engine) {
         log.debug("REST request to get all Engine for an admin");
 
@@ -101,7 +101,7 @@ public class EngineResource {
 
     @Operation(description = "删除引擎")
     @DeleteMapping("/engines")
-    @PreAuthorize("hasAuthority('ai:engine:delete')")
+    
     public String deleteEngine(@RequestBody List<Long> idList) {
         log.debug("REST request to delete Examples, ids: {}", idList);
         this.engineRepository.deleteAllByIdIn(idList);
@@ -110,7 +110,7 @@ public class EngineResource {
 
     @Operation(description = "获取引擎列表信息")
     @GetMapping("/engines/list")
-    @PreAuthorize("hasAuthority('ai:engine:view')")
+    
     public List<Map<String, Object>> getAllDictList() {
         final List<Engine> all = engineRepository.findAll();
         final List<Map<String, Object>> resultMap = all.stream().map(m -> {
@@ -126,7 +126,7 @@ public class EngineResource {
 
     @Operation(description = "获取引擎树")
     @GetMapping("/engines/select")
-    @PreAuthorize("hasAuthority('ai:engine:view')")
+    
     public List<SelectOptionVO> getEnginesSelect() {
         log.debug("REST request to get Engine Select");
 

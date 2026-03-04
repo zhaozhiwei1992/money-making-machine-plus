@@ -17,7 +17,7 @@ import java.io.Serializable;
 @Table(name = "sys_task_param")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Data
-@EqualsAndHashCode(callSuper = true)
+
 @ToString(callSuper = true)
 public class TaskParam extends AbstractAuditingEntity implements Serializable {
 

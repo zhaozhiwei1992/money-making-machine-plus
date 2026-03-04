@@ -17,7 +17,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "sys_notice")
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
+
 public class Notice extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

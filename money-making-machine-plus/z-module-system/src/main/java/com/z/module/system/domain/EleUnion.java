@@ -19,7 +19,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "sys_ele_union")
 @Data
-@EqualsAndHashCode(callSuper = true)
+
 @AllArgsConstructor
 @NoArgsConstructor
 public class EleUnion extends AbstractAuditingEntity implements Serializable {

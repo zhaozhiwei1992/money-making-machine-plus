@@ -9,7 +9,7 @@ import lombok.ToString;
 
 @Schema(description = "管理后台 - 流程模型分页 Request VO")
 @Data
-@EqualsAndHashCode(callSuper = true)
+
 @ToString(callSuper = true)
 public class BpmModelPageReqVO extends PageParam {
 

@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 /**
  * 舍位平衡信息，保存历史记录，方便恢复
  */
-@EqualsAndHashCode(callSuper = true)
+
 @Entity
 @Table(name = "rpt_t_round_balance")
 @Data

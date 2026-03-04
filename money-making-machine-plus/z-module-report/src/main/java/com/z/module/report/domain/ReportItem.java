@@ -12,7 +12,7 @@ import java.io.Serializable;
  * 报表行信息
  * 固定表使用，一般为功能科目，经济科目等，按口径统计数据使用
  */
-@EqualsAndHashCode(callSuper = true)
+
 @Entity
 @Table(name = "rpt_t_item")
 @Data

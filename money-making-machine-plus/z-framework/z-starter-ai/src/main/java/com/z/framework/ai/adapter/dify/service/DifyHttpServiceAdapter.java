@@ -81,7 +81,7 @@ public class DifyHttpServiceAdapter extends AbstractAIService {
 //        requestBody.put("conversation_id", message.getConversationId());
 //        requestBody.put("user", "abc-123");
 //        requestBody.put("inputs", new HashMap<>());
-        String json = JsonUtils.toJson(message);
+        String json = JsonUtils.toJsonString(message);
         String apiKey = message.getApiKey();
         String baseUrl = getAppConfig().getBaseUrl();
         return webClient.post().uri(baseUrl + CHAT_MESSAGES_PATH)

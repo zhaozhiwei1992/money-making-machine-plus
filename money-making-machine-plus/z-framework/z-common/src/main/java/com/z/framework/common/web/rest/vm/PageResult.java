@@ -7,23 +7,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @Title: PageResult
- * @Package com/z/framework/common/web/rest/vm/PageResult.java
- * @Description: 适配element-ui 分页列表展现
- * @author zhaozhiwei
- * @date 2023/5/24 下午2:15
- * @version V1.0
- */
 @Schema(description = "分页结果")
 @Data
 public final class PageResult<T> implements Serializable {
 
+    @Schema(description = "总量", requiredMode = Schema.RequiredMode.REQUIRED)
+    private Long total;
+
     @Schema(description = "数据", requiredMode = Schema.RequiredMode.REQUIRED)
     private List<T> list;
-
-    @Schema(description = "条数", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Long total;
 
     public PageResult() {
     }

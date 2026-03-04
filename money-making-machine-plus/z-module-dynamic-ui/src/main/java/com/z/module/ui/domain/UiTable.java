@@ -10,7 +10,7 @@ import java.io.Serializable;
 /**
  * A UiTable.
  */
-@EqualsAndHashCode(callSuper = true)
+
 @Entity
 @Table(name = "ui_t_table")
 @Data

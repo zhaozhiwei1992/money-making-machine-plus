@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
  * 服务器异常 Exception
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
+
 public final class ServerException extends RuntimeException {
 
     /**

@@ -11,7 +11,7 @@ import java.io.Serializable;
 /**
  * 角色对菜单\n@author zhaozhiwei
  */
-@EqualsAndHashCode(callSuper = true)
+
 @Entity
 @Table(name = "sys_role_menu")
 @Data

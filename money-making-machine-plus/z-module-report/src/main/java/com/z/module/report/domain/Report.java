@@ -11,7 +11,7 @@ import java.io.Serializable;
 /**
  * 报表信息
  */
-@EqualsAndHashCode(callSuper = true)
+
 @Entity
 @Table(name = "rpt_t_report")
 @Data

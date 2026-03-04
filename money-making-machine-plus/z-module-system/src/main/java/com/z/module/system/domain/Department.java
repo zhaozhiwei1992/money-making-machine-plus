@@ -9,7 +9,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
-@EqualsAndHashCode(callSuper = true)
+
 @Data
 @Entity
 @Table(name = "sys_departments")

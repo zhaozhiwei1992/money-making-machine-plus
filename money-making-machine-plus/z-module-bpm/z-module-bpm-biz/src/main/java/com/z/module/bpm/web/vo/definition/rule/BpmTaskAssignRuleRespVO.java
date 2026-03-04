@@ -7,7 +7,7 @@ import lombok.ToString;
 
 @Schema(description = "管理后台 - 流程任务分配规则的 Response VO")
 @Data
-@EqualsAndHashCode(callSuper = true)
+
 @ToString(callSuper = true)
 public class BpmTaskAssignRuleRespVO extends BpmTaskAssignRuleBaseVO {
 

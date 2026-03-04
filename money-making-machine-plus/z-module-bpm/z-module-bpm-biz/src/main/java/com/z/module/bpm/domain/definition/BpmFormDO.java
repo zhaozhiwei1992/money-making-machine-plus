@@ -14,7 +14,7 @@ import java.util.List;
 @Entity
 @Table(name = "bpm_form")
 @Data
-@EqualsAndHashCode(callSuper = true)
+
 @ToString(callSuper = true)
 @Builder
 @NoArgsConstructor

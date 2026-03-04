@@ -22,7 +22,7 @@ import java.util.Set;
 @Entity
 @Table(name = "bpm_task_assign_rule")
 @Data
-@EqualsAndHashCode(callSuper = true)
+
 @ToString(callSuper = true)
 @Builder
 @NoArgsConstructor

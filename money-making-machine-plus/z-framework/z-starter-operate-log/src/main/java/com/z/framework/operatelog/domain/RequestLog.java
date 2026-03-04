@@ -16,7 +16,7 @@ import java.io.Serializable;
 @Table(name = "sys_request_log")
 @Data
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
+
 public class RequestLog extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

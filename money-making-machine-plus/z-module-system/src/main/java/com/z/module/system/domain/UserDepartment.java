@@ -15,7 +15,7 @@ import java.io.Serializable;
  * @Description: 用户和部门关系(1对多)
  * @date 2024/7/21 上午1:09
  */
-@EqualsAndHashCode(callSuper = true)
+
 @Entity
 @Table(name = "sys_user_department")
 @Data

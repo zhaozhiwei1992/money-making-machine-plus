@@ -15,7 +15,7 @@ import java.util.Set;
 @Entity
 @Table(name = "bpm_user_group")
 @Data
-@EqualsAndHashCode(callSuper = true)
+
 @ToString(callSuper = true)
 @Builder
 @NoArgsConstructor

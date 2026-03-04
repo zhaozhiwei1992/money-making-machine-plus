@@ -23,7 +23,7 @@ import java.util.Set;
 @Entity
 @Table(name = "sys_user")
 @Data
-@EqualsAndHashCode(callSuper = true)
+
 @EntityListeners(UserListener.class)
 public class User extends AbstractAuditingEntity implements Serializable {
 

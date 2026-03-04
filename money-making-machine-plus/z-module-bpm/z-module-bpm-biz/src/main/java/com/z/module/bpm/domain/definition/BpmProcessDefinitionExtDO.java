@@ -18,7 +18,7 @@ import java.util.List;
 @Entity
 @Table(name = "bpm_process_definition_ext")
 @Data
-@EqualsAndHashCode(callSuper = true)
+
 @ToString(callSuper = true)
 @Builder
 @NoArgsConstructor

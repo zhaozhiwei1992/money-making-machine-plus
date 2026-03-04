@@ -10,7 +10,7 @@ import java.io.Serializable;
 /**
  * A UiQueryform.
  */
-@EqualsAndHashCode(callSuper = true)
+
 @Entity
 @Table(name = "ui_t_queryform")
 @Data

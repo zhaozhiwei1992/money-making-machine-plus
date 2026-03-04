@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 @Schema(description = "管理后台 - 用户组分页 Request VO")
 @Data
-@EqualsAndHashCode(callSuper = true)
+
 @ToString(callSuper = true)
 public class BpmUserGroupPageReqVO extends PageParam {
 

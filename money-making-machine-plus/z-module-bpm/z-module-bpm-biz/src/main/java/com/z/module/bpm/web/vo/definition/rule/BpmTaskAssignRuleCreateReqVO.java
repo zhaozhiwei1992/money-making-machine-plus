@@ -9,7 +9,7 @@ import javax.validation.constraints.NotEmpty;
 
 @Schema(description = "管理后台 - 流程任务分配规则的创建 Request VO")
 @Data
-@EqualsAndHashCode(callSuper = true)
+
 @ToString(callSuper = true)
 public class BpmTaskAssignRuleCreateReqVO extends BpmTaskAssignRuleBaseVO {
 

@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Table(name = "t_example")
 @Data
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
+
 public class Example extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

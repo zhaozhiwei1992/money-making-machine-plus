@@ -27,7 +27,7 @@ import java.util.Date;
  @Table(name = "${tableName}")
  @Data
  @ToString(callSuper = true)
- @EqualsAndHashCode(callSuper = true)
+
  public class ${className} extends AbstractAuditingEntity implements Serializable {
 
      private static final long serialVersionUID = 1L;

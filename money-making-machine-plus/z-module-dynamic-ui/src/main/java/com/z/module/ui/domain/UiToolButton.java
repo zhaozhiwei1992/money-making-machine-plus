@@ -10,7 +10,7 @@ import java.io.Serializable;
 /**
  * A UiToolButton.
  */
-@EqualsAndHashCode(callSuper = true)
+
 @Entity
 @Table(name = "ui_t_toolbutton")
 @Data

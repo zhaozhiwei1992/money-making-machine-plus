@@ -11,7 +11,7 @@ import java.io.Serializable;
 /**
  * 报表公式配置
  */
-@EqualsAndHashCode(callSuper = true)
+
 @Entity
 @Table(name = "rpt_t_formula")
 @Data

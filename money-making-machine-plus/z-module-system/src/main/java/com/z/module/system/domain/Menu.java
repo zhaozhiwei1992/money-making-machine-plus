@@ -16,7 +16,7 @@ import java.io.Serializable;
 @Table(name = "sys_menu")
 @Data
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
+
 // 简单粗暴注解, 前端都是下划线, 后端都用驼峰
 //@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @EntityListeners(MenuListener.class)

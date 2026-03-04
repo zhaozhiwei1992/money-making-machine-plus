@@ -21,7 +21,7 @@ import java.io.Serializable;
 @Table(name = "ai_engine")
 @Data
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
+
 public class Engine extends AbstractAuditingEntity implements Serializable {
 
     @Serial

@@ -19,7 +19,7 @@ import org.flowable.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFacto
  * @author 芋道源码
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
+
 @ToString(callSuper = true)
 public class BpmActivityBehaviorFactory extends DefaultActivityBehaviorFactory {
 

@@ -10,7 +10,7 @@ import java.io.Serializable;
 /**
  * A UiEditform.
  */
-@EqualsAndHashCode(callSuper = true)
+
 @Entity
 @Table(name = "ui_t_editform")
 @Data

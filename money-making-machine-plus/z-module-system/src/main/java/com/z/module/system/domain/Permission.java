@@ -20,7 +20,7 @@ import java.io.Serializable;
 @Table(name = "ele_union")
 @Data
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
+
 public class Permission extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

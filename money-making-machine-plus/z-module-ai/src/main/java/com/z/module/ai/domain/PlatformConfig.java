@@ -22,7 +22,7 @@ import java.io.Serializable;
 @Table(name = "ai_platform_config")
 @Data
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
+
 public class PlatformConfig extends AbstractAuditingEntity implements Serializable {
 
     @Serial

@@ -7,7 +7,7 @@ import lombok.ToString;
 
 @Schema(description = "流程任务VO")
 @Data
-@EqualsAndHashCode(callSuper = true)
+
 @ToString(callSuper = true)
 public class BpmTaskRespVO extends BpmTaskDonePageItemRespVO {
 

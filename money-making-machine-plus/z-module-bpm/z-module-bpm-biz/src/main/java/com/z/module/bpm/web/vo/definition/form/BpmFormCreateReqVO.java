@@ -7,7 +7,7 @@ import java.util.List;
 
 @Schema(description = "管理后台 - 动态表单创建 Request VO")
 @Data
-@EqualsAndHashCode(callSuper = true)
+
 @ToString(callSuper = true)
 public class BpmFormCreateReqVO extends BpmFormBaseVO {
 

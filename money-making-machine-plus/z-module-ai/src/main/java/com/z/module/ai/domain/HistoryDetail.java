@@ -21,7 +21,7 @@ import java.io.Serializable;
 @Table(name = "ai_history_detail")
 @Data
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
+
 public class HistoryDetail extends AbstractAuditingEntity implements Serializable {
 
     @Serial

@@ -21,7 +21,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "sys_positions")
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
+
 public class Position extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

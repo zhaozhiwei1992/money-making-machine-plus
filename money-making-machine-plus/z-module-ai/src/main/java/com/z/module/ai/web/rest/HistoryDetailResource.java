@@ -42,7 +42,7 @@ public class HistoryDetailResource {
      */
     @Operation(description = "新增历史明细")
     @PostMapping("/history/detail")
-//    @PreAuthorize("hasAuthority('ai:history:detail:add')")
+//    
     public HistoryDetail createHistoryDetail(@RequestBody HistoryDetail history) throws URISyntaxException {
         log.debug("REST request to save HistoryDetail : {}", history);
 
@@ -59,7 +59,7 @@ public class HistoryDetailResource {
 
     @Operation(description = "获取历史明细")
     @GetMapping("/history/detail")
-//    @PreAuthorize("hasAuthority('ai:history:detail:view')")
+//    
     public HashMap<String, Object> getAllHistoryDetails(Pageable pageable, HistoryDetail role) {
         log.debug("REST request to get all HistoryDetail for an admin");
 
@@ -94,7 +94,7 @@ public class HistoryDetailResource {
 
     @Operation(description = "删除历史明细")
     @DeleteMapping("/history/detail")
-//    @PreAuthorize("hasAuthority('ai:history:detail:delete')")
+//    
     public String deleteHistoryDetail(@RequestBody List<Long> idList) {
         log.debug("REST request to delete Examples, ids: {}", idList);
         this.historyDetailRepository.deleteAllByIdIn(idList);
@@ -103,7 +103,7 @@ public class HistoryDetailResource {
 
     @Operation(description = "获取历史明细列表信息")
     @GetMapping("/history/detail/list")
-//    @PreAuthorize("hasAuthority('ai:history:detail:view')")
+//    
     public List<HistoryDetail> getHistoryDetailByHistoryId(@RequestParam Long historyId) {
         return historyDetailRepository.findAllByHistoryIdOrderByIdAsc(historyId);
     }

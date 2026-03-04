@@ -6,7 +6,7 @@ import javax.validation.constraints.*;
 
 @Schema(description = "管理后台 - 用户组更新 Request VO")
 @Data
-@EqualsAndHashCode(callSuper = true)
+
 @ToString(callSuper = true)
 public class BpmUserGroupUpdateReqVO extends BpmUserGroupBaseVO {
 

@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
  * @author kemengkai
  * @create 2022-05-09 10:33
  */
-@EqualsAndHashCode(callSuper = true)
+
 @Entity
 @Table(name = "bpm_activity")
 @Data
