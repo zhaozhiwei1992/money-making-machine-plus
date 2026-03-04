@@ -9,9 +9,7 @@
       :provider="provider"
     />
     <div class="absolute top-30px right-30px">
-      <el-button @click="testWorkflowModel" type="primary" v-hasPermi="['ai:workflow:test']">
-        测试
-      </el-button>
+      <el-button @click="testWorkflowModel" type="primary"> 测试 </el-button>
     </div>
 
     <!-- 测试窗口 -->
@@ -61,8 +59,8 @@
 </template>
 
 <script setup lang="ts">
-import Tinyflow from '@/components/Tinyflow/Tinyflow.vue'
 import * as WorkflowApi from '@/api/ai/workflow'
+import Tinyflow from '@/components/Tinyflow/Tinyflow.vue'
 // TODO @lesan：要不使用 ICon 哪个组件哈
 import { Delete } from '@element-plus/icons-vue'
 

@@ -43,7 +43,7 @@
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-        <el-button type="primary" plain @click="openForm('create')" v-hasPermi="['ai:tool:create']">
+        <el-button type="primary" plain @click="openForm('create')">
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
       </el-form-item>
@@ -70,22 +70,10 @@
       />
       <el-table-column label="操作" align="center" min-width="120px">
         <template #default="scope">
-          <el-button
-            link
-            type="primary"
-            @click="openForm('update', scope.row.id)"
-            v-hasPermi="['ai:tool:update']"
-          >
+          <el-button link type="primary" @click="openForm('update', scope.row.id)">
             编辑
           </el-button>
-          <el-button
-            link
-            type="danger"
-            @click="handleDelete(scope.row.id)"
-            v-hasPermi="['ai:tool:delete']"
-          >
-            删除
-          </el-button>
+          <el-button link type="danger" @click="handleDelete(scope.row.id)"> 删除 </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -103,12 +91,12 @@
 </template>
 
 <script setup lang="ts">
-import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
-import { dateFormatter } from '@/utils/formatTime'
 import { ToolApi, ToolVO } from '@/api/ai/model/tool'
-import ToolForm from './ToolForm.vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
+import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
+import { dateFormatter } from '@/utils/formatTime'
+import ToolForm from './ToolForm.vue'
 
 /** AI 工具 列表 */
 defineOptions({ name: 'AiTool' })

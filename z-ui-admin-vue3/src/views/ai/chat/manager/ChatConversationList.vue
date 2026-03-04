@@ -75,14 +75,7 @@
       <el-table-column label="上下文数量" align="center" prop="maxContexts" width="120" />
       <el-table-column label="操作" align="center" width="180" fixed="right">
         <template #default="scope">
-          <el-button
-            link
-            type="danger"
-            @click="handleDelete(scope.row.id)"
-            v-hasPermi="['ai:chat-conversation:delete']"
-          >
-            删除
-          </el-button>
+          <el-button link type="danger" @click="handleDelete(scope.row.id)"> 删除 </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -97,11 +90,11 @@
 </template>
 
 <script setup lang="ts">
-import { dateFormatter } from '@/utils/formatTime'
 import { ChatConversationApi, ChatConversationVO } from '@/api/ai/chat/conversation'
 import * as UserApi from '@/api/system/user'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
+import { dateFormatter } from '@/utils/formatTime'
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化

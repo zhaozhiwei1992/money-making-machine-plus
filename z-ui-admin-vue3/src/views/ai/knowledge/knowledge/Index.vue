@@ -48,12 +48,7 @@
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-        <el-button
-          type="primary"
-          plain
-          @click="openForm('create')"
-          v-hasPermi="['ai:knowledge:create']"
-        >
+        <el-button type="primary" plain @click="openForm('create')">
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
       </el-form-item>
@@ -81,38 +76,14 @@
       />
       <el-table-column label="操作" align="center" min-width="120px">
         <template #default="scope">
-          <el-button
-            link
-            type="primary"
-            @click="openForm('update', scope.row.id)"
-            v-hasPermi="['ai:knowledge:update']"
-          >
+          <el-button link type="primary" @click="openForm('update', scope.row.id)">
             编辑
           </el-button>
-          <el-button
-            link
-            type="primary"
-            @click="handleDocument(scope.row.id)"
-            v-hasPermi="['ai:knowledge:query']"
-          >
-            文档
-          </el-button>
-          <el-button
-            link
-            type="primary"
-            @click="handleRetrieval(scope.row.id)"
-            v-hasPermi="['ai:knowledge:query']"
-          >
+          <el-button link type="primary" @click="handleDocument(scope.row.id)"> 文档 </el-button>
+          <el-button link type="primary" @click="handleRetrieval(scope.row.id)">
             召回测试
           </el-button>
-          <el-button
-            link
-            type="danger"
-            @click="handleDelete(scope.row.id)"
-            v-hasPermi="['ai:knowledge:delete']"
-          >
-            删除
-          </el-button>
+          <el-button link type="danger" @click="handleDelete(scope.row.id)"> 删除 </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -130,13 +101,13 @@
 </template>
 
 <script setup lang="ts">
-import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
-import { dateFormatter } from '@/utils/formatTime'
 import { KnowledgeApi, KnowledgeVO } from '@/api/ai/knowledge/knowledge'
-import KnowledgeForm from './KnowledgeForm.vue'
-import { useRouter } from 'vue-router'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
+import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
+import { dateFormatter } from '@/utils/formatTime'
+import { useRouter } from 'vue-router'
+import KnowledgeForm from './KnowledgeForm.vue'
 
 /** AI 知识库列表 */
 defineOptions({ name: 'Knowledge' })

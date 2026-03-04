@@ -46,12 +46,7 @@
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-        <el-button
-          type="primary"
-          plain
-          @click="openForm('create')"
-          v-hasPermi="['ai:chat-role:create']"
-        >
+        <el-button type="primary" plain @click="openForm('create')">
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
       </el-form-item>
@@ -96,22 +91,10 @@
       <el-table-column label="角色排序" align="center" prop="sort" />
       <el-table-column label="操作" align="center">
         <template #default="scope">
-          <el-button
-            link
-            type="primary"
-            @click="openForm('update', scope.row.id)"
-            v-hasPermi="['ai:chat-role:update']"
-          >
+          <el-button link type="primary" @click="openForm('update', scope.row.id)">
             编辑
           </el-button>
-          <el-button
-            link
-            type="danger"
-            @click="handleDelete(scope.row.id)"
-            v-hasPermi="['ai:chat-role:delete']"
-          >
-            删除
-          </el-button>
+          <el-button link type="danger" @click="handleDelete(scope.row.id)"> 删除 </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -129,11 +112,11 @@
 </template>
 
 <script setup lang="ts">
-import { getBoolDictOptions, DICT_TYPE } from '@/utils/dict'
 import { ChatRoleApi, ChatRoleVO } from '@/api/ai/model/chatRole'
-import ChatRoleForm from './ChatRoleForm.vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
+import { DICT_TYPE, getBoolDictOptions } from '@/utils/dict'
+import ChatRoleForm from './ChatRoleForm.vue'
 
 /** AI 聊天角色 列表 */
 defineOptions({ name: 'AiChatRole' })

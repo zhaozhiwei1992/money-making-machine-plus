@@ -35,7 +35,7 @@
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-        <el-button type="primary" plain @click="handleCreate" v-hasPermi="['ai:knowledge:create']">
+        <el-button type="primary" plain @click="handleCreate">
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
       </el-form-item>
@@ -71,30 +71,9 @@
       />
       <el-table-column label="操作" align="center" min-width="120px">
         <template #default="scope">
-          <el-button
-            link
-            type="primary"
-            @click="handleUpdate(scope.row.id)"
-            v-hasPermi="['ai:knowledge:update']"
-          >
-            编辑
-          </el-button>
-          <el-button
-            link
-            type="primary"
-            @click="handleSegment(scope.row.id)"
-            v-hasPermi="['ai:knowledge:query']"
-          >
-            分段
-          </el-button>
-          <el-button
-            link
-            type="danger"
-            @click="handleDelete(scope.row.id)"
-            v-hasPermi="['ai:knowledge:delete']"
-          >
-            删除
-          </el-button>
+          <el-button link type="primary" @click="handleUpdate(scope.row.id)"> 编辑 </el-button>
+          <el-button link type="primary" @click="handleSegment(scope.row.id)"> 分段 </el-button>
+          <el-button link type="danger" @click="handleDelete(scope.row.id)"> 删除 </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -112,14 +91,14 @@
 </template>
 
 <script setup lang="ts">
-import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
-import { dateFormatter } from '@/utils/formatTime'
 import { KnowledgeDocumentApi, KnowledgeDocumentVO } from '@/api/ai/knowledge/document'
-import { useRoute, useRouter } from 'vue-router'
-import { checkPermi } from '@/utils/permission'
-import { CommonStatusEnum } from '@/utils/constants'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessage } from '@/hooks/web/useMessage'
+import { CommonStatusEnum } from '@/utils/constants'
+import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
+import { dateFormatter } from '@/utils/formatTime'
+import { checkPermi } from '@/utils/permission'
+import { useRoute, useRouter } from 'vue-router'
 // import KnowledgeDocumentForm from './KnowledgeDocumentForm.vue'
 
 /** AI 知识库文档 列表 */
