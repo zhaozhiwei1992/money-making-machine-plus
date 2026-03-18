@@ -6,36 +6,33 @@ import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
-import com.z.framework.common.web.rest.vm.CommonResult;
-import com.z.framework.common.web.rest.vm.PageResult;
+import com.google.common.collect.Maps;
 import com.z.framework.common.util.collection.CollectionUtils;
 import com.z.framework.common.util.object.BeanUtils;
-import com.z.module.ai.repository.AiChatMessageRepository;
-import com.z.module.ai.web.rest.admin.chat.vo.message.AiChatMessagePageReqVO;
-import com.z.module.ai.web.rest.admin.chat.vo.message.AiChatMessageRespVO;
-import com.z.module.ai.web.rest.admin.chat.vo.message.AiChatMessageSendReqVO;
-import com.z.module.ai.web.rest.admin.chat.vo.message.AiChatMessageSendRespVO;
+import com.z.framework.common.web.rest.vm.PageResult;
+import com.z.framework.common.web.rest.vm.R;
 import com.z.module.ai.domain.chat.AiChatConversationDO;
 import com.z.module.ai.domain.chat.AiChatMessageDO;
 import com.z.module.ai.domain.knowledge.AiKnowledgeDocumentDO;
 import com.z.module.ai.domain.model.AiChatRoleDO;
 import com.z.module.ai.domain.model.AiModelDO;
-import com.z.module.ai.domain.model.AiToolDO;
 import com.z.module.ai.enums.ErrorCodeConstants;
 import com.z.module.ai.enums.model.AiPlatformEnum;
 import com.z.module.ai.framework.ai.core.webserch.AiWebSearchClient;
 import com.z.module.ai.framework.ai.core.webserch.AiWebSearchRequest;
 import com.z.module.ai.framework.ai.core.webserch.AiWebSearchResponse;
+import com.z.module.ai.repository.AiChatMessageRepository;
 import com.z.module.ai.service.knowledge.AiKnowledgeDocumentService;
 import com.z.module.ai.service.knowledge.AiKnowledgeSegmentService;
-import com.z.module.ai.service.knowledge.bo.AiKnowledgeSegmentSearchReqBO;
 import com.z.module.ai.service.knowledge.bo.AiKnowledgeSegmentSearchRespBO;
 import com.z.module.ai.service.model.AiChatRoleService;
 import com.z.module.ai.service.model.AiModelService;
 import com.z.module.ai.service.model.AiToolService;
 import com.z.module.ai.utils.AiUtils;
 import com.z.module.ai.utils.FileTypeUtils;
-import com.google.common.collect.Maps;
+import com.z.module.ai.web.rest.admin.chat.vo.message.AiChatMessageRespVO;
+import com.z.module.ai.web.rest.admin.chat.vo.message.AiChatMessageSendReqVO;
+import com.z.module.ai.web.rest.admin.chat.vo.message.AiChatMessageSendRespVO;
 import io.modelcontextprotocol.client.McpSyncClient;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -48,30 +45,22 @@ import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.model.StreamingChatModel;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.ai.mcp.SyncMcpToolCallbackProvider;
 import org.springframework.ai.mcp.client.autoconfigure.properties.McpClientCommonProperties;
 import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.tool.resolution.ToolCallbackResolver;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.z.framework.common.exception.util.ServiceExceptionUtil.exception;
-import static com.z.framework.common.web.rest.vm.CommonResult.error;
-import static com.z.framework.common.web.rest.vm.CommonResult.success;
-import static com.z.framework.common.util.collection.CollectionUtils.convertList;
 import static com.z.framework.common.util.collection.CollectionUtils.convertSet;
+import static com.z.framework.common.web.rest.vm.R.fail;
+import static com.z.framework.common.web.rest.vm.R.ok;
 import static com.z.module.ai.enums.ErrorCodeConstants.CHAT_CONVERSATION_NOT_EXISTS;
 import static com.z.module.ai.enums.ErrorCodeConstants.CHAT_MESSAGE_NOT_EXIST;
 
@@ -183,23 +172,22 @@ public class AiChatMessageService {
         chatMessageRepository.save(new AiChatMessageDO().setId(assistantMessage.getId())
                 .setContent(newContent).setReasoningContent(newReasoningContent));
         // 4.4 响应结果
-//        Map<Long, AiKnowledgeDocumentDO> documentMap = knowledgeDocumentService.getKnowledgeDocumentMap(
-//                convertSet(knowledgeSegments, AiKnowledgeSegmentSearchRespBO::getDocumentId));
-//        List<AiChatMessageRespVO.KnowledgeSegment> segments = BeanUtils.toBean(knowledgeSegments,
-//                AiChatMessageRespVO.KnowledgeSegment.class, segment -> {
-//                    AiKnowledgeDocumentDO document = documentMap.get(segment.getDocumentId());
-//                    segment.setDocumentName(document != null ? document.getName() : null);
-//                });
-//        return new AiChatMessageSendRespVO()
-//                .setSend(BeanUtils.toBean(userMessage, AiChatMessageSendRespVO.Message.class))
-//                .setReceive(BeanUtils.toBean(assistantMessage, AiChatMessageSendRespVO.Message.class)
-//                        .setContent(newContent).setSegments(segments)
-//                        .setWebSearchPages(webSearchResponse != null ? webSearchResponse.getLists() : null));
-        return null;
+        Map<Long, AiKnowledgeDocumentDO> documentMap = knowledgeDocumentService.getKnowledgeDocumentMap(
+                convertSet(knowledgeSegments, AiKnowledgeSegmentSearchRespBO::getDocumentId));
+        List<AiChatMessageRespVO.KnowledgeSegment> segments = BeanUtils.toBean(knowledgeSegments,
+                AiChatMessageRespVO.KnowledgeSegment.class, segment -> {
+                    AiKnowledgeDocumentDO document = documentMap.get(segment.getDocumentId());
+                    segment.setDocumentName(document != null ? document.getName() : null);
+                });
+        return new AiChatMessageSendRespVO()
+                .setSend(BeanUtils.toBean(userMessage, AiChatMessageSendRespVO.Message.class))
+                .setReceive(BeanUtils.toBean(assistantMessage, AiChatMessageSendRespVO.Message.class)
+                        .setContent(newContent).setSegments(segments)
+                        .setWebSearchPages(webSearchResponse != null ? webSearchResponse.getLists() : null));
     }
 
-    public Flux<AiChatMessageSendRespVO> sendChatMessageStream(AiChatMessageSendReqVO sendReqVO,
-            Long userId) {
+    public Flux<R<AiChatMessageSendRespVO>> sendChatMessageStream(AiChatMessageSendReqVO sendReqVO,
+                                                                  Long userId) {
         // 1.1 校验对话存在
         AiChatConversationDO conversation = chatConversationService
                 .validateChatConversationExists(sendReqVO.getConversationId());
@@ -237,67 +225,66 @@ public class AiChatMessageService {
         // 4.3 流式返回
         StringBuffer contentBuffer = new StringBuffer();
         StringBuffer reasoningContentBuffer = new StringBuffer();
-//        return streamResponse.map(chunk -> {
-//            // 仅首次：返回知识库、联网搜索
-//            List<AiChatMessageRespVO.KnowledgeSegment> segments = null;
-//            List<AiWebSearchResponse.WebPage> webSearchPages = null;
-//            if (StrUtil.isEmpty(contentBuffer)) {
-//                Map<Long, AiKnowledgeDocumentDO> documentMap = knowledgeDocumentService.getKnowledgeDocumentMap(
-//                        convertSet(knowledgeSegments, AiKnowledgeSegmentSearchRespBO::getDocumentId));
-//                segments = BeanUtils.toBean(knowledgeSegments, AiChatMessageRespVO.KnowledgeSegment.class, segment ->  {
-//                    AiKnowledgeDocumentDO document = documentMap.get(segment.getDocumentId());
-//                    segment.setDocumentName(document != null ? document.getName() : null);
-//                });
-//                if (webSearchResponse != null) {
-//                    webSearchPages = webSearchResponse.getLists();
-//                }
-//            }
-//            // 响应结果
-//            String newContent = AiUtils.getChatResponseContent(chunk);
-//            String newReasoningContent = AiUtils.getChatResponseReasoningContent(chunk);
-//            if (StrUtil.isNotEmpty(newContent)) {
-//                contentBuffer.append(newContent);
-//            }
-//            if (StrUtil.isNotEmpty(newReasoningContent)) {
-//                reasoningContentBuffer.append(newReasoningContent);
-//            }
-//            return success(new AiChatMessageSendRespVO()
-//                    .setSend(BeanUtils.toBean(userMessage, AiChatMessageSendRespVO.Message.class))
-//                    .setReceive(BeanUtils.toBean(assistantMessage, AiChatMessageSendRespVO.Message.class)
-//                            .setContent(StrUtil.nullToDefault(newContent, "")) // 避免 null 的 情况
-//                            .setReasoningContent(StrUtil.nullToDefault(newReasoningContent, "")) // 避免 null 的 情况
-//                            .setSegments(segments).setWebSearchPages(webSearchPages))); // 知识库 + 联网搜索
-//        }).doOnComplete(() -> {
-//            // 忽略租户，因为 Flux 异步无法透传租户
-//            chatMessageRepository.save(
-//                    new AiChatMessageDO().setId(assistantMessage.getId()).setContent(contentBuffer.toString())
-//                            .setReasoningContent(reasoningContentBuffer.toString()));
-//        }).doOnError(throwable -> {
-//            log.error("[sendChatMessageStream][userId({}) sendReqVO({}) 发生异常]", userId, sendReqVO, throwable);
-//            {
-//                // 如果有内容，则更新内容
-//                if (StrUtil.isNotEmpty(contentBuffer)) {
-//                    chatMessageRepository.save(new AiChatMessageDO().setId(assistantMessage.getId())
-//                            .setContent(contentBuffer.toString()).setReasoningContent(reasoningContentBuffer.toString()));
-//                } else {
-//                    // 否则，则进行删除
-//                    chatMessageRepository.deleteById(assistantMessage.getId());
-//                }
-//            }
-//        }).doOnCancel(() -> {
-//            log.info("[sendChatMessageStream][userId({}) sendReqVO({}) 取消请求]", userId, sendReqVO);
-//            {
-//                // 如果有内容，则更新内容
-//                if (StrUtil.isNotEmpty(contentBuffer)) {
-//                    chatMessageRepository.save(new AiChatMessageDO().setId(assistantMessage.getId())
-//                            .setContent(contentBuffer.toString()).setReasoningContent(reasoningContentBuffer.toString()));
-//                } else {
-//                    // 否则，则进行删除
-//                    chatMessageRepository.deleteById(assistantMessage.getId());
-//                }
-//            }
-//        }).onErrorResume(error -> Flux.just(error(ErrorCodeConstants.CHAT_STREAM_ERROR)));
-        return null;
+        return streamResponse.map(chunk -> {
+            // 仅首次：返回知识库、联网搜索
+            List<AiChatMessageRespVO.KnowledgeSegment> segments = null;
+            List<AiWebSearchResponse.WebPage> webSearchPages = null;
+            if (StrUtil.isEmpty(contentBuffer)) {
+                Map<Long, AiKnowledgeDocumentDO> documentMap = knowledgeDocumentService.getKnowledgeDocumentMap(
+                        convertSet(knowledgeSegments, AiKnowledgeSegmentSearchRespBO::getDocumentId));
+                segments = BeanUtils.toBean(knowledgeSegments, AiChatMessageRespVO.KnowledgeSegment.class, segment ->  {
+                    AiKnowledgeDocumentDO document = documentMap.get(segment.getDocumentId());
+                    segment.setDocumentName(document != null ? document.getName() : null);
+                });
+                if (webSearchResponse != null) {
+                    webSearchPages = webSearchResponse.getLists();
+                }
+            }
+            // 响应结果
+            String newContent = AiUtils.getChatResponseContent(chunk);
+            String newReasoningContent = AiUtils.getChatResponseReasoningContent(chunk);
+            if (StrUtil.isNotEmpty(newContent)) {
+                contentBuffer.append(newContent);
+            }
+            if (StrUtil.isNotEmpty(newReasoningContent)) {
+                reasoningContentBuffer.append(newReasoningContent);
+            }
+            return ok(new AiChatMessageSendRespVO()
+                    .setSend(BeanUtils.toBean(userMessage, AiChatMessageSendRespVO.Message.class))
+                    .setReceive(BeanUtils.toBean(assistantMessage, AiChatMessageSendRespVO.Message.class)
+                            .setContent(StrUtil.nullToDefault(newContent, "")) // 避免 null 的 情况
+                            .setReasoningContent(StrUtil.nullToDefault(newReasoningContent, "")) // 避免 null 的 情况
+                            .setSegments(segments).setWebSearchPages(webSearchPages))); // 知识库 + 联网搜索
+        }).doOnComplete(() -> {
+            // 忽略租户，因为 Flux 异步无法透传租户
+            chatMessageRepository.save(
+                    new AiChatMessageDO().setId(assistantMessage.getId()).setContent(contentBuffer.toString())
+                            .setReasoningContent(reasoningContentBuffer.toString()));
+        }).doOnError(throwable -> {
+            log.error("[sendChatMessageStream][userId({}) sendReqVO({}) 发生异常]", userId, sendReqVO, throwable);
+            {
+                // 如果有内容，则更新内容
+                if (StrUtil.isNotEmpty(contentBuffer)) {
+                    chatMessageRepository.save(new AiChatMessageDO().setId(assistantMessage.getId())
+                            .setContent(contentBuffer.toString()).setReasoningContent(reasoningContentBuffer.toString()));
+                } else {
+                    // 否则，则进行删除
+                    chatMessageRepository.deleteById(assistantMessage.getId());
+                }
+            }
+        }).doOnCancel(() -> {
+            log.info("[sendChatMessageStream][userId({}) sendReqVO({}) 取消请求]", userId, sendReqVO);
+            {
+                // 如果有内容，则更新内容
+                if (StrUtil.isNotEmpty(contentBuffer)) {
+                    chatMessageRepository.save(new AiChatMessageDO().setId(assistantMessage.getId())
+                            .setContent(contentBuffer.toString()).setReasoningContent(reasoningContentBuffer.toString()));
+                } else {
+                    // 否则，则进行删除
+                    chatMessageRepository.deleteById(assistantMessage.getId());
+                }
+            }
+        }).onErrorResume(error -> Flux.just(fail(ErrorCodeConstants.CHAT_STREAM_ERROR)));
     }
 
     private List<AiKnowledgeSegmentSearchRespBO> recallKnowledgeSegment(String content,

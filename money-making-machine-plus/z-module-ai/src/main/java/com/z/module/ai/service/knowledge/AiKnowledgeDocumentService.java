@@ -30,13 +30,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static com.z.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static com.z.framework.common.util.collection.CollectionUtils.convertList;
+import static com.z.framework.common.util.collection.CollectionUtils.convertMap;
 import static com.z.module.ai.enums.ErrorCodeConstants.*;
 
 /**
@@ -232,6 +230,10 @@ public class AiKnowledgeDocumentService {
         for (AiKnowledgeDocumentDO document : documents) {
             deleteKnowledgeDocument(document.getId());
         }
+    }
+
+    public Map<Long, AiKnowledgeDocumentDO> getKnowledgeDocumentMap(Collection<Long> ids) {
+        return convertMap(getKnowledgeDocumentList(ids), AiKnowledgeDocumentDO::getId);
     }
 
 }

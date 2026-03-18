@@ -35,7 +35,7 @@ const crudSchemas = reactive<CrudSchema[]>([
     type: 'index'
   },
   {
-    field: 'loginName',
+    field: 'login_name',
     label: '用户名',
     search: {
       show: true
@@ -56,11 +56,11 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'clientIp',
+    field: 'client_ip',
     label: '客户端ip'
   },
   {
-    field: 'createdDate',
+    field: 'created_date',
     label: '登录日期'
   },
   {

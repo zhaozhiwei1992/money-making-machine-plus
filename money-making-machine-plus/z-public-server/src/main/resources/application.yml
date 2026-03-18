@@ -243,6 +243,9 @@ spring:
         min-idle: 0
     password: ''
     port: 6379
+    # 4. spring security默认Kryo反序列化时调用add()方法向不可修改集合添加元素,有点不好用
+#    redisson:
+#      codec: org.redisson.codec.JsonJacksonCodec
   jackson:
     # 前端使用snake_case，后端使用camelCase
     property-naming-strategy: SNAKE_CASE

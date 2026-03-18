@@ -96,7 +96,7 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'phoneNumber',
+    field: 'phone_number',
     label: '手机号',
     form: {
       formItemProps: {
@@ -109,7 +109,7 @@ const crudSchemas = reactive<CrudSchema[]>([
     label: '邮箱'
   },
   {
-    field: 'departmentIdListStr',
+    field: 'department_id_list_str',
     label: '部门',
     form: {
       component: 'Cascader',
@@ -122,7 +122,7 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'positionIdListStr',
+    field: 'position_id_list_str',
     label: '岗位',
     form: {
       component: 'Select',
@@ -135,7 +135,7 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'roleIdListStr',
+    field: 'role_id_list_str',
     label: '角色',
     form: {
       component: 'Select',
@@ -169,14 +169,14 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'createdBy',
+    field: 'created_by',
     label: '创建人',
     form: {
       show: false
     }
   },
   {
-    field: 'createdDate',
+    field: 'created_date',
     label: '创建日期',
     form: {
       show: false
@@ -245,7 +245,7 @@ const save = async () => {
       loading.value = true
       const data = (await write?.getFormData()) as UserVO
       // 数据特殊处理
-      data.departmentIdListStr = data.departmentIdListStr.join(',')
+      data.department_id_list_str = data.department_id_list_str.join(',')
       console.log(data)
       const res = await saveTableApi(data)
         .catch(() => {})
@@ -301,7 +301,7 @@ const save = async () => {
           {{ t('exampleDemo.detail') }}
         </ElButton>
         <ElButton
-          v-if="row.createdBy != 'system'"
+          v-if="row.created_by != 'system'"
           type="danger"
           v-hasPermi="['system:user:delete']"
           @click="delData(row, false)"

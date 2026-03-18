@@ -134,5 +134,18 @@ export enum DICT_TYPE {
 
   // ========== MP 模块 ==========
   MP_AUTO_REPLY_REQUEST_MATCH = 'mp_auto_reply_request_match', // 自动回复请求匹配类型
-  MP_MESSAGE_TYPE = 'mp_message_type' // 消息类型
+  MP_MESSAGE_TYPE = 'mp_message_type', // 消息类型
+
+  // ========== AI - 人工智能模块  ==========
+  AI_PLATFORM = 'ai_platform', // AI 平台
+  AI_MODEL_TYPE = 'ai_model_type', // AI 模型类型
+  AI_IMAGE_STATUS = 'ai_image_status', // AI 图片状态
+  AI_MUSIC_STATUS = 'ai_music_status', // AI 音乐状态
+  AI_GENERATE_MODE = 'ai_generate_mode', // AI 生成模式
+  AI_WRITE_TYPE = 'ai_write_type', // AI 写作类型
+  AI_WRITE_LENGTH = 'ai_write_length', // AI 写作长度
+  AI_WRITE_FORMAT = 'ai_write_format', // AI 写作格式
+  AI_WRITE_TONE = 'ai_write_tone', // AI 写作语气
+  AI_WRITE_LANGUAGE = 'ai_write_language', // AI 写作语言
+  AI_MCP_CLIENT_NAME = 'ai_mcp_client_name' // AI MCP Client 名字
 }

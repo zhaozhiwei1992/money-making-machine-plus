@@ -3,15 +3,15 @@ import request from '@/config/axios'
 // AI 知识库分段 VO
 export interface KnowledgeSegmentVO {
   id: number // 编号
-  documentId: number // 文档编号
-  knowledgeId: number // 知识库编号
-  vectorId: string // 向量库编号
+  document_id: number // 文档编号
+  knowledge_id: number // 知识库编号
+  vector_id: string // 向量库编号
   content: string // 切片内容
-  contentLength: number // 切片内容长度
+  content_length: number // 切片内容长度
   tokens: number // token 数量
-  retrievalCount: number // 召回次数
+  retrieval_count: number // 召回次数
   status: number // 文档状态
-  createTime: number // 创建时间
+  create_time: number // 创建时间
 }
 
 // AI 知识库分段 API
@@ -50,18 +50,18 @@ export const KnowledgeSegmentApi = {
   },
 
   // 切片内容
-  splitContent: async (url: string, segmentMaxTokens: number) => {
+  splitContent: async (url: string, segment_max_tokens: number) => {
     return await request.get({
       url: `/ai/knowledge/segment/split`,
-      params: { url, segmentMaxTokens }
+      params: { url, segment_max_tokens }
     })
   },
 
   // 获取文档处理列表
-  getKnowledgeSegmentProcessList: async (documentIds: number[]) => {
+  getKnowledgeSegmentProcessList: async (document_ids: number[]) => {
     return await request.get({
       url: `/ai/knowledge/segment/get-process-list`,
-      params: { documentIds: documentIds.join(',') }
+      params: { document_ids: document_ids.join(',') }
     })
   },
 

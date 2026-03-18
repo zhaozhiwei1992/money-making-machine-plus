@@ -18,9 +18,9 @@
           placeholder="请输入知识库描述"
         />
       </el-form-item>
-      <el-form-item label="向量模型" prop="embeddingModelId">
+      <el-form-item label="向量模型" prop="embedding_model_id">
         <el-select
-          v-model="formData.embeddingModelId"
+          v-model="formData.embedding_model_id"
           placeholder="请选择向量模型"
           clearable
           class="!w-full"
@@ -28,18 +28,18 @@
           <el-option v-for="item in modelList" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
       </el-form-item>
-      <el-form-item label="检索 topK" prop="topK">
+      <el-form-item label="检索 topK" prop="top_k">
         <el-input-number
-          v-model="formData.topK"
+          v-model="formData.top_k"
           placeholder="请输入检索 topK"
           :min="0"
           :max="10"
           class="!w-1/1"
         />
       </el-form-item>
-      <el-form-item label="检索相似度阈值" prop="similarityThreshold">
+      <el-form-item label="检索相似度阈值" prop="similarity_threshold">
         <el-input-number
-          v-model="formData.similarityThreshold"
+          v-model="formData.similarity_threshold"
           placeholder="请输入检索相似度阈值"
           :min="0"
           :max="1"
@@ -89,16 +89,16 @@ const formData = ref({
   id: undefined,
   name: undefined,
   description: undefined,
-  embeddingModelId: undefined,
-  topK: undefined,
-  similarityThreshold: undefined,
+  embedding_model_id: undefined,
+  top_k: undefined,
+  similarity_threshold: undefined,
   status: CommonStatusEnum.ENABLE // 默认开启
 })
 const formRules = reactive({
   name: [{ required: true, message: '请输入知识库名称', trigger: 'blur' }],
-  embeddingModelId: [{ required: true, message: '请输入向量模型', trigger: 'blur' }],
-  topK: [{ required: true, message: '请输入检索 topK', trigger: 'blur' }],
-  similarityThreshold: [{ required: true, message: '请输入检索相似度阈值', trigger: 'blur' }],
+  embedding_model_id: [{ required: true, message: '请输入向量模型', trigger: 'blur' }],
+  top_k: [{ required: true, message: '请输入检索 topK', trigger: 'blur' }],
+  similarity_threshold: [{ required: true, message: '请输入检索相似度阈值', trigger: 'blur' }],
   status: [{ required: true, message: '请选择是否启用', trigger: 'blur' }]
 })
 const formRef = ref() // 表单 Ref
@@ -154,9 +154,9 @@ const resetForm = () => {
     id: undefined,
     name: undefined,
     description: undefined,
-    embeddingModelId: undefined,
-    topK: undefined,
-    similarityThreshold: undefined,
+    embedding_model_id: undefined,
+    top_k: undefined,
+    similarity_threshold: undefined,
     status: CommonStatusEnum.ENABLE // 默认开启
   }
   formRef.value?.resetFields()

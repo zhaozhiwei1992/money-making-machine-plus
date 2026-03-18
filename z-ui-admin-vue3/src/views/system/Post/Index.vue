@@ -69,7 +69,7 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'orderNum',
+    field: 'order_num',
     label: '排序',
     form: {
       show: false
@@ -97,7 +97,7 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'createdDate',
+    field: 'created_date',
     label: '创建日期',
     form: {
       show: false
@@ -205,7 +205,7 @@ const save = async () => {
     >
       <template #action="{ row }">
         <ElButton
-          v-if="row.createdBy != 'system'"
+          v-if="row.created_by != 'system'"
           type="primary"
           v-hasPermi="['system:post:edit']"
           @click="action(row, 'edit')"
@@ -216,7 +216,7 @@ const save = async () => {
           {{ t('exampleDemo.add') }}
         </ElButton>
         <ElButton
-          v-if="row.createdBy != 'system'"
+          v-if="row.created_by != 'system'"
           type="danger"
           v-hasPermi="['system:post:delete']"
           @click="delData(row, false)"

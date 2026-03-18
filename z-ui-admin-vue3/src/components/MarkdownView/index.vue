@@ -3,10 +3,11 @@
 </template>
 
 <script setup lang="ts">
+import { useMessage } from '@/hooks/web/useMessage'
 import { useClipboard } from '@vueuse/core'
-import MarkdownIt from 'markdown-it'
-import 'highlight.js/styles/vs2015.min.css'
 import hljs from 'highlight.js'
+import 'highlight.js/styles/vs2015.min.css'
+import MarkdownIt from 'markdown-it'
 
 // 定义组件属性
 const props = defineProps({

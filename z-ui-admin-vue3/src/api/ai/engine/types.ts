@@ -1,7 +1,7 @@
 export type EngineVO = {
   id?: number
   name: string
-  apiKey: string
+  api_key: string
   type: number
   status: number
   createdBy: string

@@ -5,9 +5,9 @@ export interface KnowledgeVO {
   id: number // 编号
   name: string // 知识库名称
   description: string // 知识库描述
-  embeddingModelId: number // 嵌入模型编号，高质量模式时维护
-  topK: number // topK
-  similarityThreshold: number // 相似度阈值
+  embedding_model_id: number // 嵌入模型编号，高质量模式时维护
+  top_k: number // topK
+  similarity_threshold: number // 相似度阈值
 }
 
 // AI 知识库 API

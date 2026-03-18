@@ -3,19 +3,19 @@ import request from '@/config/axios'
 // AI 聊天角色 VO
 export interface ChatRoleVO {
   id: number // 角色编号
-  modelId: number // 模型编号
+  model_id: number // 模型编号
   name: string // 角色名称
   avatar: string // 角色头像
   category: string // 角色类别
   sort: number // 角色排序
   description: string // 角色描述
-  systemMessage: string // 角色设定
-  welcomeMessage: string // 角色设定
-  publicStatus: boolean // 是否公开
+  system_message: string // 角色设定
+  welcome_message: string // 角色设定
+  public_status: boolean // 是否公开
   status: number // 状态
-  knowledgeIds?: number[] // 引用的知识库 ID 列表
-  toolIds?: number[] // 引用的工具 ID 列表
-  mcpClientNames?: string[] // 引用的 MCP Client 名字列表
+  knowledge_ids?: number[] // 引用的知识库 ID 列表
+  tool_ids?: number[] // 引用的工具 ID 列表
+  mcp_client_names?: string[] // 引用的 MCP Client 名字列表
 }
 
 // AI 聊天角色 分页请求 vo

@@ -63,7 +63,7 @@
         </template>
       </el-table-column>
       <el-table-column label="名称" align="center" prop="name" />
-      <el-table-column label="密钥" align="center" prop="apiKey" />
+      <el-table-column label="密钥" align="center" prop="api_key" />
       <el-table-column label="自定义 API URL" align="center" prop="url" />
       <el-table-column label="状态" align="center" prop="status">
         <template #default="scope">

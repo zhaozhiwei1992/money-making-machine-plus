@@ -85,16 +85,16 @@ const processCompleteRef = ref()
 const currentStep = ref(0) // 步骤控制
 const steps = [{ title: '上传文档' }, { title: '文档分段' }, { title: '处理并完成' }]
 const formData = ref({
-  knowledgeId: undefined, // 知识库编号
-  id: undefined, // 编辑的文档编号(documentId)
-  segmentMaxTokens: 500, // 分段最大 token 数
+  knowledge_id: undefined, // 知识库编号
+  id: undefined, // 编辑的文档编号(document_id)
+  segment_max_tokens: 500, // 分段最大 token 数
   list: [] as Array<{
     id: number // 文档编号
     name: string // 文档名称
     url: string // 文档 URL
     segments: Array<{
       content?: string
-      contentLength?: number
+      content_length?: number
       tokens?: number
     }>
     count?: number // 段落数量
@@ -107,17 +107,17 @@ provide('parent', getCurrentInstance()) // 提供 parent 给子组件使用
 /** 初始化数据 */
 const initData = async () => {
   // 【新增场景】从路由参数中获取知识库 ID
-  if (route.query.knowledgeId) {
-    formData.value.knowledgeId = route.query.knowledgeId as any
+  if (route.query.knowledge_id) {
+    formData.value.knowledge_id = route.query.knowledge_id as any
   }
 
   // 【修改场景】从路由参数中获取文档 ID
-  const documentId = route.query.id
-  if (documentId) {
+  const document_id = route.query.id
+  if (document_id) {
     // 获取文档信息
-    formData.value.id = documentId as any
-    const document = await KnowledgeDocumentApi.getKnowledgeDocument(documentId as any)
-    formData.value.segmentMaxTokens = document.segmentMaxTokens
+    formData.value.id = document_id as any
+    const document = await KnowledgeDocumentApi.getKnowledgeDocument(document_id as any)
+    formData.value.segment_max_tokens = document.segment_max_tokens
     formData.value.list = [
       {
         id: document.id,
@@ -150,7 +150,7 @@ const handleBack = () => {
   // 先删除当前页签
   delView(unref(router.currentRoute))
   // 跳转到列表页
-  router.push({ name: 'AiKnowledgeDocument', query: { knowledgeId: formData.value.knowledgeId } })
+  router.push({ name: 'AiKnowledgeDocument', query: { knowledge_id: formData.value.knowledge_id } })
 }
 
 /** 初始化 */

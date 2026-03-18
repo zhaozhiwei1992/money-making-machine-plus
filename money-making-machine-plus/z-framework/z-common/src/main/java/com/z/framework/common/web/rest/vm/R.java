@@ -1,5 +1,8 @@
 package com.z.framework.common.web.rest.vm;
 
+import cn.hutool.core.lang.Assert;
+import com.z.framework.common.exception.ErrorCode;
+import com.z.framework.common.exception.enums.GlobalErrorCodeConstants;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -61,4 +64,18 @@ public class R<T> implements Serializable {
         tResponseData.setTimestamps(new Date());
         return tResponseData;
     }
+
+    public static <T> R<T> fail(Integer code, String message) {
+        Assert.notEquals(GlobalErrorCodeConstants.SUCCESS.getCode(), code, "code 必须是错误的！");
+        R<T> result = new R<>();
+        result.code = code;
+        result.msg = message;
+        return result;
+    }
+
+
+    public static <T> R<T> fail(ErrorCode errorCode) {
+        return fail(errorCode.getCode(), errorCode.getMsg());
+    }
+
 }

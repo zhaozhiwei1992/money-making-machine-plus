@@ -8,9 +8,9 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="文档编号" prop="documentId">
+      <el-form-item label="文档编号" prop="document_id">
         <el-input
-          v-model="queryParams.documentId"
+          v-model="queryParams.document_id"
           placeholder="请输入文档编号"
           clearable
           @keyup.enter="handleQuery"
@@ -76,9 +76,9 @@
         min-width="250px"
         :show-overflow-tooltip="true"
       />
-      <el-table-column label="字符数" align="center" prop="contentLength" />
+      <el-table-column label="字符数" align="center" prop="content_length" />
       <el-table-column label="token 数量" align="center" prop="tokens" />
-      <el-table-column label="召回次数" align="center" prop="retrievalCount" />
+      <el-table-column label="召回次数" align="center" prop="retrieval_count" />
       <el-table-column label="是否启用" align="center" prop="status">
         <template #default="scope">
           <el-switch
@@ -143,7 +143,7 @@ const total = ref(0) // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
-  documentId: undefined,
+  document_id: undefined,
   content: undefined,
   status: undefined
 })
@@ -176,7 +176,7 @@ const resetQuery = () => {
 /** 添加/修改操作 */
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id, queryParams.documentId)
+  formRef.value.open(type, id, queryParams.document_id)
 }
 
 /** 删除按钮操作 */
@@ -213,7 +213,7 @@ const handleStatusChange = async (row: KnowledgeSegmentVO) => {
 /** 初始化 **/
 onMounted(() => {
   // 如果文档 ID 不存在，显示错误提示并关闭页面
-  if (!route.query.documentId) {
+  if (!route.query.document_id) {
     message.error('文档 ID 不存在，无法查看分段列表')
     // 关闭当前路由，返回到文档列表页面
     router.push({ name: 'AiKnowledgeDocument' })
@@ -221,7 +221,7 @@ onMounted(() => {
   }
 
   // 从路由参数中获取文档 ID
-  queryParams.documentId = route.query.documentId as any
+  queryParams.document_id = route.query.document_id as any
   getList()
 })
 </script>

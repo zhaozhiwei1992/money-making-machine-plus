@@ -17,9 +17,9 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="所属流程" prop="processDefinitionId">
+      <el-form-item label="所属流程" prop="process_definition_id">
         <el-input
-          v-model="queryParams.processDefinitionId"
+          v-model="queryParams.process_definition_id"
           placeholder="请输入流程定义的编号"
           clearable
           @keyup.enter="handleQuery"
@@ -61,9 +61,9 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="提交时间" prop="createTime">
+      <el-form-item label="提交时间" prop="create_time">
         <el-date-picker
-          v-model="queryParams.createTime"
+          v-model="queryParams.create_time"
           value-format="YYYY-MM-DD HH:mm:ss"
           type="daterange"
           start-placeholder="开始日期"
@@ -114,8 +114,8 @@
           <dict-tag :type="DICT_TYPE.BPM_PROCESS_INSTANCE_RESULT" :value="scope.row.result" />
         </template>
       </el-table-column>
-      <el-table-column label="提交时间" align="center" prop="createTime" width="180" />
-      <el-table-column label="结束时间" align="center" prop="endTime" width="180" />
+      <el-table-column label="提交时间" align="center" prop="create_time" width="180" />
+      <el-table-column label="结束时间" align="center" prop="end_time" width="180" />
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
@@ -179,11 +179,11 @@ const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   name: '',
-  processDefinitionId: undefined,
+  process_definition_id: undefined,
   category: undefined,
   status: undefined,
   result: undefined,
-  createTime: []
+  create_time: []
 })
 const queryFormRef = ref() // 搜索的表单
 

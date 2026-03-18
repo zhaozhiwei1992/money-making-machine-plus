@@ -13,8 +13,8 @@
       <el-form-item label="角色头像" prop="avatar">
         <UploadImg v-model="formData.avatar" height="60px" width="60px" />
       </el-form-item>
-      <el-form-item label="绑定模型" prop="modelId" v-if="!isUser">
-        <el-select v-model="formData.modelId" placeholder="请选择模型" clearable>
+      <el-form-item label="绑定模型" prop="model_id" v-if="!isUser">
+        <el-select v-model="formData.model_id" placeholder="请选择模型" clearable>
           <el-option
             v-for="model in models"
             :key="model.id"
@@ -29,11 +29,11 @@
       <el-form-item label="角色描述" prop="description">
         <el-input type="textarea" v-model="formData.description" placeholder="请输入角色描述" />
       </el-form-item>
-      <el-form-item label="角色设定" prop="systemMessage">
-        <el-input type="textarea" v-model="formData.systemMessage" placeholder="请输入角色设定" />
+      <el-form-item label="角色设定" prop="system_message">
+        <el-input type="textarea" v-model="formData.system_message" placeholder="请输入角色设定" />
       </el-form-item>
-      <el-form-item label="引用知识库" prop="knowledgeIds">
-        <el-select v-model="formData.knowledgeIds" placeholder="请选择知识库" clearable multiple>
+      <el-form-item label="引用知识库" prop="knowledge_ids">
+        <el-select v-model="formData.knowledge_ids" placeholder="请选择知识库" clearable multiple>
           <el-option
             v-for="item in knowledgeList"
             :key="item.id"
@@ -42,13 +42,13 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="引用工具" prop="toolIds">
-        <el-select v-model="formData.toolIds" placeholder="请选择工具" clearable multiple>
+      <el-form-item label="引用工具" prop="tool_ids">
+        <el-select v-model="formData.tool_ids" placeholder="请选择工具" clearable multiple>
           <el-option v-for="item in toolList" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
       </el-form-item>
-      <el-form-item label="引用 MCP" prop="toolIds">
-        <el-select v-model="formData.mcpClientNames" placeholder="请选择 MCP" clearable multiple>
+      <el-form-item label="引用 MCP" prop="tool_ids">
+        <el-select v-model="formData.mcp_client_names" placeholder="请选择 MCP" clearable multiple>
           <el-option
             v-for="dict in getStrDictOptions(DICT_TYPE.AI_MCP_CLIENT_NAME)"
             :key="dict.value"
@@ -57,8 +57,8 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="是否公开" prop="publicStatus" v-if="!isUser">
-        <el-radio-group v-model="formData.publicStatus">
+      <el-form-item label="是否公开" prop="public_status" v-if="!isUser">
+        <el-radio-group v-model="formData.public_status">
           <el-radio
             v-for="dict in getBoolDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING)"
             :key="dict.value"
@@ -113,18 +113,18 @@ const formLoading = ref(false) // 表单的加载中：1）修改时的数据加
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref({
   id: undefined,
-  modelId: undefined,
+  model_id: undefined,
   name: undefined,
   avatar: undefined,
   category: undefined,
   sort: undefined,
   description: undefined,
-  systemMessage: undefined,
-  publicStatus: true,
+  system_message: undefined,
+  public_status: true,
   status: CommonStatusEnum.ENABLE,
-  knowledgeIds: [] as number[],
-  toolIds: [] as number[],
-  mcpClientNames: [] as string[]
+  knowledge_ids: [] as number[],
+  tool_ids: [] as number[],
+  mcp_client_names: [] as string[]
 })
 const formRef = ref() // 表单 Ref
 const models = ref([] as ModelVO[]) // 聊天模型列表
@@ -142,8 +142,8 @@ const formRules = reactive<FormRules>({
   category: [{ required: true, message: '角色类别不能为空', trigger: 'blur' }],
   sort: [{ required: true, message: '角色排序不能为空', trigger: 'blur' }],
   description: [{ required: true, message: '角色描述不能为空', trigger: 'blur' }],
-  systemMessage: [{ required: true, message: '角色设定不能为空', trigger: 'blur' }],
-  publicStatus: [{ required: true, message: '是否公开不能为空', trigger: 'blur' }]
+  system_message: [{ required: true, message: '角色设定不能为空', trigger: 'blur' }],
+  public_status: [{ required: true, message: '是否公开不能为空', trigger: 'blur' }]
 })
 
 /** 打开弹窗 */
@@ -207,18 +207,18 @@ const submitForm = async () => {
 const resetForm = () => {
   formData.value = {
     id: undefined,
-    modelId: undefined,
+    model_id: undefined,
     name: undefined,
     avatar: undefined,
     category: undefined,
     sort: undefined,
     description: undefined,
-    systemMessage: undefined,
-    publicStatus: true,
+    system_message: undefined,
+    public_status: true,
     status: CommonStatusEnum.ENABLE,
-    knowledgeIds: [],
-    toolIds: [],
-    mcpClientNames: []
+    knowledge_ids: [],
+    tool_ids: [],
+    mcp_client_names: []
   }
   formRef.value?.resetFields()
 }

@@ -53,9 +53,9 @@
       <el-form-item label="流程描述" prop="description">
         <el-input v-model="formData.description" clearable type="textarea" />
       </el-form-item>
-      <div v-if="formData.formId">
-        <el-form-item label="表单类型" prop="formType">
-          <el-radio-group v-model="formData.formType">
+      <div v-if="formData.form_id">
+        <el-form-item label="表单类型" prop="form_type">
+          <el-radio-group v-model="formData.form_type">
             <el-radio
               v-for="dict in getIntDictOptions(DICT_TYPE.BPM_MODEL_FORM_TYPE)"
               :key="dict.value"
@@ -65,8 +65,8 @@
             </el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item v-if="formData.formType === 10" label="流程表单" prop="formId">
-          <el-select v-model="formData.formId" clearable style="width: 100%">
+        <el-form-item v-if="formData.form_type === 10" label="流程表单" prop="form_id">
+          <el-select v-model="formData.form_id" clearable style="width: 100%">
             <el-option
               v-for="form in formList"
               :key="form.id"
@@ -76,12 +76,12 @@
           </el-select>
         </el-form-item>
         <el-form-item
-          v-if="formData.formType === 20"
+          v-if="formData.form_type === 20"
           label="表单提交路由"
-          prop="formCustomCreatePath"
+          prop="form_custom_create_path"
         >
           <el-input
-            v-model="formData.formCustomCreatePath"
+            v-model="formData.form_custom_create_path"
             placeholder="请输入表单提交路由"
             style="width: 330px"
           />
@@ -95,12 +95,12 @@
           </el-tooltip>
         </el-form-item>
         <el-form-item
-          v-if="formData.formType === 20"
+          v-if="formData.form_type === 20"
           label="表单查看路由"
-          prop="formCustomViewPath"
+          prop="form_custom_view_path"
         >
           <el-input
-            v-model="formData.formCustomViewPath"
+            v-model="formData.form_custom_view_path"
             placeholder="请输入表单查看路由"
             style="width: 330px"
           />
@@ -151,13 +151,13 @@ const formLoading = ref(false) // 表单的加载中：1）修改时的数据加
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref({
   key: '',
-  formType: 10,
+  form_type: 10,
   name: '',
   category: undefined,
   description: '',
-  formId: '',
-  formCustomCreatePath: '',
-  formCustomViewPath: ''
+  form_id: '',
+  form_custom_create_path: '',
+  form_custom_view_path: ''
 })
 const formRules = reactive({
   category: [{ required: true, message: '参数分类不能为空', trigger: 'blur' }],
@@ -228,13 +228,13 @@ const submitForm = async () => {
 /** 重置表单 */
 const resetForm = () => {
   formData.value = {
-    formType: 10,
+    form_type: 10,
     name: '',
     category: undefined,
     description: '',
-    formId: '',
-    formCustomCreatePath: '',
-    formCustomViewPath: ''
+    form_id: '',
+    form_custom_create_path: '',
+    form_custom_view_path: ''
   }
   formRef.value?.resetFields()
 }

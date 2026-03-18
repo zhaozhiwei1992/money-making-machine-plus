@@ -17,9 +17,9 @@
           @keyup.enter="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="创建时间" prop="createTime">
+      <el-form-item label="创建时间" prop="create_time">
         <el-date-picker
-          v-model="queryParams.createTime"
+          v-model="queryParams.create_time"
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
           class="!w-240px"
           end-placeholder="结束日期"
@@ -46,13 +46,13 @@
     <el-table v-loading="loading" :data="list">
       <el-table-column align="center" label="任务编号" prop="id" width="300px" />
       <el-table-column align="center" label="任务名称" prop="name" />
-      <el-table-column align="center" label="所属流程" prop="processInstance.name" />
-      <el-table-column align="center" label="流程发起人" prop="processInstance.startUserNickname" />
-      <el-table-column align="center" label="创建时间" prop="createTime" width="180" />
-      <el-table-column label="任务状态" prop="suspensionState">
+      <el-table-column align="center" label="所属流程" prop="process_instance.name" />
+      <el-table-column align="center" label="流程发起人" prop="process_instance.start_user_nickname" />
+      <el-table-column align="center" label="创建时间" prop="create_time" width="180" />
+      <el-table-column label="任务状态" prop="suspension_state">
         <template #default="scope">
-          <el-tag v-if="scope.row.suspensionState === 1" type="success">激活</el-tag>
-          <el-tag v-if="scope.row.suspensionState === 2" type="warning">挂起</el-tag>
+          <el-tag v-if="scope.row.suspension_state === 1" type="success">激活</el-tag>
+          <el-tag v-if="scope.row.suspension_state === 2" type="warning">挂起</el-tag>
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作">
@@ -97,7 +97,7 @@ const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   name: '',
-  createTime: []
+  create_time: []
 })
 const queryFormRef = ref() // 搜索的表单
 
@@ -130,7 +130,7 @@ const handleAudit = (row) => {
   push({
     name: 'BpmProcessInstanceDetail',
     query: {
-      id: row.processInstance.id
+      id: row.process_instance.id
     }
   })
 }

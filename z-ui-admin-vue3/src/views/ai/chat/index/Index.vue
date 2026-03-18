@@ -293,21 +293,21 @@ const messageList = computed(() => {
     return activeMessageList.value
   }
   // 没有消息时，如果有 systemMessage 则展示它
-  if (activeConversation.value?.systemMessage) {
+  if (activeConversation.value?.system_message) {
     return [
       {
         id: 0,
-        conversationId: activeConversation.value.id || 0,
+        conversation_id: activeConversation.value.id || 0,
         type: 'system',
-        userId: '',
-        roleId: '',
+        user_id: '',
+        role_id: '',
         model: 0,
-        modelId: 0,
-        content: activeConversation.value.systemMessage,
+        model_id: 0,
+        content: activeConversation.value.system_message,
         tokens: 0,
-        createTime: new Date(),
-        roleAvatar: '',
-        userAvatar: ''
+        create_time: new Date(),
+        role_avatar: '',
+        user_avatar: ''
       } as ChatMessageVO
     ]
   }
@@ -426,9 +426,9 @@ const doSendMessage = async (content: string) => {
 
   // 执行发送
   await doSendMessageStream({
-    conversationId: activeConversationId.value,
+    conversation_id: activeConversationId.value,
     content: content,
-    attachmentUrls: attachmentUrls
+    attachment_urls: attachmentUrls
   } as ChatMessageVO)
 }
 
@@ -445,19 +445,19 @@ const doSendMessageStream = async (userMessage: ChatMessageVO) => {
     // 1.1 先添加两个假数据，等 stream 返回再替换
     activeMessageList.value.push({
       id: -1,
-      conversationId: activeConversationId.value,
+      conversation_id: activeConversationId.value,
       type: 'user',
       content: userMessage.content,
-      attachmentUrls: userMessage.attachmentUrls || [],
-      createTime: new Date()
+      attachment_urls: userMessage.attachment_urls || [],
+      create_time: new Date()
     } as ChatMessageVO)
     activeMessageList.value.push({
       id: -2,
-      conversationId: activeConversationId.value,
+      conversation_id: activeConversationId.value,
       type: 'assistant',
       content: '思考中...',
-      reasoningContent: '',
-      createTime: new Date()
+      reasoning_content: '',
+      create_time: new Date()
     } as ChatMessageVO)
     // 1.2 滚动到最下面
     await nextTick()
@@ -468,14 +468,14 @@ const doSendMessageStream = async (userMessage: ChatMessageVO) => {
     // 2. 发送 event stream
     let isFirstChunk = true // 是否是第一个 chunk 消息段
     await ChatMessageApi.sendChatMessageStream(
-      userMessage.conversationId,
+      userMessage.conversation_id,
       userMessage.content,
       conversationInAbortController.value,
       enableContext.value,
       enableWebSearch.value,
       async (res) => {
         const { code, data, msg } = JSON.parse(res.data)
-        if (code !== 0) {
+        if (code !== 200) {
           message.alert(`对话异常! ${msg}`)
           // 如果未接收到消息，则进行删除
           if (receiveMessageFullText.value === '') {
@@ -497,15 +497,15 @@ const doSendMessageStream = async (userMessage: ChatMessageVO) => {
           activeMessageList.value.pop()
           // 更新返回的数据
           activeMessageList.value.push(data.send)
-          data.send.attachmentUrls = userMessage.attachmentUrls
+          data.send.attachmentUrls = userMessage.attachment_urls
           activeMessageList.value.push(data.receive)
         }
 
         // 处理 reasoningContent
         if (data.receive.reasoningContent) {
           const lastMessage = activeMessageList.value[activeMessageList.value.length - 1]
-          lastMessage.reasoningContent =
-            lastMessage.reasoningContent + data.receive.reasoningContent
+          lastMessage.reasoning_content =
+            lastMessage.reasoning_content + data.receive.reasoningContent
         }
 
         // 处理正常内容
@@ -525,7 +525,7 @@ const doSendMessageStream = async (userMessage: ChatMessageVO) => {
       () => {
         stopStream()
       },
-      userMessage.attachmentUrls
+      userMessage.attachment_urls
     )
   } catch {}
 }

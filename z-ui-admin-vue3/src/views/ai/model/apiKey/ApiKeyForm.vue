@@ -20,8 +20,8 @@
       <el-form-item label="名称" prop="name">
         <el-input v-model="formData.name" placeholder="请输入名称" />
       </el-form-item>
-      <el-form-item label="密钥" prop="apiKey">
-        <el-input v-model="formData.apiKey" placeholder="请输入密钥" />
+      <el-form-item label="密钥" prop="api_key">
+        <el-input v-model="formData.api_key" placeholder="请输入密钥" />
       </el-form-item>
       <el-form-item label="自定义 API URL" prop="url">
         <el-input v-model="formData.url" placeholder="请输入自定义 API URL" />
@@ -64,14 +64,14 @@ const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref({
   id: undefined,
   name: undefined,
-  apiKey: undefined,
+  api_key: undefined,
   platform: undefined,
   url: undefined,
   status: CommonStatusEnum.ENABLE
 })
 const formRules = reactive({
   name: [{ required: true, message: '名称不能为空', trigger: 'blur' }],
-  apiKey: [{ required: true, message: '密钥不能为空', trigger: 'blur' }],
+  api_key: [{ required: true, message: '密钥不能为空', trigger: 'blur' }],
   platform: [{ required: true, message: '平台不能为空', trigger: 'blur' }],
   status: [{ required: true, message: '状态不能为空', trigger: 'blur' }]
 })
@@ -124,7 +124,7 @@ const resetForm = () => {
   formData.value = {
     id: undefined,
     name: undefined,
-    apiKey: undefined,
+    api_key: undefined,
     platform: undefined,
     url: undefined,
     status: CommonStatusEnum.ENABLE

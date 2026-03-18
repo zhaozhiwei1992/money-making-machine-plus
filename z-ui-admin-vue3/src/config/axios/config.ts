@@ -1,10 +1,15 @@
 // 获取.env.{profile}中的配置
 // 下述方式就不行, 为啥??
 const config: {
+  base_url: string
   result_code: number | string
   default_headers: AxiosHeaders
   request_timeout: number
 } = {
+  /**
+   * api请求基础路径
+   */
+  base_url: import.meta.env.VITE_API_BASEPATH,
   /**
    * 接口成功返回状态码
    */

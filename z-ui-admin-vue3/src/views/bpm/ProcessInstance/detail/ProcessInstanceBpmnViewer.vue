@@ -6,9 +6,9 @@
     <MyProcessViewer
       key="designer"
       :activityData="activityList"
-      :processInstanceData="processInstance"
+      :processInstanceData="process_instance"
       :taskData="tasks"
-      :value="bpmnXml"
+      :value="bpmn_xml"
       v-bind="bpmnControlForm"
     />
   </el-card>
@@ -23,9 +23,9 @@ import * as ActivityApi from '@/api/bpm/activity'
 const props = defineProps({
   loading: propTypes.bool, // 是否加载中
   id: propTypes.string, // 流程实例的编号
-  processInstance: propTypes.any, // 流程实例的信息
+  process_instance: propTypes.any, // 流程实例的信息
   tasks: propTypes.array, // 流程任务的数组
-  bpmnXml: propTypes.string // BPMN XML
+  bpmn_xml: propTypes.string // BPMN XML
 })
 
 const bpmnControlForm = ref({
@@ -43,7 +43,7 @@ const activityList = ref([]) // 任务列表
 onMounted(async () => {
   if (props.id) {
     activityList.value = await ActivityApi.getActivityList({
-      processInstanceId: props.id
+      process_instance_id: props.id
     })
   }
 })

@@ -60,7 +60,7 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'orderNum',
+    field: 'order_num',
     label: '排序',
     form: {
       show: false
@@ -97,7 +97,7 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'menuType',
+    field: 'menu_type',
     label: '类型',
     form: {
       show: false
@@ -124,7 +124,7 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'permissionCode',
+    field: 'permission_code',
     label: '权限标识',
     form: {
       colProps: {
@@ -151,7 +151,7 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'createdBy',
+    field: 'created_by',
     label: '创建人',
     form: {
       show: false
@@ -180,8 +180,8 @@ const AddAction = (row: TableData | null) => {
   dialogTitle.value = t('exampleDemo.add')
   // 外部新增按钮只能增加1级菜单 0: 目录, 1: 菜单, 2: 按钮
   if (row) {
-    row.menuType = 0
-    row.parentId = 0
+    row.menu_type = 0
+    row.parent_id = 0
   }
   tableObject.currentRow = row
   dialogVisible.value = true
@@ -210,18 +210,18 @@ const action = (row: TableData, type: string) => {
   actionType.value = type
   // 选择数据新增按钮根据选择确定菜单类型， 0: 目录, 1: 菜单, 2: 按钮
   if (row) {
-    if (row.menuType === 0) {
-      row.parentId = row.id
-      row.menuType = 1
-    } else if (row.menuType === 1) {
-      row.parentId = row.id
-      row.menuType = 2
-    } else if (row.menuType === 2) {
-      row.parentId = row.parentId
-      row.menuType = 2
+    if (row.menu_type === 0) {
+      row.parent_id = row.id
+      row.menu_type = 1
+    } else if (row.menu_type === 1) {
+      row.parent_id = row.id
+      row.menu_type = 2
+    } else if (row.menu_type === 2) {
+      row.parent_id = row.parent_id
+      row.menu_type = 2
     } else {
-      row.menuType = 0
-      row.parentId = 0
+      row.menu_type = 0
+      row.parent_id = 0
     }
   }
   tableObject.currentRow = row
@@ -297,7 +297,7 @@ const save = async () => {
           {{ t('exampleDemo.add') }}
         </ElButton>
         <ElButton
-          v-if="row.createdBy != 'system'"
+          v-if="row.created_by != 'system'"
           type="danger"
           v-hasPermi="['system:menu:delete']"
           @click="delData(row, false)"

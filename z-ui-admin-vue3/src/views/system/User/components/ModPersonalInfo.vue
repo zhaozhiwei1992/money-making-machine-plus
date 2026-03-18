@@ -15,7 +15,7 @@ const formData = ref({
   name: '',
   avatar: 0,
   email: '',
-  phoneNumber: ''
+  phone_number: ''
 })
 const form = ref(null)
 
@@ -64,8 +64,8 @@ defineExpose({
     <ElFormItem label="中文名" prop="name">
       <ElInput v-model="formData.name" />
     </ElFormItem>
-    <ElFormItem label="手机号" prop="phoneNumber">
-      <ElInput v-model="formData.phoneNumber" />
+    <ElFormItem label="手机号" prop="phone_number">
+      <ElInput v-model="formData.phone_number" />
     </ElFormItem>
     <ElFormItem label="邮箱" prop="email">
       <ElInput v-model="formData.email" />

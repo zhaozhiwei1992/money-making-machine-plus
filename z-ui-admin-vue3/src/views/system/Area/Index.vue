@@ -105,7 +105,7 @@ const AddAction = (row: TableData | null) => {
   dialogTitle.value = t('exampleDemo.add')
   tableObject.currentRow = row
   if (row) {
-    row.parentId = 0
+    row.parent_id = 0
   }
   dialogVisible.value = true
   actionType.value = ''
@@ -132,7 +132,7 @@ const action = (row: TableData, type: string) => {
   dialogTitle.value = t(type === 'edit' ? 'exampleDemo.edit' : 'exampleDemo.detail')
   actionType.value = type
   if (row) {
-    row.parentId = row.id
+    row.parent_id = row.id
   }
   tableObject.currentRow = row
   dialogVisible.value = true
@@ -202,7 +202,7 @@ const save = async () => {
     >
       <template #action="{ row }">
         <ElButton
-          v-if="row.createdBy != 'system'"
+          v-if="row.created_by != 'system'"
           type="primary"
           v-hasPermi="['system:dept:edit']"
           @click="action(row, 'edit')"
@@ -213,7 +213,7 @@ const save = async () => {
           {{ t('exampleDemo.add') }}
         </ElButton>
         <ElButton
-          v-if="row.createdBy != 'system'"
+          v-if="row.created_by != 'system'"
           type="danger"
           v-hasPermi="['system:dept:delete']"
           @click="delData(row, false)"

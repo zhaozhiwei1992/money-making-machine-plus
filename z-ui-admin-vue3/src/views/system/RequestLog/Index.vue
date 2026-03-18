@@ -36,36 +36,36 @@ const crudSchemas = reactive<CrudSchema[]>([
     type: 'index'
   },
   {
-    field: 'loginName',
+    field: 'login_name',
     label: '用户名',
     search: {
       show: true
     }
   },
   {
-    field: 'requestName',
+    field: 'request_name',
     label: '请求描述',
     search: {
       show: true
     }
   },
   {
-    field: 'createdDate',
+    field: 'created_date',
     label: '请求时间',
     search: {
       show: true
     }
   },
   {
-    field: 'requestURI',
+    field: 'request_uri',
     label: '请求地址'
   },
   {
-    field: 'requestMethod',
+    field: 'request_method',
     label: '请求方式'
   },
   {
-    field: 'clientIp',
+    field: 'client_ip',
     label: '客户端ip'
   },
   {
@@ -77,7 +77,7 @@ const crudSchemas = reactive<CrudSchema[]>([
     label: '请求成功'
   },
   {
-    field: 'traceId',
+    field: 'trace_id',
     label: '请求id'
   }
 ])

@@ -14,22 +14,22 @@
           <dict-tag :type="DICT_TYPE.BPM_MODEL_CATEGORY" :value="scope.row.category" />
         </template>
       </el-table-column>
-      <el-table-column label="表单信息" align="center" prop="formType" width="200">
+      <el-table-column label="表单信息" align="center" prop="form_type" width="200">
         <template #default="scope">
           <el-button
-            v-if="scope.row.formType === 10"
+            v-if="scope.row.form_type === 10"
             type="primary"
             link
             @click="handleFormDetail(scope.row)"
           >
-            <span>{{ scope.row.formName }}</span>
+            <span>{{ scope.row.form_name }}</span>
           </el-button>
           <el-button v-else type="primary" link @click="handleFormDetail(scope.row)">
-            <span>{{ scope.row.formCustomCreatePath }}</span>
+            <span>{{ scope.row.form_custom_create_path }}</span>
           </el-button>
         </template>
       </el-table-column>
-      <el-table-column label="流程版本" align="center" prop="processDefinition.version" width="80">
+      <el-table-column label="流程版本" align="center" prop="process_definition.version" width="80">
         <template #default="scope">
           <el-tag v-if="scope.row">v{{ scope.row.version }}</el-tag>
           <el-tag type="warning" v-else>未部署</el-tag>
@@ -37,11 +37,11 @@
       </el-table-column>
       <el-table-column label="状态" align="center" prop="version" width="80">
         <template #default="scope">
-          <el-tag type="success" v-if="scope.row.suspensionState === 1">激活</el-tag>
-          <el-tag type="warning" v-if="scope.row.suspensionState === 2">挂起</el-tag>
+          <el-tag type="success" v-if="scope.row.suspension_state === 1">激活</el-tag>
+          <el-tag type="warning" v-if="scope.row.suspension_state === 2">挂起</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="部署时间" align="center" prop="deploymentTime" width="180" />
+      <el-table-column label="部署时间" align="center" prop="deployment_time" width="180" />
       <!-- :formatter="dateFormatter" -->
       <el-table-column
         label="定义描述"
@@ -141,14 +141,14 @@ const formDetailPreview = ref({
   option: {}
 })
 const handleFormDetail = async (row) => {
-  if (row.formType == 10) {
+  if (row.form_type == 10) {
     // 设置表单
-    setConfAndFields2(formDetailPreview, row.formConf, row.formFields)
+    setConfAndFields2(formDetailPreview, row.form_conf, row.form_fields)
     // 弹窗打开
     formDetailVisible.value = true
   } else {
     await push({
-      path: row.formCustomCreatePath
+      path: row.form_custom_create_path
     })
   }
 }

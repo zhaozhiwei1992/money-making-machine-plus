@@ -1,11 +1,14 @@
 package com.z.framework.cache.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Ticker;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
+import org.redisson.codec.JsonJacksonCodec;
 import org.redisson.config.Config;
 import org.redisson.config.SingleServerConfig;
 import org.redisson.spring.cache.CacheConfig;
@@ -20,6 +23,7 @@ import org.springframework.cache.support.CompositeCacheManager;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Primary;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.List;
@@ -55,7 +59,10 @@ public class MultiCacheAutoConfiguration {
 
     @Bean
     public CacheManager cacheManager(Ticker ticker, RedissonClient redissonClient){
-        CompositeCacheManager compositeCacheManager = new CompositeCacheManager(localCacheManager(ticker), distributedCacheManager(redissonClient));
+        // 多级缓存通过开关控制吧，redis这个缓存跟springsecurity结合还得好好测试，经常出现403
+//        CompositeCacheManager compositeCacheManager = new CompositeCacheManager(localCacheManager(ticker), distributedCacheManager(redissonClient));
+        // 先用单个缓存
+        CompositeCacheManager compositeCacheManager = new CompositeCacheManager(localCacheManager(ticker));
         // 防止缓存未命中时抛出异常
         compositeCacheManager.setFallbackToNoOpCache(true);
         return  compositeCacheManager;
@@ -106,10 +113,35 @@ public class MultiCacheAutoConfiguration {
     private int database;
 
 
-    // redission默认初始化了一个client, 这里初始化会影响
-//    @Bean
+    /**
+     * @data: 2021/9/21-下午11:57
+     * @User: zhaozhiwei
+     * @method: redissonClient
+     * @return: org.redisson.api.RedissonClient
+     * @Description: 创建RedissonClient
+     *
+     * 问题的完整链条
+     * Redisson Spring Boot Starter自动创建默认的RedissonClient
+     * 默认使用Kryo5Codec进行序列化（Kryo版本5.5.0）
+     * Spring Security的User对象包含不可修改的authorities集合
+     * Kryo反序列化时调用add()方法向不可修改集合添加元素
+     * 抛出UnsupportedOperationException
+     * 跟org/redisson/spring/starter/RedissonAutoConfiguration.class冲突，需要用primary或者配置来覆盖codec即可，保持原有redissionClient初始化逻辑
+     * 使用自定义RedissonClient，配置JSON序列化以避免Kryo序列化Spring Security User对象时的问题
+     * 添加JavaTimeModule支持Java 8日期时间类型序列化
+     */
+    @Bean
+    @Primary
     public RedissonClient redissonClient(){
         Config config = new Config();
+
+        // 创建自定义ObjectMapper，添加JavaTimeModule支持Java 8日期时间类型
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+
+        // 使用配置好的ObjectMapper创建JsonJacksonCodec
+        config.setCodec(new JsonJacksonCodec(objectMapper));
+
         final SingleServerConfig singleServerConfig = config.useSingleServer();
         singleServerConfig.setAddress("redis://" + host + ":" + port);
         singleServerConfig.setDatabase(database);

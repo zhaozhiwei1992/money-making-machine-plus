@@ -3,7 +3,7 @@ import request from '@/config/axios'
 // AI 模型 VO
 export interface ModelVO {
   id: number // 编号
-  keyId: number // API 秘钥编号
+  key_id: number // API 秘钥编号
   name: string // 模型名字
   model: string // 模型标识
   platform: string // 模型平台
@@ -11,8 +11,8 @@ export interface ModelVO {
   sort: number // 排序
   status: number // 状态
   temperature?: number // 温度参数
-  maxTokens?: number // 单条回复的最大 Token 数量
-  maxContexts?: number // 上下文的最大 Message 数量
+  max_tokens?: number // 单条回复的最大 Token 数量
+  max_contexts?: number // 上下文的最大 Message 数量
 }
 
 // AI 模型 API

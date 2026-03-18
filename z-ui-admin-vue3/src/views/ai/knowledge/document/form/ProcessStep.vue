@@ -85,7 +85,7 @@ const getProcessList = async () => {
 
     // 2.1更新进度
     const updatedList = props.modelValue.list.map((file) => {
-      const processInfo = result.find((item) => item.documentId === file.id)
+      const processInfo = result.find((item) => item.document_id === file.id)
       if (processInfo) {
         // 计算进度百分比：已嵌入数量 / 总数量 * 100
         const progress =

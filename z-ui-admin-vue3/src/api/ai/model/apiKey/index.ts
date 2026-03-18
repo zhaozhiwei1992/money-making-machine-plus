@@ -4,7 +4,7 @@ import request from '@/config/axios'
 export interface ApiKeyVO {
   id: number // 编号
   name: string // 名称
-  apiKey: string // 密钥
+  api_key: string // 密钥
   platform: string // 平台
   url: string // 自定义 API 地址
   status: number // 状态

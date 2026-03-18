@@ -59,7 +59,7 @@ const trueFalse = [
 // 获取可编辑列表中数据
 const columns: EditTableColumn[] = [
   {
-    code: 'eleCatCode',
+    code: 'ele_cat_code',
     name: '要素分类编码',
     type: 'Input',
     required: false,
@@ -69,7 +69,7 @@ const columns: EditTableColumn[] = [
     mapping: []
   },
   {
-    code: 'eleCatName',
+    code: 'ele_cat_name',
     name: '要素分类名称',
     type: 'Input',
     required: false,
@@ -79,7 +79,7 @@ const columns: EditTableColumn[] = [
     mapping: []
   },
   {
-    code: 'eleCode',
+    code: 'ele_code',
     name: '要素编码',
     type: 'Input',
     required: false,
@@ -89,7 +89,7 @@ const columns: EditTableColumn[] = [
     mapping: []
   },
   {
-    code: 'eleName',
+    code: 'ele_name',
     name: '要素名称',
     type: 'Input',
     required: false,
@@ -99,7 +99,7 @@ const columns: EditTableColumn[] = [
     mapping: []
   },
   {
-    code: 'parentId',
+    code: 'parent_id',
     name: '父节点id',
     type: 'Input',
     required: false,
@@ -109,7 +109,7 @@ const columns: EditTableColumn[] = [
     mapping: []
   },
   {
-    code: 'levelNo',
+    code: 'level_no',
     name: '级次',
     type: 'Input',
     required: false,
@@ -119,7 +119,7 @@ const columns: EditTableColumn[] = [
     mapping: []
   },
   {
-    code: 'isLeaf',
+    code: 'is_leaf',
     name: '是否末级',
     type: 'Select',
     required: false,
@@ -129,7 +129,7 @@ const columns: EditTableColumn[] = [
     mapping: trueFalse
   },
   {
-    code: 'isEnabled',
+    code: 'is_enabled',
     name: '是否启用',
     type: 'Select',
     required: false,
@@ -169,8 +169,8 @@ const deleteRow = () => {
   const editTableData = editDataTable.value.getList()
   selectedData.forEach((selected) => {
     const filterData: EleUnionVO[] = editTableData.filter(function (item) {
-      // 根据eleCode来删除数据
-      return item.eleCode != selected.eleCode
+      // 根据ele_code来删除数据
+      return item.ele_code != selected.ele_code
     })
     console.log('filterData', filterData)
     editDataTable.value.setData(filterData)
@@ -179,14 +179,14 @@ const deleteRow = () => {
 const addRow = () => {
   editDataTable.value.addRow({
     id: -1,
-    eleCode: '',
-    eleName: '',
-    eleCatCode: currentSelectTreeNode.id,
-    eleCatName: currentSelectTreeNode.label,
-    parentId: '',
-    levelNo: 0,
-    isLeaf: false,
-    isEnabled: false
+    ele_code: '',
+    ele_name: '',
+    ele_cat_code: currentSelectTreeNode.id,
+    ele_cat_name: currentSelectTreeNode.label,
+    parent_id: '',
+    level_no: 0,
+    is_leaf: false,
+    is_enabled: false
   })
 }
 

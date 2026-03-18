@@ -76,7 +76,7 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'menuIdList',
+    field: 'menu_id_list',
     label: '菜单',
     formatter: (_: Recordable, __: TableColumn, cellValue: string[]) => {
       const cellStr = cellValue.join(',')
@@ -96,7 +96,7 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'createdBy',
+    field: 'created_by',
     label: '创建人',
     form: {
       show: false
@@ -212,7 +212,7 @@ const save = async () => {
           {{ t('exampleDemo.detail') }}
         </ElButton>
         <ElButton
-          v-if="row.createdBy != 'system'"
+          v-if="row.created_by != 'system'"
           type="danger"
           v-hasPermi="['system:role:delete']"
           @click="delData(row, false)"

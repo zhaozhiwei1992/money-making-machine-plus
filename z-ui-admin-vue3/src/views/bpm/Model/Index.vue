@@ -75,38 +75,38 @@
           <dict-tag :type="DICT_TYPE.BPM_MODEL_CATEGORY" :value="scope.row.category" />
         </template>
       </el-table-column>
-      <el-table-column label="表单信息" align="center" prop="formType" width="200">
+      <el-table-column label="表单信息" align="center" prop="form_type" width="200">
         <template #default="scope">
           <el-button
-            v-if="scope.row.formType === 10"
+            v-if="scope.row.form_type === 10"
             type="primary"
             link
             @click="handleFormDetail(scope.row)"
           >
-            <span>{{ scope.row.formName }}</span>
+            <span>{{ scope.row.form_name }}</span>
           </el-button>
           <el-button
-            v-else-if="scope.row.formType === 20"
+            v-else-if="scope.row.form_type === 20"
             type="primary"
             link
             @click="handleFormDetail(scope.row)"
           >
-            <span>{{ scope.row.formCustomCreatePath }}</span>
+            <span>{{ scope.row.form_custom_create_path }}</span>
           </el-button>
           <label v-else>暂无表单</label>
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" align="center" prop="createTime" width="180" />
+      <el-table-column label="创建时间" align="center" prop="create_time" width="180" />
       <el-table-column label="最新部署的流程定义" align="center">
         <el-table-column
           label="流程版本"
           align="center"
-          prop="processDefinition.version"
+          prop="process_definition.version"
           width="100"
         >
           <template #default="scope">
-            <el-tag v-if="scope.row.processDefinition">
-              v{{ scope.row.processDefinition.version }}
+            <el-tag v-if="scope.row.process_definition">
+              v{{ scope.row.process_definition.version }}
             </el-tag>
             <el-tag v-else type="warning">未部署</el-tag>
           </template>
@@ -114,23 +114,23 @@
         <el-table-column
           label="激活状态"
           align="center"
-          prop="processDefinition.version"
+          prop="process_definition.version"
           width="85"
         >
           <template #default="scope">
             <el-switch
-              v-if="scope.row.processDefinition"
-              v-model="scope.row.processDefinition.suspensionState"
+              v-if="scope.row.process_definition"
+              v-model="scope.row.process_definition.suspension_state"
               :active-value="1"
               :inactive-value="2"
               @change="handleChangeState(scope.row)"
             />
           </template>
         </el-table-column>
-        <el-table-column label="部署时间" align="center" prop="deploymentTime" width="180">
+        <el-table-column label="部署时间" align="center" prop="deployment_time" width="180">
           <template #default="scope">
-            <span v-if="scope.row.processDefinition">
-              {{ formatDate(scope.row.processDefinition.deploymentTime) }}
+            <span v-if="scope.row.process_definition">
+              {{ formatDate(scope.row.process_definition.deployment_time) }}
             </span>
           </template>
         </el-table-column>
@@ -318,7 +318,7 @@ const handleDelete = async (id: number) => {
 
 /** 更新状态操作 */
 const handleChangeState = async (row) => {
-  const state = row.processDefinition.suspensionState
+  const state = row.process_definition.suspension_state
   try {
     // 修改状态的二次确认
     const id = row.id
@@ -331,7 +331,7 @@ const handleChangeState = async (row) => {
     await getList()
   } catch {
     // 取消后，进行恢复按钮
-    row.processDefinition.suspensionState = state === 1 ? 2 : 1
+    row.process_definition.suspension_state = state === 1 ? 2 : 1
   }
 }
 
@@ -389,15 +389,15 @@ const formDetailPreview: Ref<FormDetailPreviewType> = ref({
   option: {}
 })
 const handleFormDetail = async (row) => {
-  if (row.formType == 10) {
+  if (row.form_type == 10) {
     // 设置表单
-    const data = await FormApi.getForm(row.formId)
+    const data = await FormApi.getForm(row.form_id)
     setConfAndFields2(formDetailPreview, data.conf, data.fields)
     // 弹窗打开
     formDetailVisible.value = true
   } else {
     await push({
-      path: row.formCustomCreatePath
+      path: row.form_custom_create_path
     })
   }
 }
@@ -410,7 +410,7 @@ const bpmnControlForm = ref({
 })
 const handleBpmnDetail = async (row) => {
   const data = await ModelApi.getModel(row.id)
-  bpmnXML.value = data.bpmnXml || ''
+  bpmnXML.value = data.bpmn_xml || ''
   bpmnDetailVisible.value = true
 }
 

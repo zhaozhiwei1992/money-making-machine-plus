@@ -3,12 +3,12 @@ import request from '@/config/axios'
 // AI 知识库文档 VO
 export interface KnowledgeDocumentVO {
   id: number // 编号
-  knowledgeId: number // 知识库编号
+  knowledge_id: number // 知识库编号
   name: string // 文档名称
-  contentLength: number // 字符数
+  content_length: number // 字符数
   tokens: number // token 数
-  segmentMaxTokens: number // 分片最大 token 数
-  retrievalCount: number // 召回次数
+  segment_max_tokens: number // 分片最大 token 数
+  retrieval_count: number // 召回次数
   status: number // 是否启用
 }
 

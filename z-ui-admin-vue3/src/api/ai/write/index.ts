@@ -1,9 +1,8 @@
 import { fetchEventSource } from '@microsoft/fetch-event-source'
 
-import { getAccessToken } from '@/utils/auth'
-import { config } from '@/config/axios/config'
-import { AiWriteTypeEnum } from '@/views/ai/utils/constants'
 import request from '@/config/axios'
+import { getAccessToken } from '@/utils/auth'
+import { AiWriteTypeEnum } from '@/views/ai/utils/constants'
 
 export interface WriteVO {
   type: AiWriteTypeEnum.WRITING | AiWriteTypeEnum.REPLY // 1:撰写 2:回复
@@ -60,7 +59,7 @@ export const WriteApi = {
     ctrl: AbortController
   }) => {
     const token = getAccessToken()
-    return fetchEventSource(`${config.base_url}/ai/write/generate-stream`, {
+    return fetchEventSource(`/ai/write/generate-stream`, {
       method: 'post',
       headers: {
         'Content-Type': 'application/json',

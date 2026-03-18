@@ -3,22 +3,22 @@ import request from '@/config/axios'
 // AI 聊天对话 VO
 export interface ChatConversationVO {
   id: number // ID 编号
-  userId: number // 用户编号
+  user_id: number // 用户编号
   title: string // 对话标题
   pinned: boolean // 是否置顶
-  roleId: number // 角色编号
-  modelId: number // 模型编号
+  role_id: number // 角色编号
+  model_id: number // 模型编号
   model: string // 模型标志
   temperature: number // 温度参数
-  maxTokens: number // 单条回复的最大 Token 数量
-  maxContexts: number // 上下文的最大 Message 数量
-  createTime?: Date // 创建时间
+  max_tokens: number // 单条回复的最大 Token 数量
+  max_contexts: number // 上下文的最大 Message 数量
+  create_time?: Date // 创建时间
   // 额外字段
-  systemMessage?: string // 角色设定
-  modelName?: string // 模型名字
-  roleAvatar?: string // 角色头像
-  modelMaxTokens?: string // 模型的单条回复的最大 Token 数量
-  modelMaxContexts?: string // 模型的上下文的最大 Message 数量
+  system_message?: string // 角色设定
+  model_name?: string // 模型名字
+  role_avatar?: string // 角色头像
+  model_max_tokens?: string // 模型的单条回复的最大 Token 数量
+  model_max_contexts?: string // 模型的上下文的最大 Message 数量
 }
 
 // AI 聊天对话 API

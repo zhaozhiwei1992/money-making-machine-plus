@@ -3,6 +3,7 @@ package com.z.module.ai.web.rest.admin.chat;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjUtil;
 import com.z.framework.common.web.rest.vm.PageResult;
+import com.z.framework.common.web.rest.vm.R;
 import com.z.module.ai.domain.chat.AiChatConversationDO;
 import com.z.module.ai.domain.chat.AiChatMessageDO;
 import com.z.module.ai.service.chat.AiChatConversationService;
@@ -54,7 +55,7 @@ public class AiChatMessageController {
 
     @Operation(summary = "发送消息（流式）", description = "流式返回，响应较快")
     @PostMapping(value = "/send-stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<AiChatMessageSendRespVO> sendChatMessageStream(@Valid @RequestBody AiChatMessageSendReqVO sendReqVO) {
+    public Flux<R<AiChatMessageSendRespVO>> sendChatMessageStream(@Valid @RequestBody AiChatMessageSendReqVO sendReqVO) {
         return chatMessageService.sendChatMessageStream(sendReqVO, getUserId());
     }
 

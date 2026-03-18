@@ -67,7 +67,7 @@ const message = useMessage() // 消息
 const loading = ref(true) // 列表的加载中
 const list = ref([]) // 列表的数据
 const queryParams = reactive({
-  suspensionState: 1
+  suspension_state: 1
 })
 
 /** 查询列表 */
@@ -96,15 +96,15 @@ const handleSelect = async (row) => {
   selectProcessInstance.value = row
 
   // 情况一：流程表单
-  if (row.formType == 10) {
+  if (row.form_type == 10) {
     // 设置表单
-    setConfAndFields2(detailForm, row.formConf, row.formFields)
+    setConfAndFields2(detailForm, row.form_conf, row.form_fields)
     // 加载流程图
     bpmnXML.value = await DefinitionApi.getProcessDefinitionBpmnXML(row.id)
     // 情况二：业务表单
-  } else if (row.formCustomCreatePath) {
+  } else if (row.form_custom_create_path) {
     await router.push({
-      path: row.formCustomCreatePath
+      path: row.form_custom_create_path
     })
     // 这里暂时无需加载流程图，因为跳出到另外个 Tab；
   }
@@ -119,7 +119,7 @@ const submitForm = async (formData) => {
   fApi.value.btn.loading(true)
   try {
     await ProcessInstanceApi.createProcessInstance({
-      processDefinitionId: selectProcessInstance.value.id,
+      process_definition_id: selectProcessInstance.value.id,
       variables: formData
     })
     // 提示

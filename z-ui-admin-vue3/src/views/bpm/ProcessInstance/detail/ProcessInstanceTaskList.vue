@@ -14,25 +14,25 @@
           >
             <p style="font-weight: 700">任务：{{ item.name }}</p>
             <el-card :body-style="{ padding: '10px' }">
-              <label v-if="item.assigneeUser" style="font-weight: normal; margin-right: 30px">
-                审批人：{{ item.assigneeUser.nickname }}
-                <el-tag size="small" type="info">{{ item.assigneeUser.deptName }}</el-tag>
+              <label v-if="item.assignee_user" style="font-weight: normal; margin-right: 30px">
+                审批人：{{ item.assignee_user.nickname }}
+                <el-tag size="small" type="info">{{ item.assignee_user.dept_name }}</el-tag>
               </label>
-              <label v-if="item.createTime" style="font-weight: normal">创建时间：</label>
+              <label v-if="item.create_time" style="font-weight: normal">创建时间：</label>
               <label style="color: #8a909c; font-weight: normal">
-                {{ formatDate(item?.createTime) }}
+                {{ formatDate(item?.create_time) }}
               </label>
-              <label v-if="item.endTime" style="margin-left: 30px; font-weight: normal">
+              <label v-if="item.end_time" style="margin-left: 30px; font-weight: normal">
                 审批时间：
               </label>
-              <label v-if="item.endTime" style="color: #8a909c; font-weight: normal">
-                {{ formatDate(item?.endTime) }}
+              <label v-if="item.end_time" style="color: #8a909c; font-weight: normal">
+                {{ formatDate(item?.end_time) }}
               </label>
-              <label v-if="item.durationInMillis" style="margin-left: 30px; font-weight: normal">
+              <label v-if="item.duration_in_millis" style="margin-left: 30px; font-weight: normal">
                 耗时：
               </label>
-              <label v-if="item.durationInMillis" style="color: #8a909c; font-weight: normal">
-                {{ formatPast2(item?.durationInMillis) }}
+              <label v-if="item.duration_in_millis" style="color: #8a909c; font-weight: normal">
+                {{ formatPast2(item?.duration_in_millis) }}
               </label>
               <p v-if="item.reason">
                 <el-tag :type="getTimelineItemType(item)">{{ item.reason }}</el-tag>

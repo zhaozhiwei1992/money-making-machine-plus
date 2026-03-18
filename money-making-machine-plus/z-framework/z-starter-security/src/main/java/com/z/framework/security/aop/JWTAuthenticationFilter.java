@@ -226,6 +226,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                     }
 
                     extensionMap.put("tokenid", token);
+                    extensionMap.put("userid", 1L);
                     extensionMap.put("year", LocalDateTime.now().getYear());
 
                     // 可以这里添加其它必要信息

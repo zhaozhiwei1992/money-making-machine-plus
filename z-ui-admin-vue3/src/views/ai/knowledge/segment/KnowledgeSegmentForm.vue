@@ -39,7 +39,7 @@ const formLoading = ref(false) // 表单的加载中：1）修改时的数据加
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref({
   id: undefined,
-  documentId: undefined,
+  document_id: undefined,
   content: undefined
 })
 const formRules = reactive({
@@ -48,12 +48,12 @@ const formRules = reactive({
 const formRef = ref() // 表单 Ref
 
 /** 打开弹窗 */
-const open = async (type: string, id?: number, documentId?: any) => {
+const open = async (type: string, id?: number, document_id?: any) => {
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type
   resetForm()
-  formData.value.documentId = documentId as any
+  formData.value.document_id = document_id as any
 
   // 修改时，设置数据
   if (id) {
@@ -95,7 +95,7 @@ const submitForm = async () => {
 const resetForm = () => {
   formData.value = {
     id: undefined,
-    documentId: undefined,
+    document_id: undefined,
     content: undefined
   }
   formRef.value?.resetFields()

@@ -7,16 +7,16 @@
       label-width="130px"
       v-loading="formLoading"
     >
-      <el-form-item label="角色设定" prop="systemMessage">
+      <el-form-item label="角色设定" prop="system_message">
         <el-input
           type="textarea"
-          v-model="formData.systemMessage"
+          v-model="formData.system_message"
           :rows="4"
           placeholder="请输入角色设定"
         />
       </el-form-item>
-      <el-form-item label="模型" prop="modelId">
-        <el-select v-model="formData.modelId" placeholder="请选择模型">
+      <el-form-item label="模型" prop="model_id">
+        <el-select v-model="formData.model_id" placeholder="请选择模型">
           <el-option
             v-for="model in models"
             :key="model.id"
@@ -35,18 +35,18 @@
           class="!w-1/1"
         />
       </el-form-item>
-      <el-form-item label="回复数 Token 数" prop="maxTokens">
+      <el-form-item label="回复数 Token 数" prop="max_tokens">
         <el-input-number
-          v-model="formData.maxTokens"
+          v-model="formData.max_tokens"
           placeholder="请输入回复数 Token 数"
           :min="0"
           :max="8192"
           class="!w-1/1"
         />
       </el-form-item>
-      <el-form-item label="上下文数量" prop="maxContexts">
+      <el-form-item label="上下文数量" prop="max_contexts">
         <el-input-number
-          v-model="formData.maxContexts"
+          v-model="formData.max_contexts"
           placeholder="请输入上下文数量"
           :min="0"
           :max="20"
@@ -75,18 +75,18 @@ const dialogVisible = ref(false) // 弹窗的是否展示
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const formData = ref({
   id: undefined,
-  systemMessage: undefined,
-  modelId: undefined,
+  system_message: undefined,
+  model_id: undefined,
   temperature: undefined,
-  maxTokens: undefined,
-  maxContexts: undefined
+  max_tokens: undefined,
+  max_contexts: undefined
 })
 const formRules = reactive({
-  modelId: [{ required: true, message: '模型不能为空', trigger: 'blur' }],
+  model_id: [{ required: true, message: '模型不能为空', trigger: 'blur' }],
   status: [{ required: true, message: '状态不能为空', trigger: 'blur' }],
   temperature: [{ required: true, message: '温度参数不能为空', trigger: 'blur' }],
-  maxTokens: [{ required: true, message: '回复数 Token 数不能为空', trigger: 'blur' }],
-  maxContexts: [{ required: true, message: '上下文数量不能为空', trigger: 'blur' }]
+  max_tokens: [{ required: true, message: '回复数 Token 数不能为空', trigger: 'blur' }],
+  max_contexts: [{ required: true, message: '上下文数量不能为空', trigger: 'blur' }]
 })
 const formRef = ref() // 表单 Ref
 const models = ref([] as ModelVO[]) // 聊天模型列表
@@ -138,11 +138,11 @@ const submitForm = async () => {
 const resetForm = () => {
   formData.value = {
     id: undefined,
-    systemMessage: undefined,
-    modelId: undefined,
+    system_message: undefined,
+    model_id: undefined,
     temperature: undefined,
-    maxTokens: undefined,
-    maxContexts: undefined
+    max_tokens: undefined,
+    max_contexts: undefined
   }
   formRef.value?.resetFields()
 }

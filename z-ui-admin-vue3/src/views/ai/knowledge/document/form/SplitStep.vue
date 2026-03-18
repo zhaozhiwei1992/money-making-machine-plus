@@ -22,7 +22,7 @@
       <div class="segment-settings mb-20px">
         <el-form label-width="120px">
           <el-form-item label="最大 Token 数">
-            <el-input-number v-model="modelData.segmentMaxTokens" :min="1" :max="2048" />
+            <el-input-number v-model="modelData.segment_max_tokens" :min="1" :max="2048" />
           </el-form-item>
         </el-form>
       </div>
@@ -72,7 +72,7 @@
         >
           <div v-for="(segment, index) in currentFile.segments" :key="index" class="mb-10px">
             <div class="text-gray-500 text-12px mb-5px">
-              分片-{{ index + 1 }} · {{ segment.contentLength || 0 }} 字符数 ·
+              分片-{{ index + 1 }} · {{ segment.content_length || 0 }} 字符数 ·
               {{ segment.tokens || 0 }} Token
             </div>
             <div class="bg-white p-10px rounded-md">{{ segment.content }}</div>
@@ -141,7 +141,7 @@ const splitContent = async (file: any) => {
     // 调用后端分段接口，获取文档的分段内容、字符数和 Token 数
     file.segments = await KnowledgeSegmentApi.splitContent(
       file.url,
-      modelData.value.segmentMaxTokens
+      modelData.value.segment_max_tokens
     )
   } catch (error) {
     console.error('获取分段内容失败:', file, error)
@@ -189,13 +189,13 @@ const handleSave = async () => {
       // 修改场景
       await KnowledgeDocumentApi.updateKnowledgeDocument({
         id: modelData.value.id,
-        segmentMaxTokens: modelData.value.segmentMaxTokens
+        segment_max_tokens: modelData.value.segment_max_tokens
       })
     } else {
       // 新增场景
       const data = await KnowledgeDocumentApi.createKnowledgeDocumentList({
-        knowledgeId: modelData.value.knowledgeId,
-        segmentMaxTokens: modelData.value.segmentMaxTokens,
+        knowledge_id: modelData.value.knowledgeId,
+        segment_max_tokens: modelData.value.segment_max_tokens,
         list: modelData.value.list.map((item: any) => ({
           name: item.name,
           url: item.url
@@ -221,9 +221,9 @@ const handleSave = async () => {
 
 /** 初始化 */
 onMounted(async () => {
-  // 确保 segmentMaxTokens 存在
-  if (!modelData.value.segmentMaxTokens) {
-    modelData.value.segmentMaxTokens = 500
+  // 确保 segment_max_tokens 存在
+  if (!modelData.value.segment_max_tokens) {
+    modelData.value.segment_max_tokens = 500
   }
   // 如果没有选中文件，默认选中第一个
   if (!currentFile.value && modelData.value.list && modelData.value.list.length > 0) {

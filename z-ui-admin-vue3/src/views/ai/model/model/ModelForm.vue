@@ -32,8 +32,8 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="API 秘钥" prop="keyId">
-        <el-select v-model="formData.keyId" placeholder="请选择 API 秘钥" clearable>
+      <el-form-item label="API 秘钥" prop="key_id">
+        <el-select v-model="formData.key_id" placeholder="请选择 API 秘钥" clearable>
           <el-option
             v-for="apiKey in apiKeyList"
             :key="apiKey.id"
@@ -78,11 +78,11 @@
       </el-form-item>
       <el-form-item
         label="回复数 Token 数"
-        prop="maxTokens"
+        prop="max_tokens"
         v-if="formData.type === AiModelTypeEnum.CHAT"
       >
         <el-input-number
-          v-model="formData.maxTokens"
+          v-model="formData.max_tokens"
           placeholder="请输入回复数 Token 数"
           :min="0"
           :max="8192"
@@ -91,11 +91,11 @@
       </el-form-item>
       <el-form-item
         label="上下文数量"
-        prop="maxContexts"
+        prop="max_contexts"
         v-if="formData.type === AiModelTypeEnum.CHAT"
       >
         <el-input-number
-          v-model="formData.maxContexts"
+          v-model="formData.max_contexts"
           placeholder="请输入上下文数量"
           :min="0"
           :max="20"
@@ -130,7 +130,7 @@ const formLoading = ref(false) // 表单的加载中：1）修改时的数据加
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref({
   id: undefined,
-  keyId: undefined,
+  key_id: undefined,
   name: undefined,
   model: undefined,
   platform: undefined,
@@ -138,11 +138,11 @@ const formData = ref({
   sort: undefined,
   status: CommonStatusEnum.ENABLE,
   temperature: undefined,
-  maxTokens: undefined,
-  maxContexts: undefined
+  max_tokens: undefined,
+  max_contexts: undefined
 })
 const formRules = reactive({
-  keyId: [{ required: true, message: 'API 秘钥不能为空', trigger: 'blur' }],
+  key_id: [{ required: true, message: 'API 秘钥不能为空', trigger: 'blur' }],
   name: [{ required: true, message: '模型名字不能为空', trigger: 'blur' }],
   model: [{ required: true, message: '模型标识不能为空', trigger: 'blur' }],
   platform: [{ required: true, message: '所属平台不能为空', trigger: 'blur' }],
@@ -150,8 +150,8 @@ const formRules = reactive({
   sort: [{ required: true, message: '排序不能为空', trigger: 'blur' }],
   status: [{ required: true, message: '状态不能为空', trigger: 'blur' }],
   temperature: [{ required: true, message: '温度参数不能为空', trigger: 'blur' }],
-  maxTokens: [{ required: true, message: '回复数 Token 数不能为空', trigger: 'blur' }],
-  maxContexts: [{ required: true, message: '上下文数量不能为空', trigger: 'blur' }]
+  max_tokens: [{ required: true, message: '回复数 Token 数不能为空', trigger: 'blur' }],
+  max_contexts: [{ required: true, message: '上下文数量不能为空', trigger: 'blur' }]
 })
 const formRef = ref() // 表单 Ref
 const apiKeyList = ref([] as ApiKeyVO[]) // API 密钥列表
@@ -187,8 +187,8 @@ const submitForm = async () => {
     const data = formData.value as unknown as ModelVO
     if (data.type !== AiModelTypeEnum.CHAT) {
       delete data.temperature
-      delete data.maxTokens
-      delete data.maxContexts
+      delete data.max_tokens
+      delete data.max_contexts
     }
     if (formType.value === 'create') {
       await ModelApi.createModel(data)
@@ -209,7 +209,7 @@ const submitForm = async () => {
 const resetForm = () => {
   formData.value = {
     id: undefined,
-    keyId: undefined,
+    key_id: undefined,
     name: undefined,
     model: undefined,
     platform: undefined,
@@ -217,8 +217,8 @@ const resetForm = () => {
     sort: undefined,
     status: CommonStatusEnum.ENABLE,
     temperature: undefined,
-    maxTokens: undefined,
-    maxContexts: undefined
+    max_tokens: undefined,
+    max_contexts: undefined
   }
   formRef.value?.resetFields()
 }

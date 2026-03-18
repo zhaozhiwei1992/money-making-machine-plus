@@ -62,7 +62,7 @@
       </el-table-column>
       <el-table-column label="模型名字" align="center" prop="name" min-width="180" />
       <el-table-column label="模型标识" align="center" prop="model" min-width="180" />
-      <el-table-column label="API 秘钥" align="center" prop="keyId" min-width="140">
+      <el-table-column label="API 秘钥" align="center" prop="key_id" min-width="140">
         <template #default="scope">
           <span>{{ apiKeyList.find((item) => item.id === scope.row.keyId)?.name }}</span>
         </template>
@@ -74,8 +74,8 @@
         </template>
       </el-table-column>
       <el-table-column label="温度参数" align="center" prop="temperature" min-width="80" />
-      <el-table-column label="回复数 Token 数" align="center" prop="maxTokens" min-width="140" />
-      <el-table-column label="上下文数量" align="center" prop="maxContexts" min-width="100" />
+      <el-table-column label="回复数 Token 数" align="center" prop="max_tokens" min-width="140" />
+      <el-table-column label="上下文数量" align="center" prop="max_contexts" min-width="100" />
       <el-table-column label="操作" align="center" width="180" fixed="right">
         <template #default="scope">
           <el-button link type="primary" @click="openForm('update', scope.row.id)">

@@ -255,7 +255,7 @@ const getConversationGroupByCreateTime = async (list: ChatConversationVO[]) => {
       continue
     }
     // 计算时间差（单位：毫秒）
-    const diff = now - conversation.createTime
+    const diff = now - conversation.create_time
     // 根据时间间隔判断
     if (diff < oneDay) {
       groupMap['今天'].push(conversation)

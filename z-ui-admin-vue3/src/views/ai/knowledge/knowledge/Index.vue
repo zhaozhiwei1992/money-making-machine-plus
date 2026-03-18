@@ -34,9 +34,9 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="创建时间" prop="createTime">
+      <el-form-item label="创建时间" prop="create_time">
         <el-date-picker
-          v-model="queryParams.createTime"
+          v-model="queryParams.create_time"
           value-format="YYYY-MM-DD HH:mm:ss"
           type="daterange"
           start-placeholder="开始日期"
@@ -61,7 +61,7 @@
       <el-table-column label="编号" align="center" prop="id" />
       <el-table-column label="知识库名称" align="center" prop="name" />
       <el-table-column label="知识库描述" align="center" prop="description" />
-      <el-table-column label="向量化模型" align="center" prop="embeddingModel" />
+      <el-table-column label="向量化模型" align="center" prop="embedding_model" />
       <el-table-column label="是否启用" align="center" prop="status">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.status" />
@@ -70,7 +70,7 @@
       <el-table-column
         label="创建时间"
         align="center"
-        prop="createTime"
+        prop="create_time"
         :formatter="dateFormatter"
         width="180px"
       />

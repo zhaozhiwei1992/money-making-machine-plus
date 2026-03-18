@@ -47,10 +47,10 @@
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <el-table-column label="文档编号" align="center" prop="id" />
       <el-table-column label="文件名称" align="center" prop="name" />
-      <el-table-column label="字符数" align="center" prop="contentLength" />
+      <el-table-column label="字符数" align="center" prop="content_length" />
       <el-table-column label="Token 数" align="center" prop="tokens" />
-      <el-table-column label="分片最大 Token 数" align="center" prop="segmentMaxTokens" />
-      <el-table-column label="召回次数" align="center" prop="retrievalCount" />
+      <el-table-column label="分片最大 Token 数" align="center" prop="segment_max_tokens" />
+      <el-table-column label="召回次数" align="center" prop="retrieval_count" />
       <el-table-column label="是否启用" align="center" prop="status">
         <template #default="scope">
           <el-switch
@@ -65,7 +65,7 @@
       <el-table-column
         label="上传时间"
         align="center"
-        prop="createTime"
+        prop="create_time"
         :formatter="dateFormatter"
         width="180px"
       />

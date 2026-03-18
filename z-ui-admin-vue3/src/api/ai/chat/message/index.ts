@@ -1,29 +1,29 @@
 import request from '@/config/axios'
-import { fetchEventSource } from '@microsoft/fetch-event-source'
-import { getAccessToken } from '@/utils/auth'
 import { config } from '@/config/axios/config'
+import { getAccessToken } from '@/utils/auth'
+import { fetchEventSource } from '@microsoft/fetch-event-source'
 
 // 聊天VO
 export interface ChatMessageVO {
   id: number // 编号
-  conversationId: number // 对话编号
+  conversation_id: number // 对话编号
   type: string // 消息类型
-  userId: string // 用户编号
-  roleId: string // 角色编号
+  user_id: string // 用户编号
+  role_id: string // 角色编号
   model: number // 模型标志
-  modelId: number // 模型编号
+  model_id: number // 模型编号
   content: string // 聊天内容
-  reasoningContent?: string // 推理内容
-  attachmentUrls?: string[] // 附件 URL 数组
+  reasoning_content?: string // 推理内容
+  attachment_urls?: string[] // 附件 URL 数组
   tokens: number // 消耗 Token 数量
-  segmentIds?: number[] // 段落编号
+  segment_ids?: number[] // 段落编号
   segments?: {
     id: number // 段落编号
     content: string // 段落内容
-    documentId: number // 文档编号
-    documentName: string // 文档名称
+    document_id: number // 文档编号
+    document_name: string // 文档名称
   }[]
-  webSearchPages?: {
+  web_search_pages?: {
     name: string // 名称
     icon: string // 图标
     title: string // 标题
@@ -31,9 +31,9 @@ export interface ChatMessageVO {
     snippet: string // 内容的简短描述
     summary: string // 内容的文本摘要
   }[]
-  createTime: Date // 创建时间
-  roleAvatar: string // 角色头像
-  userAvatar: string // 用户头像
+  create_time: Date // 创建时间
+  role_avatar: string // 角色头像
+  user_avatar: string // 用户头像
 }
 
 // AI chat 聊天
@@ -63,15 +63,16 @@ export const ChatMessageApi = {
       method: 'post',
       headers: {
         'Content-Type': 'application/json',
+        accept: 'application/json, text/plain, */*',
         Authorization: `Bearer ${token}`
       },
       openWhenHidden: true,
       body: JSON.stringify({
-        conversationId,
+        conversation_id: conversationId,
         content,
-        useContext: enableContext,
-        webSearch: enableWebSearch,
-        attachmentUrls: attachmentUrls || []
+        use_context: enableContext,
+        web_search: enableWebSearch,
+        attachment_urls: attachmentUrls || []
       }),
       onmessage: onMessage,
       onerror: onError,

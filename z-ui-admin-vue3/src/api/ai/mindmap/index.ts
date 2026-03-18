@@ -1,7 +1,6 @@
+import request from '@/config/axios'; // AI 思维导图 VO
 import { getAccessToken } from '@/utils/auth'
 import { fetchEventSource } from '@microsoft/fetch-event-source'
-import { config } from '@/config/axios/config'
-import request from '@/config/axios' // AI 思维导图 VO
 
 // AI 思维导图 VO
 export interface MindMapVO {
@@ -34,7 +33,7 @@ export const AiMindMapApi = {
     ctrl: AbortController
   }) => {
     const token = getAccessToken()
-    return fetchEventSource(`${config.base_url}/ai/mind-map/generate-stream`, {
+    return fetchEventSource(`/ai/mind-map/generate-stream`, {
       method: 'post',
       headers: {
         'Content-Type': 'application/json',

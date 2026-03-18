@@ -14,16 +14,16 @@ import { ElMessage } from 'element-plus'
 
 import { getAccessToken } from '@/utils/auth'
 
-const { result_code } = config
+const { result_code, base_url } = config
 
-export const PATH_URL = import.meta.env.VITE_API_BASEPATH || '/api'
+// export const PATH_URL = import.meta.env.VITE_API_BASEPATH || '/api'
 
 //带着cookie, 验证码放在了session里, 不加这个每次session都是新的
 axios.defaults.withCredentials = true
 
 // 创建axios实例
 const service: AxiosInstance = axios.create({
-  baseURL: PATH_URL, // api 的 base_url
+  baseURL: base_url, // api 的 base_url
   timeout: config.request_timeout // 请求超时时间
 })
 

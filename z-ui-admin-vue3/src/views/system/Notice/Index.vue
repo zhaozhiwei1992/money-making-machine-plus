@@ -83,7 +83,7 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'recType',
+    field: 'rec_type',
     label: '接收者',
     form: {
       component: 'Select',

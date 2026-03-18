@@ -20,9 +20,9 @@
           <el-form-item v-if="processInstance && processInstance.name" label="流程名">
             {{ processInstance.name }}
           </el-form-item>
-          <el-form-item v-if="processInstance && processInstance.startUser" label="流程发起人">
-            {{ processInstance.startUser.nickname }}
-            <el-tag size="small" type="info">{{ processInstance.startUser.deptName }}</el-tag>
+          <el-form-item v-if="processInstance && processInstance.start_user" label="流程发起人">
+            {{ processInstance.start_user.nickname }}
+            <el-tag size="small" type="info">{{ processInstance.start_user.dept_name }}</el-tag>
           </el-form-item>
           <el-form-item label="审批建议" prop="reason">
             <el-input
@@ -63,7 +63,7 @@
         <span class="el-icon-document">申请信息【{{ processInstance.name }}】</span>
       </template>
       <!-- 情况一：流程表单 -->
-      <el-col v-if="processInstance?.processDefinition?.formType === 10" :offset="6" :span="16">
+      <el-col v-if="processInstance?.process_definition?.form_type === 10" :offset="6" :span="16">
         <form-create
           ref="fApi"
           v-model="detailForm.value"
@@ -72,8 +72,8 @@
         />
       </el-col>
       <!-- 情况二：业务表单 -->
-      <div v-if="processInstance?.processDefinition?.formType === 20">
-        <BusinessFormComponent :id="processInstance.businessKey" />
+      <div v-if="processInstance?.process_definition?.form_type === 20">
+        <BusinessFormComponent :id="processInstance.business_key" />
       </div>
     </el-card>
 
@@ -203,13 +203,13 @@ const getProcessInstance = async () => {
     processInstance.value = data
 
     // 设置表单信息
-    const processDefinition = data.processDefinition
-    if (processDefinition.formType === 10) {
+    const process_definition = data.process_definition
+    if (process_definition.form_type === 10) {
       setConfAndFields2(
         detailForm,
-        processDefinition.formConf,
-        processDefinition.formFields,
-        data.formVariables
+        process_definition.form_conf,
+        process_definition.form_fields,
+        data.form_variables
       )
       nextTick().then(() => {
         fApi.value?.btn.show(false)
@@ -217,11 +217,11 @@ const getProcessInstance = async () => {
         fApi.value?.btn.disabled(true)
       })
     } else {
-      BusinessFormComponent.value = registerComponent(data.processDefinition.formCustomViewPath)
+      BusinessFormComponent.value = registerComponent(data.process_definition.form_custom_view_path)
     }
 
     // 加载流程图
-    bpmnXML.value = await DefinitionApi.getProcessDefinitionBpmnXML(processDefinition.id as number)
+    bpmnXML.value = await DefinitionApi.getProcessDefinitionBpmnXML(process_definition.id as number)
   } finally {
     processInstanceLoading.value = false
   }
@@ -243,15 +243,15 @@ const getTaskList = async () => {
     // 1.2 排序，将未完成的排在前面，已完成的排在后面；
     tasks.value.sort((a, b) => {
       // 有已完成的情况，按照完成时间倒序
-      if (a.endTime && b.endTime) {
-        return b.endTime - a.endTime
-      } else if (a.endTime) {
+      if (a.end_time && b.end_time) {
+        return b.end_time - a.end_time
+      } else if (a.end_time) {
         return 1
-      } else if (b.endTime) {
+      } else if (b.end_time) {
         return -1
         // 都是未完成，按照创建时间倒序
       } else {
-        return b.createTime - a.createTime
+        return b.create_time - a.create_time
       }
     })
 
@@ -264,7 +264,7 @@ const getTaskList = async () => {
         return
       }
       // 2.2 自己不是处理人
-      if (!task.assigneeUser || task.assigneeUser.id !== userId) {
+      if (!task.assignee_user || task.assignee_user.id !== userId) {
         return
       }
       // 2.3 添加到处理任务

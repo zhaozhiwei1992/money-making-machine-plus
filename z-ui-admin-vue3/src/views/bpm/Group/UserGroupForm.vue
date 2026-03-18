@@ -13,8 +13,8 @@
       <el-form-item label="描述">
         <el-input v-model="formData.description" placeholder="请输入描述" type="textarea" />
       </el-form-item>
-      <el-form-item label="成员" prop="memberUserIds">
-        <el-select v-model="formData.memberUserIds" multiple placeholder="请选择成员">
+      <el-form-item label="成员" prop="member_user_ids">
+        <el-select v-model="formData.member_user_ids" multiple placeholder="请选择成员">
           <el-option
             v-for="user in userList"
             :key="user.id"
@@ -72,13 +72,13 @@ const formData = ref({
   id: undefined,
   name: undefined,
   description: undefined,
-  memberUserIds: undefined,
+  member_user_ids: undefined,
   status: CommonStatusEnum.ENABLE
 })
 const formRules = reactive({
   name: [{ required: true, message: '组名不能为空', trigger: 'blur' }],
   description: [{ required: true, message: '描述不能为空', trigger: 'blur' }],
-  memberUserIds: [{ required: true, message: '成员不能为空', trigger: 'blur' }],
+  member_user_ids: [{ required: true, message: '成员不能为空', trigger: 'blur' }],
   status: [{ required: true, message: '状态不能为空', trigger: 'blur' }]
 })
 const formRef = ref() // 表单 Ref
@@ -136,7 +136,7 @@ const resetForm = () => {
     id: undefined,
     name: undefined,
     description: undefined,
-    memberUserIds: undefined,
+    member_user_ids: undefined,
     status: CommonStatusEnum.ENABLE
   }
   formRef.value?.resetFields()

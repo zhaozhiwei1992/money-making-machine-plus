@@ -58,8 +58,8 @@
 const props = defineProps<{
   segments: {
     id: number
-    documentId: number
-    documentName: string
+    document_id: number
+    document_name: string
     content: string
   }[]
 }>()
@@ -81,14 +81,14 @@ const documentList = computed(() => {
 
   const docMap = new Map()
   props.segments.forEach((segment) => {
-    if (!docMap.has(segment.documentId)) {
-      docMap.set(segment.documentId, {
-        id: segment.documentId,
-        title: segment.documentName,
+    if (!docMap.has(segment.document_id)) {
+      docMap.set(segment.document_id, {
+        id: segment.document_id,
+        title: segment.document_name,
         segments: []
       })
     }
-    docMap.get(segment.documentId).segments.push({
+    docMap.get(segment.document_id).segments.push({
       id: segment.id,
       content: segment.content
     })

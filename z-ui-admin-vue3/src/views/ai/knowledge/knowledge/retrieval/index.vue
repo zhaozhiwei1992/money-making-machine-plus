@@ -20,12 +20,12 @@
         </div>
         <div class="flex items-center mb-10px">
           <span class="w-60px text-gray-500">topK:</span>
-          <el-input-number v-model="queryParams.topK" :min="1" :max="20" />
+          <el-input-number v-model="queryParams.top_k" :min="1" :max="20" />
         </div>
         <div class="flex items-center mb-15px">
           <span class="w-60px text-gray-500">相似度:</span>
           <el-input-number
-            v-model="queryParams.similarityThreshold"
+            v-model="queryParams.similarity_threshold"
             :min="0"
             :max="1"
             :precision="2"
@@ -53,7 +53,7 @@
         >
           <div class="flex justify-between text-12px text-gray-500 mb-5px">
             <span>
-              分段({{ segment.id }}) · {{ segment.contentLength }} 字符数 ·
+              分段({{ segment.id }}) · {{ segment.content_length }} 字符数 ·
               {{ segment.tokens }} Token
             </span>
             <span class="px-8px py-4px bg-blue-50 text-blue-500 rounded-full text-12px font-bold">
@@ -72,7 +72,7 @@
           <div class="flex justify-between items-center">
             <div class="flex items-center text-gray-500 text-13px">
               <Icon icon="ep:document" class="mr-5px" />
-              <span>{{ segment.documentName || '未知文档' }}</span>
+              <span>{{ segment.document_name || '未知文档' }}</span>
             </div>
             <el-button size="small" @click="toggleExpand(segment)">
               {{ segment.expanded ? '收起' : '展开' }}
@@ -101,8 +101,8 @@ const segments = ref<any[]>([]) // 召回结果
 const queryParams = reactive({
   id: undefined,
   content: '',
-  topK: 10,
-  similarityThreshold: 0.5
+  top_k: 10,
+  similarity_threshold: 0.5
 })
 
 /** 调用文档召回测试接口 */
@@ -117,10 +117,10 @@ const getRetrievalResult = async () => {
 
   try {
     const data = await KnowledgeSegmentApi.searchKnowledgeSegment({
-      knowledgeId: queryParams.id,
+      knowledge_id: queryParams.id,
       content: queryParams.content,
-      topK: queryParams.topK,
-      similarityThreshold: queryParams.similarityThreshold
+      top_k: queryParams.top_k,
+      similarity_threshold: queryParams.similarity_threshold
     })
     segments.value = data || []
   } catch (error) {
@@ -140,9 +140,9 @@ const getKnowledgeInfo = async (id: number) => {
   try {
     const knowledge = await KnowledgeApi.getKnowledge(id)
     if (knowledge) {
-      queryParams.topK = knowledge.topK || queryParams.topK
-      queryParams.similarityThreshold =
-        knowledge.similarityThreshold || queryParams.similarityThreshold
+      queryParams.top_k = knowledge.top_k || queryParams.top_k
+      queryParams.similarity_threshold =
+        knowledge.similarity_threshold || queryParams.similarity_threshold
     }
   } catch (error) {}
 }

@@ -8,10 +8,10 @@
         {{ detailData.name }}
       </el-descriptions-item>
       <el-descriptions-item label="所属流程">
-        {{ detailData.processInstance.name }}
+        {{ detailData.process_instance.name }}
       </el-descriptions-item>
       <el-descriptions-item label="流程发起人">
-        {{ detailData.processInstance.startUserNickname }}
+        {{ detailData.process_instance.start_user_nickname }}
       </el-descriptions-item>
       <el-descriptions-item label="状态">
         <dict-tag :type="DICT_TYPE.BPM_PROCESS_INSTANCE_RESULT" :value="detailData.result" />
@@ -20,7 +20,7 @@
         {{ detailData.reason }}
       </el-descriptions-item>
       <el-descriptions-item label="创建时间">
-        {{ formatDate(detailData.createTime) }}
+        {{ formatDate(detailData.create_time) }}
       </el-descriptions-item>
     </el-descriptions>
   </Dialog>
