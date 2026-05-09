@@ -129,7 +129,7 @@ public class AiUtils {
         if (response.getResult().getOutput() instanceof DeepSeekAssistantMessage) {
             return ((DeepSeekAssistantMessage) (response.getResult().getOutput())).getReasoningContent();
         }
-        return null;
+        return response.getResult().getOutput().getText();
     }
 
 }

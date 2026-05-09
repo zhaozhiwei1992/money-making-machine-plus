@@ -55,6 +55,7 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import static com.z.framework.common.exception.util.ServiceExceptionUtil.exception;
@@ -225,6 +226,7 @@ public class AiChatMessageService {
         // 4.3 流式返回
         StringBuffer contentBuffer = new StringBuffer();
         StringBuffer reasoningContentBuffer = new StringBuffer();
+        AtomicBoolean thinkingEnd = new AtomicBoolean(false);
         return streamResponse.map(chunk -> {
             // 仅首次：返回知识库、联网搜索
             List<AiChatMessageRespVO.KnowledgeSegment> segments = null;
@@ -241,20 +243,51 @@ public class AiChatMessageService {
                 }
             }
             // 响应结果
-            String newContent = AiUtils.getChatResponseContent(chunk);
-            String newReasoningContent = AiUtils.getChatResponseReasoningContent(chunk);
-            if (StrUtil.isNotEmpty(newContent)) {
-                contentBuffer.append(newContent);
+            String currentContent = AiUtils.getChatResponseContent(chunk);
+            String newContent = "";
+            String newReasoningContent = "";
+            Boolean thinking = sendReqVO.getThinking();
+            // 如果是思考模式，则需要将内容添加到reasoningContent中，并且判断是否开头为think, 并且遇到结束标记</think>才去增加content内容
+            if (thinking != null && thinking) {
+                if (StrUtil.isNotEmpty(currentContent)) {
+                    if(StrUtil.isBlankIfStr(reasoningContentBuffer)){
+                        // 首次判断reasoningContent，如果开头没有think则添加think
+                        newReasoningContent = "<think>" + currentContent;
+                    }else{
+                        // 判断是否结束, 结束以后只增加content内容, reason不再增加
+                        if (currentContent.endsWith("</think>")) {
+                            newReasoningContent = currentContent;
+                            thinkingEnd.set(true);
+                        }
+                        if(thinkingEnd.get() && !currentContent.endsWith("</think>")){
+                            newContent = currentContent;
+                        }else{
+                            newReasoningContent = currentContent;
+                        }
+                    }
+                }
+                if (StrUtil.isNotEmpty(newContent)) {
+                    contentBuffer.append(newContent);
+                }
+                if (StrUtil.isNotEmpty(newReasoningContent)) {
+                    reasoningContentBuffer.append(newReasoningContent);
+                }
+                return ok(new AiChatMessageSendRespVO()
+                        .setSend(BeanUtils.toBean(userMessage, AiChatMessageSendRespVO.Message.class))
+                        .setReceive(BeanUtils.toBean(assistantMessage, AiChatMessageSendRespVO.Message.class)
+                                .setContent(StrUtil.nullToDefault(newContent, "")) // 避免 null 的 情况
+                                .setReasoningContent(StrUtil.nullToDefault(newReasoningContent, "")) // 避免 null 的 情况
+                                .setSegments(segments).setWebSearchPages(webSearchPages))); // 知识库 + 联网搜索
+            }else{
+                // 非思考模式
+                newContent = currentContent;
+                return ok(new AiChatMessageSendRespVO()
+                        .setSend(BeanUtils.toBean(userMessage, AiChatMessageSendRespVO.Message.class))
+                        .setReceive(BeanUtils.toBean(assistantMessage, AiChatMessageSendRespVO.Message.class)
+                                .setContent(StrUtil.nullToDefault(newContent, "")) // 避免 null 的 情况
+                                .setReasoningContent("") // 避免 null 的 情况
+                                .setSegments(segments).setWebSearchPages(webSearchPages))); // 知识库 + 联网搜索
             }
-            if (StrUtil.isNotEmpty(newReasoningContent)) {
-                reasoningContentBuffer.append(newReasoningContent);
-            }
-            return ok(new AiChatMessageSendRespVO()
-                    .setSend(BeanUtils.toBean(userMessage, AiChatMessageSendRespVO.Message.class))
-                    .setReceive(BeanUtils.toBean(assistantMessage, AiChatMessageSendRespVO.Message.class)
-                            .setContent(StrUtil.nullToDefault(newContent, "")) // 避免 null 的 情况
-                            .setReasoningContent(StrUtil.nullToDefault(newReasoningContent, "")) // 避免 null 的 情况
-                            .setSegments(segments).setWebSearchPages(webSearchPages))); // 知识库 + 联网搜索
         }).doOnComplete(() -> {
             // 忽略租户，因为 Flux 异步无法透传租户
             chatMessageRepository.save(

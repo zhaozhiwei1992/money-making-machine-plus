@@ -18,7 +18,7 @@
               :reasoning-content="item.reasoningContent || ''"
               :content="item.content || ''"
             />
-            <MarkdownView
+            <ContentBlockRenderer
               class="text-[var(--el-text-color-primary)] text-[0.95rem]"
               :content="item.content"
             />
@@ -112,7 +112,7 @@
 <script setup lang="ts">
 import { PropType } from 'vue'
 import { formatDate } from '@/utils/formatTime'
-import MarkdownView from '@/components/MarkdownView/index.vue'
+import ContentBlockRenderer from './ContentBlockRenderer.vue'
 import MessageKnowledge from './MessageKnowledge.vue'
 import MessageReasoning from './MessageReasoning.vue'
 import MessageFiles from './MessageFiles.vue'

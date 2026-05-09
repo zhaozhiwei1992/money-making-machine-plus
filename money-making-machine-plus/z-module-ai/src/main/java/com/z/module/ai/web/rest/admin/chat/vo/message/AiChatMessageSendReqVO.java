@@ -28,4 +28,7 @@ public class AiChatMessageSendReqVO {
     @Schema(description = "附件 URL 数组", example = "https://www.iocoder.cn/1.png")
     private List<String> attachmentUrls;
 
+    @Schema(description = "是否思考", example = "true")
+    private Boolean thinking;
+
 }
