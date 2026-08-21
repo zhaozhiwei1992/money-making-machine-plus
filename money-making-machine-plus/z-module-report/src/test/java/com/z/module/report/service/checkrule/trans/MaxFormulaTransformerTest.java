@@ -11,8 +11,8 @@ public class MaxFormulaTransformerTest {
 
     @Test
     public void testTransform() {
-        String expression = "MAX(A, B)";
+        String expression = "MAX（A, B）";
         String transformed = transformer.transform(expression, null);
-        assertEquals("#max(A, B)", transformed);
+        assertEquals("#max（A,B）", transformed);
     }
 }

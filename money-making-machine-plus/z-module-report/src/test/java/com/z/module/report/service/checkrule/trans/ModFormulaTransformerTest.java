@@ -13,6 +13,6 @@ public class ModFormulaTransformerTest {
     public void testTransform() {
         String expression = "MOD(A, B)";
         String transformed = transformer.transform(expression, null);
-        assertEquals("A%B", transformed);
+        assertEquals("#mod(A, B)", transformed);
     }
 }

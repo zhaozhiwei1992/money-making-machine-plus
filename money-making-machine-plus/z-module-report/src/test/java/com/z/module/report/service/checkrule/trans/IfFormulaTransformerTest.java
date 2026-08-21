@@ -13,6 +13,6 @@ public class IfFormulaTransformerTest {
     public void testTransform() {
         String expression = "IF(A>B, A, B)";
         String transformed = transformer.transform(expression, null);
-        assertEquals("(A>B?A:B)", transformed);
+        assertEquals("#xif(A>B, A, B)", transformed);
     }
 }

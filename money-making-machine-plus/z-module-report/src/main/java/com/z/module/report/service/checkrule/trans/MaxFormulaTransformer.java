@@ -59,7 +59,7 @@ public class MaxFormulaTransformer implements CheckFormulaTransformer{
         if (rangeParts.length == 1) {
             // 单个单元格
             String cellRef = rangeParts[0];
-            String mappedCell = cellMap.getOrDefault(cellRef, cellRef);
+            String mappedCell = Objects.isNull(cellMap) ? cellRef : cellMap.getOrDefault(cellRef, cellRef);
             expandedCells.add(mappedCell);
         }else if (rangeParts.length == 2) {
             String startCell = rangeParts[0];

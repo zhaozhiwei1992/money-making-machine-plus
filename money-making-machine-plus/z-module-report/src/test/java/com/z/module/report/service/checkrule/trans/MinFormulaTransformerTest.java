@@ -11,8 +11,8 @@ public class MinFormulaTransformerTest {
 
     @Test
     public void testTransform() {
-        String expression = "MIN(A, B)";
+        String expression = "MIN（A, B）";
         String transformed = transformer.transform(expression, null);
-        assertEquals("#min(A, B)", transformed);
+        assertEquals("#min（A,B）", transformed);
     }
 }
