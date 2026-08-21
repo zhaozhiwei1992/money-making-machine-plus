@@ -5,14 +5,16 @@ import com.z.module.ui.domain.UiComponent;
 import com.z.module.ui.repository.UiComponentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,19 +25,26 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(UiComponentResource.class)
 public class UiComponentResourceTest {
 
-    @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @Mock
     private UiComponentRepository uiComponentRepository;
+
+    @InjectMocks
+    private UiComponentResource uiComponentResource;
 
     private UiComponent uiComponent;
 
     @BeforeEach
     public void setUp() {
+        MockitoAnnotations.openMocks(this);
+        // 库模块无 SpringBootApplication，用 standalone MockMvc 测试 controller；
+        // 手动注册 Pageable 解析器（@WebMvcTest 自动有，此处需显式）
+        mockMvc = MockMvcBuilders.standaloneSetup(uiComponentResource)
+                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+                .build();
         uiComponent = new UiComponent();
         uiComponent.setId(1L);
         uiComponent.setMenuId(1L);

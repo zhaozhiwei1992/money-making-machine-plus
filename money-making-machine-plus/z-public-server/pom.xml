@@ -71,6 +71,13 @@
             <version>${revision}</version>
         </dependency>
 
+        <!--    新业务模块标准骨架（模板/示例）: 需要时接入 server 演示，不需要可整段注释 -->
+        <dependency>
+            <groupId>com.z</groupId>
+            <artifactId>z-module-template</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
         <!--    模块部分 结束 -->
 
         <!-- spring boot 配置所需依赖 -->
@@ -86,7 +93,20 @@
 
         <!-- 服务保障相关 -->
 
-    </dependencies>
+            <!-- 聚合 verify 守卫测试 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- ArchUnit 分层守卫测试（BOM 已管理版本） -->
+        <dependency>
+            <groupId>com.tngtech.archunit</groupId>
+            <artifactId>archunit-junit5</artifactId>
+            <scope>test</scope>
+        </dependency>
+</dependencies>
 
     <profiles>
         <profile>

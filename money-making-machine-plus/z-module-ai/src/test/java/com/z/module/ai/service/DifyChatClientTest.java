@@ -37,9 +37,6 @@ public class DifyChatClientTest {
         String content = "test message";
         String expectedResponse = "test response";
 
-        AIModuleConfiguration.DIFY_BASE_URL = "http://localhost";
-        AIModuleConfiguration.DIFY_API_KEY = "test_key";
-
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));

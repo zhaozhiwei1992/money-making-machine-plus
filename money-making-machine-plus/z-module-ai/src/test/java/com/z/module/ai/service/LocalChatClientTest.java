@@ -34,7 +34,7 @@ public class LocalChatClientTest {
 
     @Test
     public void testCallWithMessage() throws URISyntaxException {
-        String content = "test question";
+        String content = "testquestion";
         String expectedResponse = "test answer";
         String url = "http://localhost:8000/api/question?q=" + content;
 

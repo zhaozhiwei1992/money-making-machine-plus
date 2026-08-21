@@ -41,6 +41,8 @@
     <module>z-module-screen</module>
     <module>z-module-samples</module>
     <module>z-module-ai</module>
+    <!-- 新业务模块标准骨架（模板/示例，非业务模块）：cp -r 改名即得 -->
+    <module>z-module-template</module>
 <!--    <module>z-module-crm</module>-->
 <!--    <module>z-module-erp</module>-->
   </modules>

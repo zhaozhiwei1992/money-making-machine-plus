@@ -13,6 +13,7 @@ import com.z.module.system.repository.EleUnionRepository;
 import com.z.framework.common.service.DatabaseMetaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.modulith.NamedInterface;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Transactional(rollbackFor = Exception.class)
+@NamedInterface("system")
 public class CommonEleService {
 
     private static final Logger log = LoggerFactory.getLogger(CommonEleService.class);

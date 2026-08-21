@@ -9,7 +9,6 @@ import com.z.module.ui.repository.UiEditFormRepository;
 import com.z.module.ui.web.vo.UiEditFormVO;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
@@ -35,8 +34,11 @@ public class UiEditFormResource {
 
     private final UiEditFormRepository uiEditFormRepository;
 
-    public UiEditFormResource(UiEditFormRepository uiEditFormRepository) {
+    private final CommonEleService commonEleService;
+
+    public UiEditFormResource(UiEditFormRepository uiEditFormRepository, CommonEleService commonEleService) {
         this.uiEditFormRepository = uiEditFormRepository;
+        this.commonEleService = commonEleService;
     }
 
     /**
@@ -96,9 +98,6 @@ public class UiEditFormResource {
         Optional<UiEditForm> uiEditForm = uiEditFormRepository.findById(id);
         return uiEditForm.orElse(null);
     }
-
-    @Autowired
-    private CommonEleService commonEleService;
 
     @GetMapping("/editforms/menu/{menuid}")
     public List<UiEditFormVO> getUiEditFormByMenuId(@PathVariable Long menuid) {

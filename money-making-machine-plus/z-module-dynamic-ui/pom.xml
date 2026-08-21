@@ -26,5 +26,11 @@
             <artifactId>z-module-system</artifactId>
             <version>${revision}</version>
         </dependency>
+
+        <!-- @ApplicationModule 注解在 main 源码里，compile 依赖 -->
+        <dependency>
+            <groupId>org.springframework.modulith</groupId>
+            <artifactId>spring-modulith-core</artifactId>
+        </dependency>
     </dependencies>
 </project>

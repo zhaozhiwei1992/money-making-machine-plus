@@ -19,7 +19,14 @@ public class DifyChatClient {
     private final RestTemplate restTemplate;
 
     public DifyChatClient() {
-        this.restTemplate = new RestTemplate();
+        this(new RestTemplate());
+    }
+
+    /**
+     * 测试注入用：@InjectMocks 无法覆盖 final 字段，需把 mock 通过构造器传入
+     */
+    public DifyChatClient(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
     public String callWithMessage(String content) {

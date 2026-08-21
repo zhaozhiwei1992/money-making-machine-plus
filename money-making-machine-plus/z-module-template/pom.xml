@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         z-module-template：新业务模块的标准骨架（模板/示例，非业务模块）
+         ⭐ 用法：cp -r z-module-template z-module-<你的模块名>，然后全局
+             替换 com.z.module.template → com.z.module.<你的模块名>、
+             TemplateItem → <你的实体名>、/template → /<你的前缀>
+         非核心 CRUD 模块采用 api/service/web 三层 + domain/repository 支撑，
+         不引入 DDD 五层（跑全套 DDD 是过度设计，见模块化最佳实践笔记）。
+    ═══════════════════════════════════════════════════════════════ -->
+    <parent>
+        <groupId>com.z</groupId>
+        <artifactId>money-making-machine-plus</artifactId>
+        <version>${revision}</version>
+    </parent>
+    <artifactId>z-module-template</artifactId>
+    <name>z-module-template</name>
+    <url>http://maven.apache.org</url>
+    <description>
+        新业务模块标准骨架（模板）。拷贝改名即得规范模块：
+        api（对外契约层 DTO）+ service + web/rest + domain + repository、
+        package-info（Modulith 模块声明）、verify 测试、README。
+    </description>
+    <dependencies>
+        <!-- 基础件：传递 spring-web/jackson/validation/lombok 等 -->
+        <dependency>
+            <groupId>com.z</groupId>
+            <artifactId>z-common</artifactId>
+        </dependency>
+
+        <!-- JPA 实体 + Spring Data repository -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!-- @ApplicationModule 注解在 main 源码里，compile 依赖 -->
+        <dependency>
+            <groupId>org.springframework.modulith</groupId>
+            <artifactId>spring-modulith-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
