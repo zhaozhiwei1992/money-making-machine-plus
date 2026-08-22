@@ -1,7 +1,7 @@
 package com.z.module.bpm.web.mapper.definition;
 
 import cn.hutool.core.util.StrUtil;
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSON;
 import com.z.framework.common.util.collection.CollectionUtils;
 import com.z.framework.common.util.date.DateUtils;
 import com.z.module.bpm.domain.definition.BpmFormDO;

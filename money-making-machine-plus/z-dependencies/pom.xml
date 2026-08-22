@@ -42,7 +42,7 @@
         <hutool.version>5.8.32</hutool.version>
         <velocity.version>2.3</velocity.version>
         <screw.version>1.0.5</screw.version>
-        <fastjson.version>1.2.83</fastjson.version>
+        <fastjson2.version>2.0.57</fastjson2.version>
         <guava.version>31.1-jre</guava.version>
         <transmittable-thread-local.version>2.14.2</transmittable-thread-local.version>
         <commons.io.version>2.5</commons.io.version>
@@ -184,9 +184,9 @@
             </dependency>
 
             <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>fastjson</artifactId>
-                <version>${fastjson.version}</version>
+                <groupId>com.alibaba.fastjson2</groupId>
+                <artifactId>fastjson2</artifactId>
+                <version>${fastjson2.version}</version>
             </dependency>
 
             <dependency>

@@ -1,7 +1,7 @@
 package com.z.module.bpm.domain.convert;
 
 import cn.hutool.json.JSONUtil;
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSON;
 
 import jakarta.persistence.AttributeConverter;
 import java.util.HashSet;
