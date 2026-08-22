@@ -4,7 +4,7 @@ import com.z.framework.common.web.rest.vm.PageResult;
 import com.z.module.bpm.web.vo.definition.model.*;
 import org.flowable.bpmn.model.BpmnModel;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 /**
  * Flowable流程模型接口

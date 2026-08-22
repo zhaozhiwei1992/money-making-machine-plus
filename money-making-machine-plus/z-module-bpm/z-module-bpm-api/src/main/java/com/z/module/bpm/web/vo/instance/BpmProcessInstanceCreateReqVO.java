@@ -3,7 +3,7 @@ package com.z.module.bpm.web.vo.instance;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotEmpty;
 import java.util.Map;
 
 @Schema(description = "管理后台 - 流程实例的创建 Request VO")

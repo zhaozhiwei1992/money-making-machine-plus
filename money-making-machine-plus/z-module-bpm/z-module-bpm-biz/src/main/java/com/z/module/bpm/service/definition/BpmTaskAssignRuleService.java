@@ -7,7 +7,7 @@ import com.z.module.bpm.web.vo.definition.rule.BpmTaskAssignRuleUpdateReqVO;
 import org.flowable.engine.delegate.DelegateExecution;
 import org.springframework.lang.Nullable;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Set;
 

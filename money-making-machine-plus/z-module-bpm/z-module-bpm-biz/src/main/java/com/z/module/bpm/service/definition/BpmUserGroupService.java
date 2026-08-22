@@ -6,7 +6,7 @@ import com.z.module.bpm.web.vo.definition.group.BpmUserGroupCreateReqVO;
 import com.z.module.bpm.web.vo.definition.group.BpmUserGroupPageReqVO;
 import com.z.module.bpm.web.vo.definition.group.BpmUserGroupUpdateReqVO;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;

@@ -2,7 +2,7 @@ package com.z.module.bpm.service.dto.task;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotEmpty;
 import java.util.Map;
 
 /**

@@ -2,7 +2,7 @@ package com.z.module.bpm.web.vo.definition.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotEmpty;
 
 /**
 * 流程模型 Base VO，提供给添加、修改、详细的子 VO 使用

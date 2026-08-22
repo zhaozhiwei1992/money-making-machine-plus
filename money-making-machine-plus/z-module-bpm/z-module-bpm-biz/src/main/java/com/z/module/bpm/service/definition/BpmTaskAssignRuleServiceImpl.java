@@ -27,7 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import jakarta.annotation.Resource;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.*;
 
 import static cn.hutool.core.text.CharSequenceUtil.format;

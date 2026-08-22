@@ -2,7 +2,7 @@ package com.z.module.screen.web.vo;
 
 import lombok.*;
 import io.swagger.v3.oas.annotations.media.Schema;
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 
 @Schema(description = "GoView 项目创建 Request VO")
 @Data

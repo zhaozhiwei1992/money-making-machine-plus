@@ -8,7 +8,7 @@ import com.z.module.bpm.web.vo.definition.form.BpmFormCreateReqVO;
 import com.z.module.bpm.web.vo.definition.form.BpmFormPageReqVO;
 import com.z.module.bpm.web.vo.definition.form.BpmFormUpdateReqVO;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;

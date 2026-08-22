@@ -3,7 +3,7 @@ package com.z.module.ai.service.knowledge.bo;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * AI 知识库段落搜索 Request BO

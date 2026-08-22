@@ -30,7 +30,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.validation.annotation.Validated;
 
 import jakarta.annotation.Resource;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.*;
 
 import static com.z.framework.common.exception.util.ServiceExceptionUtil.exception;

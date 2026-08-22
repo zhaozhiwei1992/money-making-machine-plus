@@ -5,7 +5,7 @@ import com.z.framework.common.web.rest.vm.PageResult;
 import com.z.module.bpm.web.vo.task.*;
 import org.flowable.task.api.Task;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
 

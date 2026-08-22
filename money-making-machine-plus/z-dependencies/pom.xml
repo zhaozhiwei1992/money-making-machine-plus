@@ -26,7 +26,6 @@
         https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies/${spring-boot.version} -->
         <liquibase.version>4.6.1</liquibase.version>
         <liquibase-hibernate5.version>4.6.1</liquibase-hibernate5.version>
-        <validation-api.version>2.0.1.Final</validation-api.version>
         <!-- 服务保障相关 -->
         <lock4j.version>2.2.3</lock4j.version>
         <resilience4j.version>1.7.1</resilience4j.version>
@@ -114,12 +113,6 @@
                 <artifactId>liquibase-core</artifactId>
                 <!-- Inherited version from Spring Boot can't be used because of regressions -->
                 <version>${liquibase.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.hibernate.validator</groupId>
-                <artifactId>hibernate-validator</artifactId>
-                <version>6.2.5.Final</version>
             </dependency>
 
             <!-- Job 定时任务相关 -->
@@ -270,6 +263,13 @@
                 <groupId>org.zalando</groupId>
                 <artifactId>problem-spring-web-starter</artifactId>
                 <version>0.26.1</version>
+                <exclusions>
+                    <!-- Boot 3 / Jakarta 3 时代，排除陈旧 javax.validation 传递 -->
+                    <exclusion>
+                        <groupId>javax.validation</groupId>
+                        <artifactId>validation-api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
 

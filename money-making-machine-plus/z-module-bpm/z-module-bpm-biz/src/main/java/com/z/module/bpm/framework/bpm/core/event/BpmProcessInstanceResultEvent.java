@@ -3,7 +3,7 @@ package com.z.module.bpm.framework.bpm.core.event;
 import lombok.Data;
 import org.springframework.context.ApplicationEvent;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * 流程实例的结果发生变化的 Event

@@ -110,6 +110,11 @@
                     <artifactId>spring-cloud-function-core</artifactId>
                     <groupId>org.springframework.cloud</groupId>
                 </exclusion>
+                <!-- Boot 3 / Jakarta 3，排除 jackson-module-jsonSchema 传递的陈旧 javax.validation:1.1 -->
+                <exclusion>
+                    <artifactId>validation-api</artifactId>
+                    <groupId>javax.validation</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
 

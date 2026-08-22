@@ -26,7 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.ImageIO;
 import jakarta.servlet.http.HttpServletRequest;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;

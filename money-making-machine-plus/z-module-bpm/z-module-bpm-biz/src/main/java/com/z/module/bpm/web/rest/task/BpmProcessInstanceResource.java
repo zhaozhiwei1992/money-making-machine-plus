@@ -11,7 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.annotation.Resource;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 /**
  * 流程实例，通过流程定义创建的一次“申请”, 相当与definition是java类, 流程实例是java对象
