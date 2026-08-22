@@ -7,7 +7,6 @@ import com.z.module.ai.repository.AiApiKeyRepository;
 import com.z.module.ai.web.rest.admin.model.vo.apikey.AiApiKeyPageReqVO;
 import com.z.module.ai.web.rest.admin.model.vo.apikey.AiApiKeySaveReqVO;
 import com.z.module.ai.domain.model.AiApiKeyDO;
-import groovy.util.logging.Slf4j;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Example;
@@ -33,7 +32,6 @@ import static com.z.module.ai.enums.ErrorCodeConstants.API_KEY_NOT_EXISTS;
 @lombok.extern.slf4j.Slf4j
 @Service
 @Validated
-@Slf4j
 public class AiApiKeyService {
 
     @Resource

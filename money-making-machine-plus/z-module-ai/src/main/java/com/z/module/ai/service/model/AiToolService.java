@@ -5,7 +5,6 @@ import com.z.framework.common.web.rest.vm.PageResult;
 import com.z.module.ai.domain.model.AiToolDO;
 import com.z.module.ai.repository.AiToolRepository;
 import com.z.module.ai.web.rest.admin.model.vo.tool.AiToolSaveReqVO;
-import groovy.util.logging.Slf4j;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.ai.tool.ToolCallback;
@@ -29,7 +28,6 @@ import static com.z.module.ai.enums.ErrorCodeConstants.TOOL_NOT_EXISTS;
 @lombok.extern.slf4j.Slf4j
 @Service
 @Validated
-@Slf4j
 public class AiToolService {
 
     @Resource

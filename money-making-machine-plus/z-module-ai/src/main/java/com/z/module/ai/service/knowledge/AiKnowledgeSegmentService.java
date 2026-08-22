@@ -19,10 +19,6 @@ import com.z.module.ai.repository.AiKnowledgeSegmentRepository;
 import com.z.module.ai.service.knowledge.bo.AiKnowledgeSegmentSearchReqBO;
 import com.z.module.ai.service.knowledge.bo.AiKnowledgeSegmentSearchRespBO;
 import com.z.module.ai.service.model.AiModelService;
-import com.alibaba.cloud.ai.dashscope.rerank.DashScopeRerankOptions;
-import com.alibaba.cloud.ai.model.RerankModel;
-import com.alibaba.cloud.ai.model.RerankRequest;
-import com.alibaba.cloud.ai.model.RerankResponse;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.document.Document;
@@ -48,7 +44,6 @@ import static com.z.framework.common.exception.util.ServiceExceptionUtil.excepti
 import static com.z.framework.common.util.collection.CollectionUtils.convertList;
 import static com.z.module.ai.enums.ErrorCodeConstants.KNOWLEDGE_SEGMENT_CONTENT_TOO_LONG;
 import static com.z.module.ai.enums.ErrorCodeConstants.KNOWLEDGE_SEGMENT_NOT_EXISTS;
-import static org.springframework.ai.vectorstore.SearchRequest.SIMILARITY_THRESHOLD_ACCEPT_ALL;
 
 /**
  * AI 知识库分片 Service 实现类
@@ -68,11 +63,6 @@ public class AiKnowledgeSegmentService {
             VECTOR_STORE_METADATA_DOCUMENT_ID, String.class,
             VECTOR_STORE_METADATA_SEGMENT_ID, String.class);
 
-    /**
-     * Rerank 在向量检索时，检索数量 * 该系数，目的是为了提升 Rerank 的效果
-     */
-    private static final Integer RERANK_RETRIEVAL_FACTOR = 4;
-
     @Resource
     private AiKnowledgeSegmentRepository segmentRepository;
 
@@ -86,9 +76,6 @@ public class AiKnowledgeSegmentService {
 
     @Resource
     private TokenCountEstimator tokenCountEstimator;
-
-    @Autowired(required = false) // 由于 spring.ai.model.rerank 配置项，可以关闭 RerankModel 的功能，所以这里只能不强制注入
-    private RerankModel rerankModel;
 
     public PageResult<AiKnowledgeSegmentDO> getKnowledgeSegmentPage(Pageable pageable, AiKnowledgeSegmentDO query) {
         log.debug("REST request to get all AiKnowledgeSegment for page {}", pageable);
@@ -281,27 +268,13 @@ public class AiKnowledgeSegmentService {
         Integer topK = ObjUtil.defaultIfNull(reqBO.getTopK(), knowledge.getTopK());
         Double similarityThreshold = ObjUtil.defaultIfNull(reqBO.getSimilarityThreshold(), knowledge.getSimilarityThreshold());
 
-        // 1. 向量检索
-        int searchTopK = rerankModel != null ? topK * RERANK_RETRIEVAL_FACTOR : topK;
-        double searchSimilarityThreshold = rerankModel != null ? SIMILARITY_THRESHOLD_ACCEPT_ALL : similarityThreshold;
+        // 向量检索（已下线 Rerank 重排序：依赖 dashscope，随 AI 依赖瘦身移除）
         SearchRequest.Builder searchRequestBuilder = SearchRequest.builder()
                 .query(reqBO.getContent())
-                .topK(searchTopK).similarityThreshold(searchSimilarityThreshold)
+                .topK(topK).similarityThreshold(similarityThreshold)
                 .filterExpression(new FilterExpressionBuilder()
                         .eq(VECTOR_STORE_METADATA_KNOWLEDGE_ID, reqBO.getKnowledgeId().toString()).build());
         List<Document> documents = vectorStore.similaritySearch(searchRequestBuilder.build());
-        if (CollUtil.isEmpty(documents)) {
-            return documents;
-        }
-
-        // 2. Rerank 重排序
-        if (rerankModel != null) {
-            RerankResponse rerankResponse = rerankModel.call(new RerankRequest(reqBO.getContent(), documents,
-                    DashScopeRerankOptions.builder().withTopN(topK).build()));
-            documents = convertList(rerankResponse.getResults(),
-                    documentWithScore -> documentWithScore.getScore() >= similarityThreshold
-                            ? documentWithScore.getOutput() : null);
-        }
         return documents;
     }
 

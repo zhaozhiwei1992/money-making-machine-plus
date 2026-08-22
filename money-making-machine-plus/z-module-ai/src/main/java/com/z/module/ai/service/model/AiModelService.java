@@ -16,7 +16,6 @@ import com.z.module.ai.framework.ai.core.model.suno.api.SunoApi;
 import com.z.module.ai.repository.AiModelRepository;
 import com.z.module.ai.web.rest.admin.model.vo.model.AiModelSaveReqVO;
 import dev.tinyflow.core.Tinyflow;
-import groovy.util.logging.Slf4j;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.ai.chat.model.ChatModel;
@@ -44,7 +43,6 @@ import static com.z.module.ai.enums.ErrorCodeConstants.*;
 @lombok.extern.slf4j.Slf4j
 @Service
 @Validated
-@Slf4j
 public class AiModelService {
 
     @Resource

@@ -16,6 +16,8 @@ import java.util.Arrays;
 public enum AiPlatformEnum implements ArrayValuable<String> {
 
     // ========== 国内平台 ==========
+    // 说明：TONG_YI 至 BAI_CHUAN 均为历史平台，自研适配已下线，统一走 OpenAI 兼容 + litellm 中转；
+    // 枚举值保留仅用于兼容存量 DB 数据（validatePlatform 校验不破坏），前端页面不再展示，新增只允许 openai/midjourney/suno。
 
     TONG_YI("TongYi", "通义千问"), // 阿里
     YI_YAN("YiYan", "文心一言"), // 百度

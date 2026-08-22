@@ -9,17 +9,12 @@
 
 /**
  * AI 平台的枚举
+ *
+ * 说明：历史平台（通义/文心/智谱/讯飞/硅基/DeepSeek/Ollama/Stability 等）已下线，统一走 OpenAI 兼容 + litellm 中转；
+ * 枚举仅保留业务能力项：OpenAI（含全部模型路由）、Midjourney（绘图）、Suno（音乐）。
  */
 export const AiPlatformEnum = {
-  TONG_YI: 'TongYi', // 阿里
-  YI_YAN: 'YiYan', // 百度
-  DEEP_SEEK: 'DeepSeek', // DeepSeek
-  ZHI_PU: 'ZhiPu', // 智谱 AI
-  XING_HUO: 'XingHuo', // 讯飞
-  SiliconFlow: 'SiliconFlow', // 硅基流动
   OPENAI: 'OpenAI',
-  Ollama: 'Ollama',
-  STABLE_DIFFUSION: 'StableDiffusion', // Stability AI
   MIDJOURNEY: 'Midjourney', // Midjourney
   SUNO: 'Suno' // Suno AI
 }
@@ -33,24 +28,7 @@ export const AiModelTypeEnum = {
   RERANK: 6 // 重排
 }
 
-export const OtherPlatformEnum: ImageModelVO[] = [
-  {
-    key: AiPlatformEnum.TONG_YI,
-    name: '通义万相'
-  },
-  {
-    key: AiPlatformEnum.YI_YAN,
-    name: '百度千帆'
-  },
-  {
-    key: AiPlatformEnum.ZHI_PU,
-    name: '智谱 AI'
-  },
-  {
-    key: AiPlatformEnum.SiliconFlow,
-    name: '硅基流动'
-  }
-]
+export const OtherPlatformEnum: ImageModelVO[] = [];
 
 /**
  * AI 图像生成状态的枚举
@@ -109,152 +87,6 @@ export interface ImageModelVO {
   name: string
   image?: string
 }
-
-export const StableDiffusionSamplers: ImageModelVO[] = [
-  {
-    key: 'DDIM',
-    name: 'DDIM'
-  },
-  {
-    key: 'DDPM',
-    name: 'DDPM'
-  },
-  {
-    key: 'K_DPMPP_2M',
-    name: 'K_DPMPP_2M'
-  },
-  {
-    key: 'K_DPMPP_2S_ANCESTRAL',
-    name: 'K_DPMPP_2S_ANCESTRAL'
-  },
-  {
-    key: 'K_DPM_2',
-    name: 'K_DPM_2'
-  },
-  {
-    key: 'K_DPM_2_ANCESTRAL',
-    name: 'K_DPM_2_ANCESTRAL'
-  },
-  {
-    key: 'K_EULER',
-    name: 'K_EULER'
-  },
-  {
-    key: 'K_EULER_ANCESTRAL',
-    name: 'K_EULER_ANCESTRAL'
-  },
-  {
-    key: 'K_HEUN',
-    name: 'K_HEUN'
-  },
-  {
-    key: 'K_LMS',
-    name: 'K_LMS'
-  }
-]
-
-export const StableDiffusionStylePresets: ImageModelVO[] = [
-  {
-    key: '3d-model',
-    name: '3d-model'
-  },
-  {
-    key: 'analog-film',
-    name: 'analog-film'
-  },
-  {
-    key: 'anime',
-    name: 'anime'
-  },
-  {
-    key: 'cinematic',
-    name: 'cinematic'
-  },
-  {
-    key: 'comic-book',
-    name: 'comic-book'
-  },
-  {
-    key: 'digital-art',
-    name: 'digital-art'
-  },
-  {
-    key: 'enhance',
-    name: 'enhance'
-  },
-  {
-    key: 'fantasy-art',
-    name: 'fantasy-art'
-  },
-  {
-    key: 'isometric',
-    name: 'isometric'
-  },
-  {
-    key: 'line-art',
-    name: 'line-art'
-  },
-  {
-    key: 'low-poly',
-    name: 'low-poly'
-  },
-  {
-    key: 'modeling-compound',
-    name: 'modeling-compound'
-  },
-  // neon-punk origami photographic pixel-art tile-texture
-  {
-    key: 'neon-punk',
-    name: 'neon-punk'
-  },
-  {
-    key: 'origami',
-    name: 'origami'
-  },
-  {
-    key: 'photographic',
-    name: 'photographic'
-  },
-  {
-    key: 'pixel-art',
-    name: 'pixel-art'
-  },
-  {
-    key: 'tile-texture',
-    name: 'tile-texture'
-  }
-]
-
-export const StableDiffusionClipGuidancePresets: ImageModelVO[] = [
-  {
-    key: 'NONE',
-    name: 'NONE'
-  },
-  {
-    key: 'FAST_BLUE',
-    name: 'FAST_BLUE'
-  },
-  {
-    key: 'FAST_GREEN',
-    name: 'FAST_GREEN'
-  },
-  {
-    key: 'SIMPLE',
-    name: 'SIMPLE'
-  },
-  {
-    key: 'SLOW',
-    name: 'SLOW'
-  },
-  {
-    key: 'SLOWER',
-    name: 'SLOWER'
-  },
-  {
-    key: 'SLOWEST',
-    name: 'SLOWEST'
-  }
-]
 
 export const Dall3Models: ImageModelVO[] = [
   {

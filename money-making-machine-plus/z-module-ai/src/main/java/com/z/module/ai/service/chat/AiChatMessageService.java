@@ -33,7 +33,6 @@ import com.z.module.ai.utils.FileTypeUtils;
 import com.z.module.ai.web.rest.admin.chat.vo.message.AiChatMessageRespVO;
 import com.z.module.ai.web.rest.admin.chat.vo.message.AiChatMessageSendReqVO;
 import com.z.module.ai.web.rest.admin.chat.vo.message.AiChatMessageSendRespVO;
-import io.modelcontextprotocol.client.McpSyncClient;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.messages.Message;
@@ -45,7 +44,6 @@ import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.model.StreamingChatModel;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.ai.mcp.client.autoconfigure.properties.McpClientCommonProperties;
 import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.tool.resolution.ToolCallbackResolver;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,14 +117,6 @@ public class AiChatMessageService {
     @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
     @Autowired(required = false) // 由于 yudao.ai.web-search.enable 配置项，可以关闭 AiWebSearchClient 的功能，所以这里只能不强制注入
     private AiWebSearchClient webSearchClient;
-
-    @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
-    @Autowired(required = false) // 由于 yudao.ai.mcp.client.enable 配置项，可以关闭 McpSyncClient 的功能，所以这里只能不强制注入
-    private List<McpSyncClient> mcpClients;
-
-    @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
-    @Autowired(required = false) // 由于 yudao.ai.mcp.client.enable 配置项，可以关闭 McpSyncClient 的功能，所以这里只能不强制注入
-    private McpClientCommonProperties mcpClientCommonProperties;
 
     @Resource
     private ToolCallbackResolver toolCallbackResolver;

@@ -1,4 +1,4 @@
-package com.z.module.ai.framework.ai.core.model.xinghuo.api;
+package com.z.module.ai.framework.ai.core.model.xunfei.api;
 
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.crypto.SecureUtil;
