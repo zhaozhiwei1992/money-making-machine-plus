@@ -7,6 +7,7 @@ import org.springframework.util.StringUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import javax.crypto.SecretKey;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -76,7 +77,7 @@ public class JwtUtil {
                 .setIssuedAt(now)
                 //过期时间
                 .setExpiration(time)
-                .signWith(key, SignatureAlgorithm.HS256)
+                .signWith((SecretKey) key, Jwts.SIG.HS256)
                 .compact();
         //jwt前面一般都会加Bearer
         return TOKEN_PREFIX + jwt;
@@ -93,9 +94,10 @@ public class JwtUtil {
 
         // parse the token.
         Map<String, Object> body = Jwts.parser()
-                .setSigningKey(key)
+                .verifyWith((SecretKey) key)
                 // 去掉前缀解析, 或者token传入前就处理掉
-                .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
+                .build()
+                .parseSignedClaims(token.replace(TOKEN_PREFIX, ""))
                 .getBody();
         return body.get("userName").toString();
     }

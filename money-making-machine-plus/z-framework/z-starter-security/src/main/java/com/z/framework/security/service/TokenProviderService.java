@@ -3,7 +3,6 @@ package com.z.framework.security.service;
 import com.z.framework.security.config.CustomSecurityProperties;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
+import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Calendar;
@@ -56,7 +56,7 @@ public class TokenProviderService {
             keyBytes = secret.getBytes(StandardCharsets.UTF_8);
         }
         key = Keys.hmacShaKeyFor(keyBytes);
-        jwtParser = Jwts.parser().setSigningKey(key);
+        jwtParser = Jwts.parser().verifyWith((SecretKey) key).build();
         this.tokenValidityInMilliseconds =
                 customSecurityProperties.getAuthentication().getJwt().getTokenValidityInSeconds();
         this.tokenValidityInMillisecondsForRememberMe =
@@ -95,7 +95,7 @@ public class TokenProviderService {
                 .setIssuedAt(now)
                 //过期时间
                 .setExpiration(time)
-                .signWith(key, SignatureAlgorithm.HS256)
+                .signWith((SecretKey) key, Jwts.SIG.HS256)
                 .compact();
         //jwt前面一般都会加Bearer
         return TOKEN_PREFIX + jwt;
@@ -117,7 +117,7 @@ public class TokenProviderService {
 
         Map<String, Object> body =
                 // 去掉前缀解析, 或者token传入前就处理掉
-                jwtParser.parseClaimsJws(authToken.replace(TOKEN_PREFIX, ""))
+                jwtParser.parseSignedClaims(authToken.replace(TOKEN_PREFIX, ""))
                         .getBody();
         return body.get("userName").toString();
     }
