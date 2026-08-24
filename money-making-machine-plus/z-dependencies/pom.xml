@@ -42,6 +42,8 @@
         <velocity.version>2.3</velocity.version>
         <screw.version>1.0.5</screw.version>
         <fastjson2.version>2.0.57</fastjson2.version>
+        <!-- fastjson 1.x 安全终点 1.2.83 仍被 rocketmq-common 5.2.0 / jimureport 1.5.8 传递引入，统一锁到 fastjson2 双坐标兼容包 2.0.57（含 com.alibaba.fastjson.* API），消除 CVE-2022-25845 -->
+        <fastjson.version>2.0.57</fastjson.version>
         <guava.version>33.6.0-jre</guava.version>
         <transmittable-thread-local.version>2.14.2</transmittable-thread-local.version>
         <commons.io.version>2.16.1</commons.io.version>
@@ -186,6 +188,12 @@
                 <groupId>com.alibaba.fastjson2</groupId>
                 <artifactId>fastjson2</artifactId>
                 <version>${fastjson2.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
             </dependency>
 
             <dependency>
